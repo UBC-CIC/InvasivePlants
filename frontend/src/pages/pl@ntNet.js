@@ -41,7 +41,7 @@ function PlantNet(){
 
         // Submit form to Pl@ntNet API
         const project = 'all';
-        const url = 'https://my-api.plantnet.org/v2/identify/' + project + `?api-key=${process.env.REACT_APP_PLANTNET_API_KEY}&include-related-images=${acceptedImage > 1}&lang=${selectedLanguage}`;
+        const url = 'https://my-api.plantnet.org/v2/identify/' + project + `?api-key=${process.env.REACT_APP_PLANTNET_API_KEY}&include-related-images=true&lang=${selectedLanguage}`;
         axios.post(url,formDataPlantNet,{
             headers: {
                 'Content-Type': `multipart/form-data`
@@ -54,6 +54,10 @@ function PlantNet(){
             setModelResult(JSON.stringify(response.data, null, 2));
         })
         .catch((error) => {
+            const keyWord = "not found";
+            if(error.response.status === 404 && error.response.data.message.toString().includes(keyWord)){
+                setModelResult(error.response.data.message.toString());
+            }
             console.error('Error uploading file:', error);
             // Handle error, e.g., show an error message to the user.
         });
@@ -120,8 +124,8 @@ function PlantNet(){
 
     useEffect(()=>{
         // Run BC Invasive webscraping script
-        webscrapBCInvasive();
-        webscrapONInvasive();
+        // webscrapBCInvasive();
+        // webscrapONInvasive();
     },[]);
     
     return(
