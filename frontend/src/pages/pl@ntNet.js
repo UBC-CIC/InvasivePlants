@@ -126,8 +126,16 @@ function PlantNet() {
         // Run BC Invasive webscraping script
         // webscrapeBCInvasive();
         // webscrapeONInvasive();
-        webscrapeWikipedia("hibiscus rosa-sinensis");
-        webscrapeWikipedia("Cissus verticillata");
+
+        // webscrape wikipedia by getting the "scientificNameWithoutAuthor" for each result returned by API
+
+        let plants = ["Hibiscus rosa-sinensis", "Cissus verticillata", "Lamprocapnos spectabilis"];
+        const scrapePlants = async (plants) => {
+            for (let plant of plants) {
+                await webscrapeWikipedia(plant);
+            }
+        };
+        scrapePlants(plants);
     }, []);
 
     return (
@@ -136,7 +144,7 @@ function PlantNet() {
             <h1>Image Upload</h1>
             <div>
                 <select onChange={handleLanguageSelection}>
-                    <option value="en">-- Choose an language --</option>
+                    <option value="en">-- Choose a language --</option>
                     <option value="en">English</option>
                     <option value="fr">French</option>
                     <option value="de">German</option>

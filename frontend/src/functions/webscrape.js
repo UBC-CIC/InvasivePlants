@@ -7,6 +7,7 @@ import "pdfjs-dist/build/pdf.worker.entry"; // Attach pdfJsworker to window
 // List of website to links to invasive species website
 const BC_INVASIVE_URL = 'https://bcinvasives.ca/take-action/identify/';
 const ON_INVASIVE_URL = 'https://www.ontarioinvasiveplants.ca/invasive-plants/species/';
+const WIKIPEDIA_SEARCH_URL = 'https://en.wikipedia.org/w/index.php?search=';
 
 
 /**
@@ -258,32 +259,96 @@ const getListOfSpeciesFromONInvasive = async (url) => {
 /**
  * 
  * This function only webscrapes from wikipedia given the species name and collects the following:
+ *  - species overview
  *  - species description
- *  - uses
+ *  - gallery of images
+ *  - wiki url
  */
 const webscrapeWikipedia = async (speciesName) => {
-    const searchUrl = `https://en.wikipedia.org/w/index.php?search=${encodeURIComponent(speciesName)}`;
-    const info = []
     try {
+        const searchUrl = `${WIKIPEDIA_SEARCH_URL}${encodeURIComponent(speciesName)}`;
         const searchResponse = await axios.get(searchUrl);
         const $ = cheerio.load(searchResponse.data);
-        const title = $('h1.firstHeading').text();
-        let speciesDescription = ""; // TODO: fix
-        // break the loop after finding the first paragraph
-        $('p').each(function () {
-            if ($(this).text().startsWith(title)) {
-                speciesDescription = $(this).text();
-                return false;
-            }
-        });
 
-        info.push({ title, speciesDescription, searchUrl })
-        console.log("desc: ", speciesDescription)
-        console.log("info:", info);
-        return info;
+        const speciesInfo = {
+            speciesName: extractSpeciesName($),
+            speciesOverview: extractSpeciesOverview($, speciesName),
+            speciesDescription: extractSpeciesDescription($),
+            speciesImages: extractSpeciesImages($),
+            searchUrl: searchUrl,
+        };
+
+        console.log("desc: ", speciesInfo.speciesDescription);
+        console.log("over: ", speciesInfo.speciesOverview);
+
+        console.log("info:", speciesInfo);
+        return speciesInfo;
     } catch (error) {
-        console.error('Error occurred during scraping:', error);
+        console.error('Error occur while scraping wikipedia site:', error.message);
     }
+};
+
+// get species name
+const extractSpeciesName = ($) => {
+    return $('h1.firstHeading').text();
+};
+
+// get species overview (first paragraph of wiki article)
+const extractSpeciesOverview = ($, speciesName) => {
+    let speciesOverview = "";
+    $('div.mw-parser-output p').each(function () {
+        // break the loop after finding the first paragraph
+        if ($(this).text().startsWith(speciesName)) {
+            speciesOverview = $(this).text();
+            return false;
+        }
+    });
+    return cleanUpString(speciesOverview);
+};
+
+// get species description 
+const extractSpeciesDescription = ($) => {
+    let speciesDescription = [];
+    let found = false;
+    $('h2 span.mw-headline#Description').parent().nextAll().each(function () {
+        // break the loop when the next h2 is found
+        if ($(this).is('h2')) {
+            found = true;
+            return false;
+        }
+        if (!found && $(this).is('p')) {
+            speciesDescription.push($(this).text());
+        }
+    });
+    return cleanUpString(speciesDescription);
+};
+
+// get species images
+const extractSpeciesImages = ($) => {
+    const speciesImages = [];
+    $('ul.gallery img').each((index, element) => {
+        let src = $(element).attr('src');
+        if (src && src.startsWith('//')) {
+            src = 'https:' + src;
+        }
+        speciesImages.push(src);
+    });
+    return speciesImages;
+};
+
+// helper function to clean up data
+const cleanUpString = (input) => {
+    if (typeof input !== 'string') {
+        input = input.toString();
+    }
+
+    // remove brackets []
+    input = input.replace(/\[[^\]]*\]/g, '');
+
+    // remove commas preceded by a line break and divide with a new line
+    input = input.replace(/(\r\n|[\r\n])\s*,/g, '$1\n');
+
+    return input.trim();
 };
 
 export { webscrapeBCInvasive, webscrapeONInvasive, webscrapeWikipedia };
