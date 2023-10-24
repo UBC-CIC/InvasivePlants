@@ -1,0 +1,25 @@
+{
+    "commonName": "string",
+    "scientificName": "string",
+    "links": ["?string"],
+    "info": [
+        {
+            "header": "string",
+            "description": "string"
+        }
+    ],
+    "alternatives": [
+        {
+            "commonName": "string",
+            "scientificName": "?string",
+            "links": ["?string"],
+            "info": [
+                {
+                    "header": "?string",
+                    "description": "?string"
+                }
+            ]
+        }
+    ],
+    "citation": ["?string"]
+}
