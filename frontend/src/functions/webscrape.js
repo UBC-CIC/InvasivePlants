@@ -6,8 +6,9 @@ import "pdfjs-dist/build/pdf.worker.entry"; // Attach pdfJsworker to window
 
 // List of website to links to invasive species website
 const BC_INVASIVE_URL = "https://bcinvasives.ca/take-action/identify/";
-const ON_INVASIVE_URL =
-  "https://www.ontarioinvasiveplants.ca/invasive-plants/species/";
+const ON_INVASIVE_URL = "https://www.ontarioinvasiveplants.ca/invasive-plants/species/";
+const ON_INVASIVE_URL_AQUATIC_PLANTS = "https://www.invadingspecies.com/invaders/aquatic-plants/";
+const ON_INVASIVE_URL_TERRESTRIAL_PLANTS = "https://www.invadingspecies.com/invaders/terrestrial-plants/";
 const WIKIPEDIA_SEARCH_URL = "https://en.wikipedia.org/w/index.php?search=";
 
 /**
@@ -132,7 +133,7 @@ const getListOfSpeciesFromBCInvasive = async (url) => {
  *  - Each species about section
  *  - Link to PDFs ...
  */
-const webscrapeONInvasive = async () => {
+const webscrapeONInvasive_ONInvasivePlantCouncil = async () => {
   // Get the list of invasive species
   const speciesList = await getListOfSpeciesFromONInvasive(ON_INVASIVE_URL);
 
@@ -257,7 +258,7 @@ const webscrapeONInvasive = async () => {
 };
 
 // Helper Function to get a list of invasive species
-const getListOfSpeciesFromONInvasive = async (url) => {
+const getListOfSpeciesFromONInvasive_ONInvasivePlantCouncil = async (url) => {
   const output = {
     ONInvasiveSpeciesPlants: [],
   };
@@ -290,6 +291,68 @@ const getListOfSpeciesFromONInvasive = async (url) => {
     });
 
   return output;
+};
+
+/**
+ * 
+ * This function only webscrap on the https://www.ontarioinvasiveplants.ca/ and collect the following:
+ *  - List of invasive species
+ *  - Each species about section
+ *  - Link to PDFs ...
+ */
+const webscrapeONInvasive = async () => {
+  const speciesList = {
+      ONInvasiveSpeciesPlants: []    
+  }
+  await getListOfSpeciesFromONInvasive(speciesList, ON_INVASIVE_URL_AQUATIC_PLANTS);
+  await getListOfSpeciesFromONInvasive(speciesList, ON_INVASIVE_URL_TERRESTRIAL_PLANTS);
+
+  // Go to each subpage and webscrape the about section and how to identify section
+  // .invansive-about
+  // .invasive-identify > .font-base
+  Promise.all(speciesList.ONInvasiveSpeciesPlants.map(async (specie, index) => {
+      axios.get(specie.link).then(async (response) => {
+          const $ = await cheerio.load(response.data);
+          
+          const scienceName = await $("div.header-content span").text();
+
+          // Grab other sections
+          const keywords = ["Background", "Impact of", "Identify", "What You Can Do"];
+          
+          // Load data into speciesList
+          speciesList.ONInvasiveSpeciesPlants[index].scientificName = scienceName;
+      }).catch((err) => {
+          console.log(err);
+      });
+  }));
+
+  console.log(speciesList);
+};
+
+const getListOfSpeciesFromONInvasive = async (output, url) => {
+  // Scraping list of all species
+  await axios.get(url).then(async (response) => {
+      const $ = await cheerio.load(response.data);
+
+      // Get species links
+      await $('div[data-id="pt-cv-page-1"] > div').each((i, ele) => {
+          // There are a list of child of div
+          // Each child has div > div a h3
+
+          const child = $(ele).children("div");
+
+          const commonName = $(child).children("h3").text();
+          const link = $(child).children("a").attr("href");
+          output.ONInvasiveSpeciesPlants.push({
+              name: commonName, 
+              link:link
+          });
+      });
+
+  }).catch(err => {
+      console.log(err);
+  })
+
 };
 
 /**
