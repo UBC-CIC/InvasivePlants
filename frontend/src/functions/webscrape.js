@@ -393,14 +393,25 @@ const webscrapeWikipedia = async (scientificName, speciesScore) => {
 			speciesDescription: extractSpeciesDescription($),
 			speciesImages: extractSpeciesImages($),
 			isInvasive: await isInvasive(scientificName),
+			alternative_plants: await getAlternativePlants(await isInvasive(scientificName)),
 			searchUrl: searchUrl,
 		};
+
 		// console.log("info:", speciesInfo);
 		return speciesInfo;
 	} catch (error) {
 		console.error("Error while scraping wikipedia site:", error.message);
 	}
 };
+
+const getAlternativePlants = async (input) => {
+	let alternative_plants = []
+	if (input) {
+		// webscrape for the alternative plants
+
+	}
+	return alternative_plants
+}
 
 const fetchInvasiveSpeciesBC = async () => {
 	try {
