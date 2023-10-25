@@ -2,17 +2,21 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import { webscrapeBCInvasive, webscrapeONInvasive, webscrapeWikipedia } from '../functions/webscrape';
-import { webscrapeInvasiveSpecies } from '../functions/pipeline';
+import { webscrapeInvasiveSpecies, getInvasiveSpeciesScientificNamesBC, getInvasiveSpeciesScientificNamesON } from '../functions/pipeline';
 
 // const FormData = require('form-data');
 
 function PlantNet() {
     const fs = require('fs');
     const [selectedLanguage, setSelectedLanguage] = useState('en');
+    const [location, setLocation] = useState('BC');
     const [selectedFile, setSelectedFile] = useState(null);
     const [modelResult, setModelResult] = useState(undefined);
     const [modelObjResult, setModelResultObj] = useState([]);
+    const [invasiveListBC, setInvasiveListBC] = useState([]);
+
     const [speciesInfo, setSpeciesInfo] = useState([]);
+
     const [numImages, setNumImages] = useState(0);
 
 
@@ -129,45 +133,101 @@ function PlantNet() {
         setSelectedLanguage(event.target.value);
     }
 
+    const getSpeciesInfo = async (results) => {
+        let speciesInfoArray = [];
+        const promises = results.map(async (res) => {
+            let scientificName = res.species.scientificNameWithoutAuthor;
+            let score = res.score;
+            let info = await webscrapeWikipedia(scientificName, score);
+            speciesInfoArray.push(info);
+            console.log(speciesInfoArray.length);
+        });
+        await Promise.all(promises);
+        return speciesInfoArray;
+    };
+
     useEffect(() => {
-        // Run BC Invasive webscraping script
-        // webscrapeBCInvasive();
-        // webscrapeONInvasive();
-        // webscrapeInvasiveSpecies();
-
-        // webscrape wikipedia by getting the "scientificNameWithoutAuthor" for each result returned by API
-        const getSpeciesInfo = async () => {
-            if (modelObjResult && modelObjResult.results) {
-                let speciesInfoArray = [];
-                for (let res of modelObjResult.results) {
-                    let scientificName = res.species.scientificNameWithoutAuthor;
-                    let score = res.score;
-                    let info = await webscrapeWikipedia(scientificName, score);
-                    speciesInfoArray.push(info);
-                }
+        const fetchData = async () => {
+            try {
+                // const region = await webscrapeInvasiveSpecies();
+                // const results = await getInvasiveSpeciesScientificNames(region[0]);
+                const speciesInfoArray = await getSpeciesInfo(modelObjResult.results);
                 setSpeciesInfo(speciesInfoArray);
+                console.log("species info: ", speciesInfo)
 
-                // Create a JSON file
-                // TODO: fix this?
-                if (speciesInfoArray.length > 0) {
-                    const data = JSON.stringify(speciesInfoArray, null, 2);
-                    const blob = new Blob([data], { type: 'application/json' });
+                const data = JSON.stringify(speciesInfoArray, null, 2);
+                const blob = new Blob([data], { type: 'application/json' });
 
-                    const fileName = 'speciesData.json';
+                const fileName = 'speciesData.json';
 
-                    // Check if the file exists and delete it if it does
-                    const existingFile = localStorage.getItem(fileName);
-                    if (existingFile) {
-                        localStorage.removeItem(fileName);
-                        console.log('Existing file deleted');
-                    }
-
-                    saveAs(blob, fileName);
+                // Check if the file exists and delete it if it does
+                const existingFile = localStorage.getItem(fileName);
+                if (existingFile) {
+                    localStorage.removeItem(fileName);
+                    console.log('Existing file deleted');
                 }
+
+                saveAs(blob, fileName);
+            } catch (error) {
+                console.error("Error fetching or processing data:", error);
             }
         };
-        getSpeciesInfo();
+
+        fetchData();
     }, [modelObjResult]);
+
+
+
+
+
+    // useEffect(() => {
+    //     // Run BC Invasive webscraping script
+    //     // webscrapeBCInvasive();
+    //     // webscrapeONInvasive();
+    //     // webscrapeInvasiveSpecies();
+
+    //     // webscrape wikipedia by getting the "scientificNameWithoutAuthor" for each result returned by API
+    //     const getSpeciesInfo = async () => {
+    //         if (modelObjResult && modelObjResult.results) {
+    //             // console.log("length: ", modelObjResult.results.length)
+    //             let speciesInfoArray = [];
+    //             for (let res of modelObjResult.results) {
+    //                 let scientificName = res.species.scientificNameWithoutAuthor;
+    //                 let score = res.score;
+    //                 // TODO: check based on user location
+    //                 // let isInvasive = invasiveListBC.includes(scientificName)
+    //                 // TODO: if invasive, include alternative plants
+    //                 let info = await webscrapeWikipedia(scientificName, score);
+    //                 speciesInfoArray.push(info);
+    //                 console.log(speciesInfoArray.length)
+    //             }
+
+    //             // Create a JSON file
+    //             if (speciesInfoArray.length === modelObjResult.results.length) {
+    //                 setSpeciesInfo(speciesInfoArray);
+    //                 console.log("species info: ", speciesInfo)
+
+    //                 const data = JSON.stringify(speciesInfoArray, null, 2);
+    //                 const blob = new Blob([data], { type: 'application/json' });
+
+    //                 const fileName = 'speciesData.json';
+
+    //                 // Check if the file exists and delete it if it does
+    //                 const existingFile = localStorage.getItem(fileName);
+    //                 if (existingFile) {
+    //                     localStorage.removeItem(fileName);
+    //                     console.log('Existing file deleted');
+    //                 }
+
+    //                 saveAs(blob, fileName);
+    //                 return;
+    //             }
+    //         }
+    //     };
+    //     getSpeciesInfo();
+    // }, [modelObjResult, invasiveListBC, speciesInfo]);
+
+
 
 
     // const filePath = './data/speciesData.json';

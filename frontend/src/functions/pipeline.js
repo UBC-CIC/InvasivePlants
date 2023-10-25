@@ -4,14 +4,14 @@ const webscrapeInvasiveSpecies = async () => {
     const region = [];
     await Promise.all([webscrapeBCInvasive(), webscrapeONInvasive()]).then((res) => {
         res.map((res) => {
-            if(res.BCInvasiveSpeciesPlants)
+            if (res.BCInvasiveSpeciesPlants)
                 region.push({
                     regionCode: "BC",
                     regionName: "British Columbia",
                     demographic: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Canada_British_Columbia_Density_2016.png/900px-Canada_British_Columbia_Density_2016.png",
                     invasiveSpeciesList: res.BCInvasiveSpeciesPlants
                 });
-            else if(res.ONInvasiveSpeciesPlants)
+            else if (res.ONInvasiveSpeciesPlants)
                 region.push({
                     regionCode: "ON",
                     regionName: "Ontario",
@@ -21,8 +21,36 @@ const webscrapeInvasiveSpecies = async () => {
         });
     });
 
-    console.log("Region: ", region);
+    // console.log("Region: ", region);
     return region;
-} 
+}
 
-export {webscrapeInvasiveSpecies};
+
+
+const getInvasiveSpeciesScientificNamesBC = async () => {
+    let region = await webscrapeInvasiveSpecies();
+    return getInvasiveSpeciesScientificNames(region[0]);
+};
+
+// TODO: not sure why it's showing up as undefined
+const getInvasiveSpeciesScientificNamesON = async () => {
+    let region = await webscrapeInvasiveSpecies();
+    return getInvasiveSpeciesScientificNames(region[1]);
+};
+
+const getInvasiveSpeciesScientificNames = async (region) => {
+    const scientific_names = [];
+
+    for (const species of region.invasiveSpeciesList) {
+        scientific_names.push(species.scientificName);
+    }
+    // console.log('invasive species scientific names: ', region.regionCode, scientific_names);
+    return scientific_names;
+};
+
+
+export {
+    webscrapeInvasiveSpecies,
+    getInvasiveSpeciesScientificNamesBC,
+    getInvasiveSpeciesScientificNamesON
+};
