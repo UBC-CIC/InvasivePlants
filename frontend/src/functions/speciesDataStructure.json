@@ -1,24 +1,32 @@
+// Table with the following records
 {
     "commonName": "string",
     "scientificName": "string",
     "links": ["?string"],
-    "info": [
+    "speciesInfo": [
         {
             "header": "string",
             "description": "string"
         }
     ],
+    "alternatives": ["string of key"]
+}
+
+// Another table with the following records
+{
+
     "alternatives": [
         {
             "commonName": "string",
-            "scientificName": "?string",
+            "scientificName": "string",
             "links": ["?string"],
             "info": [
                 {
                     "header": "?string",
                     "description": "?string"
                 }
-            ]
+            ],
+            "citation": "?string"
         }
     ],
     "citation": ["?string"]
