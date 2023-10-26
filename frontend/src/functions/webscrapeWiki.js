@@ -1,6 +1,5 @@
 import * as cheerio from "cheerio";
 import axios from "axios";
-import { getInvasiveSpeciesScientificNamesBC } from './pipeline';
 
 // List of website to links to invasive species website
 const WIKIPEDIA_SEARCH_URL = "https://en.wikipedia.org/w/index.php?search=";
@@ -13,61 +12,26 @@ const WIKIPEDIA_SEARCH_URL = "https://en.wikipedia.org/w/index.php?search=";
  *  - gallery of images
  *  - wiki url
  */
-const webscrapeWikipedia = async (commonName, scientificName, speciesScore) => {
+const webscrapeWikipedia = async (scientificName) => {
 	try {
-		const searchUrl = `${WIKIPEDIA_SEARCH_URL}${encodeURIComponent(
+		const wikiUrl = `${WIKIPEDIA_SEARCH_URL}${encodeURIComponent(
 			scientificName
 		)}`;
-		const searchResponse = await axios.get(searchUrl);
+		const searchResponse = await axios.get(wikiUrl);
 		const $ = cheerio.load(searchResponse.data);
 
-		const speciesInfo = {
-			commonName: commonName,
-			scientificName: scientificName,
-			speciesScore: speciesScore,
+		let wiki_info = {
 			speciesOverview: extractSpeciesOverview($, scientificName),
 			speciesDescription: extractSpeciesDescription($),
 			speciesImages: extractSpeciesImages($),
-			isInvasive: await isInvasive(scientificName),
-			// alternative_plants: await getAlternativePlants(await isInvasive(scientificName)),
-			searchUrl: searchUrl,
-		};
-		return speciesInfo;
+			wikiUrl: wikiUrl
+		}
+
+		return wiki_info;
 	} catch (error) {
 		console.error("Error while scraping wikipedia site:", error.message);
 	}
 };
-
-// const getAlternativePlants = async (input) => {
-// 	let alternative_plants = []
-// 	if (input) {
-// 		// webscrape for the alternative plants
-
-// 	}
-// 	return alternative_plants
-// }
-
-const fetchInvasiveSpeciesBC = async () => {
-	try {
-		const result = await getInvasiveSpeciesScientificNamesBC();
-		return result;
-		// console.log("BC invasive species: ", result);
-	} catch (error) {
-		console.error("Error fetching BC invasive species: ", error);
-	}
-};
-
-// is invasive
-// TODO: check location too
-const isInvasive = async (scientificName) => {
-	let invasiveListBC = await fetchInvasiveSpeciesBC();
-	return invasiveListBC.includes(scientificName);
-};
-
-// get species name
-// const extractScientificName = ($) => {
-// 	return $("h1.firstHeading").text();
-// };
 
 // get species overview (first paragraph of wiki article)
 const extractSpeciesOverview = ($, speciesName) => {

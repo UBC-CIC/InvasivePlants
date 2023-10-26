@@ -317,26 +317,29 @@ const webscrapeONInvasive = async () => {
 	await getListOfSpeciesFromONInvasive(speciesList, ON_INVASIVE_URL_TERRESTRIAL_PLANTS);
 
 	// Go to each subpage and webscrape the about section and how to identify section
-	// .invansive-about
+	// .invasive-about
 	// .invasive-identify > .font-base
-	Promise.all(speciesList.ONInvasiveSpeciesPlants.map(async (specie, index) => {
-		if (specie.links.length > 0)
-			axios.get(specie.links[0]).then(async (response) => {
+	await Promise.all(speciesList.ONInvasiveSpeciesPlants.map(async (specie, index) => {
+		if (specie.links.length > 0) {
+			try {
+				const response = await axios.get(specie.links[0]);
 				const $ = await cheerio.load(response.data);
 
-				const scienceName = await $("div.header-content span").text();
+				const scienceName = $("div.header-content span").text();
 
 				// Grab other sections
 				const keywords = ["Background", "Impact of", "Identify", "What You Can Do"];
 
 				// Load data into speciesList
 				speciesList.ONInvasiveSpeciesPlants[index].scientificName = scienceName;
-			}).catch((err) => {
+			} catch (err) {
 				console.log(err);
-			});
+			}
+		}
 	}));
 	return speciesList;
 };
+
 
 const getListOfSpeciesFromONInvasive = async (output, url) => {
 	// Scraping list of all species

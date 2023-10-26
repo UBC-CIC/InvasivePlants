@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
-import { webscrapeWikipedia } from '../functions/webscrapeWiki';
-// import { webscrapeBCInvasive, webscrapeONInvasive } from '../functions/webscrape';
+import { speciesDataToJSON } from '../functions/speciesToJSON';
 
 function PlantNet() {
     const [selectedLanguage, setSelectedLanguage] = useState('en');
-    const [location, setSelectedLocation] = useState('BC');
+    const [selectedLocation, setSelectedLocation] = useState('ON');
     const [selectedFile, setSelectedFile] = useState(null);
     const [modelResult, setModelResult] = useState(undefined);
     const [modelObjResult, setModelResultObj] = useState([]);
@@ -70,38 +69,23 @@ function PlantNet() {
         setSelectedLocation(event.target.value);
     }
 
-    // gets all results
-    // const getSpeciesResultInfo = async (results) => {
-    //     let speciesInfoArray = [];
-    //     const promises = results.map(async (res) => {
-    //         let scientificName = res.species.scientificNameWithoutAuthor;
-    //         let score = res.score;
-    //         let info = await webscrapeWikipedia(scientificName, score);
-    //         speciesInfoArray.push(info);
-    //         console.log(speciesInfoArray.length);
-    //     });
-    //     await Promise.all(promises);
-    //     return speciesInfoArray;
-    // };
-
-
-    // top 3 results
+    // get top 3 results
     const getSpeciesResultInfo = async (results) => {
         let speciesInfoArray = [];
-        let count = 0; // Initialize the count variable
+        let count = 0;
 
         for (let i = 0; i < results.length; i++) {
             if (count < 3) {
                 let res = results[i];
-                let commonName = res.species.commonName;
+                let commonName = res.species.commonNames;
                 let scientificName = res.species.scientificNameWithoutAuthor;
                 let score = res.score;
-                let info = await webscrapeWikipedia(commonName, scientificName, score);
+                let info = await speciesDataToJSON(commonName, scientificName, score, selectedLocation);
                 speciesInfoArray.push(info);
-                count++; // Increment the count
+                count++;
                 console.log(speciesInfoArray.length);
             } else {
-                break; // Break the loop when the count reaches 3
+                break;
             }
         }
         return speciesInfoArray;
@@ -116,7 +100,6 @@ function PlantNet() {
                     console.log("species info: ", speciesInfoArray)
 
                     if (speciesInfoArray.length === Math.min(modelObjResult.results.length, 3)) {
-                        console.log("got here!!!")
                         const data = JSON.stringify(speciesInfoArray, null, 2);
                         const blob = new Blob([data], { type: 'application/json' });
 
@@ -131,7 +114,7 @@ function PlantNet() {
             }
         };
         fetchData();
-    }, [isFileSaved, modelObjResult]);
+    }, [isFileSaved, modelObjResult, getSpeciesResultInfo]);
 
 
     return (
