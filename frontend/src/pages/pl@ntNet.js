@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import { speciesDataToJSON } from '../functions/speciesToJSON';
+import { mapInvasiveToAlternativeBC, mapInvasiveToAlternativeON } from '../functions/alternativePlants';
 
 function PlantNet() {
     const [selectedLanguage, setSelectedLanguage] = useState('en');
-    const [selectedLocation, setSelectedLocation] = useState('ON');
+    const [selectedLocation, setSelectedLocation] = useState('BC');
     const [selectedFile, setSelectedFile] = useState(null);
     const [modelResult, setModelResult] = useState(undefined);
     const [modelObjResult, setModelResultObj] = useState([]);
@@ -70,7 +71,7 @@ function PlantNet() {
     }
 
     // get top 3 results
-    const getSpeciesResultInfo = async (results) => {
+    const getSpeciesResultInfo = useCallback(async (results) => {
         let speciesInfoArray = [];
         let count = 0;
 
@@ -89,15 +90,17 @@ function PlantNet() {
             }
         }
         return speciesInfoArray;
-    };
+    }, [selectedLocation]);
 
 
     useEffect(() => {
+        // mapInvasiveToAlternativeBC();
+        // mapInvasiveToAlternativeON();
         const fetchData = async () => {
             try {
                 if (!isFileSaved && modelObjResult && modelObjResult.results) {
                     const speciesInfoArray = await getSpeciesResultInfo(modelObjResult.results);
-                    console.log("species info: ", speciesInfoArray)
+                    console.log("species info: ", speciesInfoArray);
 
                     if (speciesInfoArray.length === Math.min(modelObjResult.results.length, 3)) {
                         const data = JSON.stringify(speciesInfoArray, null, 2);
@@ -114,7 +117,7 @@ function PlantNet() {
             }
         };
         fetchData();
-    }, [isFileSaved, modelObjResult, getSpeciesResultInfo]);
+    }, [isFileSaved, modelObjResult, getSpeciesResultInfo, selectedLocation]);
 
 
     return (

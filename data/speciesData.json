@@ -1,0 +1,63 @@
+[
+  {
+    "commonName": [
+      "Annual Gypsophila",
+      "Low Baby's-breath",
+      "Cushion baby's-breath"
+    ],
+    "scientificName": "Gypsophila muralis",
+    "speciesScore": 0.25131,
+    "isInvasive": false,
+    "wikiInfo": {
+      "speciesOverview": "",
+      "speciesDescription": "Psammophiliella muralis is an annual, with erect glabrous (non hairy) stems. It grows up to 30–40 cm (12–16 in) tall, with linear shaped leaves. It blooms between summer and fall, with pink or very occasionally white flowers, which are 3.5–6 cm (1.4–2.4 in) across. Later it has fruit capsules, which are ovoid or ellipsoid, inside are snail-shaped seeds.",
+      "speciesImages": [],
+      "wikiUrl": "https://en.wikipedia.org/w/index.php?search=Gypsophila%20muralis"
+    },
+    "alternative_plants": null
+  },
+  {
+    "commonName": [
+      "Baby's-breath",
+      "Old-fashioned Baby's-breath",
+      "Tall baby's-breath"
+    ],
+    "scientificName": "Gypsophila paniculata",
+    "speciesScore": 0.16102,
+    "isInvasive": true,
+    "wikiInfo": {
+      "speciesOverview": "Gypsophila paniculata, the baby's breath, common gypsophila or panicled baby's-breath, is a species of flowering plant in the family Caryophyllaceae, native to central and eastern Europe. It is an herbaceous perennial growing to 1.2 m (4 ft) tall and wide, with mounds of branching stems covered in clouds of tiny white flowers in summer (hence the common name \"baby's breath\"). Another possible source of this name is its scent, which has been described as sour milk, like a baby’s “spit-up”. Its natural habitat is on the Steppes in dry, sandy and stony places, often on calcareous soils (gypsophila = \"chalk-loving\"). Specimens of this plant were first sent to Linnaeus from St. Petersburg by the Swiss-Russian botanist Johann Amman.",
+      "speciesDescription": "",
+      "speciesImages": [
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Close-up_of_2_baby%27s_breath_%28Gypsophila_paniculata%29_flowers.jpg/96px-Close-up_of_2_baby%27s_breath_%28Gypsophila_paniculata%29_flowers.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Schleierkraut_und_rote_Rose.jpg/97px-Schleierkraut_und_rote_Rose.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Illustration_Gypsophila_paniculata0.jpg/71px-Illustration_Gypsophila_paniculata0.jpg"
+      ],
+      "wikiUrl": "https://en.wikipedia.org/w/index.php?search=Gypsophila%20paniculata"
+    },
+    "alternative_plants": [
+      "Filigran russian sage",
+      "German statice",
+      "Hybrid yarrow",
+      "Pearly everlasting",
+      "Sea lavender"
+    ]
+  },
+  {
+    "commonName": [
+      "Annual Baby's-breath",
+      "Showy Babysbreath",
+      "Showy baby's-breath"
+    ],
+    "scientificName": "Gypsophila elegans",
+    "speciesScore": 0.08381,
+    "isInvasive": false,
+    "wikiInfo": {
+      "speciesOverview": "Gypsophila elegans, the annual baby's-breath or showy baby's-breath, is an ornamental plant native to Asia and Europe.",
+      "speciesDescription": "",
+      "speciesImages": [],
+      "wikiUrl": "https://en.wikipedia.org/w/index.php?search=Gypsophila%20elegans"
+    },
+    "alternative_plants": null
+  }
+]

@@ -8,7 +8,7 @@ const speciesDataToJSON = async (commonName, scientificName, speciesScore, userL
     let alternative_plants = null;
 
     if (isInvasiveRes) {
-        alternative_plants = await getAlternativePlants(isInvasive);
+        alternative_plants = await getAlternativePlants(commonName, userLocation);
     }
 
     const speciesInfo = {

@@ -42,14 +42,12 @@ const getInvasiveSpeciesScientificNames = async (region) => {
     const scientific_names = [];
 
     for (const species of region.invasiveSpeciesList) {
-        console.log("Current species:", species);
         if (species && species.scientificName) {
             scientific_names.push(species.scientificName);
         } else {
             console.log("Scientific name not found for:", species);
         }
     }
-    console.log("Scientific Names: ", scientific_names);
     return scientific_names;
 };
 
