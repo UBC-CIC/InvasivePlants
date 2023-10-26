@@ -6,9 +6,12 @@ import "pdfjs-dist/build/pdf.worker.entry"; // Attach pdfJsworker to window
 
 // List of website to links to invasive species website
 const BC_INVASIVE_URL = "https://bcinvasives.ca/take-action/identify/";
-const ON_INVASIVE_URL = "https://www.ontarioinvasiveplants.ca/invasive-plants/species/";
-const ON_INVASIVE_URL_AQUATIC_PLANTS = "https://www.invadingspecies.com/invaders/aquatic-plants/";
-const ON_INVASIVE_URL_TERRESTRIAL_PLANTS = "https://www.invadingspecies.com/invaders/terrestrial-plants/";
+const ON_INVASIVE_URL =
+  "https://www.ontarioinvasiveplants.ca/invasive-plants/species/";
+const ON_INVASIVE_URL_AQUATIC_PLANTS =
+  "https://www.invadingspecies.com/invaders/aquatic-plants/";
+const ON_INVASIVE_URL_TERRESTRIAL_PLANTS =
+  "https://www.invadingspecies.com/invaders/terrestrial-plants/";
 const WIKIPEDIA_SEARCH_URL = "https://en.wikipedia.org/w/index.php?search=";
 
 /**
@@ -26,38 +29,40 @@ const webscrapeBCInvasive = async () => {
   // .invansive-about
   // .invasive-identify > .font-base
   Promise.all(
-    speciesList.BCInvasiveSpeciesPlants.map(async (specie, index) => {
-      if(specie.links.length > 0)
-      axios
-        .get(specie.links[0])
-        .then(async (response) => {
-          const $ = await cheerio.load(response.data);
+    speciesList.BCInvasiveSpeciesPlants.map(async (species, index) => {
+      if (species.links.length > 0)
+        axios
+          .get(species.links[0])
+          .then(async (response) => {
+            const $ = await cheerio.load(response.data);
 
-          // Get About section of the species
-          let aboutSection = "";
-          await $("div.invansive-about >p").each((i, ele) => {
-            aboutSection += $(ele).text() + "\n";
-          });
+            // Get About section of the species
+            let aboutSection = "";
+            await $("div.invansive-about >p").each((i, ele) => {
+              aboutSection += $(ele).text() + "\n";
+            });
 
-          // Get How to identify section of the species
-          let howToIdentifySection = "";
-          await $("div.invasive-identify div.font-base > p").each((i, ele) => {
-            howToIdentifySection += $(ele).text() + "\n";
-          });
+            // Get How to identify section of the species
+            let howToIdentifySection = "";
+            await $("div.invasive-identify div.font-base > p").each(
+              (i, ele) => {
+                howToIdentifySection += $(ele).text() + "\n";
+              }
+            );
 
-          speciesList.BCInvasiveSpeciesPlants[index].info.push({
-            header: "About",
-            description: aboutSection
-          });
+            speciesList.BCInvasiveSpeciesPlants[index].info.push({
+              header: "About",
+              description: aboutSection.trim(),
+            });
 
-          speciesList.BCInvasiveSpeciesPlants[index].info.push({
-            header: "How To Identify",
-            description: howToIdentifySection
+            speciesList.BCInvasiveSpeciesPlants[index].info.push({
+              header: "How To Identify",
+              description: howToIdentifySection.trim(),
+            });
+          })
+          .catch((err) => {
+            console.log(err);
           });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
     })
   );
 
@@ -67,7 +72,7 @@ const webscrapeBCInvasive = async () => {
 // Helper Function to get a list of invasive species
 const getListOfSpeciesFromBCInvasive = async (url) => {
   const output = {
-    BCInvasiveSpeciesPlants: []
+    BCInvasiveSpeciesPlants: [],
   };
 
   // Scraping list of all species
@@ -104,21 +109,21 @@ const getListOfSpeciesFromBCInvasive = async (url) => {
 
               if (paredJSON.animal_type === "") {
                 output.BCInvasiveSpeciesPlants.push({
-                    commonName: paredJSON.name,
-                    scientificName: paredJSON.species,
-                    links: [paredJSON.link],
-                    info: [
-                        {
-                            header: "Summary",
-                            description: paredJSON.summary
-                        },
-                        {
-                          header: "Habitat",
-                          description: paredJSON.habitat
-                        },
-                    ],
-                    alternatives: [],
-                    citation: ["The provided information is obtained from ISCBC"]
+                  commonName: paredJSON.name.trim(),
+                  scientificName: paredJSON.species.trim(),
+                  links: [paredJSON.link.trim()],
+                  info: [
+                    {
+                      header: "Summary",
+                      description: paredJSON.summary.trim(),
+                    },
+                    {
+                      header: "Habitat",
+                      description: paredJSON.habitat.trim(),
+                    },
+                  ],
+                  alternatives: [],
+                  citation: ["The provided information is obtained from ISCBC"],
                 });
               }
             } catch (error) {
@@ -273,13 +278,6 @@ const getListOfSpeciesFromONInvasive_ONInvasivePlantCouncil = async (url) => {
     ONInvasiveSpeciesPlants: [],
   };
 
-  /**
-   *
-   * This is only for development purpose. The request will go through a third party proxy, corsProxyUrl.
-   * This need to be changed when working with production.
-   */
-  const corsProxyUrl = "https://cors-anywhere.herokuapp.com/";
-
   // Scraping list of all species
   await axios
     .get(url)
@@ -304,7 +302,7 @@ const getListOfSpeciesFromONInvasive_ONInvasivePlantCouncil = async (url) => {
 };
 
 /**
- * 
+ *
  * This function only webscrap on the https://www.ontarioinvasiveplants.ca/ and collect the following:
  *  - List of invasive species
  *  - Each species about section
@@ -312,36 +310,55 @@ const getListOfSpeciesFromONInvasive_ONInvasivePlantCouncil = async (url) => {
  */
 const webscrapeONInvasive = async () => {
   const speciesList = {
-    ONInvasiveSpeciesPlants: [] 
+    ONInvasiveSpeciesPlants: [],
   };
-  await getListOfSpeciesFromONInvasive(speciesList, ON_INVASIVE_URL_AQUATIC_PLANTS);
-  await getListOfSpeciesFromONInvasive(speciesList, ON_INVASIVE_URL_TERRESTRIAL_PLANTS);
+  await getListOfSpeciesFromONInvasive(
+    speciesList,
+    ON_INVASIVE_URL_AQUATIC_PLANTS
+  );
+  await getListOfSpeciesFromONInvasive(
+    speciesList,
+    ON_INVASIVE_URL_TERRESTRIAL_PLANTS
+  );
 
   // Go to each subpage and webscrape the about section and how to identify section
   // .invansive-about
   // .invasive-identify > .font-base
-  Promise.all(speciesList.ONInvasiveSpeciesPlants.map(async (specie, index) => {
-    if(specie.links.length > 0)
-      axios.get(specie.links[0]).then(async (response) => {
-          const $ = await cheerio.load(response.data);
-          
-          const scienceName = await $("div.header-content span").text();
+  Promise.all(
+    speciesList.ONInvasiveSpeciesPlants.map(async (species, index) => {
+      if (species.links.length > 0)
+        axios
+          .get(species.links[0])
+          .then(async (response) => {
+            const $ = await cheerio.load(response.data);
 
-          // Grab other sections
-          const keywords = ["Background", "Impact of", "Identify", "What You Can Do"];
-          
-          // Load data into speciesList
-          speciesList.ONInvasiveSpeciesPlants[index].scientificName = scienceName;
-      }).catch((err) => {
-          console.log(err);
-      });
-  }));
+            const scienceName = await $("div.header-content span").text();
+
+            // Grab other sections
+            const keywords = [
+              "Background",
+              "Impact of",
+              "Identify",
+              "What You Can Do",
+            ];
+
+            // Load data into speciesList
+            speciesList.ONInvasiveSpeciesPlants[index].scientificName =
+              scienceName.trim();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+    })
+  );
   return speciesList;
 };
 
 const getListOfSpeciesFromONInvasive = async (output, url) => {
   // Scraping list of all species
-  await axios.get(url).then(async (response) => {
+  await axios
+    .get(url)
+    .then(async (response) => {
       const $ = await cheerio.load(response.data);
 
       // Get species links
@@ -355,18 +372,20 @@ const getListOfSpeciesFromONInvasive = async (output, url) => {
         const link = $(child).children("a").attr("href");
 
         output.ONInvasiveSpeciesPlants.push({
-          commonName: commonName,
+          commonName: commonName.trim(),
           scientificName: undefined,
-          links: [link],
+          links: [link.trim()],
           info: [],
           alternatives: [],
-          citation: ["The provided information is obtained from the Ontario Invading Species Awareness Program."]
+          citation: [
+            "The provided information is obtained from the Ontario Invading Species Awareness Program.",
+          ],
         });
       });
-  }).catch(err => {
+    })
+    .catch((err) => {
       console.log(err);
-  })
-
+    });
 };
 
 /**
