@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import { webscrapeBCInvasive, webscrapeONInvasive, webscrapeWikipedia } from '../functions/webscrape';
-import { webscrapeInvasiveSpecies } from '../functions/pipeline';
+import { webscrapeInvasiveSpecies, flagedSpeciesToPlanetAPI } from '../functions/pipeline';
 
 // const FormData = require('form-data');
 
@@ -134,6 +134,7 @@ function PlantNet() {
         // webscrapeBCInvasive();
         // webscrapeONInvasive();
         // webscrapeInvasiveSpecies();
+        flagedSpeciesToPlanetAPI();
 
         // webscrape wikipedia by getting the "scientificNameWithoutAuthor" for each result returned by API
         const getSpeciesInfo = async () => {
