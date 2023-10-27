@@ -1,4 +1,5 @@
 import { webscrapeBCInvasive, webscrapeONInvasive } from "./webscrape";
+import { mapInvasiveToAlternativeON } from "./alternativePlants"
 
 const webscrapeInvasiveSpecies = async () => {
     const region = [];
@@ -52,13 +53,25 @@ const getInvasiveSpeciesScientificNames = async (region) => {
 };
 
 // checks if species is invasive given location
-const isInvasive = async (scientificName, location) => {
+const isInvasive = async (commonName, scientificName, location) => {
     if (location === "BC") {
         let invasiveListBC = await getInvasiveSpeciesScientificNamesBC();
         return invasiveListBC.includes(scientificName);
     } else if (location === "ON") {
         let invasiveListON = await getInvasiveSpeciesScientificNamesON();
-        console.log("ON invasive list: ", invasiveListON);
+        // console.log("ON invasive list: ", invasiveListON);
+        let map = mapInvasiveToAlternativeON();
+        for (let name of commonName) {
+            const transformedName = name.replace("-", "_").trim().toLowerCase().replace(/[^\w\s]/gi, '');
+            const nameParts = transformedName.split('_');
+
+            for (let part of nameParts) {
+                if (part in map) {
+                    console.log("Match found in map!", part);
+                    return true;
+                }
+            }
+        }
         return invasiveListON.includes(scientificName);
     }
 };
