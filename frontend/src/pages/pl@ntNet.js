@@ -1,6 +1,10 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
+import { webscrapeBCInvasive, webscrapeONInvasive, webscrapeWikipedia } from '../functions/webscrape';
+import { webscrapeInvasiveSpecies, flagedSpeciesToPlanetAPI } from '../functions/pipeline';
+
+// const FormData = require('form-data');
 import { speciesDataToJSON } from '../functions/speciesToJSON';
 import { mapInvasiveToAlternativeBC, mapInvasiveToAlternativeON } from '../functions/alternativePlants';
 
