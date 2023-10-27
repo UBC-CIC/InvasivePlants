@@ -2,7 +2,8 @@
     {
         "regionCode": "string",
         "regionName": "string",
-        "demographic": "?string",
+        "geoCoord": "?string",
+        "country": "?string",
         "invasiveSpeciesList": ["speciesDataStructure"]
     }
 ]

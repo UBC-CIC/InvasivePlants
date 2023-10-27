@@ -1,33 +1,16 @@
-// Table with the following records
-{
-    "commonName": "string",
-    "scientificName": "string",
-    "links": ["?string"],
-    "speciesInfo": [
-        {
-            "header": "string",
-            "description": "string"
-        }
-    ],
-    "alternatives": ["string of key"]
-}
-
-// Another table with the following records
-{
-
-    "alternatives": [
-        {
-            "commonName": "string",
-            "scientificName": "string",
-            "links": ["?string"],
-            "info": [
-                {
-                    "header": "?string",
-                    "description": "?string"
-                }
-            ],
-            "citation": "?string"
-        }
-    ],
-    "citation": ["?string"]
-}
+[
+    {
+        "commonName": "string",
+        "scientificName": "string",
+        "links": ["?string"],
+        "speciesDescription": "?string",
+        "alternativesSpecies": ["string of key"]
+    },
+    {
+        "commonName": "string",
+        "scientificName": "string",
+        "links": ["?string"],
+        "speciesDescription": "?string",
+        "citation": "?string"
+    }
+]
