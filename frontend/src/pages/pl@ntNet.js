@@ -10,7 +10,7 @@ import { mapInvasiveToAlternativeBC, mapInvasiveToAlternativeON } from '../funct
 
 function PlantNet() {
     const [selectedLanguage, setSelectedLanguage] = useState('en');
-    const [selectedLocation, setSelectedLocation] = useState('ON');
+    const [selectedLocation, setSelectedLocation] = useState('BC');
     const [selectedFile, setSelectedFile] = useState(null);
     const [modelResult, setModelResult] = useState(undefined);
     const [modelObjResult, setModelResultObj] = useState([]);

@@ -1,31 +1,45 @@
 import * as cheerio from "cheerio";
 import axios from "axios";
-// import { getDocument } from "pdfjs-dist";
-// import "pdfjs-dist/build/pdf.worker.entry";
-
 
 const BC_ALTERNATIVE_PLANTS_URL = "https://bcinvasives.ca/play-your-part/plantwise/grow-me-instead/";
-// const ON_ALTERNATIVE_PLANTS_URL = "https://www.ontarioinvasiveplants.ca/wp-content/uploads/2020/04/Southern-Grow-Me-Instead-1.pdf";
 
-// maps invasive plant to a list of non-invasive alternative plants (all common name)
+// maps invasive plant to a list of non-invasive alternative plants (scientific name)
 const mapInvasiveToAlternativeBC = async () => {
     let alternative_plants_BC = {};
     try {
         const response = await axios.get(BC_ALTERNATIVE_PLANTS_URL);
         const $ = cheerio.load(response.data);
 
-        $('h3.gmi-guide-invasive-title.font-lg.tt-none.has-orange-color').each((i, ele) => {
-            const invasivePlantName = $(ele).text().replace("Invasive Species:", "").trim().toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s/g, '_');
-            // common name
-            const alternatives = $(ele)
-                .nextUntil('h3', 'ul.gmi-guide-alternatives-list')
-                .find('li')
-                .map((j, listItem) => $(listItem).text().trim())
-                .get();
-            alternative_plants_BC[invasivePlantName] = alternatives;
-        });
+        const promises = $('h3.gmi-guide-invasive-title.font-lg.tt-none.has-orange-color').map(async (i, ele) => {
+            try {
+                const link = $(ele).children('a').attr('href');
+                const linkedResponse = await axios.get(link);
+                const linkedData = cheerio.load(linkedResponse.data);
+                // gets the scientific name of invasive plant
+                let invasivePlantName = linkedData('.invasive-species.italic').text();
+                invasivePlantName = invasivePlantName.toLowerCase().replace(/\s+/g, '_').trim();
 
-        console.log("BC alternative plants: ", alternative_plants_BC);
+                // gets the scientific name of alternative plants
+                const alternativesPromises = $(ele)
+                    .nextUntil('h3', 'ul.gmi-guide-alternatives-list')
+                    .find('li')
+                    .map(async (j, listItem) => {
+                        const alternativeLink = $(listItem).children('a').attr('href');
+                        const alternativeLinkedResponse = await axios.get(alternativeLink);
+                        const alternativeLinkedData = cheerio.load(alternativeLinkedResponse.data);
+                        let alternativePlantName = alternativeLinkedData('.gmi-species.italic').text();
+                        alternativePlantName = alternativePlantName.toLowerCase().replace(/\s+/g, '_').trim();
+                        return alternativePlantName;
+                    }).get();
+
+                const alternatives = await Promise.all(alternativesPromises);
+                alternative_plants_BC[invasivePlantName] = alternatives;
+            } catch (error) {
+                console.error('Error fetching linked page:', error);
+            }
+        }).get();
+
+        await Promise.all(promises);
         return alternative_plants_BC;
     } catch (err) {
         console.error("Error:", err);
@@ -33,34 +47,6 @@ const mapInvasiveToAlternativeBC = async () => {
     }
 };
 
-// extract text from the Ontario PDF
-// const getTextFromPDF = async (url) => {
-//     const unwantedWords = ['UNWANTED', 'INVASIVE', 'ALTERNATIVE', 'PROHIBITED'];
-//     const loadingTask = getDocument(url);
-//     const pdf = await loadingTask.promise;
-//     const maxPages = pdf.numPages;
-//     console.log("maxPages: ", maxPages);
-//     let textContent = '';
-
-//     for (let pageNum = 5; pageNum <= 27; pageNum++) {
-//         const page = await pdf.getPage(pageNum);
-//         const pageText = await page.getTextContent();
-//         pageText.items.forEach((item, index) => {
-//             const text = item.str;
-//             const isAlphaCapsWithHyphenOrSpace = /^[A-Z]+(?:[ -][A-Z]+)*$/u.test(text);
-//             const isUnwantedWord = unwantedWords.some((word) => text.includes(word));
-
-//             if (isAlphaCapsWithHyphenOrSpace && !isUnwantedWord && index > 0) {
-//                 textContent += '\n' + text;
-//             }
-//             // else {
-//             //     textContent += text + ' ';
-//             // }
-//         });
-//     }
-
-//     return textContent;
-// };
 
 // maps Ontario invasive plant to a list of non-invasive alternative plants (all common name)
 const mapInvasiveToAlternativeON = async () => {
@@ -109,7 +95,7 @@ const mapInvasiveToAlternativeON = async () => {
 };
 
 
-const getAlternativePlants = async (commonName, userLocation) => {
+const getAlternativePlants = async (commonName, scientificName, userLocation) => {
     let map = {};
 
     if (userLocation === "BC") {
@@ -118,17 +104,17 @@ const getAlternativePlants = async (commonName, userLocation) => {
         map = await mapInvasiveToAlternativeON()
     }
 
-    console.log("map: ", map)
-    for (let name of commonName) {
-        name = name.replace("-", "_").trim().toLowerCase().replace(/[^\w\s]/gi, '');
-        console.log("name: ", name)
-        if (name in map) {
-            console.log("in map!")
-            return map[name]
-        }
-    }
+    console.log(userLocation, "map: ", map);
 
-    console.log("count not find invasive species and its alternatives")
+    scientificName = scientificName.toLowerCase().replace(/\s+/g, '_').trim();
+
+    if (map.hasOwnProperty(scientificName)) {
+        console.log(scientificName, "in map!", userLocation)
+        return map[scientificName]
+    } else {
+        console.log("count not find invasive species and its alternatives")
+        return null;
+    }
 }
 
 export { mapInvasiveToAlternativeBC, mapInvasiveToAlternativeON, getAlternativePlants }
