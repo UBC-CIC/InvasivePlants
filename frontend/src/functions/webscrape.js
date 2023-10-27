@@ -24,43 +24,44 @@ const webscrapeBCInvasive = async () => {
   // Go to each subpage and webscrapee the about section and how to identify section
   // .invansive-about
   // .invasive-identify > .font-base
-  Promise.all(
-    speciesList.BCInvasiveSpeciesPlants.map(async (species, index) => {
-      if (species.links.length > 0)
-        axios
-          .get(species.links[0])
-          .then(async (response) => {
-            const $ = await cheerio.load(response.data);
+  /** We might not need this **/
+//   Promise.all(
+//     speciesList.BCInvasiveSpeciesPlants.map(async (species, index) => {
+//       if (species.links.length > 0)
+//         axios
+//           .get(species.links[0])
+//           .then(async (response) => {
+//             const $ = await cheerio.load(response.data);
 
-            // Get About section of the species
-            let aboutSection = "";
-            await $("div.invansive-about >p").each((i, ele) => {
-              aboutSection += $(ele).text() + "\n";
-            });
+//             // Get About section of the species
+//             let aboutSection = "";
+//             await $("div.invansive-about >p").each((i, ele) => {
+//               aboutSection += $(ele).text() + "\n";
+//             });
 
-            // Get How to identify section of the species
-            let howToIdentifySection = "";
-            await $("div.invasive-identify div.font-base > p").each(
-              (i, ele) => {
-                howToIdentifySection += $(ele).text() + "\n";
-              }
-            );
+//             // Get How to identify section of the species
+//             let howToIdentifySection = "";
+//             await $("div.invasive-identify div.font-base > p").each(
+//               (i, ele) => {
+//                 howToIdentifySection += $(ele).text() + "\n";
+//               }
+//             );
 
-            speciesList.BCInvasiveSpeciesPlants[index].info.push({
-              header: "About",
-              description: aboutSection.trim(),
-            });
+//             speciesList.BCInvasiveSpeciesPlants[index].info.push({
+//               header: "About",
+//               description: aboutSection.trim(),
+//             });
 
-            speciesList.BCInvasiveSpeciesPlants[index].info.push({
-              header: "How To Identify",
-              description: howToIdentifySection.trim(),
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-    })
-  );
+//             speciesList.BCInvasiveSpeciesPlants[index].info.push({
+//               header: "How To Identify",
+//               description: howToIdentifySection.trim(),
+//             });
+//           })
+//           .catch((err) => {
+//             console.log(err);
+//           });
+//     })
+//   );
 
 	return speciesList;
 };
@@ -105,21 +106,11 @@ const getListOfSpeciesFromBCInvasive = async (url) => {
 
               if (paredJSON.animal_type === "") {
                 output.BCInvasiveSpeciesPlants.push({
-                  commonName: paredJSON.name.trim(),
-                  scientificName: paredJSON.species.trim(),
-                  links: [paredJSON.link.trim()],
-                  info: [
-                    {
-                      header: "Summary",
-                      description: paredJSON.summary.trim(),
-                    },
-                    {
-                      header: "Habitat",
-                      description: paredJSON.habitat.trim(),
-                    },
-                  ],
-                  alternatives: [],
-                  citation: ["The provided information is obtained from ISCBC"],
+				  common_name: paredJSON.name.trim(),
+                  scientific_name: paredJSON.species.trim(),
+                  resource_links: [paredJSON.link.trim()],
+                  species_description: paredJSON.summary.trim(),
+                  alternative_species: [],
                 });
               }
             } catch (error) {
@@ -332,7 +323,7 @@ const webscrapeONInvasive = async () => {
 				const keywords = ["Background", "Impact of", "Identify", "What You Can Do"];
 
 				// Load data into speciesList
-				speciesList.ONInvasiveSpeciesPlants[index].scientificName = scienceName.trim();
+				speciesList.ONInvasiveSpeciesPlants[index].scientific_name = scienceName.trim();
 			} catch (err) {
 				console.log(err);
 			}
@@ -360,14 +351,11 @@ const getListOfSpeciesFromONInvasive = async (output, url) => {
 			const link = $(child).children("a").attr("href");
 
         output.ONInvasiveSpeciesPlants.push({
-          commonName: commonName.trim(),
-          scientificName: undefined,
-          links: [link.trim()],
-          info: [],
-          alternatives: [],
-          citation: [
-            "The provided information is obtained from the Ontario Invading Species Awareness Program.",
-          ],
+			common_name: commonName.trim(),
+			scientific_name: undefined,
+          	resource_links: [link.trim()],
+			species_description: undefined,
+			alternative_species: []
         });
       });
     })
