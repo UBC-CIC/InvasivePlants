@@ -60,7 +60,7 @@ const isInvasive = async (commonName, scientificName, location) => {
         return invasiveListBC.includes(scientificName);
     } else if (location === "ON") {
         let invasiveListON = await getInvasiveSpeciesScientificNamesON();
-        // console.log("ON invasive list: ", invasiveListON);
+        console.log("ON invasive list: ", invasiveListON);
         let map = mapInvasiveToAlternativeON();
         for (let name of commonName) {
             const transformedName = name.replace("-", "_").trim().toLowerCase().replace(/[^\w\s]/gi, '');
