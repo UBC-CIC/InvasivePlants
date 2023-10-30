@@ -306,14 +306,12 @@ const webscrapeONInvasive = async () => {
 	await getListOfSpeciesFromONInvasive(speciesList, ON_INVASIVE_URL_AQUATIC_PLANTS);
 	await getListOfSpeciesFromONInvasive(speciesList, ON_INVASIVE_URL_TERRESTRIAL_PLANTS);
 
-	console.log("speciesList: ", speciesList);
 	// Go to each subpage and webscrape the about section and how to identify section
 	// .invasive-about
 	// .invasive-identify > .font-base
 	await Promise.all(speciesList.ONInvasiveSpeciesPlants.map(async (specie, index) => {
 		if(specie.resource_links.length > 0) {
 			try {
-				console.log(index);
 				const response = await axios.get(specie.resource_links[0]);
 				const $ = await cheerio.load(response.data);
 
@@ -348,7 +346,6 @@ const webscrapeONInvasive = async () => {
 		}
 	}));
 
-	console.log("speciesList:",speciesList);
 	return speciesList;
 };
 
