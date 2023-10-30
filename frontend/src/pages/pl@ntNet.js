@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import { webscrapeBCInvasive, webscrapeONInvasive, webscrapeWikipedia } from '../functions/webscrape';
-import { webscrapeInvasiveSpecies, flagedSpeciesToPlanetAPI, testDataPipeline } from '../functions/pipeline';
+import { webscrapeInvasiveSpecies, flagedSpeciesToPlanetAPI, fullIntegrationOfFlaggingSpecies } from '../functions/pipeline';
 
 // const FormData = require('form-data');
 import { speciesDataToJSON } from '../functions/speciesToJSON';
@@ -100,9 +100,9 @@ function PlantNet() {
     useEffect(() => {
         // mapInvasiveToAlternativeBC();
         // mapInvasiveToAlternativeON();
-        
-        testDataPipeline();
 
+        // fullIntegrationOfFlaggingSpecies();
+        // draftFunction();
 
         const fetchData = async () => {
             try {
