@@ -6,11 +6,11 @@ import { webscrapeInvasiveSpecies, flagedSpeciesToPlanetAPI } from '../functions
 
 // const FormData = require('form-data');
 import { speciesDataToJSON } from '../functions/speciesToJSON';
-import { mapInvasiveToAlternativeBC, mapInvasiveToAlternativeON } from '../functions/alternativePlants';
+import { getONPlants, mapInvasiveToAlternativeBC, mapInvasiveToAlternativeON } from '../functions/alternativePlants';
 
 function PlantNet() {
     const [selectedLanguage, setSelectedLanguage] = useState('en');
-    const [selectedLocation, setSelectedLocation] = useState('BC');
+    const [selectedLocation, setSelectedLocation] = useState('ON');
     const [selectedFile, setSelectedFile] = useState(null);
     const [modelResult, setModelResult] = useState(undefined);
     const [modelObjResult, setModelResultObj] = useState([]);
@@ -98,8 +98,6 @@ function PlantNet() {
 
 
     useEffect(() => {
-        // mapInvasiveToAlternativeBC();
-        // mapInvasiveToAlternativeON();
         const fetchData = async () => {
             try {
                 if (!isFileSaved && modelObjResult && modelObjResult.results) {
