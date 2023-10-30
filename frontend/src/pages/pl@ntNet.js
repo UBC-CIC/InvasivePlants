@@ -98,9 +98,7 @@ function PlantNet() {
 
 
     useEffect(() => {
-        
         testDataPipeline();
-
 
         const fetchData = async () => {
             try {
