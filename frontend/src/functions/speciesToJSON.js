@@ -4,7 +4,7 @@ import { getAlternativePlants } from "./alternativePlants.js";
 
 
 const speciesDataToJSON = async (commonName, scientificName, speciesScore, userLocation) => {
-    const isInvasiveRes = await isInvasive(commonName, scientificName, userLocation);
+    const isInvasiveRes = await isInvasive(scientificName, userLocation);
     let alternative_plants = null;
 
     if (isInvasiveRes) {

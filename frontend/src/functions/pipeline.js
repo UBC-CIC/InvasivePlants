@@ -38,7 +38,18 @@ const getInvasiveSpeciesScientificNamesBC = async () => {
 // returns list of scientific names of invasive ON species
 const getInvasiveSpeciesScientificNamesON = async () => {
     let region = await webscrapeInvasiveSpecies();
-    return await getInvasiveSpeciesScientificNames(region[1]);
+    let res = await getInvasiveSpeciesScientificNames(region[1]);
+    let moreONInvasive = await mapInvasiveToAlternativeON();
+
+    const moreONKeys = Object.keys(moreONInvasive);
+
+    for (const key of moreONKeys) {
+        if (!res.includes(key)) {
+            res.push(key);
+        }
+    }
+
+    return res;
 };
 
 // helper function to get scientific names of invasive species
@@ -46,8 +57,9 @@ const getInvasiveSpeciesScientificNames = async (region) => {
     const scientific_names = [];
 
     for (const species of region.invasiveSpeciesList) {
-        if (species && species.scientific_name) {
-            scientific_names.push(species.scientific_name);
+        if (species && species.scientificName) {
+            const formattedName = species.scientificName.toLowerCase().replace(/ /g, '_');
+            scientific_names.push(formattedName);
         } else {
             console.log("Scientific name not found for:", species);
         }
@@ -56,25 +68,17 @@ const getInvasiveSpeciesScientificNames = async (region) => {
 };
 
 // checks if species is invasive given location
-const isInvasive = async (commonName, scientificName, location) => {
+const isInvasive = async (scientificName, location) => {
+    scientificName = scientificName.toLowerCase().replace(/ /g, '_');
+    console.log("isInvasive: ", scientificName);
+
     if (location === "BC") {
         let invasiveListBC = await getInvasiveSpeciesScientificNamesBC();
+        console.log("BC invasive list: ", invasiveListBC);
         return invasiveListBC.includes(scientificName);
     } else if (location === "ON") {
         let invasiveListON = await getInvasiveSpeciesScientificNamesON();
         console.log("ON invasive list: ", invasiveListON);
-        let map = mapInvasiveToAlternativeON();
-        for (let name of commonName) {
-            const transformedName = name.replace("-", "_").trim().toLowerCase().replace(/[^\w\s]/gi, '');
-            const nameParts = transformedName.split('_');
-
-            for (let part of nameParts) {
-                if (part in map) {
-                    console.log("Match found in map!", part);
-                    return true;
-                }
-            }
-        }
         return invasiveListON.includes(scientificName);
     }
 };

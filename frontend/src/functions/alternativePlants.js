@@ -1,7 +1,10 @@
 import * as cheerio from "cheerio";
 import axios from "axios";
+// import { getDocument } from "pdfjs-dist";
+// import "pdfjs-dist/build/pdf.worker.entry";
 
 const BC_ALTERNATIVE_PLANTS_URL = "https://bcinvasives.ca/play-your-part/plantwise/grow-me-instead/";
+// const ON_ALTERNATIVE_PLANTS_URL = "https://www.ontarioinvasiveplants.ca/wp-content/uploads/2020/04/Southern-Grow-Me-Instead-1.pdf";
 
 // maps invasive plant to a list of non-invasive alternative plants (scientific name)
 const mapInvasiveToAlternativeBC = async () => {
@@ -51,49 +54,88 @@ const mapInvasiveToAlternativeBC = async () => {
 // maps Ontario invasive plant to a list of non-invasive alternative plants (all common name)
 const mapInvasiveToAlternativeON = async () => {
     let alternative_plants_ON = {};
-    alternative_plants_ON["periwinkle"] = ["Wild Geranium"];
-    alternative_plants_ON["lily-of-the-valley"] = ["Starry Solomon’s Seal"];
-    alternative_plants_ON["goutweed"] = ["Large-leaved Aster"];
-    alternative_plants_ON["yellow_archangel"] = ["Zigzag Goldenrod"];
-    alternative_plants_ON["wintercreeper"] = ["Foamflower", "Running Euonymus", "Virginia Waterleaf"];
-    alternative_plants_ON["english_ivy"] = ["Wild Strawberry"];
-    alternative_plants_ON["bugleweed"] = ["Wild Ginger"];
-    alternative_plants_ON["creeping_jenny"] = ["Canada Anemone", "Bloodroot", "Mayapple"];
-    alternative_plants_ON["daylily"] = ["Michigan Lily", "Pale Purple Coneflower", "Black-eyed Susan"];
-    alternative_plants_ON["miscanthus"] = ["Big Bluestem", "Little Bluestem", "Bottlebrush Grass",
-        "Switchgrass", "Indian Grass", "Pennsylvania Sedge", "Ivory Sedge"];
-    alternative_plants_ON["norway_maple"] = ["Sugar Maple", "Silver Maple", "Freeman Maple"];
-    alternative_plants_ON["amur_maple"] = ["Ruby Lace Honeylocust"];
-    alternative_plants_ON["winged_euonymus"] = ["Downy Serviceberry", "Smooth Serviceberry",
-        "Canada Serviceberry", "Northern Spicebush", "Fragrant Sumac"];
-    alternative_plants_ON["russian_olive"] = ["Witch Hazel", "Silverberry", "Red-osier Dogwood"];
-    alternative_plants_ON["autumn_olive"] = ["Witch Hazel", "Silverberry", "Red-osier Dogwood"];
-    alternative_plants_ON["japanese_barberry"] = ["Native Viburnums"];
-    alternative_plants_ON["tartarian_honeysuckle"] = ["Native Bush Honeysuckle"];
-    alternative_plants_ON["tartarian_honeysuckle"] = ["Native Bush Honeysuckle"];
-    alternative_plants_ON["amur_honeysuckle"] = ["Native Bush Honeysuckle"];
-    alternative_plants_ON["morrow_honeysuckle"] = ["Native Bush Honeysuckle"];
-    alternative_plants_ON["bells_honeysuckle"] = ["Native Bush Honeysuckle"];
-    alternative_plants_ON["european_fly_honeysuckle"] = ["Native Bush Honeysuckle"];
-    alternative_plants_ON["multiflora_rose"] = ["Wild Rose", "Wild Black Currant", "Buttonbush"];
-    alternative_plants_ON["sea_buckthorn"] = ["Nannyberry", "Chokeberry", "Bayberry", "Chokecherry",
-        "Common Elderberry", "Ninebark", "Alternate-Leaf Dogwood"];
-    alternative_plants_ON["japanese_honeysuckle_vine"] = ["Virginia Creeper", "Climbing Hydrangea", "Goldflame Honeysuckle"];
-    alternative_plants_ON["oriental_bittersweet"] = ["Jackman Clematis", "Dutchman’s Pipe", "Virgin’s Bower"];
-    alternative_plants_ON["yellow_iris"] = ["Cardinal Flower", "Northern Blueflag Iris", "Sweetflag Grass"];
-    alternative_plants_ON["flowering_rush"] = ["Blue Vervain", "White Turtlehead", "Joe-pye Weed", "Swamp Rose-mallow",
-        "Swamp Milkweed", "Boneset", "Marsh Marigold"];
-    alternative_plants_ON["water_lettuce"] = ["Pickerelweed"];
-    alternative_plants_ON["water_soldier"] = ["Common Mare’s Tail"];
-    alternative_plants_ON["european_frog-bit"] = ["Broad-leaved Arrowhead"];
-    alternative_plants_ON["yellow_floating_heart"] = ["Fragrant Water Lily"];
-    alternative_plants_ON["fanwort"] = ["Coontail"];
-    alternative_plants_ON["hydrilla"] = ["Tape grass"];
+    alternative_plants_ON["vinca_minor"] = ["geranium_maculatum"];
+    alternative_plants_ON["convallaria_majalis"] = ["maianthemum_stellatum"];
+    alternative_plants_ON["aegopodium_podagraria"] = ["eurybia_macrophylla"];
+    alternative_plants_ON["lamiastrum_galeobdolon"] = ["solidago_flexicaulis"];
+    alternative_plants_ON["euonymus_fortunei"] = ["tiarella_cordifolia", "euonymus_obovatus", "hydrophyllum_virginianum"];
+    alternative_plants_ON["hedera_helix"] = ["fragaria_virginiana"];
+    alternative_plants_ON["ajuga_reptans"] = ["asarum_canadense"];
+    alternative_plants_ON["lysimachia_nummularia"] = ["anemone_canadensis", "sanguinaria_canadensis", "podophyllum_peltatum"];
+    alternative_plants_ON["hemerocallis_fulva"] = ["lilium_michiganense", "echinacea_pallida", "rudbeckia_hirta"];
+    alternative_plants_ON["miscanthus_sinensis"] = ["andropogon_gerardii", "schizachyrium_scoparium", "elymus_hystrix",
+        "panicum_virgatum", "sorghastrum_nutans", "carex_pensylvanica", "carex_eburnea"];
+    alternative_plants_ON["m._sacchariflorus"] = ["andropogon_gerardii", "schizachyrium_scoparium", "elymus_hystrix",
+        "panicum_virgatum", "sorghastrum_nutans", "carex_pensylvanica", "carex_eburnea"];
+    alternative_plants_ON["acer_platanoides"] = ["acer_saccharum", "a._saccharinum", "a.x_freemanii"];
+    alternative_plants_ON["acer_ginnala"] = ["gleditsia_triacanthos_var._inermis"];
+    alternative_plants_ON["euonymus_alatus"] = ["amelanchier_arborea", "a._laevis", "a. canadensis",
+        "lindera_benzoin", "rhus_aromatica"];
+    alternative_plants_ON["elaeagnus_angustifolia"] = ["hamamelis_virginiana", "elaeagnus_commutata", "cornus_sericea"];
+    alternative_plants_ON["e._umbellata"] = ["hamamelis_virginiana", "elaeagnus_commutata", "cornus_sericea"];
+    alternative_plants_ON["berberis_thunbergii"] = ["viburnum_lentago", "v._lantanoides"];
+    alternative_plants_ON["lonicera_tatarica"] = ["diervilla_lonicera"];
+    alternative_plants_ON["l._maackii"] = ["diervilla_lonicera"];
+    alternative_plants_ON["l._morrowii"] = ["diervilla_lonicera"];
+    alternative_plants_ON["l_x_bella"] = ["diervilla_lonicera"];
+    alternative_plants_ON["l._xylosteum"] = ["diervilla_lonicera"];
+    alternative_plants_ON["rosa_multiflora"] = ["rosa_carolina", "r._virginiana", "ribes_americanum", "cephalanthus_occidentalis"];
+    alternative_plants_ON["hippophae_rhamnoides"] = ["hippophae_rhamnoides", "aronia_melanocarpa", "morella_pensylvanica", "prunus_virginiana",
+        "Common sambucus_canadensis", "physocarpus_opulifolius", "cornus_alternifolia"];
+    alternative_plants_ON["lonicera_japonica"] = ["parthenocissus_quinquefolia", "hydrangea_petiolaris", "lonicera_x_heckrotti"];
+    alternative_plants_ON["celastrus_orbiculatus"] = ["clematis_x_jackmanii", "aristolochia_macrophylla", "clematis_virginiana"];
+    alternative_plants_ON["iris_pseudacorus"] = ["lobelia_cardinalis", "iris_versicolor", "acorus_calamus"];
+    alternative_plants_ON["butomus_umbellatus"] = ["verbena_hastata", "chelone_glabra", "eupatorium_maculatum", "hibiscus_moscheutos",
+        "asclepias_incarnata", "eupatorium_perfoliatum", "caltha_palustris"];
+    alternative_plants_ON["pistia_stratiotes"] = ["pontederia_cordata"];
+    alternative_plants_ON["stratiotes_aloides"] = ["hippuris_vulgaris"];
+    alternative_plants_ON["hydrocharis_morsus-ranae"] = ["sagittaria_latifolia"];
+    alternative_plants_ON["nymphoides_peltata"] = ["nymphaea_odorata"];
+    alternative_plants_ON["cabomba_caroliniana"] = ["ceratophyllum_demersum"];
+    alternative_plants_ON["hydrilla_verticillata"] = ["vallisneria_americana"];
 
     console.log("ON alternative plants: ", alternative_plants_ON);
     return alternative_plants_ON;
 };
 
+// extract scientific names from the Ontario PDF
+// const getONPlants = async () => {
+//     const loadingTask = getDocument(ON_ALTERNATIVE_PLANTS_URL);
+//     const pdf = await loadingTask.promise;
+//     const maxPages = pdf.numPages;
+//     console.log("maxPages: ", maxPages);
+//     let textContent = '';
+
+//     for (let pageNum = 5; pageNum <= 27; pageNum++) {
+//         const page = await pdf.getPage(pageNum);
+//         const pageText = await page.getTextContent();
+//         pageText.items.forEach((item, index) => {
+//             const text = item.str;
+//             const matches = text.match(/\(([A-Z][^)]+)\)/);
+
+//             if (matches && matches[1]) {
+//                 const replacedText = matches[1].toLowerCase().replace(/ /g, '_');
+//                 textContent += '\n' + replacedText;
+//             }
+//         });
+//     }
+// for (let pageNum = 5; pageNum <= 27; pageNum++) {
+//     const page = await pdf.getPage(pageNum);
+//     const pageText = await page.getTextContent();
+//     pageText.items.forEach((item, index) => {
+//         const text = item.str;
+//         const isAlphaCapsWithHyphenOrSpace = /^[A-Z]+(?:[ -][A-Z]+)*$/u.test(text);
+//         const isUnwantedWord = unwantedWords.some((word) => text.includes(word));
+
+//         if (isAlphaCapsWithHyphenOrSpace && !isUnwantedWord && index > 0) {
+//             textContent += '\n' + text;
+//         }
+
+//     });
+// }
+//     console.log(textContent);
+//     return textContent;
+// };
 
 const getAlternativePlants = async (commonName, scientificName, userLocation) => {
     let map = {};
@@ -112,7 +154,7 @@ const getAlternativePlants = async (commonName, scientificName, userLocation) =>
         console.log(scientificName, "in map!", userLocation)
         return map[scientificName]
     } else {
-        console.log("count not find invasive species and its alternatives")
+        console.log("count not find", scientificName, "and its alternatives")
         return null;
     }
 }
