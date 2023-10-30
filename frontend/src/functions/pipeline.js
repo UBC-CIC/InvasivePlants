@@ -104,12 +104,15 @@ const flagedSpeciesToPlanetAPI = async (speciesList) => {
     const url = "https://my-api.plantnet.org/v2/species" + `?api-key=2b1006HUEA8IFmECZopWtUh73e`;                           /////////// HARD CODED!!!
     await axios.get(url)
         .then((response) => {
-            speciesList.map((species) => {
-                if(species.scientific_name){
-                    // Check based on scientific name and also common name
-                    // Common name notation: || response.data.find(s => s.commonNames.some(str => str.toLowerCase().includes(sci.toLowerCase())))
-                    if(!response.data.find(s => s.scientificNameWithoutAuthor.toLowerCase().includes(species.scientific_name.toLowerCase()))){
-                        speciesFlagged.push(species);
+            speciesList.map((species, index) => {
+                if(species.scientific_name.length > 0){
+                    console.log(index);
+                    // Check scientific name against Pl@ntNet API
+                    for(let i = 0; i < species.scientific_name.length; i++){
+                        if(!response.data.find(s => s.scientificNameWithoutAuthor.toLowerCase().includes(species.scientific_name[i].toLowerCase()))){
+                            speciesFlagged.push(species);
+                            break;
+                        }
                     }
                 } else {
                     speciesFlagged.push(species);
