@@ -12,7 +12,7 @@ import {
 import AddAlternativeSpecies from './addAlternativeSpecies';
 import AlternativeSpeciesSelector from './alternativeSpeciesSelector';
 
-export default function  SpeciesForm({setViewSpeciesForm}){
+export default function AddSpeciesForm({ setViewAddSpeciesForm }) {
     // UI transition state functions
     const [addAlternativePopUpOpen, setAddAlternativePopUpOpen] = useState(false);
 
@@ -53,7 +53,7 @@ export default function  SpeciesForm({setViewSpeciesForm}){
   };
 
   const handleCancel = () => {
-    setViewSpeciesForm(false);
+    setViewAddSpeciesForm(false);
     console.log('Cancel');
     setFormData({
       commonName: '',
