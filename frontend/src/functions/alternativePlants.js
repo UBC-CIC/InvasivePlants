@@ -1,10 +1,7 @@
 import * as cheerio from "cheerio";
 import axios from "axios";
-// import { getDocument } from "pdfjs-dist";
-// import "pdfjs-dist/build/pdf.worker.entry";
 
 const BC_ALTERNATIVE_PLANTS_URL = "https://bcinvasives.ca/play-your-part/plantwise/grow-me-instead/";
-// const ON_ALTERNATIVE_PLANTS_URL = "https://www.ontarioinvasiveplants.ca/wp-content/uploads/2020/04/Southern-Grow-Me-Instead-1.pdf";
 
 // maps invasive plant to a list of non-invasive alternative plants (scientific name)
 const mapInvasiveToAlternativeBC = async () => {
@@ -98,46 +95,7 @@ const mapInvasiveToAlternativeON = async () => {
     return alternative_plants_ON;
 };
 
-// extract scientific names from the Ontario PDF
-// const getONPlants = async () => {
-//     const loadingTask = getDocument(ON_ALTERNATIVE_PLANTS_URL);
-//     const pdf = await loadingTask.promise;
-//     const maxPages = pdf.numPages;
-//     console.log("maxPages: ", maxPages);
-//     let textContent = '';
-
-//     for (let pageNum = 5; pageNum <= 27; pageNum++) {
-//         const page = await pdf.getPage(pageNum);
-//         const pageText = await page.getTextContent();
-//         pageText.items.forEach((item, index) => {
-//             const text = item.str;
-//             const matches = text.match(/\(([A-Z][^)]+)\)/);
-
-//             if (matches && matches[1]) {
-//                 const replacedText = matches[1].toLowerCase().replace(/ /g, '_');
-//                 textContent += '\n' + replacedText;
-//             }
-//         });
-//     }
-// for (let pageNum = 5; pageNum <= 27; pageNum++) {
-//     const page = await pdf.getPage(pageNum);
-//     const pageText = await page.getTextContent();
-//     pageText.items.forEach((item, index) => {
-//         const text = item.str;
-//         const isAlphaCapsWithHyphenOrSpace = /^[A-Z]+(?:[ -][A-Z]+)*$/u.test(text);
-//         const isUnwantedWord = unwantedWords.some((word) => text.includes(word));
-
-//         if (isAlphaCapsWithHyphenOrSpace && !isUnwantedWord && index > 0) {
-//             textContent += '\n' + text;
-//         }
-
-//     });
-// }
-//     console.log(textContent);
-//     return textContent;
-// };
-
-const getAlternativePlants = async (commonName, scientificName, userLocation) => {
+const getAlternativePlants = async (scientificName, userLocation) => {
     let map = {};
 
     if (userLocation === "BC") {

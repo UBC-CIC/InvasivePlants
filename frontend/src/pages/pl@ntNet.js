@@ -1,12 +1,10 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
-import { webscrapeBCInvasive, webscrapeONInvasive, webscrapeWikipedia } from '../functions/webscrape';
 import { webscrapeInvasiveSpecies, flagedSpeciesToPlanetAPI, testDataPipeline } from '../functions/pipeline';
 
 // const FormData = require('form-data');
 import { speciesDataToJSON } from '../functions/speciesToJSON';
-import { getONPlants, mapInvasiveToAlternativeBC, mapInvasiveToAlternativeON } from '../functions/alternativePlants';
 
 function PlantNet() {
     const [selectedLanguage, setSelectedLanguage] = useState('en');
@@ -98,8 +96,7 @@ function PlantNet() {
 
 
     useEffect(() => {
-        testDataPipeline();
-
+        // testDataPipeline();
         const fetchData = async () => {
             try {
                 if (!isFileSaved && modelObjResult && modelObjResult.results) {
