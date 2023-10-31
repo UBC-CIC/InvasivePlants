@@ -2,9 +2,11 @@ import * as cheerio from "cheerio";
 import axios from "axios";
 // import { getDocument } from "pdfjs-dist";
 // import "pdfjs-dist/build/pdf.worker.entry";
+import {webscrapeWikipedia} from "./webscrapeWiki";
 
 const BC_ALTERNATIVE_PLANTS_URL = "https://bcinvasives.ca/play-your-part/plantwise/grow-me-instead/";
 // const ON_ALTERNATIVE_PLANTS_URL = "https://www.ontarioinvasiveplants.ca/wp-content/uploads/2020/04/Southern-Grow-Me-Instead-1.pdf";
+
 
 // maps invasive plant to a list of non-invasive alternative plants (scientific name)
 const mapInvasiveToAlternativeBC = async () => {
@@ -159,4 +161,72 @@ const getAlternativePlants = async (commonName, scientificName, userLocation) =>
     }
 }
 
-export { mapInvasiveToAlternativeBC, mapInvasiveToAlternativeON, getAlternativePlants }
+// Put to gether all alternative species for database population
+const getAlternativePlantsForDB = async (scientificName) => {
+    const alternativeRecord = {
+        scientific_name: [scientificName],
+        common_name: [],
+        resource_links: [],
+        image_links: [],
+        species_description: undefined
+    }
+
+    const MAX_NUMBER_IMAGE = 5;
+
+    // Call wikipedia function to webscrape description, images links
+    // Call GBIF api to get plant taxonomy mainly common name and full scientific name
+    const GBIF_API = "https://api.gbif.org/v1/";
+    const modSciName = scientificName.replace(/_/g, ' ').trim();
+
+    const getCommonName = async (unmodifySciName) => {
+        const commonName = [];
+        let fullSciName = undefined;
+
+        try {
+            const url = GBIF_API + `species/search?q=${modSciName}`;
+            const response = await axios.get(url);
+
+			if (response.data && response.data.results.length > 0){
+                // Order return by relevance
+                if(response.data.results[0].vernacularNames)
+                response.data.results[0].vernacularNames.forEach(element => {
+                    if(element.language === "eng")
+                        commonName.push(element.vernacularName)
+                });
+
+                // Update scientific name
+                const newSciName = response.data.results[0].canonicalName.toLowerCase().replace(/\s+/g, '_').trim();
+                if(unmodifySciName !== newSciName)
+                    fullSciName = newSciName;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+        return {commonName, fullSciName};
+    };
+
+    try {
+        const promiseData = await Promise.all([webscrapeWikipedia(modSciName), getCommonName(scientificName)]);
+
+        // Promise from wiki 
+        alternativeRecord.species_description = promiseData[0].speciesDescription ? promiseData[0].speciesDescription: promiseData[0].speciesOverview;
+        alternativeRecord.resource_links = promiseData[0].wikiUrl;
+        
+        for(let i = 0; i < Math.min(MAX_NUMBER_IMAGE, promiseData[0].speciesImages.length); i++){
+            alternativeRecord.image_links.push(promiseData[0].wikiUrl[i]);
+        }
+
+        // Promise from GBIF
+        alternativeRecord.common_name = promiseData[1].commonName;
+        if(promiseData[1].fullSciName)
+            alternativeRecord.scientific_name.push(promiseData[1].fullSciName);
+
+    } catch (error) {
+        console.log(error);
+    }
+
+    return alternativeRecord;
+}
+
+export { mapInvasiveToAlternativeBC, mapInvasiveToAlternativeON, getAlternativePlants, getAlternativePlantsForDB}

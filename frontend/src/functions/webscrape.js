@@ -108,7 +108,7 @@ const getListOfSpeciesFromBCInvasive = async (url) => {
 
               if (paredJSON.animal_type === "") {
 				// Fix scientific name if needed
-				const sciName = paredJSON.species.split('&').map(name => name.trim());
+				const sciName = paredJSON.species.split('&').map(name => name.toLowerCase().replace(/ /g, '_').trim());
 
                 output.BCInvasiveSpeciesPlants.push({
                   scientific_name: sciName,
@@ -318,7 +318,7 @@ const webscrapeONInvasive = async () => {
 				const scienceName = $("div.header-content span").text();
 
 				// Fix scientific name if needed
-				const sciName = scienceName.split('&').map(name => name.trim());
+				const sciName = scienceName.split('&').map(name => name.toLowerCase().replace(/ /g, '_').trim());
 
 				// Grab other sections				
 				const sectionList = $("div.et_pb_text_inner");

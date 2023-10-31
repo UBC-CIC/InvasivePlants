@@ -1,6 +1,6 @@
 import { webscrapeBCInvasive, webscrapeONInvasive } from "./webscrape";
 import axios from 'axios';
-import { mapInvasiveToAlternativeBC, mapInvasiveToAlternativeON } from "./alternativePlants"
+import { mapInvasiveToAlternativeBC, mapInvasiveToAlternativeON, getAlternativePlantsForDB } from "./alternativePlants"
 
 const webscrapeInvasiveSpecies = async () => {
     const region = [];
@@ -26,6 +26,7 @@ const webscrapeInvasiveSpecies = async () => {
         }
     });
 
+    // Map the alternative species in
     await mapInvasiveToAlternative(region);
 
     return region;
@@ -69,6 +70,21 @@ const getInvasiveSpeciesScientificNames = async (region) => {
     return scientific_names;
 };
 
+// helper function to get list of alternative species
+const getListOfAlternativeSpecies = (speciesDataXRegion)=>{
+    const listAlternativeSpecies = new Set();
+    speciesDataXRegion.forEach((region)=>{
+        region.invasive_species_list.forEach((species)=>{
+            if(species.alternative_species.length > 0) 
+                species.alternative_species.forEach(speciesItem => {
+                    listAlternativeSpecies.add(speciesItem);
+                });              
+        });
+    });
+
+    return Array.from(listAlternativeSpecies);
+}
+
 // checks if species is invasive given location
 const isInvasive = async (scientificName, location) => {
     scientificName = scientificName.toLowerCase().replace(/ /g, '_');
@@ -102,7 +118,7 @@ const flagedSpeciesToPlanetAPI = async (speciesList) => {
 
                     // Check scientific name against Pl@ntNet API
                     for(let i = 0; i < species.scientific_name.length; i++){
-                        if(!response.data.find(s => s.scientificNameWithoutAuthor.toLowerCase().includes(species.scientific_name[i].toLowerCase()))){
+                        if(!response.data.find(s => s.scientificNameWithoutAuthor.toLowerCase().includes(species.scientific_name[i].replace(/_/g, ' ').trim()))){
                             speciesFlagged.push(species);
                             break;
                         }
@@ -124,7 +140,6 @@ const flagedSpeciesToPlanetAPI = async (speciesList) => {
 const mapInvasiveToAlternative = async (speciesDataXRegion)=>{
     // Get list of alternative  speices
     const alternativeSpeciesList = await Promise.all([mapInvasiveToAlternativeBC(), mapInvasiveToAlternativeON()]);
-    console.log("alternativeSpeciesList: ", alternativeSpeciesList);
     speciesDataXRegion.forEach((region)=>{
         const alternativeSpeciesList_ = (region.region_code_name === "BC") ? alternativeSpeciesList[0] : alternativeSpeciesList[1];
         region.invasive_species_list.forEach((species)=>{
@@ -142,11 +157,9 @@ const mapInvasiveToAlternative = async (speciesDataXRegion)=>{
 }
 
 // Full integration of flagging species
-const fullIntegrationOfFlaggingSpecies = async ()=>{
+const fullIntegrationOfFlaggingSpecies = async (speciesData)=>{
     const flaggedSpecies = [];
-    const speciesData = await webscrapeInvasiveSpecies();
-
-    console.log("Species Data:", speciesData);
+    // const speciesData = await webscrapeInvasiveSpecies();
 
     const flaggedRegions = [];
     speciesData.forEach((region)=>{
@@ -163,10 +176,66 @@ const fullIntegrationOfFlaggingSpecies = async ()=>{
     return flaggedSpecies;
 }
 
+// Return an array of records for alternative species
+const getAllAlternativePlantsForDB = async (speciesDataXRegion) => {
+    try {
+        const listAlternativeSpecies = await getListOfAlternativeSpecies(speciesDataXRegion);
+        const requestCalls = [];
+
+        listAlternativeSpecies.forEach(async (alternativeSpecies) => {
+            requestCalls.push(getAlternativePlantsForDB(alternativeSpecies));
+        });
+
+        const listAlternativeSpeciesForDB = await Promise.all(requestCalls);
+
+        return listAlternativeSpeciesForDB;
+    } catch (error) {
+        console.log(error);
+    }
+
+    return [];
+}
+
+const dataPipelineForDB = async () => {
+    const regions_tb = [];
+    const invasive_species_tb = [];
+    const alternative_species_tb = [];
+
+    // Get all data across region
+    const speciesDataXRegion = await webscrapeInvasiveSpecies();
+    const flaggedSpecies = await fullIntegrationOfFlaggingSpecies(speciesDataXRegion);
+
+    // TODO 
+    // The flagged species should not be added, they need to be fixed first.
+    
+    speciesDataXRegion.forEach((region) => {
+        const scienceName = region.invasive_species_list.map((species)=> species.scientific_name[0]);
+
+        regions_tb.push({
+            region_code_name: region.region_code_name,
+            region_fullname: region.region_fullname,
+            country_fullname: region.country_fullname,
+            geographic_coordinate: region.geographic_coordinate,
+            invasive_species_list: scienceName
+        });
+
+        invasive_species_tb.push(...region.invasive_species_list);
+    });
+
+    // Get all alternative species
+    const listAlternativeSpeciesForDB = await getAllAlternativePlantsForDB(speciesDataXRegion);
+    alternative_species_tb.push(...listAlternativeSpeciesForDB);
+
+    console.log("regions_tb: ", regions_tb);
+    console.log("invasive_species_tb: ", invasive_species_tb);
+    console.log("alternative_species_tb: ", alternative_species_tb);
+}
+
 export {
     webscrapeInvasiveSpecies, flagedSpeciesToPlanetAPI,
     getInvasiveSpeciesScientificNamesBC,
     getInvasiveSpeciesScientificNamesON,
     isInvasive,
-    fullIntegrationOfFlaggingSpecies
+    fullIntegrationOfFlaggingSpecies,
+    dataPipelineForDB
 };
