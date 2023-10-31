@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import { webscrapeBCInvasive, webscrapeONInvasive, webscrapeWikipedia } from '../functions/webscrape';
-import { webscrapeInvasiveSpecies, flagedSpeciesToPlanetAPI, fullIntegrationOfFlaggingSpecies } from '../functions/pipeline';
+import { webscrapeInvasiveSpecies, flagedSpeciesToPlanetAPI, fullIntegrationOfFlaggingSpecies, dataPipelineForDB } from '../functions/pipeline';
 
 // const FormData = require('form-data');
 import { speciesDataToJSON } from '../functions/speciesToJSON';
@@ -102,6 +102,11 @@ function PlantNet() {
 
         // fullIntegrationOfFlaggingSpecies();
         // draftFunction();
+
+        // getAlternativePlantsForDB("clematis_x_jackmanii");
+
+        // dataPipelineForDB();
+
 
         const fetchData = async () => {
             try {
