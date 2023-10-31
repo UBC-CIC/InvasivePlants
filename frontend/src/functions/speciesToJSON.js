@@ -8,17 +8,33 @@ const speciesDataToJSON = async (commonName, scientificName, speciesScore, userL
     let alternative_plants = null;
 
     if (isInvasiveRes) {
-        alternative_plants = await getAlternativePlants(commonName, scientificName, userLocation);
+        alternative_plants = await getAlternativePlants(scientificName, userLocation);
     }
 
-    const speciesInfo = {
-        commonName: commonName,
-        scientificName: scientificName,
-        speciesScore: speciesScore,
-        isInvasive: isInvasiveRes,
-        wikiInfo: await webscrapeWikipedia(scientificName),
-        alternative_plants: alternative_plants
-    };
+    scientificName = scientificName.toLowerCase().replace(/\s+/g, '_').trim();
+    let speciesInfo = {}
+
+    // webscrape wiki if non invasive
+    if (!isInvasiveRes) {
+        speciesInfo = {
+            commonName: commonName,
+            scientificName: scientificName,
+            speciesScore: speciesScore,
+            isInvasive: isInvasiveRes,
+            wikiInfo: await webscrapeWikipedia(scientificName),
+            alternative_plants: alternative_plants
+        };
+    } else {
+        // TODO: get from database if invasive
+        speciesInfo = {
+            commonName: commonName,
+            scientificName: scientificName,
+            speciesScore: speciesScore,
+            isInvasive: isInvasiveRes,
+            wikiInfo: await webscrapeWikipedia(scientificName),
+            alternative_plants: alternative_plants
+        };
+    }
 
     return speciesInfo;
 };

@@ -6,7 +6,6 @@ import { webscrapeInvasiveSpecies, flagedSpeciesToPlanetAPI, fullIntegrationOfFl
 
 // const FormData = require('form-data');
 import { speciesDataToJSON } from '../functions/speciesToJSON';
-import { getONPlants, mapInvasiveToAlternativeBC, mapInvasiveToAlternativeON, getAlternativePlantsForDB } from '../functions/alternativePlants';
 
 function PlantNet() {
     const [selectedLanguage, setSelectedLanguage] = useState('en');
