@@ -104,10 +104,14 @@ const getListOfSpeciesFromBCInvasive = async (url) => {
 							// Add link to species
 							paredJSON.link = speciesLinks[paredJSON.species];
 
+							
+
               if (paredJSON.animal_type === "") {
+				// Fix scientific name if needed
+				const sciName = paredJSON.species.split('&').map(name => name.trim());
+
                 output.BCInvasiveSpeciesPlants.push({
-				  common_name: paredJSON.name.trim(),
-                  scientific_name: paredJSON.species.trim(),
+                  scientific_name: sciName,
                   resource_links: [paredJSON.link.trim()],
                   species_description: paredJSON.summary.trim(),
                   alternative_species: [],
@@ -296,39 +300,52 @@ const getListOfSpeciesFromONInvasive_ONInvasivePlantCouncil = async (url) => {
  *  - Link to PDFs ...
  */
 const webscrapeONInvasive = async () => {
-  const speciesList = {
-    ONInvasiveSpeciesPlants: [],
-  };
-  await getListOfSpeciesFromONInvasive(
-    speciesList,
-    ON_INVASIVE_URL_AQUATIC_PLANTS
-  );
-  await getListOfSpeciesFromONInvasive(
-    speciesList,
-    ON_INVASIVE_URL_TERRESTRIAL_PLANTS
-  );
+	const speciesList = {
+		ONInvasiveSpeciesPlants: [],
+	};
+	await getListOfSpeciesFromONInvasive(speciesList, ON_INVASIVE_URL_AQUATIC_PLANTS);
+	await getListOfSpeciesFromONInvasive(speciesList, ON_INVASIVE_URL_TERRESTRIAL_PLANTS);
 
 	// Go to each subpage and webscrape the about section and how to identify section
 	// .invasive-about
 	// .invasive-identify > .font-base
 	await Promise.all(speciesList.ONInvasiveSpeciesPlants.map(async (specie, index) => {
-		if (specie.links.length > 0) {
+		if(specie.resource_links.length > 0) {
 			try {
-				const response = await axios.get(specie.links[0]);
+				const response = await axios.get(specie.resource_links[0]);
 				const $ = await cheerio.load(response.data);
 
 				const scienceName = $("div.header-content span").text();
 
-				// Grab other sections
-				const keywords = ["Background", "Impact of", "Identify", "What You Can Do"];
+				// Fix scientific name if needed
+				const sciName = scienceName.split('&').map(name => name.trim());
+
+				// Grab other sections				
+				const sectionList = $("div.et_pb_text_inner");
+		
+				let backgroundInfo = "";
+				let impactOf = "";
+
+				// Searching for background info and impact of the species
+				sectionList.each((i, ele) => {
+					const header = $(ele).children("h2").text();
+
+					if(header.toLowerCase().includes("background")){
+						backgroundInfo = $(ele).text();
+					} else if(header.toLowerCase().includes("impacts of")){
+						impactOf = $(ele).text();
+					}
+				});
 
 				// Load data into speciesList
-				speciesList.ONInvasiveSpeciesPlants[index].scientific_name = scienceName.trim();
+				speciesList.ONInvasiveSpeciesPlants[index].scientific_name = sciName;
+				speciesList.ONInvasiveSpeciesPlants[index].species_description = (impactOf !== "") ? impactOf : backgroundInfo;
 			} catch (err) {
 				console.log(err);
 			}
 		}
 	}));
+
 	return speciesList;
 };
 
@@ -346,17 +363,14 @@ const getListOfSpeciesFromONInvasive = async (output, url) => {
 			// Each child has div > div a h3
 
 			const child = $(ele).children("div");
-
-			const commonName = $(child).children("h3").text();
 			const link = $(child).children("a").attr("href");
 
-        output.ONInvasiveSpeciesPlants.push({
-			common_name: commonName.trim(),
-			scientific_name: undefined,
-          	resource_links: [link.trim()],
-			species_description: undefined,
-			alternative_species: []
-        });
+			output.ONInvasiveSpeciesPlants.push({
+				scientific_name: undefined,
+				resource_links: [link.trim()],
+				species_description: undefined,
+				alternative_species: []
+			});
       });
     })
     .catch((err) => {
@@ -364,4 +378,4 @@ const getListOfSpeciesFromONInvasive = async (output, url) => {
     });
 };
 
-export { webscrapeBCInvasive, webscrapeONInvasive };
+export { webscrapeBCInvasive, webscrapeONInvasive};
