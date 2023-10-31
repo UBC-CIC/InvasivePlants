@@ -1,9 +1,0 @@
-[
-    {
-        "regionCode": "string",
-        "regionName": "string",
-        "geoCoord": "?string",
-        "country": "?string",
-        "invasiveSpeciesList": ["speciesDataStructure"]
-    }
-]
