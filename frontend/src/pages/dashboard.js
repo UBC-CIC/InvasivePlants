@@ -11,11 +11,7 @@ import * as Icons from '@mui/icons-material';
 import LoginPage from '../components/loginPage';
 import MainPage from '../components/mainPage';
 import AddSpeciesForm from '../components/addSpeciesInputs';
-import {initialData, SpeciesTable} from '../components/speciesTable';
-
-
-// Helper functions imports
-// import {webscrapeInvasiveSpecies} from '../functions/pipeline';
+import { SpeciesTable } from '../components/speciesTable';
 
 export default function Dashboard() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,10 +19,6 @@ export default function Dashboard() {
     // UI transition state functions
     const [viewSpeciesTable, setViewSpeciesTable] = useState(false);
     const [viewSpeciesForm, setViewAddSpeciesForm] = useState(false);
-    // const [viewSpeciesEditForm, setViewSpeciesEditForm] = useState(false);
-
-    // Data state functions
-    // const [webscrapedData, setWebscrapedData] = useState(null);
 
     const handleLogin = () => {
         setIsLoggedIn(true);
@@ -36,22 +28,9 @@ export default function Dashboard() {
         setIsLoggedIn(false);
     };
 
-    // useEffect(()=>{
-    //     const asyncFunction = async ()=>{
-    //         // Call webscraping function
-    //         const webscraping = await webscrapeInvasiveSpecies();
-    //         setWebscrapedData(webscraping);
-    
-    //         console.log("webscrapedData: ", webscraping);
-    //     };
-
-    //     asyncFunction();
-
-    // },[]);
-
     return(
         <Container >
-        {/* {isLoggedIn ? ( */}
+            {/* {isLoggedIn ? ( */}
         <React.Fragment>
             <Container fixed>
                 
@@ -75,17 +54,14 @@ export default function Dashboard() {
 
             {/* View table/list of existing species on the server. */}
             {viewSpeciesTable && !viewSpeciesForm &&
-                    <div>
-                        <Button onClick={() => setViewSpeciesTable(false)}>
+                        <div style={{ width: '100%' }}>
+                            <Button onClick={() => setViewSpeciesTable(false)}>
                         <Icons.ArrowBack />
-                        Back
-                        </Button>
+                                Back
+                            </Button>
 
-                <SpeciesTable 
-                // data = {initialData()}
-                // setData = {initialData()}
-                />
-                    </div>
+                            <SpeciesTable />
+                        </div>
             }
             
             {/* Add a new species to the server. */}
@@ -102,9 +78,9 @@ export default function Dashboard() {
             }
             </Container>
         </React.Fragment>
-        {/* ) : (
-            <LoginPage handleLogin={handleLogin} />
-        )} */}
+            {/* ) : (
+             <LoginPage handleLogin={handleLogin} />
+            )}  */}
     </Container>
     );
 }
