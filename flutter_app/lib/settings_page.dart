@@ -69,7 +69,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 minimumSize: const Size(double.infinity, 40),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(
-                      20.0), // Adjust the value for roundness
+                      10.0), // Adjust the value for roundness
                 ), // Takes up whole width
               ),
             ),
