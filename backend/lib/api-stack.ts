@@ -18,7 +18,7 @@ export class APIStack extends Stack {
          */
         // Read OpenAPI file and load file to S3
         const asset = new Asset(this, 'SampleAsset', {
-            path: 'sample_OpenAPI.yaml',
+            path: 'OpenAPI_Swagger_Definition.yaml',
         });
 
         // Perform transformation on the file from the S3 location
@@ -80,32 +80,67 @@ export class APIStack extends Stack {
         });
         
         // Change Logical ID to match the one decleared in YAML file of Open API
-        const cfnLambda_invasiveSpecies  = IL_InvasiveSpecies.node.defaultChild as lambda.CfnFunction;
+        const cfnLambda_invasiveSpecies = IL_InvasiveSpecies.node.defaultChild as lambda.CfnFunction;
         cfnLambda_invasiveSpecies.overrideLogicalId("IntegLambInvasiveSpecies");
 
-        // /**
-        //  * 
-        //  * Create Integration Lambda for Alternative Species API Gateway endpoint
-        //  */
-        // const IL_alternativeSpecies = new lambda.Function(this, 'IntegLambAlternativeSpecies', {
-        //     runtime: lambda.Runtime.NODEJS_18_X,    // Execution environment
-        //     code: lambda.Code.fromAsset('lambda'),  // Code loaded from "lambda" directory
-        //     handler: 'alternativeSpeciesFunction.handler',         // Code handler
+        /**
+         * 
+         * Create Integration Lambda for Alternative Species API Gateway endpoint
+         */
+        const IL_alternativeSpecies = new lambda.Function(this, 'IntegLambAlternativeSpecies', {
+            runtime: lambda.Runtime.NODEJS_18_X,    // Execution environment
+            code: lambda.Code.fromAsset('lambda'),  // Code loaded from "lambda" directory
+            handler: 'alternativeSpeciesFunction.handler',         // Code handler
 
-        //     functionName: "IntegLambAlternativeSpecies",
-        //     memorySize: 128,
-        // });
+            functionName: "IntegLambAlternativeSpecies",
+            memorySize: 128,
+        });
 
-        // // Add the permission to the Lambda function's policy to allow API Gateway access
-        // IL_alternativeSpecies.addPermission('AllowApiGatewayInvoke', {
-        //     principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
-        //     action: 'lambda:InvokeFunction',
-        //     sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:${api.restApiId}/*/*/alternativeSpecies*`
-        // });
+        // Add the permission to the Lambda function's policy to allow API Gateway access
+        IL_alternativeSpecies.addPermission('AllowApiGatewayInvoke', {
+            principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
+            action: 'lambda:InvokeFunction',
+            sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:${api.restApiId}/*/*/alternativeSpecies*`
+        });
         
-        // // Change Logical ID to match the one decleared in YAML file of Open API
-        // const cfnLambda_alternativeSpecies  = IL_alternativeSpecies.node.defaultChild as lambda.CfnFunction;
-        // cfnLambda_alternativeSpecies.overrideLogicalId("IntegLambAlternativeSpecies");
+        // Change Logical ID to match the one decleared in YAML file of Open API
+        const cfnLambda_alternativeSpecies  = IL_alternativeSpecies.node.defaultChild as lambda.CfnFunction;
+        cfnLambda_alternativeSpecies.overrideLogicalId("IntegLambAlternativeSpecies");
+
+        /**
+         * 
+         * Create Integration Lambda for Save List API Gateway endpoint
+         */
+        const IL_saveList = new lambda.Function(this, 'IntegLambSaveList', {
+            runtime: lambda.Runtime.NODEJS_18_X,    // Execution environment
+            code: lambda.Code.fromAsset('lambda'),  // Code loaded from "lambda" directory
+            handler: 'saveListFunction.handler',    // Code handler
+
+            functionName: "IntegLambSaveList",
+            memorySize: 128,
+        });
+
+        // Add the permission to the Lambda function's policy to allow API Gateway access
+        IL_saveList.addPermission('AllowApiGatewayInvoke', {
+            principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
+            action: 'lambda:InvokeFunction',
+            sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:${api.restApiId}/*/*/saveList*`
+        });
+        
+        // Change Logical ID to match the one decleared in YAML file of Open API
+        const cfnLambda_saveList  = IL_saveList.node.defaultChild as lambda.CfnFunction;
+        cfnLambda_saveList.overrideLogicalId("IntegLambSaveList");
+        
+
+
+
+
+
+
+
+
+
+
 
         // const api = new apigateway.RestApi(this, 'APIGateway', {
         //     restApiName: "ParkinsonsAPI",
