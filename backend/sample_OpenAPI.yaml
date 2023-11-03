@@ -1,0 +1,130 @@
+openapi: 3.0.0
+servers: []
+info: 
+  title: Invasive Plant API
+  description: This API intended to deploy on aws API Gateway
+  version: "1.0.0"
+tags:
+  - name: Region
+    description: The Region route information
+  - name: Invasive Species
+    description: The Invasive Species route information
+  - name: Alternative Spcies
+    description: The alternative spcies route information
+  - name: Save List
+    description: The save list route information
+paths:
+  /region:
+    get: 
+      tags:
+        - Region
+      summary: Get the list of available regions
+      operationId: region_GET
+      responses:
+        "200": 
+          description: OK
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambRegion.Arn}/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+  /region/{region_id}:
+    get: 
+      tags:
+        - Region
+      summary: Get a region beased on region_id
+      operationId: region_regionID_GET
+      parameters:
+        - in: path
+          name: region_id
+          required: true
+          schema: 
+            type: string
+      responses:
+        "200": 
+          description: Region data available
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Internal Server Error             
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambRegion.Arn}/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+  /invasiveSpecies:
+    get:
+      tags:
+        - Invasive Species
+      summary: Get the list of available invasive species
+      description: This will return all invasive species and its corresponding alternative species
+      operationId: getMessage
+      responses:
+        "200": 
+          description: Region data available
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Internal Server Error 
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambInvasiveSpecies.Arn}/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy" 
+
+components:
+  parameters:
+    WidgetID:
+      in: path
+      name: widgetID
+      required: true
+      schema:
+        type: number
+  requestBodies:
+    Widget:
+      description: Represents a Widget creation.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Widget'
+  responses:
+    Widgets:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Widget'
+    Widget:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Widget'
+  schemas:
+    Widget:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        description:
+          type: string
+      required:
+        - id
+        - name
+        - description
