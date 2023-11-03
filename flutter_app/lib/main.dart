@@ -26,7 +26,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const HomePage(),
-        '/settings': (context) => const SettingsPage(),
+        '/settings': (context) => const SettingsPage(
+              profileImagePath: '',
+            ),
         '/categoryInfo': (context) => const CategoryInfoPage(
               categoryTitle: '',
             ),

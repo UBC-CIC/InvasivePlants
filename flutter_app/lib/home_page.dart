@@ -31,7 +31,9 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const SettingsPage(),
+                  builder: (context) => const SettingsPage(
+                    profileImagePath: 'assets/images/profile.png',
+                  ),
                 ),
               );
             },
