@@ -58,14 +58,19 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             const SizedBox(height: 20),
-            Container(
-              height: 40,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: const Color.fromARGB(255, 211, 211, 211),
-              ),
-              child: const Center(
-                child: Text('+ add account'),
+            ElevatedButton.icon(
+              onPressed: () {},
+              icon: const Icon(Icons.add, color: Colors.black),
+              label: const Text('add account',
+                  style: TextStyle(color: Colors.black)),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.black,
+                backgroundColor: const Color.fromARGB(255, 215, 215, 215),
+                minimumSize: const Size(double.infinity, 40),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                      20.0), // Adjust the value for roundness
+                ), // Takes up whole width
               ),
             ),
             const SizedBox(height: 15),
