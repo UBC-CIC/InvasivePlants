@@ -65,7 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   style: TextStyle(color: Colors.black)),
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.black,
-                backgroundColor: const Color.fromARGB(255, 215, 215, 215),
+                backgroundColor: const Color.fromARGB(255, 221, 221, 221),
                 minimumSize: const Size(double.infinity, 40),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(
