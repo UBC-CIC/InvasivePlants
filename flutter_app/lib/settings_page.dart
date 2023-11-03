@@ -1,71 +1,94 @@
 import 'package:flutter/material.dart';
-import 'package:toggle_switch/toggle_switch.dart'; // Import the toggle_switch package
+import 'package:toggle_switch/toggle_switch.dart';
 
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+class SettingsPage extends StatefulWidget {
+  final String profileImagePath;
+
+  const SettingsPage({super.key, required this.profileImagePath});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  int currentLanguageIndex = 0; // Store the current language index
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Text(
+          'SETTINGS',
+          style: TextStyle(color: Colors.black),
         ),
-        title: const Text('SETTINGS'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
         child: Column(
           children: <Widget>[
-            const CircleAvatar(
-              backgroundColor: Colors.black, // Change to your color
-            ),
-            const SizedBox(height: 10),
-            const Column(
-              children: <Widget>[
-                Text(
-                  'First Last',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: <Widget>[
+                  Image.asset(
+                    widget.profileImagePath,
+                    width: 50,
+                    height: 50,
                   ),
-                ),
-                Text('emailuser@gmail.com'),
-              ],
+                  const SizedBox(width: 20),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'First Last',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text('emailuser@gmail.com'),
+                    ],
+                  ),
+                  const Spacer(),
+                  const Icon(Icons.keyboard_arrow_down),
+                ],
+              ),
             ),
             const SizedBox(height: 20),
             Container(
               height: 40,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: Colors.grey,
+                color: const Color.fromARGB(255, 211, 211, 211),
               ),
               child: const Center(
                 child: Text('+ add account'),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             const Divider(
               color: Colors.grey,
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 10),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                const Icon(Icons.translate),
+                const Icon(Icons.translate_rounded),
                 ToggleSwitch(
-                  minWidth: 40,
-                  cornerRadius: 20,
-                  activeBgColor: const [Colors.green],
-                  activeFgColor: Colors.green,
+                  minWidth: 120,
+                  activeBgColor: const [Colors.blue],
                   inactiveBgColor: Colors.grey[300],
-                  inactiveFgColor: Colors.grey[600],
-                  initialLabelIndex: 0,
+                  inactiveFgColor: Colors.black,
+                  initialLabelIndex: currentLanguageIndex,
                   labels: const ['English', 'French'],
                   onToggle: (index) {
-                    // Handle language switch
+                    setState(() {
+                      currentLanguageIndex = index!;
+                    });
+                    debugPrint(currentLanguageIndex.toString());
                   },
                 ),
               ],

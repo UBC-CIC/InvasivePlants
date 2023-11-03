@@ -109,7 +109,6 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color.fromARGB(255, 174, 174, 174),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_rounded, size: 40),
