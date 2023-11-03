@@ -8,7 +8,7 @@ import {
     Container,
     Box
 } from '@mui/material';
-import adminCredentials from './adminCredentials.json';
+import adminCredentials from '../components/adminCredentials.json';
 
 const LoginPage = ({ handleLogin }) => {
     const [username, setUsername] = useState('');

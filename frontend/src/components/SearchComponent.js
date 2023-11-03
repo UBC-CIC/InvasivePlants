@@ -14,7 +14,6 @@ const SearchComponent = ({ handleSearch, searchResults, searchTerm, setSearchTer
                         value={searchTerm}
                         onChange={(e) => {
                             setSearchTerm(e.target.value);
-                            // handleSearch();
                         }}
                         style={{ marginTop: "2rem", marginBottom: "1rem" }}
                     />

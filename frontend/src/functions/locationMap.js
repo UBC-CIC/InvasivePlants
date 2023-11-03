@@ -1,6 +1,6 @@
-const locationMap = {
+const LocationMap = {
     bc: 1,
     on: 2
 };
 
-export default locationMap;
+export default LocationMap;
