@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography } from "@mui/material";
+import { Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
+import Theme from './Theme';
+
 import LocationMap from "../functions/locationMap";
 import EditSpeciesDialog from "../components/EditSpeciesDialogComponent";
 import LocationFilterComponent from '../components/LocationFilterComponent';
 import SearchComponent from '../components/SearchComponent';
 import AddSpeciesDialog from "../components/AddSpeciesDialogComponent";
-import { SpeciesTestData } from "../functions/speciesTestData";
+import { SpeciesTestData } from "../test_data/speciesTestData";
+import DeleteDialog from "../components/ConfirmDeleteDialog";
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -13,7 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 
 function SpeciesPage() {
-  const [data, setData] = useState(SpeciesTestData);
+  const COLOR = '#5e8da6'; const [data, setData] = useState(SpeciesTestData);
   const [displayData, setDisplayData] = useState(SpeciesTestData);
   const [editingId, setEditingId] = useState(null);
   const [tempData, setTempData] = useState({});
@@ -22,6 +25,11 @@ function SpeciesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState(SpeciesTestData.map((item) => ({ label: item.scientificName, value: item.scientificName })));
   const [location, setLocation] = useState("");
+
+
+  const [deleteId, setDeleteId] = useState(null);
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+
 
   // gets rows that matches search and location input 
   const filterData = data.filter((item) =>
@@ -85,15 +93,30 @@ function SpeciesPage() {
     handleFinishEditingRow();
   };
 
-  // delete row
-  // TODO: delete confirmation
+  // // delete row
+  // // TODO: delete confirmation
+  // const handleDeleteRow = (speciesId) => {
+  //   setDisplayData((prev) =>
+  //     prev.filter((item) => item.speciesId !== speciesId)
+  //   );
+  //   // TODO: need to delete in database
+  // };
+
+  // delete row with Confirmation before deletion
   const handleDeleteRow = (speciesId) => {
-    setDisplayData((prev) =>
-      prev.filter((item) => item.speciesId !== speciesId)
-    );
-    // TODO: need to delete in database
+    setDeleteId(speciesId);
+    setOpenConfirmation(true);
   };
 
+  // Confirm delete
+  const handleConfirmDelete = () => {
+    if (deleteId) {
+      setDisplayData((prev) =>
+        prev.filter((item) => item.regionId !== deleteId));
+      // TODO: need to delete in from database
+    }
+    setOpenConfirmation(false);
+  };
   // helper function when search input changes
   const handleSearchInputChange = (field, value) => {
     setTempData((prev) => ({ ...prev, [field]: value }));
@@ -155,7 +178,6 @@ function SpeciesPage() {
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-
       {/* title */}
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
         <Typography variant="h4" sx={{ textAlign: 'center' }}>
@@ -181,9 +203,11 @@ function SpeciesPage() {
 
       {/* button to add species */}
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        <ThemeProvider theme={Theme}>
         <Button variant="contained" onClick={() => setOpenAddSpeciesDialog(true)} startIcon={<AddCircleOutlineIcon />}>
           Add Species
         </Button>
+        </ThemeProvider>
       </div>
 
       {/* table */}
@@ -305,6 +329,7 @@ function SpeciesPage() {
                           <TableCell>
                             <Button
                               onClick={() => startEdit(row.speciesId, row)}
+                              sx={{ color: COLOR }}
                               startIcon={<EditIcon />}
                             >
                               Edit
@@ -335,6 +360,7 @@ function SpeciesPage() {
                           <TableCell>{row.links?.join(", ")}</TableCell>
                           <TableCell>
                             <Button onClick={() => startEdit(row.speciesId, row)}
+                                sx={{ color: COLOR }}
                               startIcon={<EditIcon />}>
                               Edit
                             </Button>
@@ -424,6 +450,7 @@ function SpeciesPage() {
                           {/* edit/delete */}
                           <TableCell>
                             <Button onClick={() => startEdit(row.speciesId, row)}
+                              sx={{ color: COLOR }}
                               startIcon={<EditIcon />}>
                               Edit
                             </Button>
@@ -453,6 +480,7 @@ function SpeciesPage() {
                           <TableCell>{row.links?.join(", ")}</TableCell>
                           <TableCell>
                             <Button onClick={() => startEdit(row.speciesId, row)}
+                                sx={{ color: COLOR }}
                               startIcon={<EditIcon />}>
                               Edit
                             </Button>
@@ -486,6 +514,13 @@ function SpeciesPage() {
         handleFinishEditingRow={handleFinishEditingRow}
         handleSave={handleSave}
       />
+
+      <DeleteDialog
+        open={openConfirmation}
+        handleClose={() => setOpenConfirmation(false)}
+        handleDelete={handleConfirmDelete}
+      />
+
     </div >
   );
 }

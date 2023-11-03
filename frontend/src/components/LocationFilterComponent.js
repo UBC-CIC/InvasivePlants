@@ -1,5 +1,5 @@
 import { Autocomplete, Box, TextField } from '@mui/material';
-import RegionsTestData from '../functions/regionsTestData';
+import RegionsTestData from '../test_data/regionsTestData';
 
 const LocationFilterComponent = ({ handleLocationSearch, location, setLocation }) => {
   return (

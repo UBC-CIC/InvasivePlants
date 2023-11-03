@@ -33,9 +33,9 @@ export default function Dashboard() {
             {
                 viewSpecies && !viewRegions &&
                 <div >
-                    <Button onClick={() => setViewSpecies(false)} startIcon={<ArrowBackIcon />}>
-                        Back
-                    </Button>
+                        <Button onClick={() => setViewSpecies(false)} startIcon={<ArrowBackIcon />} sx={{ color: '#5e8da6' }}>
+                            Back
+                        </Button>
                         <SpeciesPage />
                     </div>
             }
@@ -44,7 +44,7 @@ export default function Dashboard() {
             {
                 viewRegions && !viewSpecies &&
                 <div>
-                        <Button onClick={() => setViewRegions(false)} startIcon={<ArrowBackIcon />}>
+                        <Button onClick={() => setViewRegions(false)} startIcon={<ArrowBackIcon />} sx={{ color: '#5e8da6' }}>
                             Back
                         </Button>
                         <RegionsPage />

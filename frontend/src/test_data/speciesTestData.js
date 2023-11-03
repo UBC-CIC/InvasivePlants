@@ -1,4 +1,4 @@
-import LocationMap from "./locationMap";
+import LocationMap from "../functions/locationMap";
 
 export const SpeciesTestData = [
     {

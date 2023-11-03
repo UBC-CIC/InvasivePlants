@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Autocomplete, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography } from "@mui/material";
-import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { Autocomplete, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 // import CountryMap from "../functions/countryMap";
-import RegionsTestData from "../functions/regionsTestData";
+// import { Dialog, DialogActions, DialogTitle, DialogContent, DialogContentText } from "@mui/material";
+import DeleteDialog from "../components/ConfirmDeleteDialog";
+import RegionsTestData from "../test_data/regionsTestData";
 import AddRegionDialog from "../components/AddRegionDialogComponent";
+import Theme from './Theme';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -12,6 +14,8 @@ import EditRegionsDialog from "../components/EditRegionsDialogComponent";
 
 
 function RegionsPage() {
+    const COLOR = '#5e8da6';
+
     const [data, setData] = useState(RegionsTestData);
     const [displayData, setDisplayData] = useState(RegionsTestData);
     const [editingId, setEditingId] = useState(null);
@@ -21,6 +25,10 @@ function RegionsPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState(RegionsTestData.map((item) => ({ label: item.regionFullName, value: item.regionFullName })));
     const [country, setCountry] = useState("");
+
+    const [deleteId, setDeleteId] = useState(null);
+    const [openConfirmation, setOpenConfirmation] = useState(false);
+
 
     // gets rows that matches search and country input 
     const filterData = data.filter((item) =>
@@ -80,14 +88,23 @@ function RegionsPage() {
         handleFinishEditingRow();
     };
 
-    // delete row
-    // TODO: delete confirmation
+
+    // delete row with Confirmation before deletion
     const handleDeleteRow = (regionId) => {
-        setDisplayData((prev) =>
-            prev.filter((item) => item.regionId !== regionId)
-        );
-        // TODO: need to delete in database
+        setDeleteId(regionId);
+        setOpenConfirmation(true);
     };
+
+    // Confirm delete
+    const handleConfirmDelete = () => {
+        if (deleteId) {
+            setDisplayData((prev) =>
+                prev.filter((item) => item.regionId !== deleteId));
+            // TODO: need to delete in from database
+        }
+        setOpenConfirmation(false);
+    };
+
 
     // helper function when search input changes
     const handleSearchInputChange = (field, value) => {
@@ -132,10 +149,10 @@ function RegionsPage() {
 
     // add species
     const handleAddRegion = (newRegionData) => {
-        // Generate a unique speciesId for the new species
+        // Generate a unique regionId for the new species
         const newRegionId = data.length + 1;
 
-        // Create a new species object with the generated speciesId
+        // Create a new species object with the generated regionId
         const newRegion = {
             regionId: newRegionId,
             ...newRegionData,
@@ -196,9 +213,12 @@ function RegionsPage() {
 
             {/* button to add region */}
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                <ThemeProvider theme={Theme}>
+
                 <Button variant="contained" onClick={() => setOpenAddRegionDialog(true)} startIcon={<AddCircleOutlineIcon />}>
                     Add Region
                 </Button>
+                </ThemeProvider>
             </div >
 
             <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
@@ -275,6 +295,7 @@ function RegionsPage() {
                                                     <TableCell>
                                                         <Button
                                                             onClick={() => startEdit(row.regionId, row)}
+                                                            sx={{ color: COLOR }}
                                                             startIcon={<EditIcon />}
                                                         >
                                                             Edit
@@ -294,12 +315,13 @@ function RegionsPage() {
                                                     <TableCell> {row.regionCode} </TableCell>
                                                     <TableCell>{row.country}</TableCell>
                                                     <TableCell>
-                                                        <Button onClick={() => startEdit(row.speciesId, row)}
+                                                            <Button onClick={() => startEdit(row.regionId, row)}
+                                                                sx={{ color: COLOR }}
                                                             startIcon={<EditIcon />}>
                                                             Edit
                                                         </Button>
                                                         <Button
-                                                            onClick={() => handleDeleteRow(row.speciesId, row)}
+                                                                onClick={() => handleDeleteRow(row.regionId, row)}
                                                             sx={{ color: "brown" }}
                                                             startIcon={<DeleteIcon />}
                                                         >
@@ -351,6 +373,7 @@ function RegionsPage() {
                                                     <TableCell>
                                                         <Button
                                                             onClick={() => startEdit(row.regionId, row)}
+                                                            sx={{ color: COLOR }}
                                                             startIcon={<EditIcon />}
                                                         >
                                                             Edit
@@ -370,12 +393,14 @@ function RegionsPage() {
                                                     <TableCell> {row.regionCode} </TableCell>
                                                     <TableCell>{row.country}</TableCell>
                                                     <TableCell>
-                                                        <Button onClick={() => startEdit(row.speciesId, row)}
-                                                            startIcon={<EditIcon />}>
+                                                            <Button onClick={() => startEdit(row.regionId, row)}
+                                                                sx={{ color: COLOR }}
+                                                                startIcon={<EditIcon />}
+                                                            >
                                                             Edit
                                                         </Button>
                                                         <Button
-                                                            onClick={() => handleDeleteRow(row.speciesId, row)}
+                                                                onClick={() => handleDeleteRow(row.regionId, row)}
                                                             sx={{ color: "brown" }}
                                                             startIcon={<DeleteIcon />}
                                                         >
@@ -404,6 +429,13 @@ function RegionsPage() {
                 handleFinishEditingRow={handleFinishEditingRow}
                 handleSave={handleSave}
             />
+
+            <DeleteDialog
+                open={openConfirmation}
+                handleClose={() => setOpenConfirmation(false)}
+                handleDelete={handleConfirmDelete}
+            />
+
         </div >
     );
 }
