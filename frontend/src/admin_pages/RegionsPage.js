@@ -106,7 +106,13 @@ function RegionsPage() {
 
     // helper function when search input changes
     const handleSearchInputChange = (field, value) => {
-        setTempData((prev) => ({ ...prev, [field]: value }));
+        if (field === 'geographic_latitude') {
+            setTempData((prev) => ({ ...prev, geographic_coordinates: [value, prev.geographic_coordinates[1]] }));
+        } else if (field === 'geographic_longitude') {
+            setTempData((prev) => ({ ...prev, geographic_coordinates: [prev.geographic_coordinates[0], value] }));
+        } else {
+            setTempData((prev) => ({ ...prev, [field]: value }));
+        }
     };
 
     // search species
@@ -226,7 +232,6 @@ function RegionsPage() {
             {/* button to add region */}
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                 <ThemeProvider theme={Theme}>
-
                 <Button variant="contained" onClick={() => setOpenAddRegionDialog(true)} startIcon={<AddCircleOutlineIcon />}>
                     Add Region
                 </Button>
@@ -251,6 +256,11 @@ function RegionsPage() {
                             <TableCell style={{ width: "10%" }}>
                                 <Typography variant="subtitle1" fontWeight="bold">
                                     Country
+                                </Typography>
+                            </TableCell>
+                            <TableCell style={{ width: "10%" }}>
+                                <Typography variant="subtitle1" fontWeight="bold">
+                                    Geographic Coordinates (longitude, latitude)
                                 </Typography>
                             </TableCell>
                             <TableCell style={{ width: "5%" }}>
@@ -303,6 +313,16 @@ function RegionsPage() {
                                                         />
                                                     </TableCell>
 
+                                                    {/* coordinates */}
+                                                    <TableCell>
+                                                        <TextField
+                                                            value={tempData.geographic_coordinates}
+                                                            onChange={(e) =>
+                                                                handleSearchInputChange("coordinates", e.target.value)
+                                                            }
+                                                        />
+                                                    </TableCell>
+
                                                     {/* edit/delete */}
                                                     <TableCell>
                                                         <Tooltip title="Edit"
@@ -325,6 +345,7 @@ function RegionsPage() {
                                                     <TableCell>{row.regionFullName}</TableCell>
                                                     <TableCell> {row.regionCode} </TableCell>
                                                     <TableCell>{row.country}</TableCell>
+                                                        <TableCell>{row.geographic_coordinates.join(', ')}</TableCell>
                                                     <TableCell>
                                                             <Tooltip title="Edit"
                                                                 onClick={() => startEdit(row.regionId, row)}>
@@ -381,6 +402,16 @@ function RegionsPage() {
                                                         />
                                                     </TableCell>
 
+                                                    {/* coordinates */}
+                                                    <TableCell>
+                                                        <TextField
+                                                            value={tempData.geographic_coordinates}
+                                                            onChange={(e) =>
+                                                                handleSearchInputChange("coordinates", e.target.value)
+                                                            }
+                                                        />
+                                                    </TableCell>
+
                                                     {/* edit/delete */}
                                                     <TableCell>
                                                         <Tooltip title="Edit"
@@ -403,6 +434,7 @@ function RegionsPage() {
                                                     <TableCell>{row.regionFullName}</TableCell>
                                                     <TableCell> {row.regionCode} </TableCell>
                                                     <TableCell>{row.country}</TableCell>
+                                                        <TableCell>{row.geographic_coordinates.join(', ')}</TableCell>
                                                     <TableCell>
                                                             <Tooltip title="Edit"
                                                                 onClick={() => startEdit(row.regionId, row)}>

@@ -236,7 +236,7 @@ function SpeciesPage() {
               </TableCell>
               <TableCell style={{ width: "10%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  Region
+                  Region(s)
                 </Typography>
               </TableCell>
               <TableCell style={{ width: "10%" }}>
@@ -371,8 +371,14 @@ function SpeciesPage() {
                               ? row.alternatives.join(", ")
                               : row.alternatives}
                           </TableCell>
-                          <TableCell>{row.links?.join(", ")}</TableCell>
-                            <TableCell>{row.location.join(", ")}</TableCell>
+                            <TableCell>
+                              {Array.isArray(row.links) ? row.links.join(", ") : row.links}
+                            </TableCell>
+                            <TableCell>
+                              {Array.isArray(row.location)
+                                ? row.location.join(", ")
+                                : row.location}
+                            </TableCell>
                           <TableCell>
                               <Tooltip title="Edit"
                                 onClick={() => startEdit(row.speciesId, row)}>
@@ -506,10 +512,16 @@ function SpeciesPage() {
                             {Array.isArray(row.alternatives)
                               ? row.alternatives.join(", ")
                               : row.alternatives}
-                          </TableCell>
-                          <TableCell>{row.links?.join(", ")}</TableCell>
-                            <TableCell>{row.location.join(", ")}</TableCell>
-                          <TableCell>
+                            </TableCell>
+                            <TableCell>
+                              {Array.isArray(row.links) ? row.links.join(", ") : row.links}
+                            </TableCell>
+                            <TableCell>
+                              {Array.isArray(row.location)
+                                ? row.location.join(", ")
+                                : row.location}
+                            </TableCell>
+                            <TableCell>
                               <Tooltip title="Edit"
                                 onClick={() => startEdit(row.speciesId, row)}>
                                 <IconButton>

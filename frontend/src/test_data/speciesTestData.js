@@ -2,7 +2,7 @@ import RegionMap from "../functions/RegionMap";
 
 export const SpeciesTestData = [
     {
-        speciesId: "1",
+        speciesId: 1,
         scientificName: "Hemerocallis fulva",
         commonName: ["Orange daylily", "Tiger Lillies", "Fulvous day-lily"],
         links: ["http://example.com"],
@@ -16,16 +16,16 @@ export const SpeciesTestData = [
         location: ["BC", "ON"]
     },
     {
-        speciesId: "2",
+        speciesId: 2,
         scientificName: "abc",
         commonName: "Rose",
-        links: ["http://example.com"],
+        links: ["http://example.com", "abc.com", "basdfsdf"],
         description: "A type of flowering shrub.",
         alternatives: ["Hemerocallis fulva"],
         location: ["BC"]
     },
     {
-        speciesId: "3",
+        speciesId: 3,
         scientificName: "Gypsophila muralis",
         commonName: [
             "Annual Gypsophila",
@@ -38,7 +38,7 @@ export const SpeciesTestData = [
         location: ["BC"]
     },
     {
-        speciesId: "4",
+        speciesId: 4,
         scientificName: "Gypsophila paniculata",
         commonName: [
             "Baby's-breath",
@@ -54,6 +54,7 @@ export const SpeciesTestData = [
             "anaphalis_margaritacea",
             "limonium_latifolium",
         ],
+        links: ["http://example2.com"],
         location: ["ON", "test"]
     },
 ];

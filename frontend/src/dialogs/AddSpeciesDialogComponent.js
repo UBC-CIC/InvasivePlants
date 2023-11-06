@@ -6,10 +6,10 @@ import AddAlternativeSpecies from "./AddAlternativeSpeciesDialogComponent";
 const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialSpeciesData = {
         scientificName: "",
-        commonName: "",
-        links: "",
+        commonName: [],
+        links: [],
         description: "",
-        alternatives: "",
+        alternatives: [],
         location: []
     };
 
@@ -46,9 +46,9 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         setShowOpen(true);
         const modifiedSpeciesData = {
             ...speciesData,
-            commonName: speciesData.commonName.split(","),
-            links: speciesData.links.split(","),
-            alternatives: speciesData.alternatives.split(","),
+            commonName: speciesData.commonName,
+            links: speciesData.links,
+            alternatives: speciesData.alternatives,
             location: speciesData.location
         };
         handleAdd(modifiedSpeciesData);
@@ -180,6 +180,7 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                         onChange={(e) => handleInputChange("links", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
+                    
                     <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
                         <InputLabel id="region-label">Region</InputLabel>
                         <Select

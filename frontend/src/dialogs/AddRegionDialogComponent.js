@@ -6,7 +6,8 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialRegionData = {
         regionFullName: "",
         regionCode: "",
-        country: ""
+        country: "",
+        geographic_coordinates: []
     };
 
     const [showOpen, setShowOpen] = useState(false);
@@ -14,13 +15,31 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
     const [showWarning, setShowWarning] = useState(false);
     const [regionData, setRegionData] = useState(initialRegionData);
     const [selectedCountry, setSelectedCountry] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleInputChange = (field, value) => {
-        setRegionData((prev) => ({ ...prev, [field]: value }));
-        if (field === "country") {
-            setSelectedCountry(value);
+        // checks that coordinates are of valid format (numbers)
+        if (field === "geographic_latitude" || field === "geographic_longitude") {
+            if (value === "" || !isNaN(value) || (value[0] === '-' && !isNaN(value.slice(1))) || !isNaN(value.replace(".", ""))) {
+                setRegionData((prev) => ({
+                    ...prev,
+                    geographic_coordinates: [
+                        field === "geographic_latitude" ? value : regionData.geographic_coordinates[0],
+                        field === "geographic_longitude" ? value : regionData.geographic_coordinates[1],
+                    ],
+                }));
+                setErrorMessage("");
+            } else {
+                setErrorMessage("Please enter a valid number.");
+            }
+        } else {
+            setRegionData((prev) => ({ ...prev, [field]: value }));
+            if (field === "country") {
+                setSelectedCountry(value);
+            }
         }
     };
+
 
     const handleConfirmAddRegion = () => {
         const foundRegion = data.find((item) => item.regionFullName.toLowerCase() === regionData.regionFullName.toLowerCase());
@@ -132,6 +151,29 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                             ))}
                         </Select>
                     </FormControl>
+                    <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                        <TextField
+                            fullWidth
+                            label="Latitude"
+                            value={regionData.geographic_coordinates[0]}
+                            onChange={(e) => handleInputChange("geographic_latitude", e.target.value)}
+                            sx={{ width: "100%", marginRight: "4px" }}
+                        />
+
+                        <TextField
+                            fullWidth
+                            label="Longitude"
+                            value={regionData.geographic_coordinates[1]}
+                            onChange={(e) => handleInputChange("geographic_longitude", e.target.value)}
+                            sx={{ width: "100%", marginLeft: "4px" }}
+                        />
+                    </Box>
+                    {errorMessage && (
+                        <Box sx={{ color: "red", fontSize: "0.8rem" }}>
+                            {errorMessage}
+                        </Box>
+                    )}
+
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCancel}>Cancel</Button>
@@ -144,6 +186,8 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                     Added successfully!
                 </Alert>
             </Snackbar>
+
+
         </div>
     );
 };
