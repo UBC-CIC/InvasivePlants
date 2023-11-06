@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Autocomplete, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
+import { Autocomplete, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 // import CountryMap from "../functions/countryMap";
-// import { Dialog, DialogActions, DialogTitle, DialogContent, DialogContentText } from "@mui/material";
-import DeleteDialog from "../components/ConfirmDeleteDialog";
+import DeleteDialog from "../dialogs/ConfirmDeleteDialog";
 import RegionsTestData from "../test_data/regionsTestData";
-import AddRegionDialog from "../components/AddRegionDialogComponent";
+import AddRegionDialog from "../dialogs/AddRegionDialogComponent";
 import Theme from './Theme';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditRegionsDialog from "../components/EditRegionsDialogComponent";
-
+import EditRegionsDialog from "../dialogs/EditRegionsDialogComponent";
+import SearchIcon from '@mui/icons-material/Search';
+import PublicIcon from '@mui/icons-material/Public';
 
 function RegionsPage() {
-    const COLOR = '#5e8da6';
-
     const [data, setData] = useState(RegionsTestData);
     const [displayData, setDisplayData] = useState(RegionsTestData);
     const [editingId, setEditingId] = useState(null);
@@ -150,17 +148,21 @@ function RegionsPage() {
     // add species
     const handleAddRegion = (newRegionData) => {
         // Generate a unique regionId for the new species
-        const newRegionId = data.length + 1;
+        const newRegionId = displayData.length + 1;
 
-        // Create a new species object with the generated regionId
+        // Create a new region object with the generated regionId
         const newRegion = {
             regionId: newRegionId,
             ...newRegionData,
         };
 
-        setData([...data, newRegion]);
+        // setData([...data, newRegion]);
+        setDisplayData([...displayData, newRegion]);
         setOpenAddRegionDialog(false);
+
+        // TODO: update the database with the new entry
     };
+
 
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -180,7 +182,12 @@ function RegionsPage() {
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label="Filter by Country"
+                                label={
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <PublicIcon sx={{ marginRight: '0.5rem' }} />
+                                        Filter by Country
+                                    </div>
+                                }
                                 value={country}
                                 onChange={(e) => {
                                     setCountry(e.target.value.toLowerCase());
@@ -199,7 +206,12 @@ function RegionsPage() {
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label="Search region"
+                                label={
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <SearchIcon sx={{ marginRight: '0.5rem' }} />
+                                        Search Region
+                                    </div>
+                                }
                                 value={searchTerm}
                                 onChange={(e) => {
                                     setSearchTerm(e.target.value);
@@ -241,7 +253,7 @@ function RegionsPage() {
                                     Country
                                 </Typography>
                             </TableCell>
-                            <TableCell style={{ width: "10%" }}>
+                            <TableCell style={{ width: "5%" }}>
                                 <Typography variant="subtitle1" fontWeight="bold">
                                     Actions
                                 </Typography>
@@ -293,20 +305,19 @@ function RegionsPage() {
 
                                                     {/* edit/delete */}
                                                     <TableCell>
-                                                        <Button
-                                                            onClick={() => startEdit(row.regionId, row)}
-                                                            sx={{ color: COLOR }}
-                                                            startIcon={<EditIcon />}
-                                                        >
-                                                            Edit
-                                                        </Button>
-                                                        <Button
-                                                            onClick={() => handleDeleteRow(row.regionId, row)}
-                                                            sx={{ color: "brown" }}
-                                                            startIcon={<DeleteIcon />}
-                                                        >
-                                                            Delete
-                                                        </Button>
+                                                        <Tooltip title="Edit"
+                                                            onClick={() => startEdit(row.regionId, row)}>
+                                                            <IconButton>
+                                                                <EditIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        <Tooltip
+                                                            title="Delete"
+                                                            onClick={() => handleDeleteRow(row.regionId, row)}>
+                                                            <IconButton>
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
                                                     </TableCell>
                                                 </>
                                             ) : (
@@ -315,18 +326,19 @@ function RegionsPage() {
                                                     <TableCell> {row.regionCode} </TableCell>
                                                     <TableCell>{row.country}</TableCell>
                                                     <TableCell>
-                                                            <Button onClick={() => startEdit(row.regionId, row)}
-                                                                sx={{ color: COLOR }}
-                                                            startIcon={<EditIcon />}>
-                                                            Edit
-                                                        </Button>
-                                                        <Button
-                                                                onClick={() => handleDeleteRow(row.regionId, row)}
-                                                            sx={{ color: "brown" }}
-                                                            startIcon={<DeleteIcon />}
-                                                        >
-                                                            Delete
-                                                        </Button>
+                                                            <Tooltip title="Edit"
+                                                                onClick={() => startEdit(row.regionId, row)}>
+                                                                <IconButton>
+                                                                    <EditIcon />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                            <Tooltip
+                                                                title="Delete"
+                                                                onClick={() => handleDeleteRow(row.regionId, row)}>
+                                                                <IconButton>
+                                                                    <DeleteIcon />
+                                                                </IconButton>
+                                                            </Tooltip>
                                                     </TableCell>
                                                 </>
                                             )}
@@ -371,20 +383,19 @@ function RegionsPage() {
 
                                                     {/* edit/delete */}
                                                     <TableCell>
-                                                        <Button
-                                                            onClick={() => startEdit(row.regionId, row)}
-                                                            sx={{ color: COLOR }}
-                                                            startIcon={<EditIcon />}
-                                                        >
-                                                            Edit
-                                                        </Button>
-                                                        <Button
-                                                            onClick={() => handleDeleteRow(row.regionId, row)}
-                                                            sx={{ color: "brown" }}
-                                                            startIcon={<DeleteIcon />}
-                                                        >
-                                                            Delete
-                                                        </Button>
+                                                        <Tooltip title="Edit"
+                                                            onClick={() => startEdit(row.regionId, row)}>
+                                                            <IconButton>
+                                                                <EditIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        <Tooltip
+                                                            title="Delete"
+                                                            onClick={() => handleDeleteRow(row.regionId, row)}>
+                                                            <IconButton>
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
                                                     </TableCell>
                                                 </>
                                             ) : (
@@ -393,19 +404,19 @@ function RegionsPage() {
                                                     <TableCell> {row.regionCode} </TableCell>
                                                     <TableCell>{row.country}</TableCell>
                                                     <TableCell>
-                                                            <Button onClick={() => startEdit(row.regionId, row)}
-                                                                sx={{ color: COLOR }}
-                                                                startIcon={<EditIcon />}
-                                                            >
-                                                            Edit
-                                                        </Button>
-                                                        <Button
-                                                                onClick={() => handleDeleteRow(row.regionId, row)}
-                                                            sx={{ color: "brown" }}
-                                                            startIcon={<DeleteIcon />}
-                                                        >
-                                                            Delete
-                                                        </Button>
+                                                            <Tooltip title="Edit"
+                                                                onClick={() => startEdit(row.regionId, row)}>
+                                                                <IconButton>
+                                                                    <EditIcon />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                            <Tooltip
+                                                                title="Delete"
+                                                                onClick={() => handleDeleteRow(row.regionId, row)}>
+                                                                <IconButton>
+                                                                    <DeleteIcon />
+                                                                </IconButton>
+                                                            </Tooltip>
                                                     </TableCell>
                                                 </>
                                             )}
@@ -421,6 +432,7 @@ function RegionsPage() {
                 open={openAddRegionDialog}
                 handleClose={() => setOpenAddRegionDialog(false)}
                 handleAdd={handleAddRegion}
+                data={displayData}
             />
             <EditRegionsDialog
                 open={openEditRegionDialog}

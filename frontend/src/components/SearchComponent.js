@@ -1,4 +1,5 @@
 import { Autocomplete, Box, TextField } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 const SearchComponent = ({ handleSearch, searchResults, searchTerm, setSearchTerm }) => {
     return (
@@ -10,7 +11,12 @@ const SearchComponent = ({ handleSearch, searchResults, searchTerm, setSearchTer
                 renderInput={(params) => (
                     <TextField
                         {...params}
-                        label="Search invasive species (common or scientific name)"
+                        label={
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <SearchIcon sx={{ marginRight: '0.5rem' }} />
+                                Search invasive species (common or scientific name)
+                            </div>
+                        }
                         value={searchTerm}
                         onChange={(e) => {
                             setSearchTerm(e.target.value);

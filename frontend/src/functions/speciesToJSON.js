@@ -1,7 +1,7 @@
 import { webscrapeWikipedia } from "./webscrapeWiki.js";
 import { isInvasive } from "./pipeline.js";
 import { getAlternativePlants } from "./alternativePlants.js";
-import locationMap from "./locationMap.js";
+import RegionMap from "./RegionMap.js";
 
 
 const speciesDataToJSON = async (commonName, scientificName, speciesScore, userLocation) => {
@@ -24,7 +24,7 @@ const speciesDataToJSON = async (commonName, scientificName, speciesScore, userL
             isInvasive: isInvasiveRes,
             wikiInfo: await webscrapeWikipedia(scientificName),
             alternative_plants: alternative_plants,
-            location: locationMap[userLocation.toLowerCase()]
+            location: RegionMap[userLocation.toLowerCase()]
         };
     } else {
         // TODO: get from database if invasive
@@ -35,7 +35,7 @@ const speciesDataToJSON = async (commonName, scientificName, speciesScore, userL
             isInvasive: isInvasiveRes,
             wikiInfo: await webscrapeWikipedia(scientificName),
             alternative_plants: alternative_plants,
-            location: locationMap[userLocation.toLowerCase()]
+            location: RegionMap[userLocation.toLowerCase()]
         };
     }
 

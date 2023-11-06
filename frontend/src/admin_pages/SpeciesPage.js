@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
+import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 import Theme from './Theme';
 
-import LocationMap from "../functions/locationMap";
-import EditSpeciesDialog from "../components/EditSpeciesDialogComponent";
+import RegionMap from "../functions/RegionMap";
+import EditSpeciesDialog from "../dialogs/EditSpeciesDialogComponent";
 import LocationFilterComponent from '../components/LocationFilterComponent';
 import SearchComponent from '../components/SearchComponent';
-import AddSpeciesDialog from "../components/AddSpeciesDialogComponent";
+import AddSpeciesDialog from "../dialogs/AddSpeciesDialogComponent";
 import { SpeciesTestData } from "../test_data/speciesTestData";
-import DeleteDialog from "../components/ConfirmDeleteDialog";
+import DeleteDialog from "../dialogs/ConfirmDeleteDialog";
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -16,7 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 
 function SpeciesPage() {
-  const COLOR = '#5e8da6'; const [data, setData] = useState(SpeciesTestData);
+  const [data, setData] = useState(SpeciesTestData);
   const [displayData, setDisplayData] = useState(SpeciesTestData);
   const [editingId, setEditingId] = useState(null);
   const [tempData, setTempData] = useState({});
@@ -25,11 +25,8 @@ function SpeciesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState(SpeciesTestData.map((item) => ({ label: item.scientificName, value: item.scientificName })));
   const [location, setLocation] = useState("");
-
-
   const [deleteId, setDeleteId] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
-
 
   // gets rows that matches search and location input 
   const filterData = data.filter((item) =>
@@ -41,7 +38,7 @@ function SpeciesPage() {
         )
         : item.commonName.toLowerCase().includes(searchTerm.toLowerCase()))
     )) &&
-    (location === "" || item.location === LocationMap[location])
+    (location === "" || item.location.some((loc) => RegionMap[loc.toLowerCase()] === RegionMap[location]))
   );
 
   useEffect(() => {
@@ -93,26 +90,18 @@ function SpeciesPage() {
     handleFinishEditingRow();
   };
 
-  // // delete row
-  // // TODO: delete confirmation
-  // const handleDeleteRow = (speciesId) => {
-  //   setDisplayData((prev) =>
-  //     prev.filter((item) => item.speciesId !== speciesId)
-  //   );
-  //   // TODO: need to delete in database
-  // };
-
   // delete row with Confirmation before deletion
   const handleDeleteRow = (speciesId) => {
     setDeleteId(speciesId);
     setOpenConfirmation(true);
+    console.log("id to delete: ", deleteId);
   };
 
   // Confirm delete
   const handleConfirmDelete = () => {
     if (deleteId) {
       setDisplayData((prev) =>
-        prev.filter((item) => item.regionId !== deleteId));
+        prev.filter((item) => item.speciesId !== deleteId));
       // TODO: need to delete in from database
     }
     setOpenConfirmation(false);
@@ -153,17 +142,17 @@ function SpeciesPage() {
     if (locationInput === "") {
       setDisplayData(data);
     } else {
-      const results = data.filter(
-        (item) => item.location === LocationMap[locationInput]
+      const results = data.filter((item) =>
+        item.location.some((loc) => loc.toLowerCase().includes(locationInput.toLowerCase().trim()))
       );
+      console.log("results: ", results);
       setDisplayData(results);
     }
-  };
-
+  }
   // add species
   const handleAddSpecies = (newSpeciesData) => {
     // Generate a unique speciesId for the new species
-    const newSpeciesId = data.length + 1;
+    const newSpeciesId = displayData.length + 1;
 
     // Create a new species object with the generated speciesId
     const newSpecies = {
@@ -171,8 +160,12 @@ function SpeciesPage() {
       ...newSpeciesData,
     };
 
-    setData([...data, newSpecies]);
+    setDisplayData([...displayData, newSpecies]);
     setOpenAddSpeciesDialog(false);
+    console.log("speciesId: ", newSpecies.speciesId);
+
+    // TODO: update the database with the new entry
+
   };
 
 
@@ -226,7 +219,7 @@ function SpeciesPage() {
                   Common Name(s)
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "45%" }}>
+              <TableCell style={{ width: "40%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Description
                 </Typography>
@@ -241,7 +234,12 @@ function SpeciesPage() {
                   Resources
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "5%" }}>
+              <TableCell style={{ width: "10%" }}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  Region
+                </Typography>
+              </TableCell>
+              <TableCell style={{ width: "10%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Actions
                 </Typography>
@@ -254,7 +252,9 @@ function SpeciesPage() {
             {displayData &&
               (location !== ""
                 ? displayData
-                  .filter((item) => item.location === LocationMap[location])
+                .filter((item) =>
+                  item.location.some((loc) => loc.toLowerCase().includes(location.toLowerCase().trim()))
+                )
                   .sort((a, b) => a.scientificName.localeCompare(b.scientificName))
                   .map((row) => (
                     <TableRow key={row.speciesId}>
@@ -325,22 +325,36 @@ function SpeciesPage() {
                             />
                           </TableCell>
 
+                          {/* region */}
+                          <TableCell>
+                            <TextField
+                              value={tempData.location.join(", ")}
+                              onChange={(e) =>
+                                handleSearchInputChange(
+                                  "region",
+                                  e.target.value.split(", ")
+                                )
+                              }
+                            />
+                          </TableCell>
+
+
+
                           {/* edit/delete */}
                           <TableCell>
-                            <Button
-                              onClick={() => startEdit(row.speciesId, row)}
-                              sx={{ color: COLOR }}
-                              startIcon={<EditIcon />}
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              onClick={() => handleDeleteRow(row.speciesId, row)}
-                              sx={{ color: "brown" }}
-                              startIcon={<DeleteIcon />}
-                            >
-                              Delete
-                            </Button>
+                            <Tooltip title="Edit"
+                              onClick={() => startEdit(row.speciesId, row)}>
+                              <IconButton>
+                                <EditIcon />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip
+                              title="Delete"
+                              onClick={() => handleDeleteRow(row.speciesId, row)}>
+                              <IconButton>
+                                <DeleteIcon />
+                              </IconButton>
+                            </Tooltip>
                           </TableCell>
                         </>
                       ) : (
@@ -358,19 +372,21 @@ function SpeciesPage() {
                               : row.alternatives}
                           </TableCell>
                           <TableCell>{row.links?.join(", ")}</TableCell>
+                            <TableCell>{row.location.join(", ")}</TableCell>
                           <TableCell>
-                            <Button onClick={() => startEdit(row.speciesId, row)}
-                                sx={{ color: COLOR }}
-                              startIcon={<EditIcon />}>
-                              Edit
-                            </Button>
-                            <Button
-                              onClick={() => handleDeleteRow(row.speciesId, row)}
-                              sx={{ color: "brown" }}
-                              startIcon={<DeleteIcon />}
-                            >
-                              Delete
-                            </Button>
+                              <Tooltip title="Edit"
+                                onClick={() => startEdit(row.speciesId, row)}>
+                                <IconButton>
+                                  <EditIcon />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip
+                                title="Delete"
+                                onClick={() => handleDeleteRow(row.speciesId, row)}>
+                                <IconButton>
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Tooltip>
                           </TableCell>
                         </>
                       )}
@@ -447,20 +463,34 @@ function SpeciesPage() {
                             />
                           </TableCell>
 
+                          {/* region */}
+                          <TableCell>
+                            <TextField
+                              value={tempData.location.join(", ")}
+                              onChange={(e) =>
+                                handleSearchInputChange(
+                                  "region",
+                                  e.target.value.split(", ")
+                                )
+                              }
+                            />
+                          </TableCell>
+
                           {/* edit/delete */}
                           <TableCell>
-                            <Button onClick={() => startEdit(row.speciesId, row)}
-                              sx={{ color: COLOR }}
-                              startIcon={<EditIcon />}>
-                              Edit
-                            </Button>
-                            <Button
-                              onClick={() => handleDeleteRow(row.speciesId, row)}
-                              sx={{ color: "brown" }}
-                              startIcon={<DeleteIcon />}
-                            >
-                              Delete
-                            </Button>
+                            <Tooltip title="Edit"
+                              onClick={() => startEdit(row.speciesId, row)}>
+                              <IconButton>
+                                <EditIcon />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip
+                              title="Delete"
+                              onClick={() => handleDeleteRow(row.speciesId, row)}>
+                              <IconButton>
+                                <DeleteIcon />
+                              </IconButton>
+                            </Tooltip>
                           </TableCell>
                         </>
                       ) : (
@@ -478,19 +508,21 @@ function SpeciesPage() {
                               : row.alternatives}
                           </TableCell>
                           <TableCell>{row.links?.join(", ")}</TableCell>
+                            <TableCell>{row.location.join(", ")}</TableCell>
                           <TableCell>
-                            <Button onClick={() => startEdit(row.speciesId, row)}
-                                sx={{ color: COLOR }}
-                              startIcon={<EditIcon />}>
-                              Edit
-                            </Button>
-                            <Button
-                              onClick={() => handleDeleteRow(row.speciesId, row)}
-                              sx={{ color: "brown" }}
-                              startIcon={<DeleteIcon />}
-                            >
-                              Delete
-                            </Button>
+                              <Tooltip title="Edit"
+                                onClick={() => startEdit(row.speciesId, row)}>
+                                <IconButton>
+                                  <EditIcon />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip
+                                title="Delete"
+                                onClick={() => handleDeleteRow(row.speciesId, row)}>
+                                <IconButton>
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Tooltip>
                           </TableCell>
                         </>
                       )}
@@ -505,6 +537,7 @@ function SpeciesPage() {
         open={openAddSpeciesDialog}
         handleClose={() => setOpenAddSpeciesDialog(false)}
         handleAdd={handleAddSpecies}
+        data={displayData}
       />
 
       <EditSpeciesDialog

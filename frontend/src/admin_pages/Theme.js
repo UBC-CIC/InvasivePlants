@@ -1,4 +1,5 @@
-import { createTheme, alpha } from '@mui/material';
+import { alpha } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
 
 const Theme = createTheme({
     components: {

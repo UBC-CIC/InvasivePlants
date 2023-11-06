@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@mui/icons-material": "^5.14.16"
+    "@mui/icons-material": "^5.14.16",
+    "@mui/x-data-grid": "^6.18.0"
   }
 }

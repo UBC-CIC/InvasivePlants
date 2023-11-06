@@ -1,5 +1,6 @@
 import { Autocomplete, Box, TextField } from '@mui/material';
 import RegionsTestData from '../test_data/regionsTestData';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 const LocationFilterComponent = ({ handleLocationSearch, location, setLocation }) => {
   return (
@@ -11,7 +12,12 @@ const LocationFilterComponent = ({ handleLocationSearch, location, setLocation }
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Filter by Location"
+            label={
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <LocationOnIcon sx={{ marginRight: '0.5rem' }} />
+                Filter by Region
+              </div>
+            }
             value={location}
             onChange={(e) => {
               setLocation(e.target.value.toLowerCase());

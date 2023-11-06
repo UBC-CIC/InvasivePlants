@@ -1,4 +1,4 @@
-import LocationMap from "../functions/locationMap";
+import RegionMap from "../functions/RegionMap";
 
 export const SpeciesTestData = [
     {
@@ -13,7 +13,7 @@ export const SpeciesTestData = [
             "echinacea_pallida",
             "rudbeckia_hirta",
         ],
-        location: LocationMap["bc"]
+        location: ["BC", "ON"]
     },
     {
         speciesId: "2",
@@ -22,7 +22,7 @@ export const SpeciesTestData = [
         links: ["http://example.com"],
         description: "A type of flowering shrub.",
         alternatives: ["Hemerocallis fulva"],
-        location: LocationMap["bc"]
+        location: ["BC"]
     },
     {
         speciesId: "3",
@@ -35,7 +35,7 @@ export const SpeciesTestData = [
         description:
             "Psammophiliella muralis is an annual, with erect glabrous (non hairy) stems. It grows up to 30–40 cm (12–16 in) tall, with linear shaped leaves. It blooms between summer and fall, with pink or very occasionally white flowers, which are 3.5–6 cm (1.4–2.4 in) across. Later it has fruit capsules, which are ovoid or ellipsoid, inside are snail-shaped seeds.",
         alternatives: [],
-        location: LocationMap["bc"]
+        location: ["BC"]
     },
     {
         speciesId: "4",
@@ -54,7 +54,7 @@ export const SpeciesTestData = [
             "anaphalis_margaritacea",
             "limonium_latifolium",
         ],
-        location: LocationMap["on"]
+        location: ["ON", "test"]
     },
 ];
 
