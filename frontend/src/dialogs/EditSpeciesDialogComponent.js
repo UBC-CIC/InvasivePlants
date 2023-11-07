@@ -143,7 +143,7 @@ const EditSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFini
                 </DialogActions>
             </Dialog >
 
-            <Snackbar open={showSaveConfirmation} autoHideDuration={4000} onClose={handleClose}>
+            <Snackbar open={showSaveConfirmation} autoHideDuration={5000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
                     Saved successfully!
                 </Alert>

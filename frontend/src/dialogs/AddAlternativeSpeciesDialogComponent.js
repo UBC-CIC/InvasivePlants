@@ -140,7 +140,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
       </DialogActions>
       </Dialog >
 
-      <Snackbar open={showOpen} autoHideDuration={4000} onClose={() => setShowOpen(false)}>
+      <Snackbar open={showOpen} autoHideDuration={5000} onClose={() => setShowOpen(false)}>
         <Alert onClose={() => setShowOpen(false)} severity="success" sx={{ width: '100%' }}>
           Added successfully!
         </Alert>

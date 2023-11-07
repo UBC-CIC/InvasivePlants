@@ -197,7 +197,7 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                                     variant="standard"
                                     label={<div style={{ display: 'flex', alignItems: 'center' }}>
                                         <SearchIcon sx={{ marginRight: '0.5rem' }} />
-                                        Alternative Species
+                                        Alternative Species (multiselect)
                                     </div>
                                     }
                                     multiline
