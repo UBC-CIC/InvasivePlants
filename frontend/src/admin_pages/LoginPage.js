@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import {
-    Button,
-    TextField,
-    Grid,
-    Paper,
-    Typography,
-    Container,
-    Box
-} from '@mui/material';
+import { Button, TextField, Grid, Paper, Typography, Container, Box, alpha } from '@mui/material';
 import adminCredentials from '../components/adminCredentials.json';
 
 const LoginPage = ({ handleLogin }) => {
@@ -35,7 +27,7 @@ const LoginPage = ({ handleLogin }) => {
     };
 
     return (
-        <Container fixed>
+        <Container fixed >
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '50px' }}>
                 <Typography variant="h4">
                     Invasive Species Management System
@@ -43,7 +35,7 @@ const LoginPage = ({ handleLogin }) => {
             </Box>
             <Container maxWidth="xs">
                 <Paper elevation={3} style={{ padding: 20, marginTop: 50 }}>
-                    <Typography variant="h5" align="center" gutterBottom>
+                    <Typography variant="h5" align="center" gutterBottom >
                         Admin Login
                     </Typography>
                     <form onSubmit={handleLoginSubmit}>
@@ -68,8 +60,14 @@ const LoginPage = ({ handleLogin }) => {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <Button type="submit" variant="contained" color="primary" fullWidth>
-                                    Login
+                                <Button type="submit" variant="contained" color="primary" fullWidth
+                                    sx={{
+                                        backgroundColor: alpha('#699cb8', 0.9),
+                                        '&:hover': {
+                                            backgroundColor: '#5e8da6',
+                                        }
+                                    }}>
+                                    Log in
                                 </Button>
                             </Grid>
                         </Grid>
