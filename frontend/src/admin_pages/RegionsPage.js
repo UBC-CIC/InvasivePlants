@@ -260,7 +260,7 @@ function RegionsPage() {
                             </TableCell>
                             <TableCell style={{ width: "10%" }}>
                                 <Typography variant="subtitle1" fontWeight="bold">
-                                    Geographic Coordinates (longitude, latitude)
+                                    Geographic Coordinates (latitude, longitude)
                                 </Typography>
                             </TableCell>
                             <TableCell style={{ width: "5%" }}>

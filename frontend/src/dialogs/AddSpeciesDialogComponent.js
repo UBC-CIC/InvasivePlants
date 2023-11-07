@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { alpha, Snackbar, Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Autocomplete, Tooltip, alpha, Snackbar, Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import RegionsTestData from "../test_data/regionsTestData";
-import AddAlternativeSpecies from "./AddAlternativeSpeciesDialogComponent";
+import AddAlternativeSpeciesDialog from "./AddAlternativeSpeciesDialogComponent";
+import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData";
+import SearchIcon from '@mui/icons-material/Search';
 
 const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialSpeciesData = {
@@ -12,12 +14,13 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         alternatives: [],
         location: []
     };
-
+    const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
     const [showOpen, setShowOpen] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [showWarning, setShowWarning] = useState(false);
     const [speciesData, setSpeciesData] = useState(initialSpeciesData);
     const [alternativeDialog, setOpenAddAlternativeDialog] = useState(false);
+    const [alternativeSpeciesTestData, setAlternativeSpeciesTestData] = useState(AlternativeSpeciesTestData);
 
     const handleInputChange = (field, value) => {
         if (field === "regionCode") {
@@ -62,10 +65,29 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         handleClose();
     };
 
-    const handleAddAlternativeSpecies = () => {
-        // AddAlternativeSpecies();
 
+    const handleAddAlternativeSpecies = (newAlternativeSpeciesData) => {
+        // Generate a unique regionId for the new alternative species
+        const newAltSpeciesId = alternativeSpeciesTestData.length + 1;
+
+        // Create a new region object with the generated regionId
+        const newAlternativeSpecies = {
+            regionId: newAltSpeciesId,
+            ...newAlternativeSpeciesData,
+        };
+
+        setAlternativeSpeciesTestData([...alternativeSpeciesTestData, newAlternativeSpecies]);
+        setOpenAddAlternativeDialog(false);
+
+    // TODO: update the alternative table database with the new entry
     }
+
+    const handleCloseAlt = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenAddAlternativeDialog(false);
+    };
 
     return (
         <div>
@@ -150,14 +172,41 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                     />
 
                     {/* TODO: need button to add alternative species and dropdown to select from alternative*/}
-                    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: "1rem" }}>
-                        <TextField
-                            fullWidth
-                            label="Alternative Species"
-                            value={speciesData.alternatives}
-                            onChange={(e) => handleInputChange('alternatives', e.target.value)}
-                            sx={{ flex: 4, marginRight: '1rem', height: '100%' }}
+                    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: "1rem" }}>                
+                        <Autocomplete
+                            multiple
+                            id="alternative-species-autocomplete"
+                            options={alternativeSpeciesTestData}
+                            getOptionLabel={(option) =>
+                                `${option.alternativeScientificName} (${option.alternativeCommonName ? option.alternativeCommonName.join(', ') : ''})`
+                            }
+                            value={
+                                Array.isArray(speciesData.alternatives)
+                                    ? speciesData.alternatives
+                                    : []
+                            }
+                            onChange={(event, values) =>
+                                handleInputChange("alternatives", values)
+                            }
+                            open={alternativeSpeciesAutocompleteOpen}
+                            onFocus={() => setAlternativeAutocompleteOpen(true)}
+                            onBlur={() => setAlternativeAutocompleteOpen(false)}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="standard"
+                                    label={<div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <SearchIcon sx={{ marginRight: '0.5rem' }} />
+                                        Alternative Species
+                                    </div>
+                                    }
+                                    multiline
+                                    sx={{ width: "100%", marginBottom: "1rem" }}
+                                />
+                            )}
+                            sx={{ flex: 5, marginRight: '1rem', height: '100%', width: "100%" }}
                         />
+                        <Tooltip title="Alternative species not in list?" placement="top">
                         <Button
                             variant="contained"
                             onClick={() => setOpenAddAlternativeDialog(true)}
@@ -171,6 +220,8 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                         >
                             Add alternative
                         </Button>
+                        </Tooltip>
+
                     </Box>
 
                     <TextField
@@ -182,13 +233,13 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                     />
                     
                     <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
-                        <InputLabel id="region-label">Region</InputLabel>
+                        <InputLabel id="region-label">Region (multiselect)</InputLabel>
                         <Select
                             labelId="region-label"
                             multiple
                             value={speciesData.location}
                             onChange={(e) => handleInputChange("regionCode", e.target.value)}
-                            label="Region"
+                            label="Region (multiselect)"
                             renderValue={(selected) => selected.join(", ")}
                         >
                             {RegionsTestData.map((item) => (
@@ -206,9 +257,11 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                 </DialogActions>
             </Dialog>
 
-            <AddAlternativeSpecies
+            <AddAlternativeSpeciesDialog
                 open={alternativeDialog}
-                handleClose={() => setOpenAddAlternativeDialog(false)}
+                handleClose={handleCloseAlt}
+                data={alternativeSpeciesTestData}
+                handleAdd={handleAddAlternativeSpecies}
             />
 
             <Snackbar open={showOpen} autoHideDuration={4000} onClose={() => setShowOpen(false)}>
@@ -219,6 +272,6 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
 
         </div >
     );
-};
+};                  
 
 export default AddSpeciesDialog;

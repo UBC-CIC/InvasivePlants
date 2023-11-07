@@ -7,9 +7,9 @@ import EditSpeciesDialog from "../dialogs/EditSpeciesDialogComponent";
 import LocationFilterComponent from '../components/LocationFilterComponent';
 import SearchComponent from '../components/SearchComponent';
 import AddSpeciesDialog from "../dialogs/AddSpeciesDialogComponent";
-import { SpeciesTestData } from "../test_data/speciesTestData";
+import SpeciesTestData from "../test_data/speciesTestData";
+import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData";
 import DeleteDialog from "../dialogs/ConfirmDeleteDialog";
-
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -27,6 +27,7 @@ function SpeciesPage() {
   const [location, setLocation] = useState("");
   const [deleteId, setDeleteId] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [alternativeSpeciesTestData, setAlternativeSpeciesTestData] = useState(AlternativeSpeciesTestData);
 
   // gets rows that matches search and location input 
   const filterData = data.filter((item) =>
@@ -165,9 +166,7 @@ function SpeciesPage() {
     console.log("speciesId: ", newSpecies.speciesId);
 
     // TODO: update the database with the new entry
-
   };
-
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -209,12 +208,12 @@ function SpeciesPage() {
           {/* table header */}
           <TableHead>
             <TableRow>
-              <TableCell style={{ width: "10%" }}>
+              <TableCell style={{ width: "8%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Scientific Name
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "12%" }}>
+              <TableCell style={{ width: "10%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Common Name(s)
                 </Typography>
@@ -234,12 +233,12 @@ function SpeciesPage() {
                   Resources
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "10%" }}>
+              <TableCell style={{ width: "8%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Region(s)
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "10%" }}>
+              <TableCell style={{ width: "9%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Actions
                 </Typography>
@@ -300,8 +299,13 @@ function SpeciesPage() {
                             <TextField
                               value={
                                 Array.isArray(tempData.alternatives)
-                                  ? tempData.alternatives.join(", ")
-                                  : tempData.alternatives
+                                  ? tempData.alternatives.map((alternative) => {
+                                    const foundOption = AlternativeSpeciesTestData.find(
+                                      (option) => option.alternativeScientificName === alternative
+                                    );
+                                    return foundOption ? foundOption.alternativeScientificName : "";
+                                  })
+                                  : []
                               }
                               onChange={(e) =>
                                 handleSearchInputChange(
@@ -367,9 +371,9 @@ function SpeciesPage() {
                           </TableCell>
                           <TableCell>{row.description}</TableCell>
                           <TableCell>
-                            {Array.isArray(row.alternatives)
-                              ? row.alternatives.join(", ")
-                              : row.alternatives}
+                              {Array.isArray(row.alternatives)
+                                ? row.alternatives.map((item) => item.alternativeScientificName).join(", ")
+                                : row.alternatives}
                           </TableCell>
                             <TableCell>
                               {Array.isArray(row.links) ? row.links.join(", ") : row.links}
@@ -444,8 +448,13 @@ function SpeciesPage() {
                             <TextField
                               value={
                                 Array.isArray(tempData.alternatives)
-                                  ? tempData.alternatives.join(", ")
-                                  : tempData.alternatives
+                                  ? tempData.alternatives.map((alternative) => {
+                                    const foundOption = AlternativeSpeciesTestData.find(
+                                      (option) => option.alternativeScientificName === alternative
+                                    );
+                                    return foundOption ? foundOption.alternativeScientificName : "";
+                                  })
+                                  : []
                               }
                               onChange={(e) =>
                                 handleSearchInputChange(
@@ -509,9 +518,9 @@ function SpeciesPage() {
                           </TableCell>
                           <TableCell>{row.description}</TableCell>
                           <TableCell>
-                            {Array.isArray(row.alternatives)
-                              ? row.alternatives.join(", ")
-                              : row.alternatives}
+                              {Array.isArray(row.alternatives)
+                                ? row.alternatives.map((item) => item.alternativeScientificName).join(", ")
+                                : row.alternatives}
                             </TableCell>
                             <TableCell>
                               {Array.isArray(row.links) ? row.links.join(", ") : row.links}
@@ -565,7 +574,6 @@ function SpeciesPage() {
         handleClose={() => setOpenConfirmation(false)}
         handleDelete={handleConfirmDelete}
       />
-
     </div >
   );
 }

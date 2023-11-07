@@ -9,8 +9,7 @@ import {
 
 
 // Import components
-import AddAlternativeSpecies from './addAlternativeSpecies';
-import AlternativeSpeciesSelector from './alternativeSpeciesSelector';
+import AddAlternativeSpeciesDialog from '../dialogs/AddAlternativeSpeciesDialogComponent';
 
 export default function AddSpeciesForm({ setViewAddSpeciesForm }) {
     // UI transition state functions
@@ -121,8 +120,6 @@ export default function AddSpeciesForm({ setViewAddSpeciesForm }) {
           onChange={handleInputChange}
           sx={{ width: '100%', mb: 2 }}
         />
-        <AlternativeSpeciesSelector />
-
         <Button variant="contained" onClick={() => setAddAlternativePopUpOpen(true)}>Add Alternative Species</Button>
         <Box sx={{ mt: 3 }}>
           <Button variant="contained" color="primary" type="submit">
@@ -139,7 +136,7 @@ export default function AddSpeciesForm({ setViewAddSpeciesForm }) {
         </Box>
       </Box>
       {/* Pop up for adding alternative species  */}
-      <AddAlternativeSpecies 
+      <AddAlternativeSpeciesDialog 
       addAlternativePopUpOpen = {addAlternativePopUpOpen}
       setAddAlternativePopUpOpen = {setAddAlternativePopUpOpen}
       />

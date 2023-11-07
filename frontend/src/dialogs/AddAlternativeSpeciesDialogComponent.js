@@ -1,60 +1,59 @@
 import React, { useState } from "react";
-import { alpha, Snackbar, Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { Snackbar, Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 
+const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
 
-const AddAlternativeSpecies = ({ open, handleClose, handleAdd }) => {
   const initialSpeciesData = {
-    scientificName: "",
-    commonName: "",
+    alternativeScientificName: "",
+    alternativeCommonName: [],
     description: "",
-    location: "",
+    image_links: [],
   };
-  // const [showOpen, setShowOpen] = useState(false);
-  // const [showAlert, setShowAlert] = useState(false);
-  // const [showWarning, setShowWarning] = useState(false);
+
+  const [showOpen, setShowOpen] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   const [speciesData, setSpeciesData] = useState(initialSpeciesData);
 
   const handleInputChange = (field, value) => {
     setSpeciesData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // const handleConfirmAddSpecies = () => {
-  //   // const foundSpecies = data.find((item) => item.scientificName.toLowerCase() === speciesData.scientificName.toLowerCase());
+  const handleConfirmAddAlternativeSpecies = () => {
+    const foundSpecies = data.find((item) => item.alternativeScientificName.toLowerCase() === speciesData.alternativeScientificName.toLowerCase());
+    if (speciesData.alternativeScientificName.trim() === "") {
+      setShowAlert(true);
+      return;
+    }
+    if (foundSpecies) {
+      setShowWarning(true);
+    } else {
+      handleAddAlternativeSpecies();
+    }
+  };
 
-  //   if (speciesData.scientificName.trim() === "") {
-  //     setShowAlert(true);
-  //     return;
-  //   }
-  // if (foundSpecies) {
-  //   setShowWarning(true);
-  // } else {
-  //   handleAddSpecies();
-  // }
-  // };
+  const handleAddAlternativeSpecies = () => {
+    setShowOpen(true)
+    const modifiedSpeciesData = {
+      ...speciesData,
+      alternativeCommonName: typeof speciesData.alternativeCommonName === 'string' ? speciesData.alternativeCommonName.split(",") : [],
+      image_links: typeof speciesData.image_links === 'string' ? speciesData.image_links.split(",") : [],
+    };
+    handleAdd(modifiedSpeciesData);
+    handleCancel();
+  };
 
-  // const handleAddSpecies = () => {
-  //   setShowOpen(true)
-  //   const modifiedSpeciesData = {
-  //     ...speciesData,
-  //     commonName: speciesData.commonName.split(","),
-  //     links: speciesData.links.split(","),
-  //     alternatives: speciesData.alternatives.split(","),
-  //   };
-  //   handleAdd(modifiedSpeciesData);
-  //   handleCancel();
-  // };
-
-  // const handleCancel = () => {
-  //   setShowWarning(false);
-  //   setShowAlert(false);
-  //   setSpeciesData(initialSpeciesData);
-  //   handleClose();
-  // };
+  const handleCancel = () => {
+    setShowWarning(false);
+    setShowAlert(false);
+    setSpeciesData(initialSpeciesData);
+    handleClose();
+  };
 
 
-  // <div>
-  {/* <Dialog open={showAlert} onClose={() => setShowAlert(false)}>
+  return (
+    <div>
+      <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
         <Alert severity="error">
           <AlertTitle>Empty Field!</AlertTitle>
           Please enter a <strong>valid scientific name.</strong>
@@ -70,14 +69,13 @@ const AddAlternativeSpecies = ({ open, handleClose, handleAdd }) => {
             >OK</Button>
           </Box>
         </Alert>
-
       </Dialog>
 
       <Dialog open={showWarning} onClose={() => setShowWarning(false)}>
-        {speciesData.scientificName && (
+        {speciesData.alternativeScientificName && (
           <div>
             <Alert severity="warning">
-              <AlertTitle><strong>{speciesData.scientificName}</strong> already exists!</AlertTitle>
+              <AlertTitle><strong>{speciesData.alternativeScientificName}</strong> already exists!</AlertTitle>
               Do you want to <strong>add anyways?</strong>
               <Box sx={{ display: 'flex', width: '100%', marginTop: '10px', justifyContent: 'flex-end' }}>
                 <Button onClick={() => setShowWarning(false)}
@@ -87,8 +85,7 @@ const AddAlternativeSpecies = ({ open, handleClose, handleAdd }) => {
                       backgroundColor: "#dbc8a0"
                     }
                   }}>Cancel</Button>
-                <Button
-                  // onClick={() => setOpenAddAlternativeDialog(true)} startIcon={<AddCircleOutlineIcon />}
+                <Button onClick={handleAddAlternativeSpecies}
                   sx={{
                     color: "#362502",
                     "&:hover": {
@@ -101,24 +98,23 @@ const AddAlternativeSpecies = ({ open, handleClose, handleAdd }) => {
             </Alert>
           </div>
         )}
-      </Dialog> */}
+      </Dialog> 
 
-  return (
     < Dialog open={open} onClose={handleClose} >
-      <DialogTitle>Add a Alternative Species</DialogTitle>
+        <DialogTitle>Add an Alternative Species</DialogTitle>
       <DialogContent>
         <TextField
           fullWidth
           label="Scientific Name"
-          value={speciesData.scientificName}
-          onChange={(e) => handleInputChange("scientificName", e.target.value)}
+            value={speciesData.alternativeScientificName}
+            onChange={(e) => handleInputChange("alternativeScientificName", e.target.value)}
           sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}
         />
         <TextField
           fullWidth
           label="Common Name (separate with commas)"
-          value={speciesData.commonName}
-          onChange={(e) => handleInputChange("commonName", e.target.value)}
+            value={speciesData.alternativeCommonName}
+            onChange={(e) => handleInputChange("alternativeCommonName", e.target.value)}
           sx={{ width: "100%", marginBottom: "1rem" }}
         />
         <TextField
@@ -133,26 +129,25 @@ const AddAlternativeSpecies = ({ open, handleClose, handleAdd }) => {
         <TextField
           fullWidth
           label="Links (separate with commas)"
-          value={speciesData.links}
-          onChange={(e) => handleInputChange("links", e.target.value)}
+            value={speciesData.image_links}
+            onChange={(e) => handleInputChange("image_links", e.target.value)}
           sx={{ width: "100%", marginBottom: "1rem" }}
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button>Submit</Button>
+          <Button onClick={handleCancel}>Cancel</Button>
+          <Button onClick={handleConfirmAddAlternativeSpecies}>Submit</Button>
       </DialogActions>
-    </Dialog >
-  );
-};
+      </Dialog >
 
-{/* <Snackbar open={showOpen} autoHideDuration={4000} onClose={() => setShowOpen(false)}>
+      <Snackbar open={showOpen} autoHideDuration={4000} onClose={() => setShowOpen(false)}>
         <Alert onClose={() => setShowOpen(false)} severity="success" sx={{ width: '100%' }}>
           Added successfully!
         </Alert>
-      </Snackbar> */}
+      </Snackbar>
 
-// </div >
+    </div >
+  );
+};
 
-
-export default AddAlternativeSpecies;
+export default AddAlternativeSpeciesDialog;
