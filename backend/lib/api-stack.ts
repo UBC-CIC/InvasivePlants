@@ -154,7 +154,7 @@ export class APIStack extends Stack {
             environment: {
                 SM_DB_CREDENTIALS: db.secretPath,
                 RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint
-              },
+            },
             functionName: "IntegLambInvasiveSpecies",
             memorySize: 512,
             layers: [postgres],
