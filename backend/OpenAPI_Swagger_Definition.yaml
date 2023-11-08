@@ -13,6 +13,14 @@ tags:
     description: The alternative spcies route information
   - name: Save List
     description: The save list route information
+x-amazon-apigateway-request-validators: 
+  all:
+    validateRequestParameters : true
+    validateRequestBody : true
+  params-only : 
+    validateRequestParameters" : true
+    validateRequestBody" : false
+x-amazon-apigateway-request-validator: params-only
 paths:
   /region:
     get: 
@@ -20,10 +28,9 @@ paths:
         - Region
       summary: Get the list of available regions
       operationId: region_GET
-      parameters: []
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -43,34 +50,9 @@ paths:
         - Region
       summary: Add a region
       operationId: region_POST
-      parameters:
-        - in: query
-          name: region_code_name
-          required: true
-          description: Region code should be all upper case
-          schema: 
-            type: string
-        - in: query
-          name: region_fullname
-          required: true
-          description: Region fullname all lower case
-          schema: 
-            type: string
-        - in: query
-          name: country_fullname
-          required: true
-          description: Country fullname of the region all lower case
-          schema: 
-            type: string
-        - in: query
-          name: geographic_coordinate
-          required: false
-          description: Geographic coordinate of the region following (latitude, longitude)
-          schema: 
-            type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -78,13 +60,20 @@ paths:
         "429":
           description: Too Many Requests
         "500":
-          description: Internal Server Error             
+          description: Internal Server Error    
+      x-amazon-apigateway-request-validator: all        
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambRegion.Arn}/invocations"
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Region'      
   /region/{region_id}:
     get: 
       tags:
@@ -99,7 +88,7 @@ paths:
             type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -126,33 +115,9 @@ paths:
           required: true
           schema: 
             type: string
-        - in: query
-          name: region_code_name
-          required: false
-          description: Region code should be all upper case
-          schema: 
-            type: string
-        - in: query
-          name: region_fullname
-          required: false
-          description: Region fullname all lower case
-          schema: 
-            type: string
-        - in: query
-          name: country_fullname
-          required: false
-          description: Country fullname of the region all lower case
-          schema: 
-            type: string
-        - in: query
-          name: geographic_coordinate
-          required: false
-          description: Geographic coordinate of the region following (latitude, longitude)
-          schema: 
-            type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -161,12 +126,26 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      x-amazon-apigateway-request-validator: all
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambRegion.Arn}/invocations"
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Region'
+                - type: object
+                  required:
+                  - region_code_name
+                  - region_fullname
+                  - country_fullname
+                  - geographic_coordinate
     delete: 
       tags:
         - Region
@@ -180,7 +159,7 @@ paths:
             type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -205,13 +184,13 @@ paths:
       parameters:
         - in: query
           name: scientific_name
-          required: true
+          required: false
           description: Scientific name following lowercase and underscore for space format
           schema: 
             type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -231,40 +210,9 @@ paths:
         - Invasive Species
       summary: Add invasive species to database
       operationId: invasiveSpecies_POST
-      parameters:
-        - in: query
-          name: scientific_name
-          required: true
-          description: Scientific name following lowercase and underscore for space format
-          schema: 
-            type: array
-        - in: query
-          name: common_name
-          required: false
-          description: common name of species should be all lower case
-          schema: 
-            type: array
-        - in: query
-          name: resource_links
-          required: false
-          description: List of links to the resources
-          schema: 
-            type: array
-        - in: query
-          name: species_description
-          required: false
-          description: Description of the alternative species
-          schema: 
-            type: string
-        - in: query
-          name: alternative_species
-          required: false
-          description: List of alternative species based on alternative species_id
-          schema: 
-            type: array
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -273,12 +221,19 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      x-amazon-apigateway-request-validator: all
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambInvasiveSpecies.Arn}/invocations"
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvasiveSpecies'
   /invasiveSpecies/{species_id}:
     get: 
       tags:
@@ -294,7 +249,7 @@ paths:
             type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -321,39 +276,9 @@ paths:
           required: true
           schema: 
             type: string
-        - in: query
-          name: scientific_name
-          required: true
-          description: Scientific name following lowercase and underscore for space format
-          schema: 
-            type: array
-        - in: query
-          name: common_name
-          required: false
-          description: common name of species should be all lower case
-          schema: 
-            type: array
-        - in: query
-          name: resource_links
-          required: false
-          description: List of links to the resources
-          schema: 
-            type: array
-        - in: query
-          name: species_description
-          required: false
-          description: Description of the alternative species
-          schema: 
-            type: string
-        - in: query
-          name: alternative_species
-          required: false
-          description: List of alternative species based on alternative species_id
-          schema: 
-            type: array
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -362,12 +287,27 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      x-amazon-apigateway-request-validator: all
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambInvasiveSpecies.Arn}/invocations"
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/InvasiveSpecies'
+                - type: object
+                  required:
+                  - scientific_name
+                  - region_id
+                  - resource_links
+                  - species_description
+                  - alternative_species
     delete: 
       tags:
         - Invasive Species
@@ -381,7 +321,7 @@ paths:
             type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -402,9 +342,16 @@ paths:
         - Alternative Species
       summary: Get the list of available alternative species
       operationId: alternativeSpecies_GET
+      parameters:
+        - in: query
+          name: scientific_name
+          required: false
+          description: Scientific name following lowercase and underscore for space format
+          schema: 
+            type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -424,40 +371,9 @@ paths:
         - Alternative Species
       summary: Add alternative species to database
       operationId: alternativeSpecies_POST
-      parameters:
-        - in: query
-          name: scientific_name
-          required: true
-          description: Scientific name following lowercase and underscore for space format
-          schema: 
-            type: array
-        - in: query
-          name: common_name
-          required: false
-          description: common name of species should be all lower case
-          schema: 
-            type: array
-        - in: query
-          name: resource_links
-          required: false
-          description: List of links to the resources
-          schema: 
-            type: array
-        - in: query
-          name: image_links
-          required: false
-          description: list of links to images
-          schema: 
-            type: array
-        - in: query
-          name: species_description
-          required: false
-          description: Description of the alternative species
-          schema: 
-            type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -466,12 +382,19 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      x-amazon-apigateway-request-validator: all
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambAlternativeSpecies.Arn}/invocations"
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
-        type: "aws_proxy"
+        type: "aws_proxy" 
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlternativeSpecies'
   /alternativeSpecies/{species_id}:
     get: 
       tags:
@@ -486,7 +409,7 @@ paths:
             type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -507,39 +430,14 @@ paths:
       summary: Update alternative species details
       operationId: alternativeSpecies_speciesID_PUT
       parameters:
-        - in: query
-          name: scientific_name
+        - in: path
+          name: species_id
           required: true
-          description: Scientific name following lowercase and underscore for space format
-          schema: 
-            type: array
-        - in: query
-          name: common_name
-          required: false
-          description: common name of species should be all lower case
-          schema: 
-            type: array
-        - in: query
-          name: resource_links
-          required: false
-          description: List of links to the resources
-          schema: 
-            type: array
-        - in: query
-          name: image_links
-          required: false
-          description: list of links to images
-          schema: 
-            type: array
-        - in: query
-          name: species_description
-          required: false
-          description: Description of the alternative species
           schema: 
             type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -548,12 +446,27 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      x-amazon-apigateway-request-validator: all
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambAlternativeSpecies.Arn}/invocations"
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/AlternativeSpecies'
+                - type: object
+                  required:
+                  - scientific_name
+                  - common_name
+                  - resource_links
+                  - image_links
+                  - species_description
     delete: 
       tags:
         - Alternative Species
@@ -567,7 +480,7 @@ paths:
             type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -583,27 +496,14 @@ paths:
         httpMethod: "POST"
         type: "aws_proxy" 
   /saveList:
-    post: 
+    get: 
       tags:
         - Save List
-      summary: Add save list to database
-      operationId: saveList_POST
-      parameters:
-        - in: query
-          name: list_name
-          required: true
-          description: name of the save list
-          schema: 
-            type: string
-        - in: query
-          name: saved_species
-          required: true
-          description: list of saved species based on scientific name
-          schema: 
-            type: array
+      summary: List all lists in the to database ONLY FOR TESTING, TO BE REMOVE
+      operationId: saveList_GET
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -618,6 +518,35 @@ paths:
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy"
+    post: 
+      tags:
+        - Save List
+      summary: Add save list to database
+      operationId: saveList_POST
+      responses:
+        "200": 
+          description: Data Available
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Internal Server Error             
+      x-amazon-apigateway-request-validator: all
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambSaveList.Arn}/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SavedList'
   /saveList/{list_id}:
     get: 
       tags:
@@ -632,7 +561,7 @@ paths:
             type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -653,21 +582,14 @@ paths:
       summary: Update save list details
       operationId: saveList_listID_PUT
       parameters:
-        - in: query
-          name: list_name
-          required: false
-          description: name of the save list
+        - in: path
+          name: list_id
+          required: true
           schema: 
             type: string
-        - in: query
-          name: saved_species
-          required: false
-          description: list of saved species based on scientific name
-          schema: 
-            type: array
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -676,12 +598,19 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      x-amazon-apigateway-request-validator: all
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambSaveList.Arn}/invocations"
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SavedList'
     delete: 
       tags:
         - Save List
@@ -695,7 +624,7 @@ paths:
             type: string
       responses:
         "200": 
-          description: Region data available
+          description: Data Available
         "400":
           description: Bad Request
         "401":
@@ -710,49 +639,101 @@ paths:
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy" 
-
 components:
-  parameters:
-    WidgetID:
-      in: path
-      name: widgetID
-      required: true
-      schema:
-        type: number
-  requestBodies:
-    Widget:
-      description: Represents a Widget creation.
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Widget'
-  responses:
-    Widgets:
-      description: OK
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/Widget'
-    Widget:
-      description: OK
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Widget'
   schemas:
-    Widget:
+    Region:
       type: object
-      properties:
-        id:
-          type: number
-        name:
-          type: string
-        description:
-          type: string
       required:
-        - id
-        - name
-        - description
+        - region_code_name
+        - region_fullname
+        - country_fullname
+      properties:
+        region_code_name:
+          type: string
+          description: Region code should be all upper case
+        region_fullname:
+          type: string
+          description: Region fullname all lower case
+        country_fullname:
+          type: string
+          description: Country fullname of the region all lower case
+        geographic_coordinate: 
+          type: string
+          description: Geographic coordinate of the region following (latitude, longitude)
+          items:
+            type: string
+    InvasiveSpecies:
+      type: object
+      required:
+        - scientific_name
+        - region_id
+      properties: 
+        scientific_name:
+          type: array
+          description: Scientific name following lowercase and underscore for space format
+          items:
+            type: string
+          example: [ "panthera_tigris", "acinonyx_jubatus" ]
+        resource_links:
+          type: array
+          description: List of links to the resources
+          items:
+            type: string
+          example: [ "http://example.com/resources/tiger", "http://example.com/resources/cheetah" ]
+        species_description:
+          type: string
+          description: Description of the species
+          example: "A large predatory cat native to Asia."
+        region_id:
+          type: array
+          description: List of region_id
+          items:
+            type: string
+        alternative_species:
+          type: array
+          description: List of alternative species based on alternative species_id
+          items:
+            type: string
+          example: [ "lycaon_pictus", "vulpes_vulpes" ]
+    AlternativeSpecies:
+      type: object
+      required:
+        - scientific_name
+      properties:
+        scientific_name:
+          type: array
+          description: Scientific name following lowercase and underscore for space format
+          items:
+            type: string
+        common_name:
+          type: array
+          description: Common name of species should be all lower case
+          items:
+            type: string
+        resource_links:
+          type: array
+          description: List of links to the resources
+          items:
+            type: string
+        image_links:
+          type: array
+          description: List of links to images
+          items:
+            type: string
+        species_description:
+          type: string
+          description: Description of the species
+    SavedList:
+      type: object
+      required:
+        - list_name
+        - saved_species
+      properties:
+        list_name:
+          type: string
+          description: Name of the saved list
+        saved_species:
+          type: array
+          description: List of saved species based on scientific name
+          items:
+            type: string
