@@ -32,7 +32,7 @@ function RegionsPage() {
     const filterData = data.filter((item) =>
         (searchTerm === "" || (
             item.regionFullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.regionId.toLowerCase().includes(searchTerm.toLowerCase())
+            item.regionCode.toLowerCase().includes(searchTerm.toLowerCase())
         )) &&
         (country === "" || item.country.toLowerCase() === country.toLowerCase())
     );

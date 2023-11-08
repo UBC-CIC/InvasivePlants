@@ -4,8 +4,8 @@ import Theme from './Theme';
 
 import RegionMap from "../functions/RegionMap";
 import EditSpeciesDialog from "../dialogs/EditSpeciesDialogComponent";
-import LocationFilterComponent from '../components/LocationFilterComponent';
-import SearchComponent from '../components/SearchComponent';
+import LocationFilterComponent from '../Components/LocationFilterComponent';
+import SearchComponent from '../Components/SearchComponent';
 import AddSpeciesDialog from "../dialogs/AddSpeciesDialogComponent";
 import SpeciesTestData from "../test_data/speciesTestData";
 import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData";

@@ -1,0 +1,72 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-invasiveplants-dev-142641-authRole",
+      "UnauthRoleArn": "arn:aws:iam::925092432586:role/amplify-invasiveplants-dev-142641-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::925092432586:role/amplify-invasiveplants-dev-142641-authRole",
+      "Region": "ca-central-1",
+      "DeploymentBucketName": "amplify-invasiveplants-dev-142641-deployment",
+      "UnauthRoleName": "amplify-invasiveplants-dev-142641-unauthRole",
+      "StackName": "amplify-invasiveplants-dev-142641",
+      "StackId": "arn:aws:cloudformation:ca-central-1:925092432586:stack/amplify-invasiveplants-dev-142641/ba9625f0-7dbc-11ee-8a7c-02f4de891b6a",
+      "AmplifyAppId": "d3qr2tqi4hed3o"
+    }
+  },
+  "auth": {
+    "invasiveplantsf6679f53": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "frontendAuthConfig": {
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-invasiveplants-dev-142641-deployment/amplify-cfn-templates/auth/invasiveplantsf6679f53-cloudformation-template.json",
+        "logicalId": "authinvasiveplantsf6679f53"
+      },
+      "lastPushTimeStamp": "2023-11-08T00:17:11.758Z",
+      "output": {
+        "UserPoolId": "ca-central-1_nXTolWQzl",
+        "AppClientIDWeb": "1n7k70v4krd24m4n8hos2gi7ee",
+        "AppClientID": "36vh1p6mv20ntg6sesgjlsk5rc",
+        "IdentityPoolId": "ca-central-1:69e94826-f239-4d4b-98f3-236c515e9082",
+        "UserPoolArn": "arn:aws:cognito-idp:ca-central-1:925092432586:userpool/ca-central-1_nXTolWQzl",
+        "IdentityPoolName": "invasiveplantsf6679f53_identitypool_f6679f53__dev",
+        "UserPoolName": "invasiveplantsf6679f53_userpool_f6679f53"
+      },
+      "lastPushDirHash": "8lbO6m4xuwPf6SnfIl5v5IkRipA="
+    }
+  },
+  "hosting": {
+    "amplifyhosting": {
+      "service": "amplifyhosting",
+      "providerPlugin": "awscloudformation",
+      "type": "manual",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-invasiveplants-dev-142641-deployment/amplify-cfn-templates/hosting/amplifyhosting-template.json",
+        "logicalId": "hostingamplifyhosting"
+      },
+      "lastPushTimeStamp": "2023-11-08T00:17:11.760Z",
+      "output": {},
+      "lastPushDirHash": "E8M5x/VK9yzAGEzvyKepd7cD7j4="
+    }
+  }
+}
