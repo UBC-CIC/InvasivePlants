@@ -2,14 +2,26 @@ import {Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Asset } from 'aws-cdk-lib/aws-s3-assets';
 import { Fn } from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
 
 // Service files import
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as rds from 'aws-cdk-lib/aws-rds';
+import * as ec2 from "aws-cdk-lib/aws-ec2";
+import * as secretmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as logs from "aws-cdk-lib/aws-logs";
+
+// Stack import
+import { VpcStack } from './vpc-stack';
+import { DBStack } from './database-stack';
 
 export class APIStack extends Stack {
-    constructor(scope: Construct, id: string, props?: StackProps){
+    private readonly dbInstance: rds.DatabaseInstance;
+    private readonly secretPath: string;
+    private readonly rdsProxyEndpoint: string; 
+    constructor(scope: Construct, id: string, vpcStack: VpcStack, db: DBStack, props?: StackProps){
         super(scope, id, props);
 
         /**
@@ -37,15 +49,85 @@ export class APIStack extends Stack {
 
         /**
          * 
+         * Create Integration Lambda layer for PSQL
+         */ 
+        const postgres = new lambda.LayerVersion(this, 'postgres', {
+            code: lambda.Code.fromAsset('./lambda/layers/postgres.zip'),
+            compatibleRuntimes: [lambda.Runtime.NODEJS_16_X],
+            description: 'Contains the postgres library for JS',
+        });
+
+        /**
+         * 
+         * Create an IAM role for lambda function to assume to get access to database
+         */
+        //Create a role for lambda to access the postgresql database
+        const lambdaRole = new iam.Role(this, "postgresLambdaRole", {
+            roleName: "postgresLambdaRole",
+            assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
+        });
+
+        // Grant access to EC2
+        lambdaRole.addToPolicy(
+            new iam.PolicyStatement({
+              effect: iam.Effect.ALLOW,
+              actions: [
+                "ec2:CreateNetworkInterface",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DeleteNetworkInterface",
+                "ec2:AssignPrivateIpAddresses",
+                "ec2:UnassignPrivateIpAddresses",
+              ],
+              resources: ["*"], // must be *
+            })
+        );
+
+        // Grant access to Secret Manager
+        lambdaRole.addToPolicy(
+            new iam.PolicyStatement({
+              effect: iam.Effect.ALLOW,
+              actions: [
+                //Secrets Manager
+                "secretsmanager:GetSecretValue",
+              ],
+              resources: [
+                `arn:aws:secretsmanager:${this.region}:${this.account}:secret:InvasivePlants/credentials/*`,
+              ],
+            })
+        );
+
+        // Grant access to log
+        lambdaRole.addToPolicy(
+            new iam.PolicyStatement({
+              effect: iam.Effect.ALLOW,
+              actions: [
+                //Logs
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              resources: ["arn:aws:logs:*:*:*"],
+            })
+        );
+
+        /**
+         * 
          * Create Integration Lambda for Region API Gateway endpoint
          */
         const IL_Region = new lambda.Function(this, 'IntegLambRegion', {
-            runtime: lambda.Runtime.NODEJS_18_X,    // Execution environment
+            runtime: lambda.Runtime.NODEJS_16_X,    // Execution environment
             code: lambda.Code.fromAsset('lambda'),  // Code loaded from "lambda" directory
             handler: 'regionFunction.handler',         // Code handler
-
+            timeout: Duration.seconds(300),
+            vpc: vpcStack.vpc,
+            environment: {
+                SM_DB_CREDENTIALS: db.secretPath,
+                RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint
+              },
             functionName: "IntegLambRegion",
-            memorySize: 128,
+            memorySize: 512,
+            layers: [postgres],
+            role: lambdaRole
         });
 
         // Add the permission to the Lambda function's policy to allow API Gateway access
@@ -64,12 +146,19 @@ export class APIStack extends Stack {
          * Create Integration Lambda for Invasive Species API Gateway endpoint
          */
         const IL_InvasiveSpecies = new lambda.Function(this, 'IntegLambInvasiveSpecies', {
-            runtime: lambda.Runtime.NODEJS_18_X,    // Execution environment
+            runtime: lambda.Runtime.NODEJS_16_X,    // Execution environment
             code: lambda.Code.fromAsset('lambda'),  // Code loaded from "lambda" directory
             handler: 'invasiveSpeciesFunction.handler',         // Code handler
-
+            timeout: Duration.seconds(300),
+            vpc: vpcStack.vpc,
+            environment: {
+                SM_DB_CREDENTIALS: db.secretPath,
+                RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint
+              },
             functionName: "IntegLambInvasiveSpecies",
-            memorySize: 128,
+            memorySize: 512,
+            layers: [postgres],
+            role: lambdaRole
         });
 
         // Add the permission to the Lambda function's policy to allow API Gateway access
@@ -88,12 +177,19 @@ export class APIStack extends Stack {
          * Create Integration Lambda for Alternative Species API Gateway endpoint
          */
         const IL_alternativeSpecies = new lambda.Function(this, 'IntegLambAlternativeSpecies', {
-            runtime: lambda.Runtime.NODEJS_18_X,    // Execution environment
+            runtime: lambda.Runtime.NODEJS_16_X,    // Execution environment
             code: lambda.Code.fromAsset('lambda'),  // Code loaded from "lambda" directory
             handler: 'alternativeSpeciesFunction.handler',         // Code handler
-
+            timeout: Duration.seconds(300),
+            vpc: vpcStack.vpc,
+            environment: {
+                SM_DB_CREDENTIALS: db.secretPath,
+                RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint
+              },
             functionName: "IntegLambAlternativeSpecies",
-            memorySize: 128,
+            memorySize: 512,
+            layers: [postgres],
+            role: lambdaRole
         });
 
         // Add the permission to the Lambda function's policy to allow API Gateway access
@@ -112,12 +208,19 @@ export class APIStack extends Stack {
          * Create Integration Lambda for Save List API Gateway endpoint
          */
         const IL_saveList = new lambda.Function(this, 'IntegLambSaveList', {
-            runtime: lambda.Runtime.NODEJS_18_X,    // Execution environment
+            runtime: lambda.Runtime.NODEJS_16_X,    // Execution environment
             code: lambda.Code.fromAsset('lambda'),  // Code loaded from "lambda" directory
-            handler: 'saveListFunction.handler',    // Code handler
-
+            handler: 'saveListFunction.handler',         // Code handler
+            timeout: Duration.seconds(300),
+            vpc: vpcStack.vpc,
+            environment: {
+                SM_DB_CREDENTIALS: db.secretPath,
+                RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint
+              },
             functionName: "IntegLambSaveList",
-            memorySize: 128,
+            memorySize: 512,
+            layers: [postgres],
+            role: lambdaRole
         });
 
         // Add the permission to the Lambda function's policy to allow API Gateway access
@@ -131,37 +234,13 @@ export class APIStack extends Stack {
         const cfnLambda_saveList  = IL_saveList.node.defaultChild as lambda.CfnFunction;
         cfnLambda_saveList.overrideLogicalId("IntegLambSaveList");
         
-
-
-
-
-
-
-
-
-
-
-
-        // const api = new apigateway.RestApi(this, 'APIGateway', {
-        //     restApiName: "ParkinsonsAPI",
-        //     endpointTypes: [apigateway.EndpointType.REGIONAL],
-        //     deployOptions: {
-        //         metricsEnabled: true,
-        //         loggingLevel: apigateway.MethodLoggingLevel.INFO,
-        //         dataTraceEnabled: true,
-        //         stageName: 'prod',
-        //         methodOptions: {
-        //         "/*/*": {
-        //             throttlingRateLimit: 100,
-        //             throttlingBurstLimit: 200
-        //         }
-        //         }
-        //     },
-        // });
-        // const books = api.root.addResource('books');
-        // books.addMethod('GET', new apigateway.LambdaIntegration(integrationLambda));
-        
     }
 }
 // Cogito is next
 // https://medium.com/@michael.leigh.stewart/securing-an-api-with-aws-cdk-api-gateway-and-cognito-cee9158a2ddb
+// https://www.youtube.com/watch?v=9crTLAT_4uY 
+
+// RDS
+// https://www.subaud.io/blog/build-a-private-rds-with-lambda-integration
+// https://www.freecodecamp.org/news/aws-lambda-rds/
+// https://github.com/schuettc/cdk-private-rds-with-lambda/blob/main/src/lambda.ts
