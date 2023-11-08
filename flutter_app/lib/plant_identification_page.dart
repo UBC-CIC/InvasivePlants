@@ -1,84 +1,96 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
-class PlantIdentificationPage extends StatelessWidget {
-  final String imagePath; // Pass the image path to display
-  final List<String> organs = [
-    'LEAF',
-    'FLOWER',
-    'FRUIT',
-    'BARK',
-    'HABIT',
-    'OTHER'
-  ];
+class PlantIdentificationPage extends StatefulWidget {
+  final String imagePath;
 
-  PlantIdentificationPage({super.key, required this.imagePath});
+  const PlantIdentificationPage({super.key, required this.imagePath});
 
+  @override
+  State<PlantIdentificationPage> createState() =>
+      _PlantIdentificationPageState();
+}
+
+class _PlantIdentificationPageState extends State<PlantIdentificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SELECT PLANT ORGAN'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Text(
+          'SELECT PLANT ORGAN',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
       body: Column(
         children: <Widget>[
-          Hero(
-            tag: 'plantImage',
-            child: Image.asset(
-              imagePath, // Use the provided image path
+          Container(
+            height: 260,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+            ),
+            child: Image.file(
+              File(widget.imagePath),
               fit: BoxFit.cover,
-              height: MediaQuery.of(context).size.height / 3,
             ),
           ),
-          GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // 2 columns
-              childAspectRatio: 1.5, // Aspect ratio of rectangles
-            ),
-            itemCount: organs.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  debugPrint('Selected organ: ${organs[index]}');
-                },
-                child: Container(
-                  margin: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Text(organs[index]),
-                  ),
-                ),
-              );
-            },
+          GridView.count(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            crossAxisCount: 2,
+            childAspectRatio: 1.5,
+            children: [
+              _buildGridItem("LEAF", 'assets/images/leaf.png'),
+              _buildGridItem("FLOWER", 'assets/images/flower.png'),
+              _buildGridItem("FRUIT", 'assets/images/fruit.png'),
+              _buildGridItem("BARK", 'assets/images/bark.png'),
+              _buildGridItem("HABIT", 'assets/images/habit.png'),
+              _buildGridItem("OTHER", 'assets/images/other.png'),
+            ],
           ),
           Row(
-            children: [
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
               Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    // Handle the 'Upload Another' action
-                  },
-                  child: Container(
-                    color: Colors.grey,
-                    height: 50,
-                    child: const Center(
-                      child: Text('+ Upload Another'),
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(7, 2, 5, 4),
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      debugPrint("+ Upload Another");
+                    },
+                    icon: const Icon(Icons.add, color: Colors.black),
+                    label: const Text('Upload Another',
+                        style: TextStyle(color: Colors.black)),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: const Color.fromARGB(255, 221, 221, 221),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
                   ),
                 ),
               ),
               Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    // Handle the 'Find Matches' action
-                  },
-                  child: Container(
-                    color: Colors.grey,
-                    height: 50,
-                    child: const Center(
-                      child: Text('Find Matches'),
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(5, 2, 7, 4),
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      debugPrint("Find Matches");
+                    },
+                    icon: const Icon(Icons.search, color: Colors.black),
+                    label: const Text('Find Matches',
+                        style: TextStyle(color: Colors.black)),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: const Color.fromARGB(255, 221, 221, 221),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
                   ),
                 ),
@@ -86,6 +98,34 @@ class PlantIdentificationPage extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildGridItem(String text, String imageUrl) {
+    return GestureDetector(
+      onTap: () {
+        debugPrint(text);
+      },
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(imageUrl),
+            fit: BoxFit.cover,
+          ),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ),
     );
   }
