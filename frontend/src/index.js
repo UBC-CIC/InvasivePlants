@@ -25,15 +25,15 @@ import { createRoot } from 'react-dom/client';
 import { applyMiddleware, createStore } from "redux";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
-import { Amplify } from 'aws-amplify'
-import awsExports from "./aws-exports";
+// import { Amplify } from 'aws-amplify'
+// import awsExports from "./aws-exports";
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import reducers from "./Reducers";
 import 'semantic-ui-css/semantic.min.css';
 
-Amplify.configure(awsExports);
+// Amplify.configure(awsExports);
 
 const store = createStore(
   reducers, applyMiddleware(thunk)
