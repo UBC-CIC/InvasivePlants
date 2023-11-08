@@ -13,7 +13,7 @@ import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { green, red } from '@mui/material/colors';
 
 import { makeStyles, withStyles } from '@mui/styles';
-import { Auth } from "aws-amplify";
+import { Amplify } from 'aws-amplify'
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { updateLoginState } from "../../Actions/loginActions";
@@ -130,7 +130,7 @@ function Login(props) {
     useEffect(() => {
         async function retrieveUser() {
             try {
-                Auth.currentAuthenticatedUser().then(user => {
+                Amplify.currentAuthenticatedUser().then(user => {
                     updateLoginState("signedIn");
                 }).catch(err => {
                     updateLoginState("signIn");
@@ -189,7 +189,7 @@ function Login(props) {
             checkEmptyString(family_name);
 
             setLoading(true);
-            await Auth.signUp({
+            await Amplify.signUp({
                 username: email,
                 password: password,
                 attributes: {
@@ -227,7 +227,7 @@ function Login(props) {
             setNewVerification(false);
             const { email, authCode } = formState;
             setLoading(true);
-            await Auth.confirmSignUp(email, authCode);
+            await Amplify.confirmSignUp(email, authCode);
             resetStates("signedIn");
             setLoading(false);
         } catch (e) {
@@ -245,7 +245,7 @@ function Login(props) {
         try {
             const { email } = formState;
             setVerificationError(false);
-            await Auth.resendSignUp(email);
+            await Amplify.resendSignUp(email);
             setNewVerification(true);
         } catch (err) {
             setNewVerification(false);
@@ -261,7 +261,7 @@ function Login(props) {
         try {
             setLoading(true);
             const { email, password } = formState;
-            let user = await Auth.signIn(email, password);
+            let user = await Amplify.signIn(email, password);
             if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
                 // a new password needs to be set if account is created through Amazon Cognito for the user
                 resetStates("newUserPassword")
@@ -296,7 +296,7 @@ function Login(props) {
 
             const { password } = formState;
             setLoading(true);
-            await Auth.completeNewPassword(currentUser, password);
+            await Amplify.completeNewPassword(currentUser, password);
             resetStates("signedIn");
             setLoading(false);
         } catch (e) {
@@ -320,7 +320,7 @@ function Login(props) {
         try {
             const { email } = formState;
             setLoading(true);
-            await Auth.forgotPassword(email);
+            await Amplify.forgotPassword(email);
             updateFormState(() => ({ ...initialFormState, email }))
             updateLoginState("resetPassword")
             setLoading(false);
@@ -338,7 +338,7 @@ function Login(props) {
 
             const { email, resetCode, password } = formState;
             setLoading(true);
-            await Auth.forgotPasswordSubmit(email, resetCode, password);
+            await Amplify.forgotPasswordSubmit(email, resetCode, password);
             resetStates("signIn");
             setLoading(false);
         } catch (e) {
