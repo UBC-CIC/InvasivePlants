@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/camera_page.dart';
 import 'package:flutter_app/settings_page.dart';
 import 'category_info_page.dart';
 
@@ -123,6 +124,16 @@ class _HomePageState extends State<HomePage> {
             label: '',
           ),
         ],
+        onTap: (int index) {
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CameraPage(),
+              ),
+            );
+          }
+        },
       ),
     );
   }
@@ -162,7 +173,7 @@ class _HomePageState extends State<HomePage> {
             child: Text(
               speciesName,
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 15,
                 color: Colors.black,
               ),
             ),
