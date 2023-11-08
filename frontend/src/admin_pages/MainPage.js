@@ -6,6 +6,8 @@ import YardIcon from '@mui/icons-material/Yard';
 import Theme from './Theme';
 
 const MainPage = ({ setViewSpecies, setViewRegions }) => {
+    console.log("got to dashboard");
+
     return (
         <ThemeProvider theme={Theme}>
             <Container>
