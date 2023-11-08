@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
-import Theme from './Theme';
+import Theme from '../../admin_pages/Theme';
 
-import RegionMap from "../functions/RegionMap";
-import EditSpeciesDialog from "../dialogs/EditSpeciesDialogComponent";
-import LocationFilterComponent from '../Components/LocationFilterComponent';
-import SearchComponent from '../Components/SearchComponent';
-import AddSpeciesDialog from "../dialogs/AddSpeciesDialogComponent";
-import SpeciesTestData from "../test_data/speciesTestData";
-import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData";
-import DeleteDialog from "../dialogs/ConfirmDeleteDialog";
+import RegionMap from "../../functions/RegionMap";
+import EditSpeciesDialog from "../../dialogs/EditSpeciesDialogComponent";
+import LocationFilterComponent from '../../Components/LocationFilterComponent';
+import SearchComponent from '../../Components/SearchComponent';
+import AddSpeciesDialog from "../../dialogs/AddSpeciesDialogComponent";
+import SpeciesTestData from "../../test_data/speciesTestData";
+import AlternativeSpeciesTestData from "../../test_data/alternativeSpeciesTestData";
+import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -196,9 +196,9 @@ function SpeciesPage() {
       {/* button to add species */}
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <ThemeProvider theme={Theme}>
-        <Button variant="contained" onClick={() => setOpenAddSpeciesDialog(true)} startIcon={<AddCircleOutlineIcon />}>
-          Add Species
-        </Button>
+          <Button variant="contained" onClick={() => setOpenAddSpeciesDialog(true)} startIcon={<AddCircleOutlineIcon />}>
+            Add Species
+          </Button>
         </ThemeProvider>
       </div>
 
@@ -251,9 +251,9 @@ function SpeciesPage() {
             {displayData &&
               (location !== ""
                 ? displayData
-                .filter((item) =>
-                  item.location.some((loc) => loc.toLowerCase().includes(location.toLowerCase().trim()))
-                )
+                  .filter((item) =>
+                    item.location.some((loc) => loc.toLowerCase().includes(location.toLowerCase().trim()))
+                  )
                   .sort((a, b) => a.scientificName.localeCompare(b.scientificName))
                   .map((row) => (
                     <TableRow key={row.speciesId}>
@@ -371,32 +371,32 @@ function SpeciesPage() {
                           </TableCell>
                           <TableCell>{row.description}</TableCell>
                           <TableCell>
-                              {Array.isArray(row.alternatives)
-                                ? row.alternatives.map((item) => item.alternativeScientificName).join(", ")
-                                : row.alternatives}
+                            {Array.isArray(row.alternatives)
+                              ? row.alternatives.map((item) => item.alternativeScientificName).join(", ")
+                              : row.alternatives}
                           </TableCell>
-                            <TableCell>
-                              {Array.isArray(row.links) ? row.links.join(", ") : row.links}
-                            </TableCell>
-                            <TableCell>
-                              {Array.isArray(row.location)
-                                ? row.location.join(", ")
-                                : row.location}
-                            </TableCell>
                           <TableCell>
-                              <Tooltip title="Edit"
-                                onClick={() => startEdit(row.speciesId, row)}>
-                                <IconButton>
-                                  <EditIcon />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip
-                                title="Delete"
-                                onClick={() => handleDeleteRow(row.speciesId, row)}>
-                                <IconButton>
-                                  <DeleteIcon />
-                                </IconButton>
-                              </Tooltip>
+                            {Array.isArray(row.links) ? row.links.join(", ") : row.links}
+                          </TableCell>
+                          <TableCell>
+                            {Array.isArray(row.location)
+                              ? row.location.join(", ")
+                              : row.location}
+                          </TableCell>
+                          <TableCell>
+                            <Tooltip title="Edit"
+                              onClick={() => startEdit(row.speciesId, row)}>
+                              <IconButton>
+                                <EditIcon />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip
+                              title="Delete"
+                              onClick={() => handleDeleteRow(row.speciesId, row)}>
+                              <IconButton>
+                                <DeleteIcon />
+                              </IconButton>
+                            </Tooltip>
                           </TableCell>
                         </>
                       )}
@@ -518,32 +518,32 @@ function SpeciesPage() {
                           </TableCell>
                           <TableCell>{row.description}</TableCell>
                           <TableCell>
-                              {Array.isArray(row.alternatives)
-                                ? row.alternatives.map((item) => item.alternativeScientificName).join(", ")
-                                : row.alternatives}
-                            </TableCell>
-                            <TableCell>
-                              {Array.isArray(row.links) ? row.links.join(", ") : row.links}
-                            </TableCell>
-                            <TableCell>
-                              {Array.isArray(row.location)
-                                ? row.location.join(", ")
-                                : row.location}
-                            </TableCell>
-                            <TableCell>
-                              <Tooltip title="Edit"
-                                onClick={() => startEdit(row.speciesId, row)}>
-                                <IconButton>
-                                  <EditIcon />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip
-                                title="Delete"
-                                onClick={() => handleDeleteRow(row.speciesId, row)}>
-                                <IconButton>
-                                  <DeleteIcon />
-                                </IconButton>
-                              </Tooltip>
+                            {Array.isArray(row.alternatives)
+                              ? row.alternatives.map((item) => item.alternativeScientificName).join(", ")
+                              : row.alternatives}
+                          </TableCell>
+                          <TableCell>
+                            {Array.isArray(row.links) ? row.links.join(", ") : row.links}
+                          </TableCell>
+                          <TableCell>
+                            {Array.isArray(row.location)
+                              ? row.location.join(", ")
+                              : row.location}
+                          </TableCell>
+                          <TableCell>
+                            <Tooltip title="Edit"
+                              onClick={() => startEdit(row.speciesId, row)}>
+                              <IconButton>
+                                <EditIcon />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip
+                              title="Delete"
+                              onClick={() => handleDeleteRow(row.speciesId, row)}>
+                              <IconButton>
+                                <DeleteIcon />
+                              </IconButton>
+                            </Tooltip>
                           </TableCell>
                         </>
                       )}

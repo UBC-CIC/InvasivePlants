@@ -1,6 +1,6 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { Route, Routes, useNavigate, Navigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate, Navigate } from 'react-router-dom';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -16,10 +16,10 @@ import { connect } from "react-redux";
 import { updateMenuState } from "../../Actions/menuActions";
 
 /** Import Pages **/
-import { PlantNet } from '../../pages/pl@ntNet';
-import Dashboard from '../../pages/dashboard';
-import DownloadWebscrap from "../../pages/downloadWebscrap";
-import Error404 from '../../Components/error404';
+import Dashboard from '../Pages/dashboard';
+import Error404 from '../Pages/error404';
+import SpeciesPage from '../Pages/SpeciesPage';
+import RegionPage from '../Pages/RegionsPage';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -49,10 +49,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 function PageContainer(props) {
+    console.log("got to page container");
+
     const { menuEnabled, updateMenuState } = props;
     const classes = useStyles();
-    // const history = useHistory();
-
     const history = useNavigate();
 
     /*
@@ -103,11 +103,13 @@ function PageContainer(props) {
 
         <main className={classes.content}>
             <Routes>
-                <Route exact path={"/"} component={Dashboard} />
-                <Route exact path={"/dashboard"} component={Dashboard} />
-                <Route exact path={"/plantnet"} component={PlantNet} />
-                <Route exact path={'/webscrape'} component={DownloadWebscrap} />
-            </Routes>
+                <Route path="/" element={<Navigate to="/dashboard" />} />
+                <Route path="/login" element={<Navigate to="/dashboard" />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/species" element={<SpeciesPage />} />
+                <Route path="/regions" element={<RegionPage />} />
+                <Route path="*" element={<Error404 />} />
+            </Routes>           
         </main>
     </Grid>)
 }

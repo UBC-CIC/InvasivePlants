@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useTheme } from '@material-ui/core/styles';
-import { useHistory, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Grid from '@material-ui/core/Grid';
@@ -26,7 +26,7 @@ import { NavLink } from 'react-router-dom';
 
 
 /* List of tabs for the header */
-const pages = ['dashboard', 'courses', 'settings'];
+const pages = ['dashboard', 'species', 'regions'];
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -82,8 +82,7 @@ function Navbar(props) {
     const { updateLoginState, updateMenuState, loginState, menuEnabled, showSideMenuButton } = props;
     const classes = useStyles();
     const theme = useTheme();
-    // const history = useHistory();
-    const history = useNavigate();
+    const navigate = useNavigate();
 
 
     const [user, setUser] = useState("");
@@ -175,7 +174,7 @@ function Navbar(props) {
                 const returnedUser = await Auth.currentAuthenticatedUser();
                 setUser(returnedUser.attributes.email);
             } catch (e) {
-
+                console.log(e);
             }
         }
         retrieveUser();
@@ -187,7 +186,7 @@ function Navbar(props) {
 
     async function onSignOut() {
         updateLoginState("signIn");
-        history.push("/");
+        navigate('/');
         await Auth.signOut();
     }
 
@@ -196,7 +195,7 @@ function Navbar(props) {
             <AppBar position="static">
                 <Toolbar>
                     <Typography className={classes.title} variant="h6" component={"h1"} noWrap>
-                        <span><span>UBC</span><span style={{ color: `${theme.palette.secondary.main}` }}>/</span><span>Flexibility Dashboard</span></span>
+                        <span><span>UBC</span><span style={{ color: `${theme.palette.secondary.main}` }}>/</span><span>Invasive Plants Management Dashboard</span></span>
                     </Typography>
                     {/* <img className={classes.logo} style={{width: "270px", height: "30px"}} src={process.env.PUBLIC_URL + './Assets/Images/logo_inverse.png'} alt="..."/> */}
                     <div className={classes.grow} />

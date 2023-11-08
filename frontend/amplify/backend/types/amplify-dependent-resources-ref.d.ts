@@ -1,6 +1,6 @@
 export type AmplifyDependentResourcesAttributes = {
   "auth": {
-    "invasiveplants77809a46": {
+    "invasiveplants524b34f3": {
       "AppClientID": "string",
       "AppClientIDWeb": "string",
       "IdentityPoolId": "string",

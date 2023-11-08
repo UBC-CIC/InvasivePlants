@@ -1,3 +1,5 @@
+// pw: ABCabc123!@#
+
 import { Button, CircularProgress, Divider, Grid, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import Alert from '@mui/material/Alert';
 
@@ -13,7 +15,7 @@ import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { green, red } from '@material-ui/core/colors';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Amplify } from 'aws-amplify'
+import { Auth } from 'aws-amplify';
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { updateLoginState } from "../../Actions/loginActions";
@@ -95,7 +97,6 @@ const SubmitButton = withStyles((theme) => ({
 }))(DefaultButton);
 
 function Login(props) {
-    console.log("got to login");
     const { loginState, updateLoginState, animateTitle, type, title, darkMode, logo, themeColor, disableSignUp } = props;
     const [formState, updateFormState] = useState(initialFormState);
     const [accountCreationEmailExistError, setAccountCreationEmailExistError] = useState(false);
@@ -128,17 +129,15 @@ function Login(props) {
     const classes = useStyles();
 
     useEffect(() => {
-        console.log("retrieve user");
         async function retrieveUser() {
             try {
-                Amplify.currentAuthenticatedUser().then(user => {
+                Auth.currentAuthenticatedUser().then(user => {
                     updateLoginState("signedIn");
                 }).catch(err => {
                     updateLoginState("signIn");
                 })
-
             } catch (e) {
-
+                console.log("error authenticted user", e);
             }
         }
         retrieveUser();
@@ -180,95 +179,94 @@ function Login(props) {
         e.target.value === confirmPasswordString ? setPasswordUnmatchError(false) : setPasswordUnmatchError(true)
     }
 
-    async function signUp() {
-        try {
-            console.log("try signup");
+    // async function signUp() {
+    //     try {
+    //         console.log("try signup");
 
-            // check if both passwords match first before signing up
-            checkMatchingPasswords();
+    //         // check if both passwords match first before signing up
+    //         checkMatchingPasswords();
 
-            const { email, password, given_name, family_name } = formState;
-            checkEmptyString(given_name);
-            checkEmptyString(family_name);
+    //         const { email, password, given_name, family_name } = formState;
+    //         checkEmptyString(given_name);
+    //         checkEmptyString(family_name);
 
-            setLoading(true);
-            await Amplify.signUp({
-                username: email,
-                password: password,
-                attributes: {
-                    given_name: given_name,
-                    family_name: family_name
-                }
-            });
-            updateFormState(() => ({ ...initialFormState, email }))
-            updateLoginState("confirmSignUp");
-            setLoading(false);
-        } catch (e) {
-            setLoading(false);
-            setEmptyInputError(false);
+    //         setLoading(true);
+    //         await Auth.signUp({
+    //             username: email,
+    //             password: password,
+    //             attributes: {
+    //                 given_name: given_name,
+    //                 family_name: family_name
+    //             }
+    //         });
+    //         updateFormState(() => ({ ...initialFormState, email }))
+    //         updateLoginState("confirmSignUp");
+    //         setLoading(false);
+    //     } catch (e) {
+    //         setLoading(false);
+    //         setEmptyInputError(false);
 
-            const errorMsg = e.message;
+    //         const errorMsg = e.message;
 
-            if (errorMsg.includes("empty")) {
-                setEmptyInputError(true);
-            } else if (errorMsg.includes("Username should be an email.")) {
-                setInvalidEmailError(true);
-            } else if (errorMsg.includes("given email already exists")) {
-                setAccountCreationEmailExistError(true);
-            } else if (errorMsg.includes("Passwords do not match")) {
-                setPasswordUnmatchError(true)
-            } else {
-                setAccountCreationPasswordError(true);
-            }
-        }
-    }
+    //         if (errorMsg.includes("empty")) {
+    //             setEmptyInputError(true);
+    //         } else if (errorMsg.includes("Username should be an email.")) {
+    //             setInvalidEmailError(true);
+    //         } else if (errorMsg.includes("given email already exists")) {
+    //             setAccountCreationEmailExistError(true);
+    //         } else if (errorMsg.includes("Passwords do not match")) {
+    //             setPasswordUnmatchError(true)
+    //         } else {
+    //             setAccountCreationPasswordError(true);
+    //         }
+    //     }
+    // }
 
     // confirmSignUp shows after signUp page
-    async function confirmSignUp() {
-        // Verify Account with confirmation code after sign up page
-        try {
-            console.log("try confirm signup");
+    // async function confirmSignUp() {
+    //     // Verify Account with confirmation code after sign up page
+    //     try {
+    //         console.log("try confirm signup");
 
-            setNewVerification(false);
-            const { email, authCode } = formState;
-            setLoading(true);
-            await Amplify.confirmSignUp(email, authCode);
-            resetStates("signedIn");
-            setLoading(false);
-        } catch (e) {
-            setVerificationError(true);
-            setLoading(false);
+    //         setNewVerification(false);
+    //         const { email, authCode } = formState;
+    //         setLoading(true);
+    //         await Auth.confirmSignUp(email, authCode);
+    //         resetStates("signedIn");
+    //         setLoading(false);
+    //     } catch (e) {
+    //         setVerificationError(true);
+    //         setLoading(false);
 
-            const errorMsg = e.message;
-            if (errorMsg.includes("time")) {
-                setTimeLimitError(errorMsg);
-            }
-        }
-    }
+    //         const errorMsg = e.message;
+    //         if (errorMsg.includes("time")) {
+    //             setTimeLimitError(errorMsg);
+    //         }
+    //     }
+    // }
 
-    async function resendConfirmationCode() {
-        try {
-            const { email } = formState;
-            setVerificationError(false);
-            await Amplify.resendSignUp(email);
-            setNewVerification(true);
-        } catch (err) {
-            setNewVerification(false);
+    // async function resendConfirmationCode() {
+    //     try {
+    //         const { email } = formState;
+    //         setVerificationError(false);
+    //         await Auth.resendSignUp(email);
+    //         setNewVerification(true);
+    //     } catch (err) {
+    //         setNewVerification(false);
 
-            const errorMsg = err.message;
-            if (errorMsg.includes("time")) {
-                setTimeLimitError(errorMsg);
-            }
-        }
-    }
+    //         const errorMsg = err.message;
+    //         if (errorMsg.includes("time")) {
+    //             setTimeLimitError(errorMsg);
+    //         }
+    //     }
+    // }
 
     async function signIn() {
         try {
-            console.log("try sign in");
-
+            console.log("try sign in"); // good!
             setLoading(true);
             const { email, password } = formState;
-            let user = await Amplify.signIn(email, password);
+            let user = await Auth.signIn(email, password);
             if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
                 // a new password needs to be set if account is created through Amazon Cognito for the user
                 resetStates("newUserPassword")
@@ -303,7 +301,7 @@ function Login(props) {
 
             const { password } = formState;
             setLoading(true);
-            await Amplify.completeNewPassword(currentUser, password);
+            await Auth.completeNewPassword(currentUser, password);
             resetStates("signedIn");
             setLoading(false);
         } catch (e) {
@@ -327,7 +325,7 @@ function Login(props) {
         try {
             const { email } = formState;
             setLoading(true);
-            await Amplify.forgotPassword(email);
+            await Auth.forgotPassword(email);
             updateFormState(() => ({ ...initialFormState, email }))
             updateLoginState("resetPassword")
             setLoading(false);
@@ -345,7 +343,7 @@ function Login(props) {
 
             const { email, resetCode, password } = formState;
             setLoading(true);
-            await Amplify.forgotPasswordSubmit(email, resetCode, password);
+            await Auth.forgotPasswordSubmit(email, resetCode, password);
             resetStates("signIn");
             setLoading(false);
         } catch (e) {
@@ -416,7 +414,6 @@ function Login(props) {
 
     return (
         <>
-            {console.log("got to the image stuff")}
             {/*  An example image is provided. Please use a royalty-free photo, a photo owned by you, or a photo owned by the CIC */}
             <Grid container className={classes.centerBox} style={
                 (type === "image") ? (themeColor === "standard") ? { backgroundColor: "#012144", backgroundImage: "url(./Assets/Images/background.jpg)", backgroundSize: "cover", backgroundRepeat: "no", width: "100%", height: "100vh" } :
@@ -473,11 +470,11 @@ function Login(props) {
                                     <TextFieldStartAdornment startIcon={<LockIcon />} placeholder={"Password"} name={"password"} type={"password"} onChange={onChange} />
 
                                     {/* forget */}
-                                    {/* <Grid className={`${classes.flexDisplay} ${classes.forgetPassword} ${classes.cursor}`}
+                                    <Grid className={`${classes.flexDisplay} ${classes.forgetPassword} ${classes.cursor}`}
                                         onClick={() => resetStates("forgotPassword")}
-                                    > 
-                                        <span style={{textAlign: "end"}}>Forgot your password?</span>
-                                    </Grid> */}
+                                    >
+                                        <span style={{ textAlign: "end" }}>Forgot your password?</span>
+                                    </Grid>
 
                                     <Grid className={`input-box ${classes.marginTop}`}> {/* sign in button */}
                                         <SubmitButtonWithLoading submitAction={signIn} submitMessage={"Sign In"} loadingState={loading} />
@@ -664,7 +661,9 @@ function Login(props) {
                                             e.target.value === formState.password ? setPasswordUnmatchError(false) : setPasswordUnmatchError(true)
                                         }}
                                     />
-                                    <BackAndSubmitButtons backAction={() => resetStates("signIn")} submitAction={signUp} submitMessage={"Sign Up"} loadingState={loading} />
+                                    <BackAndSubmitButtons backAction={() => resetStates("signIn")}
+                                        // submitAction={signUp} submitMessage={"Sign Up"}
+                                        loadingState={loading} />
                                 </Grid>
                             )
                         }
@@ -689,13 +688,13 @@ function Login(props) {
                                     </Grid>
                                     <Grid>
                                         <span>Didn't receive your verification code?</span>
-                                        <Button onClick={resendConfirmationCode}>
+                                        {/* <Button onClick={resendConfirmationCode}>
                                             <span className={classes.underlineText}>Resend Code</span>
-                                        </Button>
+                                        </Button> */}
                                     </Grid>
                                     <BackAndSubmitButtons
                                         backAction={() => resetStates("signUp")}
-                                        submitAction={confirmSignUp}
+                                        // submitAction={confirmSignUp}
                                         submitMessage={"Verify"}
                                         loadingState={loading}
                                     />
@@ -762,8 +761,6 @@ function Login(props) {
 /* helper components */
 
 const BannerMessage = (props) => {
-    console.log("got to banner message");
-
     const { type, typeCheck, children } = props
 
     const styles = makeStyles((theme) => ({
@@ -831,8 +828,6 @@ const BackAndSubmitButtons = ({ backAction, ...others }) => {
 };
 
 const PasswordRequirements = ({ requirements }) => {
-    console.log("pw reqs");
-
     const styles = makeStyles((theme) => ({
         valid: {
             color: green[500]

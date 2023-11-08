@@ -3,7 +3,7 @@ import { Button, Box, Container, Typography } from '@mui/material';
 import { ThemeProvider } from '@mui/system';
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 import YardIcon from '@mui/icons-material/Yard';
-import Theme from './Theme';
+import Theme from '../../admin_pages/Theme';
 
 const MainPage = ({ setViewSpecies, setViewRegions }) => {
     console.log("got to dashboard");

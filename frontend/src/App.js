@@ -1,26 +1,28 @@
-// import { BrowserRouter, Routes, Route, Switch } from "react-router-dom";
+/*
+import { BrowserRouter, Routes, Route, Switch } from "react-router-dom";
 
-// import {PlantNet} from './pages/pl@ntNet';
-// import Dashboard from './pages/dashboard';
-// import DownloadWebscrap from "./pages/downloadWebscrap";
+import { PlantNet } from './pages/pl@ntNet';
+import Dashboard from './pages/dashboard';
+import DownloadWebscrap from "./pages/downloadWebscrap";
 
-// function App() {
-//   console.log("app");
-//   return (
-//     <BrowserRouter>
-//       <Routes>
-//         <Route path="/" element={<Dashboard />} />
-//         <Route path="/test" element={<PlantNet />} />
-//         <Route path="/download" element={<DownloadWebscrap />} />
-//       </Routes>
-//     </BrowserRouter>
-//   );
-// }
+function App() {
+  console.log("app");
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/test" element={<PlantNet />} />
+        <Route path="/download" element={<DownloadWebscrap />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
 
-// export default App;
+export default App;
+*/
 
 // ###########################################################
-
+// /*
 import './App.css';
 import { BrowserRouter } from "react-router-dom";
 
@@ -32,10 +34,10 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { updateLoginState } from "./Actions/loginActions";
 import theme from "./themes";
-// import { Amplify } from 'aws-amplify'
-// import awsmobile from "./aws-exports";
+import { Amplify } from 'aws-amplify'
+import awsmobile from "./aws-exports";
 
-// Amplify.configure(awsmobile);
+Amplify.configure(awsmobile);
 
 function App(props) {
   const { loginState, updateLoginState } = props;
@@ -114,3 +116,4 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
+// */

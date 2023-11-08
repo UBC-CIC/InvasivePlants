@@ -7,32 +7,19 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 // Component imports
-import MainPage from '../admin_pages/MainPage';
-import SpeciesPage from '../admin_pages/SpeciesPage';
-import RegionsPage from '../admin_pages/RegionsPage';
-// import LoginPage from '../admin_pages/LoginPage'; 
-import Login from "../Components/Authentication/Login_material"
-// import Error404 from "../Components/error404"
-
+import MainPage from './MainPage';
+import SpeciesPage from './SpeciesPage';
+import RegionsPage from './RegionsPage';
 
 export default function Dashboard() {
-    // const [isLoggedIn, setIsLoggedIn] = useState(false); // State for managing login status
+    console.log("got to dashboard");
 
     // UI transition state functions
     const [viewSpecies, setViewSpecies] = useState(false);
     const [viewRegions, setViewRegions] = useState(false);
 
-    // const handleLogin = () => {
-    //     setIsLoggedIn(true);
-    // };
-
-    // const handleLogout = () => {
-    //     setIsLoggedIn(false);
-    // };
-
     return (
         <Container>
-            {/* {isLoggedIn ? ( */}
             <div>
                 {/* Dashboard */}
                 {!viewSpecies && !viewRegions && (
@@ -41,7 +28,6 @@ export default function Dashboard() {
                             setViewSpecies={setViewSpecies}
                             setViewRegions={setViewRegions}
                         />
-
                         {/* <Tooltip title="Logout" arrow>
                             <Button style={{ position: 'absolute', top: 10, right: 10, color: '#5e8da6' }} onClick={handleLogout}>
                                 <LogoutIcon />
@@ -70,9 +56,6 @@ export default function Dashboard() {
                     </div>
                 )}
             </div>
-            {/* ) : (
-                <LoginPage handleLogin={handleLogin} />
-            )} */}
         </Container>
     );
 }

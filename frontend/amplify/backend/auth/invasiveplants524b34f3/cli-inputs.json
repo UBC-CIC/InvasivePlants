@@ -1,10 +1,10 @@
 {
   "version": "1",
   "cognitoConfig": {
-    "identityPoolName": "invasiveplants77809a46_identitypool_77809a46",
+    "identityPoolName": "invasiveplants524b34f3_identitypool_524b34f3",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "invasi77809a46",
-    "userPoolName": "invasiveplants77809a46_userpool_77809a46",
+    "resourceNameTruncated": "invasi524b34f3",
+    "userPoolName": "invasiveplants524b34f3_userpool_524b34f3",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -31,10 +31,10 @@
     "userpoolClientReadAttributes": [
       "email"
     ],
-    "userpoolClientLambdaRole": "invasi77809a46_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "invasi524b34f3_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "77809a46",
-    "resourceName": "invasiveplants77809a46",
+    "sharedId": "524b34f3",
+    "resourceName": "invasiveplants524b34f3",
     "authSelections": "identityPoolAndUserPool",
     "useDefault": "default",
     "usernameAttributes": [
