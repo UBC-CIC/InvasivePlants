@@ -10,9 +10,9 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 
 // colors
-import { green, red } from '@mui/material/colors';
+import { green, red } from '@material-ui/core/colors';
 
-import { makeStyles, withStyles } from '@mui/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Amplify } from 'aws-amplify'
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
@@ -95,7 +95,7 @@ const SubmitButton = withStyles((theme) => ({
 }))(DefaultButton);
 
 function Login(props) {
-    console.log("got here")
+    console.log("got to login");
     const { loginState, updateLoginState, animateTitle, type, title, darkMode, logo, themeColor, disableSignUp } = props;
     const [formState, updateFormState] = useState(initialFormState);
     const [accountCreationEmailExistError, setAccountCreationEmailExistError] = useState(false);
@@ -128,6 +128,7 @@ function Login(props) {
     const classes = useStyles();
 
     useEffect(() => {
+        console.log("retrieve user");
         async function retrieveUser() {
             try {
                 Amplify.currentAuthenticatedUser().then(user => {
@@ -181,6 +182,8 @@ function Login(props) {
 
     async function signUp() {
         try {
+            console.log("try signup");
+
             // check if both passwords match first before signing up
             checkMatchingPasswords();
 
@@ -224,6 +227,8 @@ function Login(props) {
     async function confirmSignUp() {
         // Verify Account with confirmation code after sign up page
         try {
+            console.log("try confirm signup");
+
             setNewVerification(false);
             const { email, authCode } = formState;
             setLoading(true);
@@ -259,6 +264,8 @@ function Login(props) {
 
     async function signIn() {
         try {
+            console.log("try sign in");
+
             setLoading(true);
             const { email, password } = formState;
             let user = await Amplify.signIn(email, password);
@@ -409,6 +416,7 @@ function Login(props) {
 
     return (
         <>
+            {console.log("got to the image stuff")}
             {/*  An example image is provided. Please use a royalty-free photo, a photo owned by you, or a photo owned by the CIC */}
             <Grid container className={classes.centerBox} style={
                 (type === "image") ? (themeColor === "standard") ? { backgroundColor: "#012144", backgroundImage: "url(./Assets/Images/background.jpg)", backgroundSize: "cover", backgroundRepeat: "no", width: "100%", height: "100vh" } :
@@ -754,6 +762,8 @@ function Login(props) {
 /* helper components */
 
 const BannerMessage = (props) => {
+    console.log("got to banner message");
+
     const { type, typeCheck, children } = props
 
     const styles = makeStyles((theme) => ({
@@ -821,6 +831,8 @@ const BackAndSubmitButtons = ({ backAction, ...others }) => {
 };
 
 const PasswordRequirements = ({ requirements }) => {
+    console.log("pw reqs");
+
     const styles = makeStyles((theme) => ({
         valid: {
             color: green[500]

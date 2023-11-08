@@ -37,15 +37,10 @@ export default function Dashboard() {
                 {/* Dashboard */}
                 {!viewSpecies && !viewRegions && (
                     <div>
-                        {/* <Login logo={"custom"} type={"image"} themeColor={"standard"} animateTitle={true}
-                            title={"Welcome to Syllabus App"} darkMode={true}
-                            disableSignUp={true}
-                        /> */}
                         <MainPage
                             setViewSpecies={setViewSpecies}
                             setViewRegions={setViewRegions}
                         />
-
 
                         {/* <Tooltip title="Logout" arrow>
                             <Button style={{ position: 'absolute', top: 10, right: 10, color: '#5e8da6' }} onClick={handleLogout}>

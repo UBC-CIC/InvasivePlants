@@ -103,21 +103,11 @@ function PageContainer(props) {
 
         <main className={classes.content}>
             <Routes>
-                <Route exact path="/" element={() => Navigate('/dashboard')} />
+                <Route exact path={"/"} component={Dashboard} />
                 <Route exact path={"/dashboard"} component={Dashboard} />
-                {/* <Route exact path={"/plantnet"} component={PlantNet} />
-                <Route exact path={'/webscrape'} component={DownloadWebscrap} /> */}
-                {/* <Route
-                    exact
-                    path="/login"
-                    element={() => {
-                        Navigate('/dashboard');
-                        return null;
-                    }}
-                /> */}
-                {/* <Route exact path="*" component={Error404} /> */}
+                <Route exact path={"/plantnet"} component={PlantNet} />
+                <Route exact path={'/webscrape'} component={DownloadWebscrap} />
             </Routes>
-
         </main>
     </Grid>)
 }
