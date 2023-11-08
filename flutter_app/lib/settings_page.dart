@@ -11,7 +11,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  int currentLanguageIndex = 0; // Store the current language index
+  int currentLanguageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -61,16 +61,15 @@ class _SettingsPageState extends State<SettingsPage> {
             ElevatedButton.icon(
               onPressed: () {},
               icon: const Icon(Icons.add, color: Colors.black),
-              label: const Text('add account',
+              label: const Text('Add Account',
                   style: TextStyle(color: Colors.black)),
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.black,
                 backgroundColor: const Color.fromARGB(255, 221, 221, 221),
                 minimumSize: const Size(double.infinity, 40),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                      10.0), // Adjust the value for roundness
-                ), // Takes up whole width
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
               ),
             ),
             const SizedBox(height: 15),
