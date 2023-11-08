@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
               plantName: '',
             ),
         '/camera': (context) => const CameraPage(),
-        '/plantIdentification': (context) => PlantIdentificationPage(
+        '/plantIdentification': (context) => const PlantIdentificationPage(
               imagePath: '',
             ),
         '/myPlants': (context) => const MyPlantsPage(),
