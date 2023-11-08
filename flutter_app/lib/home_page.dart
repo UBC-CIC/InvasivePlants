@@ -2,8 +2,9 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/camera_page.dart';
-import 'package:flutter_app/settings_page.dart';
+import 'camera_page.dart';
+import 'my_plants_page.dart';
+import 'settings_page.dart';
 import 'category_info_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -110,6 +111,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_rounded, size: 40),
@@ -130,6 +132,13 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(
                 builder: (context) => const CameraPage(),
+              ),
+            );
+          } else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MyPlantsPage(),
               ),
             );
           }
