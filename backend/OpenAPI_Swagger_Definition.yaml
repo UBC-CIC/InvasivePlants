@@ -200,8 +200,15 @@ paths:
       tags:
         - Invasive Species
       summary: Get the list of available invasive species
-      description: This will return all invasive species and its corresponding alternative species
+      description: This will return all invasive species or a species if scientific_name provided and its corresponding alternative species
       operationId: invasiveSpecies_GET
+      parameters:
+        - in: query
+          name: scientific_name
+          required: true
+          description: Scientific name following lowercase and underscore for space format
+          schema: 
+            type: string
       responses:
         "200": 
           description: Region data available
