@@ -5,7 +5,7 @@ const AlternativeSpeciesTestData = [
         alternativeCommonName: ["Filigran russian sage"],
         description: "It is an herbaceous perennial plant growing from tuberous roots.",
         resource_links: ["http://example.com"],
-        image_links: ["http://example.com"]
+        image_links: ["http://example1.com", "http://example2.com", "http://example3.com"]
     },
     {
         alternativeSpeciesId: 2,
@@ -21,7 +21,7 @@ const AlternativeSpeciesTestData = [
         alternativeCommonName: ["Hybrid yarrow"],
         description: "Yarrow is a clumping perennial, producing tiny, daisy-like flowers packed on flat-topped clusters throughout the summer. There are many cultivars of yarrow with flowers ranging from white, to yellow, to peach to bright red! It has fern-like leaves with a strong but pleasant scent. Yarrow is very attractive to pollinators and other beneficial insects. It is tolerant of nearly every garden condition, from soggy soils to rock gardens – this is a perfect specimen for those who find it tough to keep plants alive!",
         resource_links: ["http://example.com"],
-        image_links: ["http://example.com"]
+        image_links: ["http://example1.com", "http://example2.com"]
     },
     {
         alternativeSpeciesId: 4,

@@ -20,15 +20,16 @@ import { connect } from "react-redux";
 import { updateLoginState } from "../../Actions/loginActions";
 import { updateMenuState } from "../../Actions/menuActions";
 import LogoutIcon from '@mui/icons-material/Logout';
-
-
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 
 /* List of tabs for the header */
-const pages = ['Invasive Species', 'Alternative Species', 'regions'];
+const pages = ['Invasive Species', 'Alternative Species', 'Regions'];
 
 const useStyles = makeStyles((theme) => ({
+    bold: {
+        fontWeight: 'bold', // Add more styles here if needed
+    },
     grow: {
         flexGrow: 1,
     },
@@ -67,14 +68,18 @@ const useStyles = makeStyles((theme) => ({
         color: '#fff',
     },
     inactiveLink: {
-        /* CSS styles for the inactive link */
         fontWeight: 'normal',
         color: 'white',
+        textDecoration: 'none', // Add this to remove any default text decoration
     },
     inactiveLinkMobile: {
-        /* CSS styles for the inactive link */
         fontWeight: 'normal',
         color: 'black',
+        textDecoration: 'none', // Add this to remove any default text decoration
+    },
+    activeLink: {
+        color: 'white',
+        textDecoration: 'underline', // Apply underline for the active link
     },
 }));
 
@@ -191,11 +196,15 @@ function Navbar(props) {
         await Auth.signOut();
     }
 
+    const location = useLocation();
+    const currentPath = decodeURIComponent(location.pathname);
+    const currentPage = currentPath.substring(1);
+
     return (
         <Grid item xs={12} className={classes.appBar}>
             <AppBar position="static">
                 <Toolbar>
-                    <Typography className={classes.title} variant="h6" component={"h1"} noWrap>
+                    <Typography className={`${classes.title} ${classes.bold}`} variant="h6" component={"h1"} noWrap>
                         Invasive Plants Management System
                     </Typography>
                     {/* <img className={classes.logo} style={{width: "270px", height: "30px"}} src={process.env.PUBLIC_URL + './Assets/Images/logo_inverse.png'} alt="..."/> */}
@@ -203,21 +212,23 @@ function Navbar(props) {
                     <div className={classes.sectionDesktop}>
                         {pages.map((page) => (
                             /* Creates a URL path and button for each page */
-                            <NavLink to={"/" + page.toLowerCase()} activeStyle={{
-                                color: `${theme.palette.secondary.main}`,
-                                // border: '2px solid #4c8beb', 
-                                borderRadius: 5,
-                            }} className={classes.inactiveLink} >
+                            <NavLink
+                                to={"/" + page.toLowerCase()}
+                                className={`${classes.inactiveLink} ${currentPage === page.toLowerCase() ? classes.activeLink : ''}`}
+                            >
                                 <Typography className={classes.title} variant="h6" component={"h1"}>
-                                    <span style={{
-                                        paddingLeft: 7,
-                                        paddingRight: 7,
-                                        textTransform: 'capitalize',
-                                    }}> {page} </span>
+                                    <span
+                                        style={{
+                                            paddingLeft: 12,
+                                            paddingRight: 12,
+                                            textTransform: 'capitalize',
+                                        }}
+                                    >
+                                        {page}
+                                    </span>
                                 </Typography>
                             </NavLink>
-                        ))
-                        }
+                        ))}
                     </div>
                     <div className={classes.sectionMobile}>
 
@@ -228,7 +239,7 @@ function Navbar(props) {
                         <div
                             color="inherit"
                             style={{ display: "flex", alignItems: "flex-end", flexDirection: 'column', justifyContent: "center" }}>
-                            <Typography variant={"subtitle2"} style={{ color: `${theme.palette.secondary.main}` }}>Login as </Typography>
+                            <Typography variant={"subtitle2"} style={{ color: `${theme.palette.secondary.main}` }}>Logged in as </Typography>
                             <Typography variant={"subtitle2"} >{user}</Typography>
                         </div>
                         <IconButton

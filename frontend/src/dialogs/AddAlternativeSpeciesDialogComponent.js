@@ -1,5 +1,21 @@
 import React, { useState } from "react";
-import { Snackbar, Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { alpha, Snackbar, Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { makeStyles } from '@material-ui/core/styles';
+
+// Define the styles
+const useStyles = makeStyles((theme) => ({
+  uploadButton: {
+    display: 'inline-block',
+    padding: '7px 15px',
+    backgroundColor: alpha('#699cb8', 0.9),
+    '&:hover': {
+      backgroundColor: '#5e8da6',
+    },
+    color: 'white',
+    cursor: 'pointer',
+    borderRadius: '5px',
+  },
+}));
 
 const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
 
@@ -7,6 +23,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     alternativeScientificName: "",
     alternativeCommonName: [],
     description: "",
+    resource_links: [],
     image_links: [],
   };
 
@@ -50,6 +67,16 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     handleClose();
   };
 
+  const handleImageUpload = (e) => {
+    const files = e.target.files;
+    if (files) {
+      let imageLinks = speciesData.image_links ? speciesData.image_links : '';
+      for (let i = 0; i < files.length; i++) {
+        imageLinks += (i === 0 ? '' : ',') + files[i].name;
+      }
+      handleInputChange("image_links", imageLinks);
+    }
+  };
 
   return (
     <div>
@@ -128,11 +155,18 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
         />
         <TextField
           fullWidth
-          label="Links (separate with commas)"
-            value={speciesData.image_links}
-            onChange={(e) => handleInputChange("image_links", e.target.value)}
-          sx={{ width: "100%", marginBottom: "1rem" }}
-        />
+            label="Resource links (separate with commas)"
+            value={speciesData.resource_links}
+            onChange={(e) => handleInputChange("resource_links", e.target.value)}
+            sx={{ width: "100%", marginBottom: "1rem" }}
+          />
+          <input
+            type="file"
+            multiple
+            onChange={handleImageUpload}
+            sx={{ width: '100%', marginBottom: '1rem' }}
+          />
+
       </DialogContent>
       <DialogActions>
           <Button onClick={handleCancel}>Cancel</Button>

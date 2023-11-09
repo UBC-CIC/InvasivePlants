@@ -3,7 +3,7 @@ import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, 
 import Theme from '../../admin_pages/Theme';
 
 import RegionMap from "../../functions/RegionMap";
-import EditSpeciesDialog from "../../dialogs/EditSpeciesDialogComponent";
+import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialogComponent";
 import LocationFilterComponent from '../../Components/LocationFilterComponent';
 import SearchComponent from '../../Components/SearchComponent';
 import AddSpeciesDialog from "../../dialogs/AddSpeciesDialogComponent";
@@ -32,12 +32,13 @@ function InvasiveSpeciesPage() {
   // gets rows that matches search and location input 
   const filterData = data.filter((item) =>
     (searchTerm === "" || (
-      item.scientificName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (Array.isArray(item.commonName)
-        ? item.commonName.some((name) =>
-          name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-        : item.commonName.toLowerCase().includes(searchTerm.toLowerCase()))
+      item.scientificName.toLowerCase().includes(searchTerm.toLowerCase())
+      // ||
+      // (Array.isArray(item.commonName)
+      //   ? item.commonName.some((name) =>
+      //     name.toLowerCase().includes(searchTerm.toLowerCase())
+      //   )
+      //   : item.commonName.toLowerCase().includes(searchTerm.toLowerCase()))
     )) &&
     (location === "" || item.location.some((loc) => RegionMap[loc.toLowerCase()] === RegionMap[location]))
   );
@@ -109,7 +110,11 @@ function InvasiveSpeciesPage() {
   };
   // helper function when search input changes
   const handleSearchInputChange = (field, value) => {
+    if (field === "regionCode") {
+      setTempData((prev) => ({ ...prev, location: value }));
+    } else {
     setTempData((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   // search species
@@ -123,13 +128,14 @@ function InvasiveSpeciesPage() {
           item.scientificName.toLowerCase().includes(term)
         );
 
-        const commonNameMatch = Array.isArray(item.commonName)
-          ? item.commonName.some((name) =>
-            terms.every((term) => name.toLowerCase().includes(term))
-          )
-          : terms.every((term) => item.commonName.toLowerCase().includes(term));
+        // const commonNameMatch = Array.isArray(item.commonName)
+        //   ? item.commonName.some((name) =>
+        //     terms.every((term) => name.toLowerCase().includes(term))
+        //   )
+        //   : terms.every((term) => item.commonName.toLowerCase().includes(term));
 
-        return scientificNameMatch || commonNameMatch;
+        return scientificNameMatch
+        // || commonNameMatch;
       });
 
       setDisplayData(results);
@@ -178,7 +184,7 @@ function InvasiveSpeciesPage() {
       </Box>
 
       {/* location and search bars*/}
-      <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+      <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
         <LocationFilterComponent
           handleLocationSearch={handleLocationSearch}
           location={location}
@@ -203,7 +209,7 @@ function InvasiveSpeciesPage() {
       </div>
 
       {/* table */}
-      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+      <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
         <Table style={{ width: "100%", tableLayout: "fixed" }}>
           {/* table header */}
           <TableHead>
@@ -213,11 +219,11 @@ function InvasiveSpeciesPage() {
                   Scientific Name
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "10%" }}>
+              {/* <TableCell style={{ width: "10%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Common Name(s)
                 </Typography>
-              </TableCell>
+              </TableCell> */}
               <TableCell style={{ width: "40%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Description
@@ -271,7 +277,7 @@ function InvasiveSpeciesPage() {
                           </TableCell>
 
                           {/* common name */}
-                          <TableCell>
+                          {/* <TableCell>
                             <TextField
                               value={
                                 Array.isArray(tempData.commonName)
@@ -282,7 +288,7 @@ function InvasiveSpeciesPage() {
                                 handleSearchInputChange("commonName", e.target.value)
                               }
                             />
-                          </TableCell>
+                          </TableCell> */}
 
                           {/* decsription */}
                           <TableCell>
@@ -364,11 +370,11 @@ function InvasiveSpeciesPage() {
                       ) : (
                         <>
                           <TableCell>{row.scientificName}</TableCell>
-                          <TableCell>
+                            {/* <TableCell>
                             {Array.isArray(row.commonName)
                               ? row.commonName.join(", ")
                               : row.commonName}
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell>{row.description}</TableCell>
                           <TableCell>
                             {Array.isArray(row.alternatives)
@@ -420,7 +426,7 @@ function InvasiveSpeciesPage() {
                           </TableCell>
 
                           {/* common name */}
-                          <TableCell>
+                          {/* <TableCell>
                             <TextField
                               value={
                                 Array.isArray(tempData.commonName)
@@ -431,7 +437,7 @@ function InvasiveSpeciesPage() {
                                 handleSearchInputChange("commonName", e.target.value)
                               }
                             />
-                          </TableCell>
+                          </TableCell> */}
 
                           {/* decsription */}
                           <TableCell>
@@ -511,11 +517,11 @@ function InvasiveSpeciesPage() {
                       ) : (
                         <>
                           <TableCell>{row.scientificName}</TableCell>
-                          <TableCell>
+                            {/* <TableCell>
                             {Array.isArray(row.commonName)
                               ? row.commonName.join(", ")
                               : row.commonName}
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell>{row.description}</TableCell>
                           <TableCell>
                             {Array.isArray(row.alternatives)
@@ -561,7 +567,7 @@ function InvasiveSpeciesPage() {
         data={displayData}
       />
 
-      <EditSpeciesDialog
+      <EditInvasiveSpeciesDialog
         open={openEditSpeciesDialog}
         tempData={tempData}
         handleSearchInputChange={handleSearchInputChange}

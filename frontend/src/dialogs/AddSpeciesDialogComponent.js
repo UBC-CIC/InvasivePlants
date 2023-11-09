@@ -226,7 +226,7 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
 
                     <TextField
                         fullWidth
-                        label="Links (separate with commas)"
+                        label="Resource links (separate with commas)"
                         value={speciesData.links}
                         onChange={(e) => handleInputChange("links", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}

@@ -179,7 +179,7 @@ function RegionsPage() {
             </Box>
 
             {/* location and search bars*/}
-            <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+            <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
                 <Box style={{ flex: 1, marginRight: "10px" }}>
                     <Autocomplete
                         options={Array.from(new Set(displayData.map((data) => data.country)))}
@@ -238,7 +238,7 @@ function RegionsPage() {
                 </ThemeProvider>
             </div >
 
-            <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+            <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
                 <Table style={{ width: "100%", tableLayout: "fixed" }}>
                     {/* table header */}
                     <TableHead>

@@ -14,7 +14,7 @@ const SearchComponent = ({ handleSearch, searchResults, searchTerm, setSearchTer
                         label={
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <SearchIcon sx={{ marginRight: '0.5rem' }} />
-                                Search invasive species (common or scientific name)
+                                Search species (scientific name)
                             </div>
                         }
                         value={searchTerm}

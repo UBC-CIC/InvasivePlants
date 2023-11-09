@@ -3,7 +3,7 @@ import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, 
 import Theme from '../../admin_pages/Theme';
 
 import RegionMap from "../../functions/RegionMap";
-import EditSpeciesDialog from "../../dialogs/EditSpeciesDialogComponent";
+import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";
 import SearchComponent from '../../Components/SearchComponent';
 import AddSpeciesDialog from "../../dialogs/AddSpeciesDialogComponent";
 import AlternativeSpeciesTestData from "../../test_data/alternativeSpeciesTestData";
@@ -11,6 +11,7 @@ import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddAlternativeSpeciesDialog from "../../dialogs/AddAlternativeSpeciesDialogComponent";
 
 
 function AlternativeSpeciesPage() {
@@ -160,7 +161,7 @@ function AlternativeSpeciesPage() {
       </Box>
 
       {/* lsearch bars*/}
-      <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+      <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
         <SearchComponent
           handleSearch={handleSearch}
           searchResults={searchResults}
@@ -179,7 +180,7 @@ function AlternativeSpeciesPage() {
       </div>
 
       {/* table */}
-      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+      <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
         <Table style={{ width: "100%", tableLayout: "fixed" }}>
           {/* table header */}
           <TableHead>
@@ -279,12 +280,13 @@ function AlternativeSpeciesPage() {
                         {/* image links */}
                         <TableCell>
                           <TextField
-                            value={tempData.image_links?.join(", ")}
+                            value={
+                              Array.isArray(tempData.image_links)
+                                ? tempData.image_links.join(", ")
+                                : tempData.image_links
+                            }
                             onChange={(e) =>
-                              handleSearchInputChange(
-                                "imageLinks",
-                                e.target.value.split(", ")
-                              )
+                              handleSearchInputChange("image_links", e.target.value.split(", "))
                             }
                           />
                         </TableCell>
@@ -345,14 +347,14 @@ function AlternativeSpeciesPage() {
       </div >
 
       {/* Add species dialog */}
-      <AddSpeciesDialog
+      <AddAlternativeSpeciesDialog
         open={openAddSpeciesDialog}
         handleClose={() => setOpenAddSpeciesDialog(false)}
         handleAdd={handleAddSpecies}
         data={displayData}
       />
 
-      <EditSpeciesDialog
+      <EditAlternativeSpeciesDialog
         open={openEditSpeciesDialog}
         tempData={tempData}
         handleSearchInputChange={handleSearchInputChange}
