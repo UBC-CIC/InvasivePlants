@@ -11,7 +11,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddAlternativeSpeciesDialog from "../../dialogs/AddAlternativeSpeciesDialogComponent";
-
+import boldText from "./formatDescriptionHelper";
 
 function AlternativeSpeciesPage() {
   const [data, setData] = useState(AlternativeSpeciesTestData);
@@ -131,6 +131,8 @@ function AlternativeSpeciesPage() {
       setDisplayData(results);
     }
   };
+
+
 
   // add species
   const handleAddSpecies = (newSpeciesData) => {
@@ -256,7 +258,7 @@ function AlternativeSpeciesPage() {
                         {/* decsription */}
                         <TableCell>
                           <TextField
-                            value={tempData.description}
+                            value={boldText(tempData.description)}
                             onChange={(e) =>
                               handleSearchInputChange("description", e.target.value)
                             }
@@ -315,7 +317,7 @@ function AlternativeSpeciesPage() {
                             ? row.alternativeCommonName.join(", ")
                             : row.alternativeCommonName}
                         </TableCell>
-                        <TableCell>{row.description}</TableCell>
+                          <TableCell>{boldText(row.description)}</TableCell>
                         <TableCell>
                           {Array.isArray(row.resource_links) ? row.resource_links.join(", ") : row.resource_links}
                         </TableCell>

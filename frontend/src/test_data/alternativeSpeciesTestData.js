@@ -11,7 +11,7 @@ const AlternativeSpeciesTestData = [
         alternativeSpeciesId: 2,
         alternativeScientificName: "Goniolimon tataricum",
         alternativeCommonName: ["German statice"],
-        description: "German statice is an herbaceous perennial growing to 50 cm in height and is known for its architectural interest and masses of beautiful, dried flower heads, often used for flower arrangements. Depending on the cultivar, it blooms white, light blue, pink or purple flowers between July and August. This plant requires full sun exposure and well-drained soils. German statice is drought-tolerant – a good choice for hot, dry areas and xeriscape gardens.",
+        description: "German statice is an **herbaceous perennial growing to 50 cm in height** and is known for its architectural interest and masses of beautiful, dried flower heads, often used for flower arrangements. Depending on the cultivar, it blooms white, light blue, pink or purple flowers between July and August. This plant requires full sun exposure and well-drained soils. German statice is drought-tolerant – a good choice for hot, dry areas and xeriscape gardens.",
         resource_links: ["http://example.com"],
         image_links: ["http://example.com"]
     },

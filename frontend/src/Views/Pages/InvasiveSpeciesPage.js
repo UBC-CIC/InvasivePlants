@@ -13,6 +13,7 @@ import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import boldText from "./formatDescriptionHelper";
 
 
 function InvasiveSpeciesPage() {
@@ -293,7 +294,7 @@ function InvasiveSpeciesPage() {
                           {/* decsription */}
                           <TableCell>
                             <TextField
-                              value={tempData.description}
+                              value={boldText(tempData.description)}
                               onChange={(e) =>
                                 handleSearchInputChange("description", e.target.value)
                               }
@@ -375,7 +376,7 @@ function InvasiveSpeciesPage() {
                               ? row.commonName.join(", ")
                               : row.commonName}
                           </TableCell> */}
-                          <TableCell>{row.description}</TableCell>
+                            <TableCell>{boldText(row.description)}</TableCell>
                           <TableCell>
                             {Array.isArray(row.alternatives)
                               ? row.alternatives.map((item) => item.alternativeScientificName).join(", ")
@@ -442,7 +443,7 @@ function InvasiveSpeciesPage() {
                           {/* decsription */}
                           <TableCell>
                             <TextField
-                              value={tempData.description}
+                              value={boldText(tempData.description)}
                               onChange={(e) =>
                                 handleSearchInputChange("description", e.target.value)
                               }
@@ -522,7 +523,7 @@ function InvasiveSpeciesPage() {
                               ? row.commonName.join(", ")
                               : row.commonName}
                           </TableCell> */}
-                          <TableCell>{row.description}</TableCell>
+                            <TableCell>{boldText(row.description)}</TableCell>
                           <TableCell>
                             {Array.isArray(row.alternatives)
                               ? row.alternatives.map((item) => item.alternativeScientificName).join(", ")
