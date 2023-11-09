@@ -64,12 +64,14 @@ function AlternativeSpeciesPage() {
   };
 
   // saves edited row
-  const handleSave = () => {
+  const handleSave = (confirmed) => {
+    if (confirmed) {
     const updatedData = data.map((item) => {
       if (item.alternativeSpeciesId === tempData.alternativeSpeciesId) {
         return { ...tempData };
       }
       return item;
+
     });
 
     setData(updatedData);
@@ -85,6 +87,7 @@ function AlternativeSpeciesPage() {
 
     // TODO: update the database with the updatedData
     handleFinishEditingRow();
+  };
   };
 
   // delete row with Confirmation before deletion
@@ -176,7 +179,7 @@ function AlternativeSpeciesPage() {
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <ThemeProvider theme={Theme}>
           <Button variant="contained" onClick={() => setOpenAddSpeciesDialog(true)} startIcon={<AddCircleOutlineIcon />}>
-            Add Species
+            Add Alternative Species
           </Button>
         </ThemeProvider>
       </div>

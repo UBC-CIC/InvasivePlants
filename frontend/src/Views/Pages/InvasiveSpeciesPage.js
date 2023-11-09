@@ -6,7 +6,7 @@ import RegionMap from "../../functions/RegionMap";
 import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialogComponent";
 import LocationFilterComponent from '../../Components/LocationFilterComponent';
 import SearchComponent from '../../Components/SearchComponent';
-import AddSpeciesDialog from "../../dialogs/AddSpeciesDialogComponent";
+import AddInvasiveSpeciesDialog from "../../dialogs/AddInvasiveSpeciesDialogComponent";
 import SpeciesTestData from "../../test_data/speciesTestData";
 import AlternativeSpeciesTestData from "../../test_data/alternativeSpeciesTestData";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
@@ -570,7 +570,7 @@ function InvasiveSpeciesPage() {
       </div >
 
       {/* Add species dialog */}
-      <AddSpeciesDialog
+      <AddInvasiveSpeciesDialog
         open={openAddSpeciesDialog}
         handleClose={() => setOpenAddSpeciesDialog(false)}
         handleAdd={handleAddSpecies}

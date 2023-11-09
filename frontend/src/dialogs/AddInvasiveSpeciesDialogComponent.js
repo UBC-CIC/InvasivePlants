@@ -6,7 +6,7 @@ import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData"
 import SearchIcon from '@mui/icons-material/Search';
 import SavedSnackbar from "./SaveSnackBar";
 
-const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
+const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialSpeciesData = {
         scientificName: "",
         commonName: [],
@@ -80,7 +80,7 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         setAlternativeSpeciesTestData([...alternativeSpeciesTestData, newAlternativeSpecies]);
         setOpenAddAlternativeDialog(false);
 
-    // TODO: update the alternative table database with the new entry
+        // TODO: update the alternative table database with the new entry
     }
 
     const handleCloseAlt = (event, reason) => {
@@ -90,6 +90,10 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         setOpenAddAlternativeDialog(false);
     };
 
+
+    const handleCloseSnackbar = () => {
+        setShowOpen(false)
+    }
     return (
         <div>
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}>
@@ -173,7 +177,7 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                     />
 
                     {/* TODO: need button to add alternative species and dropdown to select from alternative*/}
-                    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: "1rem" }}>                
+                    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: "1rem" }}>
                         <Autocomplete
                             multiple
                             id="alternative-species-autocomplete"
@@ -208,19 +212,19 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                             sx={{ flex: 5, marginRight: '1rem', height: '100%', width: "100%" }}
                         />
                         <Tooltip title="Alternative species not in list?" placement="top">
-                        <Button
-                            variant="contained"
-                            onClick={() => setOpenAddAlternativeDialog(true)}
-                            sx={{
-                                flex: 1, fontSize: "0.8rem",
-                                backgroundColor: alpha('#699cb8', 0.9),
-                                '&:hover': {
-                                    backgroundColor: '#5e8da6',
-                                },
-                            }}
-                        >
-                            Add alternative
-                        </Button>
+                            <Button
+                                variant="contained"
+                                onClick={() => setOpenAddAlternativeDialog(true)}
+                                sx={{
+                                    flex: 1, fontSize: "0.8rem",
+                                    backgroundColor: alpha('#699cb8', 0.9),
+                                    '&:hover': {
+                                        backgroundColor: '#5e8da6',
+                                    },
+                                }}
+                            >
+                                Add alternative
+                            </Button>
                         </Tooltip>
 
                     </Box>
@@ -232,7 +236,7 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                         onChange={(e) => handleInputChange("links", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
-                    
+
                     <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
                         <InputLabel id="region-label">Region (multiselect)</InputLabel>
                         <Select
@@ -265,12 +269,18 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                 handleAdd={handleAddAlternativeSpecies}
             />
 
+            {/* <Snackbar open={showOpen} autoHideDuration={4000} onClose={() => setShowOpen(false)}>
+                <Alert onClose={() => setShowOpen(false)} severity="success" sx={{ width: '100%' }}>
+                    Added successfully!
+                </Alert>
+            </Snackbar> */}
+            <SavedSnackbar open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
 
-            <SavedSnackbar open={showOpen} onClose={setShowOpen(false)} text={"Added successfully!"} />
+            {/* <SavedSnackbar open={showOpen} onClose={setShowOpen(false)} text={"Added successfully!"} /> */}
 
 
         </div >
     );
-};                  
+};
 
-export default AddSpeciesDialog;
+export default AddInvasiveSpeciesDialog;

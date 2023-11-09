@@ -71,7 +71,6 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
 
             <SavedSnackbar open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />
 
-
         </div>
     );
 };

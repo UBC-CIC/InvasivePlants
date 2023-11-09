@@ -61,6 +61,10 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
         handleCancel();
     };
 
+    const handleCloseSnackbar = () => {
+        setShowOpen(false)
+    }
+
     const handleCancel = () => {
         setShowWarning(false);
         setShowAlert(false);
@@ -68,6 +72,8 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
         setSelectedCountry("");
         handleClose();
     };
+
+
 
     return (
         <div>
@@ -181,9 +187,7 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                 </DialogActions>
             </Dialog >
 
-            <SavedSnackbar open={showOpen} onClose={setShowOpen(false)} text={"Added successfully!"} />
-
-        
+            <SavedSnackbar open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
 
         </div>
     );

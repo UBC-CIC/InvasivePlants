@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Box, TableCell, Alert, Snackbar, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
-
+import { Box, AlertTitle, TableCell, Alert, Snackbar, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
+import SavedSnackbar from './SaveSnackBar';
 const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
@@ -29,6 +29,16 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         handleSearchInputChange("image_links", updatedImageLinks);
     };
 
+    const [showAlert, setShowAlert] = useState(false);
+    const handleConfirmAddAlternativeSpecies = () => {
+        if (!tempData.alternativeScientificName || tempData.alternativeScientificName.trim() === "") {
+            setShowAlert(true);
+            return false;
+        }
+        setShowSaveConfirmation(true);
+        return true
+    };
+
     return (
         <div>
             <Dialog open={open} onClose={handleFinishEditingRow} maxWidth="sm" fullWidth>
@@ -45,6 +55,12 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                 </DialogTitle >
 
                 <DialogContent style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <TextField
+                        label="Scientific Name"
+                        value={tempData.alternativeScientificName}
+                        onChange={(e) => handleSearchInputChange("alternativeScientificName", e.target.value)}
+                        sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
+                    />
 
                     <TextField
                         label="Common Name(s) (separate by commas)"
@@ -101,22 +117,40 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
 
                 </DialogContent>
 
+
+                <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
+                    <Alert severity="error">
+                        <AlertTitle>Empty Field!</AlertTitle>
+                        Please enter a <strong>valid scientific name.</strong>
+                        <Box sx={{ display: 'flex', width: '100%', marginTop: '10px', justifyContent: 'flex-end' }}>
+                            <Button
+                                onClick={() => setShowAlert(false)}
+                                sx={{
+                                    color: "#241c1a",
+                                    "&:hover": {
+                                        backgroundColor: "#d9b1a7"
+                                    }
+                                }}
+                            >OK</Button>
+                        </Box>
+                    </Alert>
+                </Dialog>
+
+
                 <DialogActions>
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>
                     <Button
                         onClick={() => {
-                            handleSave();
-                            setShowSaveConfirmation(true);
+                            // handleSave();
+                            // setShowSaveConfirmation(true);
+                            handleSave(handleConfirmAddAlternativeSpecies());
                         }}
                     >Save</Button>
                 </DialogActions>
             </Dialog >
 
-            <Snackbar open={showSaveConfirmation} autoHideDuration={5000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                    Saved successfully!
-                </Alert>
-            </Snackbar>
+            <SavedSnackbar open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />
+
         </div >
     );
 };

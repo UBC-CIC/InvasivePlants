@@ -63,6 +63,11 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     }
   };
 
+
+  const handleCloseSnackbar = () => {
+    setShowOpen(false)
+  }
+
   return (
     <div>
       <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
@@ -166,8 +171,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
       </DialogActions>
       </Dialog >
 
-      <SavedSnackbar open={showOpen} onClose={setShowOpen(false)} text={"Added successfully!"} />
-
+      <SavedSnackbar open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
     </div >
   );
 };
