@@ -4,7 +4,6 @@ import Container from '@mui/material/Container';
 
 // icons
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import LogoutIcon from '@mui/icons-material/Logout';
 
 // Component imports
 import MainPage from './MainPage';

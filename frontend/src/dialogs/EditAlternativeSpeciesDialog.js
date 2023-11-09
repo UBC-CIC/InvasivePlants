@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { TableCell, Alert, Snackbar, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
+import { Box, TableCell, Alert, Snackbar, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 
 const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
-    const [uploadedFiles, setUploadedFiles] = useState([]);
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -46,6 +45,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                 </DialogTitle >
 
                 <DialogContent style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
                     <TextField
                         label="Common Name(s) (separate by commas)"
                         value={
@@ -53,7 +53,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                                 ? tempData.alternativeCommonName.join(", ")
                                 : tempData.alternativeCommonName
                         }
-                        onChange={(e) => handleSearchInputChange("commonName", e.target.value)}
+                        onChange={(e) => handleSearchInputChange("alternativeCommonName", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
 
@@ -70,12 +70,24 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         label="Resource links (separate by commas)"
                         value={tempData.resource_links?.join(", ")}
                         onChange={(e) =>
-                            handleSearchInputChange("links", e.target.value.split(", "))
+                            handleSearchInputChange("resource_links", e.target.value.split(", "))
                         }
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
-                    <TableCell>
+
+                    <div sx={{ marginBottom: "2rem" }}>
+                        <Typography variant="body1" sx={{ marginBottom: "3px", justifyContent: "left" }}>
+                            Upload Images:
+                        </Typography>
+                        <input
+                            type="file"
+                            multiple
+                            onChange={handleImageUpload}
+                            sx={{ marginBottom: "2rem", textAlign: "left" }}
+                        />
+                    </div>
+                    <div sx={{ marginTop: "2rem" }}>
                         {Array.isArray(tempData.image_links) &&
                             tempData.image_links.map((imageName, index) => (
                                 <div key={index}>
@@ -84,13 +96,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                                     <button onClick={() => handleImageDelete(index)}>Delete</button>
                                 </div>
                             ))}
-                        <input
-                            type="file"
-                            multiple
-                            onChange={handleImageUpload}
-                            sx={{ width: "100%", marginBottom: "1rem" }}
-                        />
-                    </TableCell>
+                    </div>
 
 
                 </DialogContent>

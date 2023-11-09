@@ -5,7 +5,6 @@ import Theme from '../../admin_pages/Theme';
 import RegionMap from "../../functions/RegionMap";
 import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";
 import SearchComponent from '../../Components/SearchComponent';
-import AddSpeciesDialog from "../../dialogs/AddSpeciesDialogComponent";
 import AlternativeSpeciesTestData from "../../test_data/alternativeSpeciesTestData";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';

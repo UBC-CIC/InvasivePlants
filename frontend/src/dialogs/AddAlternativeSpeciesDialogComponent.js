@@ -1,21 +1,6 @@
 import React, { useState } from "react";
-import { alpha, Snackbar, Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import { makeStyles } from '@material-ui/core/styles';
+import { Typography, Snackbar, Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 
-// Define the styles
-const useStyles = makeStyles((theme) => ({
-  uploadButton: {
-    display: 'inline-block',
-    padding: '7px 15px',
-    backgroundColor: alpha('#699cb8', 0.9),
-    '&:hover': {
-      backgroundColor: '#5e8da6',
-    },
-    color: 'white',
-    cursor: 'pointer',
-    borderRadius: '5px',
-  },
-}));
 
 const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
 
@@ -160,12 +145,19 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
             onChange={(e) => handleInputChange("resource_links", e.target.value)}
             sx={{ width: "100%", marginBottom: "1rem" }}
           />
+
+          {/* add images  */}
+          <Box>
+            <Typography variant="body1" sx={{ marginBottom: "3px" }}>
+              Upload Images:
+            </Typography>
           <input
             type="file"
             multiple
             onChange={handleImageUpload}
             sx={{ width: '100%', marginBottom: '1rem' }}
           />
+          </Box>
 
       </DialogContent>
       <DialogActions>
