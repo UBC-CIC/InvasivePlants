@@ -155,15 +155,16 @@ function AlternativeSpeciesPage() {
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
       {/* title */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
+      {/* <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
         <Typography variant="h4" sx={{ textAlign: 'center' }}>
           Alternative Species List
         </Typography>
-      </Box>
+      </Box> */}
 
       {/* lsearch bars*/}
       <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
         <SearchComponent
+          text={"Search alternative species (scientific or common name)"}
           handleSearch={handleSearch}
           searchResults={searchResults}
           searchTerm={searchTerm}

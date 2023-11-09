@@ -70,16 +70,22 @@ const useStyles = makeStyles((theme) => ({
     inactiveLink: {
         fontWeight: 'normal',
         color: 'white',
-        textDecoration: 'none', // Add this to remove any default text decoration
+        textDecoration: 'none',
+        '&:hover': {
+            color: '#bccccf',
+        },
     },
     inactiveLinkMobile: {
         fontWeight: 'normal',
         color: 'black',
-        textDecoration: 'none', // Add this to remove any default text decoration
+        textDecoration: 'none',
+        '&:hover': {
+            color: '#bccccf',
+        },
     },
     activeLink: {
         color: 'white',
-        textDecoration: 'underline', // Apply underline for the active link
+        textDecoration: 'underline'
     },
 }));
 
@@ -202,7 +208,7 @@ function Navbar(props) {
 
     return (
         <Grid item xs={12} className={classes.appBar}>
-            <AppBar position="static">
+            <AppBar position="static" style={{ backgroundColor: '#3f5f70' }}>
                 <Toolbar>
                     <Typography className={`${classes.title} ${classes.bold}`} variant="h6" component={"h1"} noWrap>
                         Invasive Plants Management System

@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Select, MenuItem, FormControl, InputLabel, Tooltip, Box, alpha, Autocomplete, Alert, Snackbar, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
+import {
+    Select, AlertTitle, MenuItem, FormControl, InputLabel, Tooltip, Box, alpha, Autocomplete, Alert
+    , Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography
+} from '@mui/material';
 import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData";
 import SearchIcon from '@mui/icons-material/Search';
 import AddAlternativeSpeciesDialog from './AddAlternativeSpeciesDialogComponent';
 import RegionsTestData from "../test_data/regionsTestData";
-
+import SavedSnackbar from './SaveSnackBar';
 
 const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
@@ -36,6 +39,17 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
         // TODO: update the database with the new entry
     }
 
+
+    const [showAlert, setShowAlert] = useState(false);
+    const handleConfirmAddAlternativeSpecies = () => {
+        if (!tempData.scientificName || tempData.scientificName.trim() === "") {
+            setShowAlert(true);
+            return false;
+        }
+        setShowSaveConfirmation(true);
+        return true
+    };
+
     return (
         <div>
             <Dialog open={open} onClose={handleFinishEditingRow} maxWidth="sm" fullWidth>
@@ -52,6 +66,13 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                 </DialogTitle >
 
                 <DialogContent style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+                    <TextField
+                        label="Scientific Name"
+                        value={tempData.scientificName}
+                        onChange={(e) => handleSearchInputChange("scientificName", e.target.value)}
+                        sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
+                    />
                     <TextField
                         label="Common Name(s) (separate by commas)"
                         value={
@@ -156,18 +177,34 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>
                     <Button
                         onClick={() => {
-                            handleSave();
-                            setShowSaveConfirmation(true);
+                            // handleConfirmAddAlternativeSpecies();
+                            handleSave(handleConfirmAddAlternativeSpecies());
+                            // setShowSaveConfirmation(true);
                         }}
                     >Save</Button>
                 </DialogActions>
             </Dialog >
 
-            <Snackbar open={showSaveConfirmation} autoHideDuration={5000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                    Saved successfully!
+
+            <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
+                <Alert severity="error">
+                    <AlertTitle>Empty Field!</AlertTitle>
+                    Please enter a <strong>valid scientific name.</strong>
+                    <Box sx={{ display: 'flex', width: '100%', marginTop: '10px', justifyContent: 'flex-end' }}>
+                        <Button
+                            onClick={() => setShowAlert(false)}
+                            sx={{
+                                color: "#241c1a",
+                                "&:hover": {
+                                    backgroundColor: "#d9b1a7"
+                                }
+                            }}
+                        >OK</Button>
+                    </Box>
                 </Alert>
-            </Snackbar>
+            </Dialog>
+
+            <SavedSnackbar open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />
 
             <AddAlternativeSpeciesDialog
                 open={alternativeDialog}

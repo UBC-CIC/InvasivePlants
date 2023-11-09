@@ -1,12 +1,12 @@
 import { Autocomplete, Box, TextField } from '@mui/material';
-import RegionsTestData from '../test_data/regionsTestData';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
-const LocationFilterComponent = ({ handleLocationSearch, location, setLocation }) => {
+const LocationFilterComponent = ({ text, mapTo, handleLocationSearch, inputData, location, setLocation }) => {
   return (
     <Box style={{ flex: 1, marginRight: "10px" }}>
       <Autocomplete
-        options={RegionsTestData.map((data) => data.regionCode)}
+        if
+        options={Array.from(new Set(inputData.map((data) => data[mapTo])))}
         getOptionLabel={(option) => option}
         onInputChange={(e, newInputValue) => handleLocationSearch(newInputValue.toLowerCase())}
         renderInput={(params) => (
@@ -15,7 +15,7 @@ const LocationFilterComponent = ({ handleLocationSearch, location, setLocation }
             label={
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <LocationOnIcon sx={{ marginRight: '0.5rem' }} />
-                Filter by Region
+                {text}
               </div>
             }
             value={location}
@@ -30,4 +30,4 @@ const LocationFilterComponent = ({ handleLocationSearch, location, setLocation }
   );
 };
 
-export default LocationFilterComponent;
+export default LocationFilterComponent; 

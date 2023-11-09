@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Typography, Snackbar, Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-
+import SavedSnackbar from "./SaveSnackBar";
 
 const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
 
@@ -166,11 +166,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
       </DialogActions>
       </Dialog >
 
-      <Snackbar open={showOpen} autoHideDuration={5000} onClose={() => setShowOpen(false)}>
-        <Alert onClose={() => setShowOpen(false)} severity="success" sx={{ width: '100%' }}>
-          Added successfully!
-        </Alert>
-      </Snackbar>
+      <SavedSnackbar open={showOpen} onClose={setShowOpen(false)} text={"Added successfully!"} />
 
     </div >
   );

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Snackbar, Box, Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import RegionsTestData from "../test_data/regionsTestData";
-
+import SavedSnackbar from "./SaveSnackBar";
 const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialRegionData = {
         regionFullName: "",
@@ -181,12 +181,9 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                 </DialogActions>
             </Dialog >
 
-            <Snackbar open={showOpen} autoHideDuration={5000} onClose={() => setShowOpen(false)}>
-                <Alert onClose={() => setShowOpen(false)} severity="success" sx={{ width: '100%' }}>
-                    Added successfully!
-                </Alert>
-            </Snackbar>
+            <SavedSnackbar open={showOpen} onClose={setShowOpen(false)} text={"Added successfully!"} />
 
+        
 
         </div>
     );

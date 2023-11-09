@@ -1,7 +1,7 @@
 import { Autocomplete, Box, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-const SearchComponent = ({ handleSearch, searchResults, searchTerm, setSearchTerm }) => {
+const SearchComponent = ({ text, handleSearch, searchResults, searchTerm, setSearchTerm }) => {
     return (
         <Box style={{ flex: 3, marginLeft: "10px" }}>
             <Autocomplete
@@ -14,7 +14,7 @@ const SearchComponent = ({ handleSearch, searchResults, searchTerm, setSearchTer
                         label={
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <SearchIcon sx={{ marginRight: '0.5rem' }} />
-                                Search species (scientific name)
+                                {text}
                             </div>
                         }
                         value={searchTerm}

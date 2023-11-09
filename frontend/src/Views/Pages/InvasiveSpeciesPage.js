@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
+import { Dialog, Snackbar, Alert, AlertTitle, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 import Theme from '../../admin_pages/Theme';
 
 import RegionMap from "../../functions/RegionMap";
@@ -14,7 +14,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import boldText from "./formatDescriptionHelper";
-
+import RegionsTestData from '../../test_data/regionsTestData'
 
 function InvasiveSpeciesPage() {
   const [data, setData] = useState(SpeciesTestData);
@@ -29,6 +29,7 @@ function InvasiveSpeciesPage() {
   const [deleteId, setDeleteId] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [alternativeSpeciesTestData, setAlternativeSpeciesTestData] = useState(AlternativeSpeciesTestData);
+  const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
   // gets rows that matches search and location input 
   const filterData = data.filter((item) =>
@@ -70,12 +71,14 @@ function InvasiveSpeciesPage() {
   };
 
   // saves edited row
-  const handleSave = () => {
+  const handleSave = (confirmed) => {
+    if (confirmed) {
     const updatedData = data.map((item) => {
       if (item.speciesId === tempData.speciesId) {
         return { ...tempData };
       }
       return item;
+
     });
 
     setData(updatedData);
@@ -91,6 +94,7 @@ function InvasiveSpeciesPage() {
 
     // TODO: update the database with the updatedData
     handleFinishEditingRow();
+  };
   };
 
   // delete row with Confirmation before deletion
@@ -113,7 +117,8 @@ function InvasiveSpeciesPage() {
   const handleSearchInputChange = (field, value) => {
     if (field === "regionCode") {
       setTempData((prev) => ({ ...prev, location: value }));
-    } else {
+    }
+    else {
     setTempData((prev) => ({ ...prev, [field]: value }));
     }
   };
@@ -178,21 +183,25 @@ function InvasiveSpeciesPage() {
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
       {/* title */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
+      {/* <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
         <Typography variant="h4" sx={{ textAlign: 'center' }}>
           Invasive Species List
         </Typography>
-      </Box>
+      </Box> */}
 
       {/* location and search bars*/}
       <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
         <LocationFilterComponent
+          text={"Search by region"}
+          mapTo={"regionCode"}
+          inputData={RegionsTestData}
           handleLocationSearch={handleLocationSearch}
           location={location}
           setLocation={setLocation}
         />
 
         <SearchComponent
+          text={"Search invasive species (scientific name)"}
           handleSearch={handleSearch}
           searchResults={searchResults}
           searchTerm={searchTerm}
@@ -204,7 +213,7 @@ function InvasiveSpeciesPage() {
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <ThemeProvider theme={Theme}>
           <Button variant="contained" onClick={() => setOpenAddSpeciesDialog(true)} startIcon={<AddCircleOutlineIcon />}>
-            Add Species
+            Add Invasive Species
           </Button>
         </ThemeProvider>
       </div>

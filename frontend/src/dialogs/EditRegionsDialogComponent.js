@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Box, Alert, Snackbar, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
+import { Box, Alert, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
+import SavedSnackbar from './SaveSnackBar';
 
 const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
@@ -68,11 +69,9 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
                 </DialogActions>
             </Dialog>
 
-            <Snackbar open={showSaveConfirmation} autoHideDuration={5000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                    Saved successfully!
-                </Alert>
-            </Snackbar>
+            <SavedSnackbar open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />
+
+
         </div>
     );
 };

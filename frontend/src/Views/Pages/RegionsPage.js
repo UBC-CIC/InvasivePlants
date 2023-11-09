@@ -12,6 +12,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditRegionsDialog from "../../dialogs/EditRegionsDialogComponent";
 import SearchIcon from '@mui/icons-material/Search';
 import PublicIcon from '@mui/icons-material/Public';
+import LocationFilterComponent from '../../Components/LocationFilterComponent';
 
 function RegionsPage() {
     const [data, setData] = useState(RegionsTestData);
@@ -180,29 +181,14 @@ function RegionsPage() {
 
             {/* location and search bars*/}
             <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
-                <Box style={{ flex: 1, marginRight: "10px" }}>
-                    <Autocomplete
-                        options={Array.from(new Set(displayData.map((data) => data.country)))}
-                        getOptionLabel={(option) => option}
-                        onInputChange={(e, newInputValue) => handleCountrySearch(newInputValue.toLowerCase())}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label={
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <PublicIcon sx={{ marginRight: '0.5rem' }} />
-                                        Filter by Country
-                                    </div>
-                                }
-                                value={country}
-                                onChange={(e) => {
-                                    setCountry(e.target.value.toLowerCase());
-                                }}
-                                style={{ marginTop: "2rem", marginBottom: "1rem" }}
-                            />
-                        )}
-                    />
-                </Box>
+                <LocationFilterComponent
+                    text={"Search by country"}
+                    mapTo={"country"}
+                    inputData={displayData}
+                    handleLocationSearch={handleCountrySearch}
+                    location={country}
+                    setLocation={setCountry}
+                />
 
                 <Box style={{ flex: 2, marginLeft: "10px" }}>
                     <Autocomplete
@@ -215,7 +201,7 @@ function RegionsPage() {
                                 label={
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <SearchIcon sx={{ marginRight: '0.5rem' }} />
-                                        Search Region
+                                        Search region
                                     </div>
                                 }
                                 value={searchTerm}

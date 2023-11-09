@@ -4,6 +4,7 @@ import RegionsTestData from "../test_data/regionsTestData";
 import AddAlternativeSpeciesDialog from "./AddAlternativeSpeciesDialogComponent";
 import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData";
 import SearchIcon from '@mui/icons-material/Search';
+import SavedSnackbar from "./SaveSnackBar";
 
 const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialSpeciesData = {
@@ -264,11 +265,9 @@ const AddSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                 handleAdd={handleAddAlternativeSpecies}
             />
 
-            <Snackbar open={showOpen} autoHideDuration={4000} onClose={() => setShowOpen(false)}>
-                <Alert onClose={() => setShowOpen(false)} severity="success" sx={{ width: '100%' }}>
-                    Added successfully!
-                </Alert>
-            </Snackbar>
+
+            <SavedSnackbar open={showOpen} onClose={setShowOpen(false)} text={"Added successfully!"} />
+
 
         </div >
     );
