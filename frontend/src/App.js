@@ -1,31 +1,5 @@
-/*
-import { BrowserRouter, Routes, Route, Switch } from "react-router-dom";
-
-import { PlantNet } from './pages/pl@ntNet';
-import Dashboard from './pages/dashboard';
-import DownloadWebscrap from "./pages/downloadWebscrap";
-
-function App() {
-  console.log("app");
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/test" element={<PlantNet />} />
-        <Route path="/download" element={<DownloadWebscrap />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
-
-export default App;
-*/
-
-// ###########################################################
-// /*
 import './App.css';
 import { BrowserRouter } from "react-router-dom";
-
 import { StylesProvider, ThemeProvider } from '@material-ui/core/styles';
 import Login from "./Components/Authentication/Login_material";
 import PageContainer from "./Views/PageContainer/PageContainer";
@@ -116,4 +90,3 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
-// */

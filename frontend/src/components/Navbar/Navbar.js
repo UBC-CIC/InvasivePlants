@@ -26,7 +26,7 @@ import { NavLink } from 'react-router-dom';
 
 
 /* List of tabs for the header */
-const pages = ['dashboard', 'species', 'regions'];
+const pages = ['Invasive Species', 'Alternative Species', 'regions'];
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -136,6 +136,7 @@ function Navbar(props) {
     );
 
     const mobileMenuId = 'primary-search-account-menu-mobile';
+    const [activeMenu, setActiveMenu] = useState('');
     const renderMobileMenu = (
         <Menu
             anchorEl={mobileMoreAnchorEl}
@@ -195,7 +196,7 @@ function Navbar(props) {
             <AppBar position="static">
                 <Toolbar>
                     <Typography className={classes.title} variant="h6" component={"h1"} noWrap>
-                        <span><span>UBC</span><span style={{ color: `${theme.palette.secondary.main}` }}>/</span><span>Invasive Plants Management Dashboard</span></span>
+                        Invasive Plants Management System
                     </Typography>
                     {/* <img className={classes.logo} style={{width: "270px", height: "30px"}} src={process.env.PUBLIC_URL + './Assets/Images/logo_inverse.png'} alt="..."/> */}
                     <div className={classes.grow} />
@@ -255,11 +256,11 @@ function Navbar(props) {
                         {/* {renderMenu} */}
                     </div>
                 </Toolbar>
-            </AppBar>
+            </AppBar >
             <Backdrop className={classes.backdrop} open={loadingBackdrop}>
                 <CircularProgress color="inherit" />
             </Backdrop>
-        </Grid>
+        </Grid >
     )
 
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { BrowserRouter, Route, Routes, useNavigate, Navigate } from 'react-router-dom';
+import { Route, Routes, useNavigate, Navigate } from 'react-router-dom';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -18,8 +18,12 @@ import { updateMenuState } from "../../Actions/menuActions";
 /** Import Pages **/
 import Dashboard from '../Pages/dashboard';
 import Error404 from '../Pages/error404';
-import SpeciesPage from '../Pages/SpeciesPage';
+import InvasiveSpeciesPage from '../Pages/InvasiveSpeciesPage';
+import AlternativeSpeciesPage from '../Pages/AlternativeSpeciesPage';
+
 import RegionPage from '../Pages/RegionsPage';
+import { PlantNet } from '../Pages/pl@ntNet';
+import DownloadWebscrap from '../Pages/downloadWebscrap';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -103,11 +107,15 @@ function PageContainer(props) {
 
         <main className={classes.content}>
             <Routes>
-                <Route path="/" element={<Navigate to="/dashboard" />} />
-                <Route path="/login" element={<Navigate to="/dashboard" />} />
+                <Route path="/" element={<Navigate to="/invasive species" />} />
+                <Route path="/login" element={<Navigate to="/invasive species" />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/species" element={<SpeciesPage />} />
+                <Route path="/invasive species" element={<InvasiveSpeciesPage />} />
+                <Route path="/alternative species" element={<AlternativeSpeciesPage />} />
                 <Route path="/regions" element={<RegionPage />} />
+
+                <Route path="/test" element={<PlantNet />} />
+                <Route path="/download" element={<DownloadWebscrap />} />
                 <Route path="*" element={<Error404 />} />
             </Routes>           
         </main>

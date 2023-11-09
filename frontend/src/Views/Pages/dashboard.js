@@ -8,7 +8,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 // Component imports
 import MainPage from './MainPage';
-import SpeciesPage from './SpeciesPage';
+import InvasiveSpeciesPage from './InvasiveSpeciesPage';
 import RegionsPage from './RegionsPage';
 
 export default function Dashboard() {
@@ -42,7 +42,7 @@ export default function Dashboard() {
                         <Button onClick={() => setViewSpecies(false)} startIcon={<ArrowBackIcon />} sx={{ color: '#5e8da6' }}>
                             Back
                         </Button>
-                        <SpeciesPage />
+                        <InvasiveSpeciesPage />
                     </div>
                 )}
 

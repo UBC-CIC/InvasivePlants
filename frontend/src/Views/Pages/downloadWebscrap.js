@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 
 // Import components
-import { webscrapeInvasiveSpecies } from '../functions/pipeline';
+import { webscrapeInvasiveSpecies } from '../../functions/pipeline';
 
-export default function DownloadWebscrap(){
+export default function DownloadWebscrap() {
     const saveToFile = (data) => {
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const link = document.createElement('a');
@@ -22,9 +22,9 @@ export default function DownloadWebscrap(){
         }
 
         getData();
-    },[]);
+    }, []);
 
-    return(
+    return (
         <p>Webscrape and prapare a file.</p>
     );
 }

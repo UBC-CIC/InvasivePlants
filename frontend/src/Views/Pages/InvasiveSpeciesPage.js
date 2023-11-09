@@ -15,7 +15,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 
-function SpeciesPage() {
+function InvasiveSpeciesPage() {
   const [data, setData] = useState(SpeciesTestData);
   const [displayData, setDisplayData] = useState(SpeciesTestData);
   const [editingId, setEditingId] = useState(null);
@@ -578,4 +578,4 @@ function SpeciesPage() {
   );
 }
 
-export default SpeciesPage;
+export default InvasiveSpeciesPage;
