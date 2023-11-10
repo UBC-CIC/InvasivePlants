@@ -26,6 +26,12 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Please allow camera access</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Please allow microphone access</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Please allow image gallery access</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -45,11 +51,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Please allow image gallery access</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Please allow camera access</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Please allow microphone access</string>
 </dict>
 </plist>
