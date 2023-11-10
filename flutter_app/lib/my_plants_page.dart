@@ -167,8 +167,8 @@ class MyPlantsPage extends StatelessWidget {
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
                               colors: <Color>[
+                                Color.fromARGB(255, 0, 140, 255),
                                 Color.fromARGB(255, 139, 203, 255),
-                                Color.fromARGB(255, 0, 140, 255)
                               ],
                             ),
                             color: Colors.grey[200],

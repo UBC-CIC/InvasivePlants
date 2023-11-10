@@ -196,7 +196,19 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         margin: const EdgeInsets.all(2.0),
         decoration: BoxDecoration(
-          color: isBCSelected ? Colors.blue : Colors.green,
+          gradient: LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: isBCSelected
+                ? <Color>[
+                    const Color.fromARGB(255, 0, 140, 255),
+                    const Color.fromARGB(255, 139, 203, 255),
+                  ]
+                : <Color>[
+                    Colors.green,
+                    const Color.fromARGB(255, 155, 218, 157),
+                  ],
+          ),
           borderRadius: BorderRadius.circular(10.0),
           boxShadow: [
             BoxShadow(
