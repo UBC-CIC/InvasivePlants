@@ -34,7 +34,7 @@ class MyPlantsPage extends StatelessWidget {
         elevation: 0,
         title: const Text(
           'MY PLANTS',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
       body: Column(

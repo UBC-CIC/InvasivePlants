@@ -22,7 +22,8 @@ class _CategoryInfoPageState extends State<CategoryInfoPage> {
         iconTheme: const IconThemeData(color: Colors.black),
         title: Text(
           widget.categoryTitle,
-          style: const TextStyle(color: Colors.black),
+          style:
+              const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
       body: Column(
