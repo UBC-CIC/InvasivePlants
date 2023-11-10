@@ -43,7 +43,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
 
     const [showAlert, setShowAlert] = useState(false);
     const handleConfirmAddAlternativeSpecies = () => {
-        if (!tempData.scientificName || tempData.scientificName.trim() === "") {
+        if (!tempData.scientific_name || tempData.scientific_name.trim() === "") {
             setShowAlert(true);
             return false;
         }
@@ -62,7 +62,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                         component="div"
                         style={{ fontStyle: "italic" }}
                     >
-                        {tempData.scientificName}
+                        {tempData.scientific_name}
                     </Typography>
                 </DialogTitle >
 
@@ -70,11 +70,11 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
 
                     <TextField
                         label="Scientific Name"
-                        value={tempData.scientificName}
-                        onChange={(e) => handleSearchInputChange("scientificName", e.target.value)}
+                        value={tempData.scientific_name}
+                        onChange={(e) => handleSearchInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
-                    <TextField
+                    {/* <TextField
                         label="Common Name(s) (separate by commas)"
                         value={
                             Array.isArray(tempData.commonName)
@@ -83,14 +83,14 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                         }
                         onChange={(e) => handleSearchInputChange("commonName", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
-                    />
+                    /> */}
 
                     <TextField
                         label="Description"
                         multiline
                         rows={6}
-                        value={tempData.description}
-                        onChange={(e) => handleSearchInputChange("description", e.target.value)}
+                        value={tempData.species_description}
+                        onChange={(e) => handleSearchInputChange("species_description", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
@@ -100,15 +100,15 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                             id="alternative-species-autocomplete"
                             options={alternativeSpeciesTestData}
                             getOptionLabel={(option) =>
-                                `${option.alternativeScientificName} (${option.alternativeCommonName ? option.alternativeCommonName.join(', ') : ''})`
+                                `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
                             }
                             value={
-                                Array.isArray(tempData.alternatives)
-                                    ? tempData.alternatives
+                                Array.isArray(tempData.alternative_species)
+                                    ? tempData.alternative_species
                                     : []
                             }
                             onChange={(event, values) =>
-                                handleSearchInputChange("alternatives", values)
+                                handleSearchInputChange("alternative_species", values)
                             }
                             open={alternativeSpeciesAutocompleteOpen}
                             onFocus={() => setAlternativeAutocompleteOpen(true)}
@@ -148,9 +148,9 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
 
                     <TextField
                         label="Resource links (separate by commas)"
-                        value={tempData.links?.join(", ")}
+                        value={tempData.resource_links?.join(", ")}
                         onChange={(e) =>
-                            handleSearchInputChange("links", e.target.value.split(", "))
+                            handleSearchInputChange("resource_links", e.target.value.split(", "))
                         }
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
@@ -160,14 +160,14 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                         <Select
                             labelId="region-label"
                             multiple
-                            value={tempData.location}
-                            onChange={(e) => handleSearchInputChange("regionCode", e.target.value)}
+                            value={tempData.region_id}
+                            onChange={(e) => handleSearchInputChange("region_code_name", e.target.value)}
                             label="Region (multiselect)"
                             renderValue={(selected) => selected.join(", ")}
                         >
                             {RegionsTestData.map((item) => (
-                                <MenuItem key={item.regionCode} value={item.regionCode}>
-                                    {item.regionCode}
+                                <MenuItem key={item.region_code_name} value={item.region_code_name}>
+                                    {item.region_code_name}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -188,7 +188,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
 
 
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
-                <CustomAlert onClose={() => setShowAlert(false)} />
+                <CustomAlert text={"scientific name"} onClose={() => setShowAlert(false)} />
             </Dialog>
 
             <SnackbarOnSuccess open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />

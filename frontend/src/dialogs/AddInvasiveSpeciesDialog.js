@@ -11,12 +11,12 @@ import CustomWarning from '../components/WarningComponent';
 
 const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialSpeciesData = {
-        scientificName: "",
-        commonName: [],
-        links: [],
-        description: "",
-        alternatives: [],
-        location: []
+        scientific_name: "",
+        // commonName: [],
+        resource_links: [],
+        species_description	: "",
+        alternative_species: [],
+        region_id: []
     };
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
     const [showOpen, setShowOpen] = useState(false);
@@ -27,17 +27,17 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     const [alternativeSpeciesTestData, setAlternativeSpeciesTestData] = useState(AlternativeSpeciesTestData);
 
     const handleInputChange = (field, value) => {
-        if (field === "regionCode") {
-            setSpeciesData((prev) => ({ ...prev, location: value }));
+        if (field === "region_code_name") {
+            setSpeciesData((prev) => ({ ...prev, region_id: value }));
         } else {
             setSpeciesData((prev) => ({ ...prev, [field]: value }));
         }
     };
 
     const handleConfirmAddSpecies = () => {
-        const foundSpecies = data.find((item) => item.scientificName.toLowerCase() === speciesData.scientificName.toLowerCase());
+        const foundSpecies = data.find((item) => item.scientific_name.toLowerCase() === speciesData.scientific_name.toLowerCase());
 
-        if (speciesData.scientificName.trim() === "") {
+        if (speciesData.scientific_name.trim() === "") {
             setShowAlert(true);
             return;
         }
@@ -53,10 +53,10 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         setShowOpen(true);
         const modifiedSpeciesData = {
             ...speciesData,
-            commonName: speciesData.commonName,
-            links: speciesData.links,
-            alternatives: speciesData.alternatives,
-            location: speciesData.location
+            // commonName: speciesData.commonName,
+            resource_links: speciesData.resource_links,
+            alternative_species: speciesData.alternative_species,
+            region_id: speciesData.region_id
         };
         handleAdd(modifiedSpeciesData);
         handleCancel();
@@ -100,64 +100,63 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     return (
         <div>
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}>
-                <CustomAlert onClose={() => setShowAlert(false)} />
+                <CustomAlert text={"scientific name"} onClose={() => setShowAlert(false)} />
             </Dialog>
 
             <Dialog open={showWarning} onClose={() => setShowWarning(false)}>
-                {speciesData.scientificName && (
+                {speciesData.scientific_name && (
                     <div>
                         <CustomWarning
-                            data={speciesData.scientificName}
+                            data={speciesData.scientific_name}
                             onClose={() => setShowWarning(false)}
                             handleAdd={() => handleAddSpecies()} />
                     </div>
                 )}
             </Dialog>
 
-            <Dialog open={open} onClose={handleCancel}>
+            <Dialog open={open} onClose={handleCancel} fullWidth>
                 <DialogTitle>Add a New Species</DialogTitle>
                 <DialogContent>
                     <TextField
                         fullWidth
                         label="Scientific Name"
-                        value={speciesData.scientificName}
-                        onChange={(e) => handleInputChange("scientificName", e.target.value)}
+                        value={speciesData.scientific_name}
+                        onChange={(e) => handleInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}
                     />
-                    <TextField
+                    {/* <TextField
                         fullWidth
                         label="Common Name (separate with commas)"
                         value={speciesData.commonName}
                         onChange={(e) => handleInputChange("commonName", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
-                    />
+                    /> */}
 
                     <TextField
                         fullWidth
                         label="Description"
                         multiline
                         minRows={3}
-                        value={speciesData.description}
-                        onChange={(e) => handleInputChange("description", e.target.value)}
+                        value={speciesData.species_description}
+                        onChange={(e) => handleInputChange("species_description", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
-                    {/* TODO: need button to add alternative species and dropdown to select from alternative*/}
                     <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: "1rem" }}>
                         <Autocomplete
                             multiple
                             id="alternative-species-autocomplete"
                             options={alternativeSpeciesTestData}
                             getOptionLabel={(option) =>
-                                `${option.alternativeScientificName} (${option.alternativeCommonName ? option.alternativeCommonName.join(', ') : ''})`
+                                `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
                             }
                             value={
-                                Array.isArray(speciesData.alternatives)
-                                    ? speciesData.alternatives
+                                Array.isArray(speciesData.alternative_species)
+                                    ? speciesData.alternative_species
                                     : []
                             }
                             onChange={(event, values) =>
-                                handleInputChange("alternatives", values)
+                                handleInputChange("alternative_species", values)
                             }
                             open={alternativeSpeciesAutocompleteOpen}
                             onFocus={() => setAlternativeAutocompleteOpen(true)}
@@ -198,8 +197,8 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                     <TextField
                         fullWidth
                         label="Resource links (separate with commas)"
-                        value={speciesData.links}
-                        onChange={(e) => handleInputChange("links", e.target.value)}
+                        value={speciesData.resource_links}
+                        onChange={(e) => handleInputChange("resource_links", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
@@ -208,14 +207,14 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                         <Select
                             labelId="region-label"
                             multiple
-                            value={speciesData.location}
-                            onChange={(e) => handleInputChange("regionCode", e.target.value)}
+                            value={speciesData.region_id}
+                            onChange={(e) => handleInputChange("region_code_name", e.target.value)}
                             label="Region (multiselect)"
                             renderValue={(selected) => selected.join(", ")}
                         >
                             {RegionsTestData.map((item) => (
-                                <MenuItem key={item.regionCode} value={item.regionCode}>
-                                    {item.regionCode}
+                                <MenuItem key={item.region_code_name} value={item.region_code_name}>
+                                    {item.region_code_name}
                                 </MenuItem>
                             ))}
                         </Select>

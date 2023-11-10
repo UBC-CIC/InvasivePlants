@@ -7,9 +7,9 @@ import CustomWarning from "../components/WarningComponent";
 
 const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialRegionData = {
-        regionFullName: "",
-        regionCode: "",
-        country: "",
+        region_fullname: "",
+        region_code_name: "",
+        country_fullname: "",
         geographic_coordinates: []
     };
 
@@ -37,7 +37,7 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
             }
         } else {
             setRegionData((prev) => ({ ...prev, [field]: value }));
-            if (field === "country") {
+            if (field === "country_fullname") {
                 setSelectedCountry(value);
             }
         }
@@ -45,9 +45,9 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
 
 
     const handleConfirmAddRegion = () => {
-        const foundRegion = data.find((item) => item.regionFullName.toLowerCase() === regionData.regionFullName.toLowerCase());
+        const foundRegion = data.find((item) => item.region_fullname.toLowerCase() === regionData.region_fullname.toLowerCase());
 
-        if (regionData.regionFullName.trim() === "") {
+        if (regionData.region_fullname.trim() === "") {
             setShowAlert(true);
             return;
         }
@@ -81,14 +81,14 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
     return (
         <div>
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}>
-                <CustomAlert onClose={() => setShowAlert(false)} />
+                <CustomAlert text={"region"} onClose={() => setShowAlert(false)} />
             </Dialog>
 
             <Dialog open={showWarning} onClose={() => setShowWarning(false)}>
-                {regionData.regionFullName && (
+                {regionData.region_fullname && (
                     <div>
                         <CustomWarning
-                            data={regionData.regionFullName}
+                            data={regionData.region_fullname}
                             onClose={() => setShowWarning(false)}
                             handleAdd={() => handleAddRegion()} />
                     </div>
@@ -101,15 +101,15 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                     <TextField
                         fullWidth
                         label="Region"
-                        value={regionData.regionFullName}
-                        onChange={(e) => handleInputChange("regionFullName", e.target.value)}
+                        value={regionData.region_fullname}
+                        onChange={(e) => handleInputChange("region_fullname", e.target.value)}
                         sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}
                     />
                     <TextField
                         fullWidth
                         label="Region Code"
-                        value={regionData.regionCode}
-                        onChange={(e) => handleInputChange("regionCode", e.target.value)}
+                        value={regionData.region_code_name}
+                        onChange={(e) => handleInputChange("region_code_name", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
                     <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
@@ -117,12 +117,12 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                         <Select
                             labelId="country-label"
                             value={selectedCountry}
-                            onChange={(e) => handleInputChange("country", e.target.value)}
+                            onChange={(e) => handleInputChange("country_fullname", e.target.value)}
                             label="Country"
                         >
-                            {Array.from(new Set(RegionsTestData.map((data) => data.country))).map((country, index) => (
-                                <MenuItem key={index} value={country}>
-                                    {country}
+                            {Array.from(new Set(RegionsTestData.map((data) => data.country_fullname))).map((country_fullname, index) => (
+                                <MenuItem key={index} value={country_fullname}>
+                                    {country_fullname}
                                 </MenuItem>
                             ))}
                         </Select>

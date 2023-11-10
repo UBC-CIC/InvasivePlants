@@ -15,7 +15,7 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
 
     const [showAlert, setShowAlert] = useState(false);
     const handleConfirmRegion = () => {
-        if (!tempData.regionFullName || tempData.regionFullName.trim() === "") {
+        if (!tempData.region_fullname || tempData.region_fullname.trim() === "") {
             setShowAlert(true);
             return false;
         }
@@ -28,7 +28,7 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
             <Dialog open={open} onClose={handleFinishEditingRow}>
                 <DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#c8dbe6", height: "60px" }}>
                     <Typography variant="h5" component="div">
-                        {tempData.regionFullName}
+                        {tempData.region_fullname}
                     </Typography>
                 </DialogTitle>
 
@@ -36,22 +36,22 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
 
                     <TextField
                         label="Region"
-                        value={tempData.regionFullName}
-                        onChange={(e) => handleSearchInputChange("regionFullName", e.target.value)}
+                        value={tempData.region_fullname}
+                        onChange={(e) => handleSearchInputChange("region_fullname", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
 
                     <TextField
                         label="Region Code"
-                        value={tempData.regionCode}
-                        onChange={(e) => handleSearchInputChange("regionCode", e.target.value)}
+                        value={tempData.region_code_name}
+                        onChange={(e) => handleSearchInputChange("region_code_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
 
                     <TextField
                         label="Country"
-                        value={tempData.country}
-                        onChange={(e) => handleSearchInputChange("country", e.target.value)}
+                        value={tempData.country_fullname}
+                        onChange={(e) => handleSearchInputChange("country_fullname", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
                     {tempData.geographic_coordinates && (
@@ -79,8 +79,6 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>
                     <Button
                         onClick={() => {
-                            // handleSave();
-                            // setShowSaveConfirmation(true);
                             handleSave(handleConfirmRegion());
 
                         }}
@@ -91,7 +89,7 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
             </Dialog>
 
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
-                <CustomAlert onClose={() => setShowAlert(false)} />
+                <CustomAlert text={"region"} onClose={() => setShowAlert(false)} />
             </Dialog>
 
             <SnackbarOnSuccess open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />

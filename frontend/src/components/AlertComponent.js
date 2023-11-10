@@ -1,11 +1,11 @@
 import React from 'react';
 import { Alert, AlertTitle, Box, Button } from '@mui/material';
 
-const CustomAlert = ({ onClose }) => {
+const CustomAlert = ({ text, onClose }) => {
     return (
         <Alert severity="error">
             <AlertTitle>Empty Field!</AlertTitle>
-            Please enter a <strong>valid scientific name.</strong>
+            Please enter a <strong>valid {text}.</strong>
             <Box sx={{ display: 'flex', width: '100%', marginTop: '10px', justifyContent: 'flex-end' }}>
                 <Button
                     onClick={onClose}

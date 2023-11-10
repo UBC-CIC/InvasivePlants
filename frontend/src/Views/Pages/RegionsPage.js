@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Autocomplete, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
-// import CountryMap from "../functions/countryMap";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import RegionsTestData from "../../test_data/regionsTestData";
 import AddRegionDialog from "../../dialogs/AddRegionDialog";
@@ -14,7 +13,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import PublicIcon from '@mui/icons-material/Public';
 import LocationFilterComponent from '../../components/LocationFilterComponent';
 
+import axios from "axios";
+
 function RegionsPage() {
+    const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/region";
+
     const [data, setData] = useState(RegionsTestData);
     const [displayData, setDisplayData] = useState(RegionsTestData);
     const [editingId, setEditingId] = useState(null);
@@ -22,7 +25,7 @@ function RegionsPage() {
     const [openEditRegionDialog, setOpenEditRegionDialog] = useState(false);
     const [openAddRegionDialog, setOpenAddRegionDialog] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-    const [searchResults, setSearchResults] = useState(RegionsTestData.map((item) => ({ label: item.regionFullName, value: item.regionFullName })));
+    const [searchResults, setSearchResults] = useState(RegionsTestData.map((item) => ({ label: item.region_fullname, value: item.region_fullname })));
     const [country, setCountry] = useState("");
 
     const [deleteId, setDeleteId] = useState(null);
@@ -32,10 +35,10 @@ function RegionsPage() {
     // gets rows that matches search and country input 
     const filterData = data.filter((item) =>
         (searchTerm === "" || (
-            item.regionFullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.regionCode.toLowerCase().includes(searchTerm.toLowerCase())
+            item.region_fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.region_code_name.toLowerCase().includes(searchTerm.toLowerCase())
         )) &&
-        (country === "" || item.country.toLowerCase() === country.toLowerCase())
+        (country === "" || item.country_fullname.toLowerCase() === country.toLowerCase())
     );
 
     useEffect(() => {
@@ -43,8 +46,8 @@ function RegionsPage() {
             setData(RegionsTestData);
         } else {
             const results = filterData.map((item) => ({
-                label: item.regionFullName,
-                value: item.regionFullName,
+                label: item.region_fullname,
+                value: item.region_fullname,
             }));
             setSearchResults(results);
         }
@@ -126,11 +129,11 @@ function RegionsPage() {
             const terms = searchInput.toLowerCase().split(" ");
             const results = data.filter((item) => {
                 const regionFullNameMatch = terms.every((term) =>
-                    item.regionFullName.toLowerCase().includes(term)
+                    item.region_fullname.toLowerCase().includes(term)
                 );
 
                 const regionCodeMatch = terms.every((term) =>
-                    item.regionCode.toLowerCase().includes(term)
+                    item.region_code_name.toLowerCase().includes(term)
                 );
 
                 return regionFullNameMatch || regionCodeMatch;
@@ -148,7 +151,7 @@ function RegionsPage() {
             setDisplayData(data);
         } else {
             const results = data.filter(
-                (item) => item.country.toLowerCase() === countryInput
+                (item) => item.country_fullname.toLowerCase() === countryInput
             );
             setDisplayData(results);
         }
@@ -170,22 +173,39 @@ function RegionsPage() {
         setOpenAddRegionDialog(false);
 
         // TODO: update the database with the new entry
+        // curl -X POST -H "Content-Type: application/json" -d ' 
+        // { "region_code_name": "ON", 
+        // "region_fullname": "ontario", 
+        // "country_fullname": "canada", 
+        // "geographic_coordinate": "(1,2)" }' 
+        // "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod"
+
+        axios
+            .post(API_ENDPOINT, newRegion)
+            .then((response) => {
+                console.log("Region added successfully", response.data);
+                setDisplayData([...displayData, newRegion]);
+                setOpenAddRegionDialog(false);
+            })
+            .catch((error) => {
+                console.error("Error adding region", error);
+            });
     };
 
 
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
+            {/* <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
                 <Typography variant="h4" sx={{ textAlign: 'center' }}>
                     Regions List
                 </Typography>
-            </Box>
+            </Box> */}
 
             {/* location and search bars*/}
             <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
                 <LocationFilterComponent
                     text={"Search by country"}
-                    mapTo={"country"}
+                    mapTo={"country_fullname"}
                     inputData={displayData}
                     handleLocationSearch={handleCountrySearch}
                     location={country}
@@ -264,17 +284,17 @@ function RegionsPage() {
                         {displayData &&
                             (country !== ""
                                 ? displayData
-                                    .filter((item) => item.country.toLowerCase() === country.toLowerCase())
-                                    .sort((a, b) => a.regionFullName.localeCompare(b.regionFullName))
+                                .filter((item) => item.country_fullname.toLowerCase() === country.toLowerCase())
+                                .sort((a, b) => a.region_fullname.localeCompare(b.region_fullname))
                                     .map((row) => (
-                                        <TableRow key={row.regionCode}>
+                                        <TableRow key={row.region_code_name}>
                                             {/* editing the row */}
                                             {editingId === row.regionId ? (
                                                 <>
                                                     {/* region full name */}
                                                     <TableCell>
                                                         <TextField
-                                                            value={tempData.regionFullName}
+                                                            value={tempData.region_fullname}
                                                             onChange={(e) =>
                                                                 handleSearchInputChange("region", e.target.value)
                                                             }
@@ -284,9 +304,9 @@ function RegionsPage() {
                                                     {/* region code */}
                                                     <TableCell>
                                                         <TextField
-                                                            value={tempData.regionCode}
+                                                            value={tempData.region_code_name}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("regionCode", e.target.value)
+                                                                handleSearchInputChange("region_code_name", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -294,7 +314,7 @@ function RegionsPage() {
                                                     {/* country */}
                                                     <TableCell>
                                                         <TextField
-                                                            value={tempData.country}
+                                                            value={tempData.country_fullname}
                                                             onChange={(e) =>
                                                                 handleSearchInputChange("country", e.target.value)
                                                             }
@@ -330,9 +350,9 @@ function RegionsPage() {
                                                 </>
                                             ) : (
                                                 <>
-                                                    <TableCell>{row.regionFullName}</TableCell>
-                                                    <TableCell> {row.regionCode} </TableCell>
-                                                    <TableCell>{row.country}</TableCell>
+                                                        <TableCell>{row.region_fullname}</TableCell>
+                                                        <TableCell> {row.region_code_name} </TableCell>
+                                                        <TableCell>{row.country_fullname}</TableCell>
                                                     <TableCell>{row.geographic_coordinates.join(', ')}</TableCell>
                                                     <TableCell>
                                                         <Tooltip title="Edit"
@@ -354,7 +374,7 @@ function RegionsPage() {
                                         </TableRow>
                                     ))
                                 : displayData
-                                    .sort((a, b) => a.regionFullName.localeCompare(b.regionFullName))
+                                .sort((a, b) => a.region_fullname.localeCompare(b.region_fullname))
                                     .map((row) => (
                                         <TableRow key={row.regionId}>
                                             {/* editing the row */}
@@ -363,7 +383,7 @@ function RegionsPage() {
                                                     {/* region full name */}
                                                     <TableCell>
                                                         <TextField
-                                                            value={tempData.regionFullName}
+                                                            value={tempData.region_fullname}
                                                             onChange={(e) =>
                                                                 handleSearchInputChange("region", e.target.value)
                                                             }
@@ -373,9 +393,9 @@ function RegionsPage() {
                                                     {/* region code */}
                                                     <TableCell>
                                                         <TextField
-                                                            value={tempData.regionCode}
+                                                            value={tempData.region_code_name}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("regionCode", e.target.value)
+                                                                handleSearchInputChange("region_code_name", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -383,7 +403,7 @@ function RegionsPage() {
                                                     {/* country */}
                                                     <TableCell>
                                                         <TextField
-                                                            value={tempData.country}
+                                                            value={tempData.country_fullname}
                                                             onChange={(e) =>
                                                                 handleSearchInputChange("country", e.target.value)
                                                             }
@@ -419,9 +439,9 @@ function RegionsPage() {
                                                 </>
                                             ) : (
                                                 <>
-                                                    <TableCell>{row.regionFullName}</TableCell>
-                                                    <TableCell> {row.regionCode} </TableCell>
-                                                    <TableCell>{row.country}</TableCell>
+                                                        <TableCell>{row.region_fullname}</TableCell>
+                                                        <TableCell> {row.region_code_name} </TableCell>
+                                                        <TableCell>{row.country_fullname}</TableCell>
                                                     <TableCell>{row.geographic_coordinates.join(', ')}</TableCell>
                                                     <TableCell>
                                                         <Tooltip title="Edit"

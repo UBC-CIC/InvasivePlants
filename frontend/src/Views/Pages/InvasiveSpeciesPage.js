@@ -7,7 +7,7 @@ import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialog";
 import LocationFilterComponent from '../../components/LocationFilterComponent';
 import SearchComponent from '../../components/SearchComponent';
 import AddInvasiveSpeciesDialog from "../../dialogs/AddInvasiveSpeciesDialog";
-import SpeciesTestData from "../../test_data/speciesTestData";
+import SpeciesTestData from "../../test_data/invasiveSpeciesTestData";
 import AlternativeSpeciesTestData from "../../test_data/alternativeSpeciesTestData";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -24,8 +24,8 @@ function InvasiveSpeciesPage() {
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false);
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState(SpeciesTestData.map((item) => ({ label: item.scientificName, value: item.scientificName })));
-  const [location, setLocation] = useState("");
+  const [searchResults, setSearchResults] = useState(SpeciesTestData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
+  const [region_id, setRegionId] = useState("");
   const [deleteId, setDeleteId] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [alternativeSpeciesTestData, setAlternativeSpeciesTestData] = useState(AlternativeSpeciesTestData);
@@ -34,7 +34,7 @@ function InvasiveSpeciesPage() {
   // gets rows that matches search and location input 
   const filterData = data.filter((item) =>
     (searchTerm === "" || (
-      item.scientificName.toLowerCase().includes(searchTerm.toLowerCase())
+      item.scientific_name.toLowerCase().includes(searchTerm.toLowerCase())
       // ||
       // (Array.isArray(item.commonName)
       //   ? item.commonName.some((name) =>
@@ -42,20 +42,20 @@ function InvasiveSpeciesPage() {
       //   )
       //   : item.commonName.toLowerCase().includes(searchTerm.toLowerCase()))
     )) &&
-    (location === "" || item.location.some((loc) => RegionMap[loc.toLowerCase()] === RegionMap[location]))
+    (region_id === "" || item.region_id.some((loc) => RegionMap[loc.toLowerCase()] === RegionMap[region_id]))
   );
 
   useEffect(() => {
-    if (searchTerm === "" && location === "") {
+    if (searchTerm === "" && region_id === "") {
       setData(SpeciesTestData);
     } else {
       const results = filterData.map((item) => ({
-        label: item.scientificName,
-        value: item.scientificName,
+        label: item.scientific_name,
+        value: item.scientific_name,
       }));
       setSearchResults(results);
     }
-  }, [searchTerm, filterData, location]);
+  }, [searchTerm, filterData, region_id]);
 
   // edit species row
   const startEdit = (id, rowData) => {
@@ -115,8 +115,8 @@ function InvasiveSpeciesPage() {
   };
   // helper function when search input changes
   const handleSearchInputChange = (field, value) => {
-    if (field === "regionCode") {
-      setTempData((prev) => ({ ...prev, location: value }));
+    if (field === "region_code_name") {
+      setTempData((prev) => ({ ...prev, region_id: value }));
     }
     else {
     setTempData((prev) => ({ ...prev, [field]: value }));
@@ -131,7 +131,7 @@ function InvasiveSpeciesPage() {
       const terms = searchInput.toLowerCase().split(" ");
       const results = data.filter((item) => {
         const scientificNameMatch = terms.every((term) =>
-          item.scientificName.toLowerCase().includes(term)
+          item.scientific_name.toLowerCase().includes(term)
         );
 
         // const commonNameMatch = Array.isArray(item.commonName)
@@ -150,13 +150,13 @@ function InvasiveSpeciesPage() {
 
   // search location
   const handleLocationSearch = (locationInput) => {
-    setLocation(locationInput);
+    setRegionId(locationInput);
 
     if (locationInput === "") {
       setDisplayData(data);
     } else {
       const results = data.filter((item) =>
-        item.location.some((loc) => loc.toLowerCase().includes(locationInput.toLowerCase().trim()))
+        item.region_id.some((loc) => loc.toLowerCase().includes(locationInput.toLowerCase().trim()))
       );
       console.log("results: ", results);
       setDisplayData(results);
@@ -193,11 +193,11 @@ function InvasiveSpeciesPage() {
       <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
         <LocationFilterComponent
           text={"Search by region"}
-          mapTo={"regionCode"}
+          mapTo={"region_code_name"}
           inputData={RegionsTestData}
           handleLocationSearch={handleLocationSearch}
-          location={location}
-          setLocation={setLocation}
+          location={region_id}
+          setLocation={setRegionId}
         />
 
         <SearchComponent
@@ -265,12 +265,12 @@ function InvasiveSpeciesPage() {
           {/* table body: display species */}
           <TableBody>
             {displayData &&
-              (location !== ""
+              (region_id !== ""
                 ? displayData
                   .filter((item) =>
-                    item.location.some((loc) => loc.toLowerCase().includes(location.toLowerCase().trim()))
+                    item.region_id.some((loc) => loc.toLowerCase().includes(region_id.toLowerCase().trim()))
                   )
-                  .sort((a, b) => a.scientificName.localeCompare(b.scientificName))
+                .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
                   .map((row) => (
                     <TableRow key={row.speciesId}>
                       {/* editing the row */}
@@ -279,9 +279,9 @@ function InvasiveSpeciesPage() {
                           {/* scientific name */}
                           <TableCell>
                             <TextField
-                              value={tempData.scientificName}
+                              value={tempData.scientific_name}
                               onChange={(e) =>
-                                handleSearchInputChange("scientificName", e.target.value)
+                                handleSearchInputChange("scientific_name", e.target.value)
                               }
                             />
                           </TableCell>
@@ -303,9 +303,9 @@ function InvasiveSpeciesPage() {
                           {/* decsription */}
                           <TableCell>
                             <TextField
-                              value={boldText(tempData.description)}
+                              value={boldText(tempData.species_description)}
                               onChange={(e) =>
-                                handleSearchInputChange("description", e.target.value)
+                                handleSearchInputChange("species_description", e.target.value)
                               }
                             />
                           </TableCell>
@@ -314,18 +314,18 @@ function InvasiveSpeciesPage() {
                           <TableCell>
                             <TextField
                               value={
-                                Array.isArray(tempData.alternatives)
-                                  ? tempData.alternatives.map((alternative) => {
+                                Array.isArray(tempData.alternative_species)
+                                  ? tempData.alternative_species.map((alternative) => {
                                     const foundOption = AlternativeSpeciesTestData.find(
-                                      (option) => option.alternativeScientificName === alternative
+                                      (option) => option.scientific_name === alternative
                                     );
-                                    return foundOption ? foundOption.alternativeScientificName : "";
+                                    return foundOption ? foundOption.scientific_name : "";
                                   })
                                   : []
                               }
                               onChange={(e) =>
                                 handleSearchInputChange(
-                                  "alternatives",
+                                  "alternative_species",
                                   e.target.value.split(", ")
                                 )
                               }
@@ -335,10 +335,10 @@ function InvasiveSpeciesPage() {
                           {/* links */}
                           <TableCell>
                             <TextField
-                              value={tempData.links?.join(", ")}
+                              value={tempData.resource_links?.join(", ")}
                               onChange={(e) =>
                                 handleSearchInputChange(
-                                  "links",
+                                  "resource_links",
                                   e.target.value.split(", ")
                                 )
                               }
@@ -348,10 +348,10 @@ function InvasiveSpeciesPage() {
                           {/* region */}
                           <TableCell>
                             <TextField
-                              value={tempData.location.join(", ")}
+                              value={tempData.region_id.join(", ")}
                               onChange={(e) =>
                                 handleSearchInputChange(
-                                  "region",
+                                  "region_id",
                                   e.target.value.split(", ")
                                 )
                               }
@@ -379,25 +379,25 @@ function InvasiveSpeciesPage() {
                         </>
                       ) : (
                         <>
-                          <TableCell>{row.scientificName}</TableCell>
+                            <TableCell>{row.scientific_name}</TableCell>
                             {/* <TableCell>
                             {Array.isArray(row.commonName)
                               ? row.commonName.join(", ")
                               : row.commonName}
                           </TableCell> */}
-                            <TableCell>{boldText(row.description)}</TableCell>
+                            <TableCell>{boldText(row.species_description)}</TableCell>
                           <TableCell>
-                            {Array.isArray(row.alternatives)
-                              ? row.alternatives.map((item) => item.alternativeScientificName).join(", ")
-                              : row.alternatives}
+                              {Array.isArray(row.alternative_species)
+                                ? row.alternative_species.map((item) => item.scientific_name).join(", ")
+                                : row.alternative_species}
                           </TableCell>
                           <TableCell>
-                            {Array.isArray(row.links) ? row.links.join(", ") : row.links}
+                              {Array.isArray(row.resource_links) ? row.resource_links.join(", ") : row.resource_links}
                           </TableCell>
                           <TableCell>
-                            {Array.isArray(row.location)
-                              ? row.location.join(", ")
-                              : row.location}
+                              {Array.isArray(row.region_id)
+                                ? row.region_id.join(", ")
+                                : row.region_id}
                           </TableCell>
                           <TableCell>
                             <Tooltip title="Edit"
@@ -419,7 +419,7 @@ function InvasiveSpeciesPage() {
                     </TableRow>
                   ))
                 : displayData
-                  .sort((a, b) => a.scientificName.localeCompare(b.scientificName))
+                .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
                   .map((row) => (
                     <TableRow key={row.speciesId}>
                       {/* editing the row */}
@@ -428,9 +428,9 @@ function InvasiveSpeciesPage() {
                           {/* scientific name */}
                           <TableCell>
                             <TextField
-                              value={tempData.scientificName}
+                              value={tempData.scientific_name}
                               onChange={(e) =>
-                                handleSearchInputChange("scientificName", e.target.value)
+                                handleSearchInputChange("scientific_name", e.target.value)
                               }
                             />
                           </TableCell>
@@ -452,9 +452,9 @@ function InvasiveSpeciesPage() {
                           {/* decsription */}
                           <TableCell>
                             <TextField
-                              value={boldText(tempData.description)}
+                              value={boldText(tempData.species_description)}
                               onChange={(e) =>
-                                handleSearchInputChange("description", e.target.value)
+                                handleSearchInputChange("species_description", e.target.value)
                               }
                             />
                           </TableCell>
@@ -463,18 +463,18 @@ function InvasiveSpeciesPage() {
                           <TableCell>
                             <TextField
                               value={
-                                Array.isArray(tempData.alternatives)
-                                  ? tempData.alternatives.map((alternative) => {
+                                Array.isArray(tempData.alternative_species)
+                                  ? tempData.alternative_species.map((alternative) => {
                                     const foundOption = AlternativeSpeciesTestData.find(
-                                      (option) => option.alternativeScientificName === alternative
+                                      (option) => option.scientific_name === alternative
                                     );
-                                    return foundOption ? foundOption.alternativeScientificName : "";
+                                    return foundOption ? foundOption.scientific_name : "";
                                   })
                                   : []
                               }
                               onChange={(e) =>
                                 handleSearchInputChange(
-                                  "alternatives",
+                                  "alternative_species",
                                   e.target.value.split(", ")
                                 )
                               }
@@ -484,10 +484,10 @@ function InvasiveSpeciesPage() {
                           {/* links */}
                           <TableCell>
                             <TextField
-                              value={tempData.links?.join(", ")}
+                              value={tempData.resource_links?.join(", ")}
                               onChange={(e) =>
                                 handleSearchInputChange(
-                                  "links",
+                                  "resource_links",
                                   e.target.value.split(", ")
                                 )
                               }
@@ -497,10 +497,10 @@ function InvasiveSpeciesPage() {
                           {/* region */}
                           <TableCell>
                             <TextField
-                              value={tempData.location.join(", ")}
+                              value={tempData.region_id.join(", ")}
                               onChange={(e) =>
                                 handleSearchInputChange(
-                                  "region",
+                                  "region_id",
                                   e.target.value.split(", ")
                                 )
                               }
@@ -526,25 +526,25 @@ function InvasiveSpeciesPage() {
                         </>
                       ) : (
                         <>
-                          <TableCell>{row.scientificName}</TableCell>
+                            <TableCell>{row.scientific_name}</TableCell>
                             {/* <TableCell>
                             {Array.isArray(row.commonName)
                               ? row.commonName.join(", ")
                               : row.commonName}
                           </TableCell> */}
-                            <TableCell>{boldText(row.description)}</TableCell>
+                            <TableCell>{boldText(row.species_description)}</TableCell>
                           <TableCell>
-                            {Array.isArray(row.alternatives)
-                              ? row.alternatives.map((item) => item.alternativeScientificName).join(", ")
-                              : row.alternatives}
+                              {Array.isArray(row.alternative_species)
+                                ? row.alternative_species.map((item) => item.scientific_name).join(", ")
+                                : row.alternative_species}
                           </TableCell>
                           <TableCell>
-                            {Array.isArray(row.links) ? row.links.join(", ") : row.links}
+                              {Array.isArray(row.resource_links) ? row.resource_links.join(", ") : row.resource_links}
                           </TableCell>
                           <TableCell>
-                            {Array.isArray(row.location)
-                              ? row.location.join(", ")
-                              : row.location}
+                              {Array.isArray(row.region_id)
+                                ? row.region_id.join(", ")
+                                : row.region_id}
                           </TableCell>
                           <TableCell>
                             <Tooltip title="Edit"

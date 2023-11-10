@@ -7,12 +7,20 @@ import CustomWarning from '../components/WarningComponent';
 const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
 
   const initialSpeciesData = {
-    alternativeScientificName: "",
-    alternativeCommonName: [],
-    description: "",
+    scientific_name: "",
+    common_name: [],
+    species_description: "",
     resource_links: [],
     image_links: [],
   };
+
+  // const initialSpeciesData = {
+  //   scientific_name: "",
+  //   common_name: [],
+  //   description: "",
+  //   resource_links: [],
+  //   image_links: [],
+  // };
 
   const [showOpen, setShowOpen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -24,8 +32,8 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
   };
 
   const handleConfirmAddAlternativeSpecies = () => {
-    const foundSpecies = data.find((item) => item.alternativeScientificName.toLowerCase() === speciesData.alternativeScientificName.toLowerCase());
-    if (speciesData.alternativeScientificName.trim() === "") {
+    const foundSpecies = data.find((item) => item.scientific_name.toLowerCase() === speciesData.scientific_name.toLowerCase());
+    if (speciesData.scientific_name.trim() === "") {
       setShowAlert(true);
       return;
     }
@@ -40,9 +48,10 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     setShowOpen(true)
     const modifiedSpeciesData = {
       ...speciesData,
-      alternativeCommonName: typeof speciesData.alternativeCommonName === 'string' ? speciesData.alternativeCommonName.split(",") : [],
+      common_name: typeof speciesData.common_name === 'string' ? speciesData.common_name.split(",") : [],
       image_links: typeof speciesData.image_links === 'string' ? speciesData.image_links.split(",") : [],
     };
+    console.log("mod data: ", modifiedSpeciesData);
     handleAdd(modifiedSpeciesData);
     handleCancel();
   };
@@ -73,14 +82,14 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
   return (
     <div>
       <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
-        <CustomAlert onClose={() => setShowAlert(false)} />
+        <CustomAlert text={"scientific name"} onClose={() => setShowAlert(false)} />
       </Dialog>
 
       <Dialog open={showWarning} onClose={() => setShowWarning(false)}>
-        {speciesData.alternativeScientificName && (
+        {speciesData.scientific_name && (
           <div>
             <CustomWarning
-              data={speciesData.alternativeScientificName}
+              data={speciesData.scientific_name}
               onClose={() => setShowWarning(false)}
               handleAdd={handleAddAlternativeSpecies} />
           </div>
@@ -93,15 +102,15 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
           <TextField
             fullWidth
             label="Scientific Name"
-            value={speciesData.alternativeScientificName}
-            onChange={(e) => handleInputChange("alternativeScientificName", e.target.value)}
+            value={speciesData.scientific_name}
+            onChange={(e) => handleInputChange("scientific_name", e.target.value)}
             sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}
           />
           <TextField
             fullWidth
             label="Common Name (separate with commas)"
-            value={speciesData.alternativeCommonName}
-            onChange={(e) => handleInputChange("alternativeCommonName", e.target.value)}
+            value={speciesData.common_name}
+            onChange={(e) => handleInputChange("common_name", e.target.value)}
             sx={{ width: "100%", marginBottom: "1rem" }}
           />
           <TextField
@@ -109,8 +118,8 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
             label="Description"
             multiline
             minRows={3}
-            value={speciesData.description}
-            onChange={(e) => handleInputChange("description", e.target.value)}
+            value={speciesData.species_description}
+            onChange={(e) => handleInputChange("species_description", e.target.value)}
             sx={{ width: "100%", marginBottom: "1rem" }}
           />
           <TextField

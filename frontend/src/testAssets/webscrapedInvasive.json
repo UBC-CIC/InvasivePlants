@@ -1,6 +1,6 @@
 [
   {
-    "regionCode": "BC",
+    "region_code_name": "BC",
     "regionName": "British Columbia",
     "demographic": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Canada_British_Columbia_Density_2016.png/900px-Canada_British_Columbia_Density_2016.png",
     "invasiveSpeciesList": [
@@ -1921,7 +1921,7 @@
     ]
   },
   {
-    "regionCode": "ON",
+    "region_code_name": "ON",
     "regionName": "Ontario",
     "demographic": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Canada_Ontario_Density_2016.png/800px-Canada_Ontario_Density_2016.png",
     "invasiveSpeciesList": [

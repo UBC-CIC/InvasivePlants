@@ -33,7 +33,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
 
     const [showAlert, setShowAlert] = useState(false);
     const handleConfirmAddAlternativeSpecies = () => {
-        if (!tempData.alternativeScientificName || tempData.alternativeScientificName.trim() === "") {
+        if (!tempData.scientific_name || tempData.scientific_name.trim() === "") {
             setShowAlert(true);
             return false;
         }
@@ -52,26 +52,26 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         component="div"
                         style={{ fontStyle: "italic" }}
                     >
-                        {tempData.alternativeScientificName}
+                        {tempData.scientific_name}
                     </Typography>
                 </DialogTitle >
 
                 <DialogContent style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <TextField
                         label="Scientific Name"
-                        value={tempData.alternativeScientificName}
-                        onChange={(e) => handleSearchInputChange("alternativeScientificName", e.target.value)}
+                        value={tempData.scientific_name}
+                        onChange={(e) => handleSearchInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
 
                     <TextField
                         label="Common Name(s) (separate by commas)"
                         value={
-                            Array.isArray(tempData.alternativeCommonName)
-                                ? tempData.alternativeCommonName.join(", ")
-                                : tempData.alternativeCommonName
+                            Array.isArray(tempData.common_name)
+                                ? tempData.common_name.join(", ")
+                                : tempData.common_name
                         }
-                        onChange={(e) => handleSearchInputChange("alternativeCommonName", e.target.value)}
+                        onChange={(e) => handleSearchInputChange("common_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
 
@@ -79,8 +79,8 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         label="Description"
                         multiline
                         rows={6}
-                        value={tempData.description}
-                        onChange={(e) => handleSearchInputChange("description", e.target.value)}
+                        value={tempData.species_description}
+                        onChange={(e) => handleSearchInputChange("species_description", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
@@ -121,7 +121,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
 
 
                 <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
-                    <CustomAlert onClose={() => setShowAlert(false)} />
+                    <CustomAlert text={"scientific name"} onClose={() => setShowAlert(false)} />
                 </Dialog>
 
 

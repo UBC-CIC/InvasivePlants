@@ -12,6 +12,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddAlternativeSpeciesDialog from "../../dialogs/AddAlternativeSpeciesDialog";
 import boldText from "./formatDescriptionHelper";
 
+import axios from "axios";
+
 function AlternativeSpeciesPage() {
   const [data, setData] = useState(AlternativeSpeciesTestData);
   const [displayData, setDisplayData] = useState(AlternativeSpeciesTestData);
@@ -20,19 +22,22 @@ function AlternativeSpeciesPage() {
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false);
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState(AlternativeSpeciesTestData.map((item) => ({ label: item.alternativeScientificName, value: item.alternativeScientificName })));
+  const [searchResults, setSearchResults] = useState(AlternativeSpeciesTestData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
   const [deleteId, setDeleteId] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
+
+
+  const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/region";
 
   // gets rows that matches search and location input 
   const filterData = data.filter((item) =>
   (searchTerm === "" || (
-    item.alternativeScientificName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (Array.isArray(item.alternativeCommonName)
-      ? item.alternativeCommonName.some((name) =>
+    item.scientific_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (Array.isArray(item.common_name)
+      ? item.common_name.some((name) =>
         name.toLowerCase().includes(searchTerm.toLowerCase())
       )
-      : item.alternativeCommonName.toLowerCase().includes(searchTerm.toLowerCase()))
+      : item.common_name.toLowerCase().includes(searchTerm.toLowerCase()))
   ))
   );
 
@@ -41,8 +46,8 @@ function AlternativeSpeciesPage() {
       setData(AlternativeSpeciesTestData);
     } else {
       const results = filterData.map((item) => ({
-        label: item.alternativeScientificName,
-        value: item.alternativeScientificName,
+        label: item.scientific_name,
+        value: item.scientific_name,
       }));
       setSearchResults(results);
     }
@@ -117,14 +122,14 @@ function AlternativeSpeciesPage() {
       const terms = searchInput.toLowerCase().split(" ");
       const results = data.filter((item) => {
         const scientificNameMatch = terms.every((term) =>
-          item.alternativeScientificName.toLowerCase().includes(term)
+          item.scientific_name.toLowerCase().includes(term)
         );
 
-        const commonNameMatch = Array.isArray(item.alternativeCommonName)
-          ? item.alternativeCommonName.some((name) =>
+        const commonNameMatch = Array.isArray(item.common_name)
+          ? item.common_name.some((name) =>
             terms.every((term) => name.toLowerCase().includes(term))
           )
-          : terms.every((term) => item.alternativeCommonName.toLowerCase().includes(term));
+          : terms.every((term) => item.common_name.toLowerCase().includes(term));
 
         return scientificNameMatch || commonNameMatch;
       });
@@ -135,20 +140,41 @@ function AlternativeSpeciesPage() {
 
   // add species
   const handleAddSpecies = (newSpeciesData) => {
+    // TODO: get species id from database
     // Generate a unique alternativeSpeciesId for the new species
-    const newSpeciesId = displayData.length + 1;
+    // const newSpeciesId = displayData.length + 1;
 
     // Create a new species object with the generated speciesId
     const newSpecies = {
-      alternativeSpeciesId: newSpeciesId,
+      // alternativeSpeciesId: newSpeciesId,
       ...newSpeciesData,
     };
 
+    console.log("new alternative species: ", newSpecies);
+
     setDisplayData([...displayData, newSpecies]);
     setOpenAddSpeciesDialog(false);
-    console.log("speciesId: ", newSpecies.alternativeSpeciesId);
 
     // TODO: update the database with the new entry
+    // curl -X POST -H "Content-Type: application/json" -d '{
+    //   "scientific_name": ["test"],
+    //   "common_name": ["test1"],
+    //   "resource_links": ["11"],
+    //   "image_links": [],
+    //   "species_description": "balbslbflkasjdfhkjasdhf"
+    // }' "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/alternativeSpecies"
+
+
+    // axios
+    //   .post(API_ENDPOINT, newSpecies)
+    //   .then((response) => {
+    //     console.log("species added successfully", response.data);
+    //     setDisplayData([...displayData, newSpecies]);
+    //     setOpenAddSpeciesDialog(false);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error adding alternative species", error);
+    //   });
   };
 
   return (
@@ -225,7 +251,7 @@ function AlternativeSpeciesPage() {
           <TableBody>
             {displayData &&
               displayData
-                .sort((a, b) => a.alternativeScientificName.localeCompare(b.alternativeScientificName))
+              .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
                 .map((row) => (
                   <TableRow key={row.alternativeSpeciesId}>
                     {/* editing the row */}
@@ -234,9 +260,9 @@ function AlternativeSpeciesPage() {
                         {/* scientific name */}
                         <TableCell>
                           <TextField
-                            value={tempData.alternativeScientificName}
+                            value={tempData.scientific_name}
                             onChange={(e) =>
-                              handleSearchInputChange("scientificName", e.target.value)
+                              handleSearchInputChange("scientific_name", e.target.value)
                             }
                           />
                         </TableCell>
@@ -245,12 +271,12 @@ function AlternativeSpeciesPage() {
                         <TableCell>
                           <TextField
                             value={
-                              Array.isArray(tempData.alternativeCommonName)
-                                ? tempData.alternativeCommonName.join(", ")
-                                : tempData.alternativeCommonName
+                              Array.isArray(tempData.common_name)
+                                ? tempData.common_name.join(", ")
+                                : tempData.common_name
                             }
                             onChange={(e) =>
-                              handleSearchInputChange("commonName", e.target.value)
+                              handleSearchInputChange("common_name", e.target.value)
                             }
                           />
                         </TableCell>
@@ -258,9 +284,9 @@ function AlternativeSpeciesPage() {
                         {/* decsription */}
                         <TableCell>
                           <TextField
-                            value={boldText(tempData.description)}
+                            value={boldText(tempData.species_description)}
                             onChange={(e) =>
-                              handleSearchInputChange("description", e.target.value)
+                              handleSearchInputChange("species_description", e.target.value)
                             }
                           />
                         </TableCell>
@@ -311,13 +337,13 @@ function AlternativeSpeciesPage() {
                       </>
                     ) : (
                       <>
-                        <TableCell>{row.alternativeScientificName}</TableCell>
+                          <TableCell>{row.scientific_name}</TableCell>
                         <TableCell>
-                          {Array.isArray(row.alternativeCommonName)
-                            ? row.alternativeCommonName.join(", ")
-                            : row.alternativeCommonName}
+                            {Array.isArray(row.common_name)
+                              ? row.common_name.join(", ")
+                              : row.common_name}
                         </TableCell>
-                          <TableCell>{boldText(row.description)}</TableCell>
+                          <TableCell>{boldText(row.species_description)}</TableCell>
                         <TableCell>
                           {Array.isArray(row.resource_links) ? row.resource_links.join(", ") : row.resource_links}
                         </TableCell>
