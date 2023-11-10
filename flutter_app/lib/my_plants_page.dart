@@ -13,8 +13,10 @@ class UserListsNotifier extends ChangeNotifier {
   }
 
   void removeList(int index) {
-    userLists.removeAt(index);
-    notifyListeners();
+    if (index >= 0 && index < userLists.length) {
+      userLists.removeAt(index);
+      notifyListeners();
+    }
   }
 }
 
