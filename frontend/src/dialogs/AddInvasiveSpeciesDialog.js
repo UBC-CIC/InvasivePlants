@@ -11,7 +11,7 @@ import CustomWarning from '../components/WarningComponent';
 
 const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialSpeciesData = {
-        scientific_name: "",
+        scientific_name: [],
         // commonName: [],
         resource_links: [],
         species_description	: "",
