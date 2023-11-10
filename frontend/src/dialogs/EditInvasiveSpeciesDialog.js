@@ -43,7 +43,10 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
 
     const [showAlert, setShowAlert] = useState(false);
     const handleConfirmAddAlternativeSpecies = () => {
-        if (!tempData.scientific_name || tempData.scientific_name.trim() === "") {
+        console.log(typeof tempData.scientific_name)
+        console.log(tempData.scientific_name)
+
+        if (!tempData.scientific_name || tempData.scientific_name.length === 0) {
             setShowAlert(true);
             return false;
         }
@@ -62,7 +65,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                         component="div"
                         style={{ fontStyle: "italic" }}
                     >
-                        {tempData.scientific_name}
+                        {Array.isArray(tempData.scientific_name) ? tempData.scientific_name.join(', ') : tempData.scientific_name}
                     </Typography>
                 </DialogTitle >
 
@@ -70,8 +73,11 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
 
                     <TextField
                         label="Scientific Name"
-                        value={tempData.scientific_name}
-                        onChange={(e) => handleSearchInputChange("scientific_name", e.target.value)}
+                        value={
+                            Array.isArray(tempData.scientific_name)
+                                ? tempData.scientific_name.join(", ")
+                                : tempData.scientific_name
+                        } onChange={(e) => handleSearchInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
                     {/* <TextField

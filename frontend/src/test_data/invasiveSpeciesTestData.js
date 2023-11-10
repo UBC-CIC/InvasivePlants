@@ -3,7 +3,7 @@ import AlternativeSpeciesTestData from "./alternativeSpeciesTestData";
 const SpeciesTestData = [
     {
         speciesId: 1,
-        scientific_name: "Hemerocallis fulva",
+        scientific_name: ["Hemerocallis fulva", "abc"],
         // commonName: ["Orange daylily", "Tiger Lillies", "Fulvous day-lily"],
         resource_links: ["http://example.com"],
         species_description:
@@ -17,7 +17,7 @@ const SpeciesTestData = [
     },
     {
         speciesId: 2,
-        scientific_name: "rosa",
+        scientific_name: ["rosa"],
         // commonName: "Rose",
         resource_links: ["http://example.com", "abc.com", "basdfsdf"],
         species_description: "A type of flowering shrub.",
@@ -26,7 +26,7 @@ const SpeciesTestData = [
     },
     {
         speciesId: 3,
-        scientific_name: "Gypsophila muralis",
+        scientific_name: ["Gypsophila muralis"],
         // commonName: [
         //     "Annual Gypsophila",
         //     "Low Baby's-breath",
@@ -39,7 +39,7 @@ const SpeciesTestData = [
     },
     {
         speciesId: 4,
-        scientific_name: "Gypsophila paniculata",
+        scientific_name: ["Gypsophila paniculata"],
         // commonName: [
         //     "Baby's-breath",
         //     "Old-fashioned Baby's-breath",

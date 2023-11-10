@@ -34,7 +34,13 @@ function InvasiveSpeciesPage() {
   // gets rows that matches search and location input 
   const filterData = data.filter((item) =>
     (searchTerm === "" || (
-      item.scientific_name.toLowerCase().includes(searchTerm.toLowerCase())
+      (Array.isArray(item.scientific_name)
+        ? item.scientific_name.some((name) =>
+          name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        : item.scientific_name.toLowerCase().includes(searchTerm.toLowerCase()))
+
+      // item.scientific_name.toLowerCase().includes(searchTerm.toLowerCase())
       // ||
       // (Array.isArray(item.commonName)
       //   ? item.commonName.some((name) =>
@@ -125,22 +131,24 @@ function InvasiveSpeciesPage() {
 
   // search species
   const handleSearch = (searchInput) => {
+    console.log(typeof searchInput);
+    console.log("search input: ", searchInput);
+
     if (searchInput === "") {
       setDisplayData(data);
     } else {
       const terms = searchInput.toLowerCase().split(" ");
       const results = data.filter((item) => {
-        const scientificNameMatch = terms.every((term) =>
+        const scientificNameMatch = Array.isArray(item.scientific_name)
+          ? item.scientific_name.some((name) =>
+            terms.every((term) => name.toLowerCase().includes(term))
+          )
+          : terms.every((term) =>
           item.scientific_name.toLowerCase().includes(term)
         );
 
-        // const commonNameMatch = Array.isArray(item.commonName)
-        //   ? item.commonName.some((name) =>
-        //     terms.every((term) => name.toLowerCase().includes(term))
-        //   )
-        //   : terms.every((term) => item.commonName.toLowerCase().includes(term));
 
-        return scientificNameMatch
+        return scientificNameMatch || searchInput === item.scientific_name.join(", ");
         // || commonNameMatch;
       });
 
@@ -270,7 +278,7 @@ function InvasiveSpeciesPage() {
                   .filter((item) =>
                     item.region_id.some((loc) => loc.toLowerCase().includes(region_id.toLowerCase().trim()))
                   )
-                .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
+                // .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
                   .map((row) => (
                     <TableRow key={row.speciesId}>
                       {/* editing the row */}
@@ -279,7 +287,11 @@ function InvasiveSpeciesPage() {
                           {/* scientific name */}
                           <TableCell>
                             <TextField
-                              value={tempData.scientific_name}
+                              value={
+                                Array.isArray(tempData.scientific_name)
+                                  ? tempData.scientific_name.join(", ")
+                                  : tempData.scientific_name
+                              }
                               onChange={(e) =>
                                 handleSearchInputChange("scientific_name", e.target.value)
                               }
@@ -379,7 +391,12 @@ function InvasiveSpeciesPage() {
                         </>
                       ) : (
                         <>
-                            <TableCell>{row.scientific_name}</TableCell>
+                            {/* <TableCell>{row.scientific_name}</TableCell> */}
+                            <TableCell>
+                              {Array.isArray(row.scientific_name)
+                                ? row.scientific_name.join(", ")
+                                : row.scientific_name}
+                            </TableCell>
                             {/* <TableCell>
                             {Array.isArray(row.commonName)
                               ? row.commonName.join(", ")
@@ -419,7 +436,7 @@ function InvasiveSpeciesPage() {
                     </TableRow>
                   ))
                 : displayData
-                .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
+                // .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
                   .map((row) => (
                     <TableRow key={row.speciesId}>
                       {/* editing the row */}
@@ -427,8 +444,18 @@ function InvasiveSpeciesPage() {
                         <>
                           {/* scientific name */}
                           <TableCell>
-                            <TextField
+                            {/* <TextField
                               value={tempData.scientific_name}
+                              onChange={(e) =>
+                                handleSearchInputChange("scientific_name", e.target.value)
+                              }
+                            /> */}
+                            <TextField
+                              value={
+                                Array.isArray(tempData.scientific_name)
+                                  ? tempData.scientific_name.join(", ")
+                                  : tempData.scientific_name
+                              }
                               onChange={(e) =>
                                 handleSearchInputChange("scientific_name", e.target.value)
                               }
@@ -526,7 +553,12 @@ function InvasiveSpeciesPage() {
                         </>
                       ) : (
                         <>
-                            <TableCell>{row.scientific_name}</TableCell>
+                            {/* <TableCell>{row.scientific_name}</TableCell> */}
+                            <TableCell>
+                              {Array.isArray(row.scientific_name)
+                                ? row.scientific_name.join(", ")
+                                : row.scientific_name}
+                            </TableCell>
                             {/* <TableCell>
                             {Array.isArray(row.commonName)
                               ? row.commonName.join(", ")

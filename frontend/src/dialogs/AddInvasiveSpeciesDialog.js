@@ -35,12 +35,18 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     };
 
     const handleConfirmAddSpecies = () => {
-        const foundSpecies = data.find((item) => item.scientific_name.toLowerCase() === speciesData.scientific_name.toLowerCase());
-
-        if (speciesData.scientific_name.trim() === "") {
+        if (speciesData.scientific_name.length === 0) {
             setShowAlert(true);
             return;
         }
+
+        const foundSpecies = data.some((item) =>
+            Array.isArray(item.scientific_name)
+                ? item.scientific_name.some(
+                    (name) => speciesData.scientific_name.includes(name.toLowerCase())
+                )
+                : speciesData.scientific_name.includes(item.scientific_name.toLowerCase())
+        );
         if (foundSpecies) {
             setShowWarning(true);
         } else {
@@ -148,7 +154,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                             id="alternative-species-autocomplete"
                             options={alternativeSpeciesTestData}
                             getOptionLabel={(option) =>
-                                `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
+                                `${option.scientific_name ? option.scientific_name.join(", ") : ''} (${option.common_name ? option.common_name.join(', ') : ''})`
                             }
                             value={
                                 Array.isArray(speciesData.alternative_species)

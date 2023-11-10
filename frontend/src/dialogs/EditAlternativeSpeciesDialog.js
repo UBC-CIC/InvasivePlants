@@ -4,6 +4,7 @@ import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 
 const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
+    // console.log(tempData);
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
     const handleClose = (event, reason) => {
@@ -33,7 +34,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
 
     const [showAlert, setShowAlert] = useState(false);
     const handleConfirmAddAlternativeSpecies = () => {
-        if (!tempData.scientific_name || tempData.scientific_name.trim() === "") {
+        if (!tempData.scientific_name || tempData.scientific_name.length === 0) {
             setShowAlert(true);
             return false;
         }
@@ -52,14 +53,14 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         component="div"
                         style={{ fontStyle: "italic" }}
                     >
-                        {tempData.scientific_name}
+                        {Array.isArray(tempData.scientific_name) ? tempData.scientific_name.join(', ') : tempData.scientific_name}
                     </Typography>
                 </DialogTitle >
 
                 <DialogContent style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <TextField
-                        label="Scientific Name"
-                        value={tempData.scientific_name}
+                        label="Scientific Name(s) (separate by commas)"
+                        value={Array.isArray(tempData.scientific_name) ? tempData.scientific_name.join(', ') : tempData.scientific_name}
                         onChange={(e) => handleSearchInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />

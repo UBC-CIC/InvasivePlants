@@ -29,10 +29,13 @@ function AlternativeSpeciesPage() {
 
   const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/region";
 
-  // gets rows that matches search and location input 
   const filterData = data.filter((item) =>
   (searchTerm === "" || (
-    item.scientific_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (Array.isArray(item.scientific_name)
+      ? item.scientific_name.some((name) =>
+        name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      : item.scientific_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (Array.isArray(item.common_name)
       ? item.common_name.some((name) =>
         name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -40,6 +43,7 @@ function AlternativeSpeciesPage() {
       : item.common_name.toLowerCase().includes(searchTerm.toLowerCase()))
   ))
   );
+
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -97,7 +101,7 @@ function AlternativeSpeciesPage() {
   const handleDeleteRow = (alternativeSpeciesId) => {
     setDeleteId(alternativeSpeciesId);
     setOpenConfirmation(true);
-    console.log("id to delete: ", deleteId);
+    // console.log("id to delete: ", deleteId);
   };
 
   // Confirm delete
@@ -109,34 +113,47 @@ function AlternativeSpeciesPage() {
     }
     setOpenConfirmation(false);
   };
+
   // helper function when search input changes
   const handleSearchInputChange = (field, value) => {
     setTempData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // search species
+
   const handleSearch = (searchInput) => {
+    console.log(typeof searchInput);
+    console.log("search input: ", searchInput);
+
     if (searchInput === "") {
       setDisplayData(data);
     } else {
       const terms = searchInput.toLowerCase().split(" ");
       const results = data.filter((item) => {
-        const scientificNameMatch = terms.every((term) =>
-          item.scientific_name.toLowerCase().includes(term)
-        );
+        const scientificNameMatch = Array.isArray(item.scientific_name)
+          ? item.scientific_name.some((name) =>
+            terms.every((term) => name.toLowerCase().includes(term))
+          )
+          : terms.every((term) => {
+            item.scientific_name.toLowerCase().includes(term);
+          }
+          );
 
         const commonNameMatch = Array.isArray(item.common_name)
           ? item.common_name.some((name) =>
             terms.every((term) => name.toLowerCase().includes(term))
           )
-          : terms.every((term) => item.common_name.toLowerCase().includes(term));
+          : terms.every((term) =>
+            item.common_name.toLowerCase().includes(term)
+          );
 
-        return scientificNameMatch || commonNameMatch;
+
+        return scientificNameMatch || commonNameMatch || searchInput === item.scientific_name.join(', ');
       });
 
       setDisplayData(results);
     }
   };
+
 
   // add species
   const handleAddSpecies = (newSpeciesData) => {
@@ -251,7 +268,7 @@ function AlternativeSpeciesPage() {
           <TableBody>
             {displayData &&
               displayData
-              .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
+              // .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
                 .map((row) => (
                   <TableRow key={row.alternativeSpeciesId}>
                     {/* editing the row */}
@@ -260,12 +277,16 @@ function AlternativeSpeciesPage() {
                         {/* scientific name */}
                         <TableCell>
                           <TextField
-                            value={tempData.scientific_name}
+                            value={
+                              Array.isArray(tempData.scientific_name)
+                                ? tempData.scientific_name.join(", ")
+                                : tempData.scientific_name
+                            }
                             onChange={(e) =>
                               handleSearchInputChange("scientific_name", e.target.value)
                             }
                           />
-                        </TableCell>
+                        </TableCell>                    
 
                         {/* common name */}
                         <TableCell>
@@ -337,7 +358,11 @@ function AlternativeSpeciesPage() {
                       </>
                     ) : (
                       <>
-                          <TableCell>{row.scientific_name}</TableCell>
+                          <TableCell>
+                            {Array.isArray(row.scientific_name)
+                              ? row.scientific_name.join(", ")
+                              : row.scientific_name}
+                          </TableCell>
                         <TableCell>
                             {Array.isArray(row.common_name)
                               ? row.common_name.join(", ")

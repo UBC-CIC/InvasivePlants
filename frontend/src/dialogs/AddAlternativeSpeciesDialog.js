@@ -7,7 +7,7 @@ import CustomWarning from '../components/WarningComponent';
 const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
 
   const initialSpeciesData = {
-    scientific_name: "",
+    scientific_name: [],
     common_name: [],
     species_description: "",
     resource_links: [],
@@ -32,11 +32,19 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
   };
 
   const handleConfirmAddAlternativeSpecies = () => {
-    const foundSpecies = data.find((item) => item.scientific_name.toLowerCase() === speciesData.scientific_name.toLowerCase());
-    if (speciesData.scientific_name.trim() === "") {
+    if (speciesData.scientific_name.length === 0) {
       setShowAlert(true);
       return;
     }
+
+    const foundSpecies = data.some((item) =>
+      Array.isArray(item.scientific_name)
+        ? item.scientific_name.some(
+          (name) => speciesData.scientific_name.includes(name.toLowerCase())
+        )
+        : speciesData.scientific_name.includes(item.scientific_name.toLowerCase())
+    );
+
     if (foundSpecies) {
       setShowWarning(true);
     } else {
