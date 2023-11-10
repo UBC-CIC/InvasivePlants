@@ -41,7 +41,20 @@ export class APIStack extends Stack {
             apiDefinition: apigateway.AssetApiDefinition.fromInline(data),
             endpointTypes: [apigateway.EndpointType.REGIONAL],
             restApiName: "InvasiveSpeciesAPI",
-            deploy: true
+            deploy: true,
+            cloudWatchRole: true,
+            deployOptions: {
+                metricsEnabled: true,
+                loggingLevel: apigateway.MethodLoggingLevel.ERROR,
+                dataTraceEnabled: true,
+                stageName: 'prod',
+                methodOptions: {
+                  "/*/*": {
+                    throttlingRateLimit: 100,
+                    throttlingBurstLimit: 200
+                  }
+                }
+              },
         });
 
         // Source Code: https://stackoverflow.com/questions/62179893/aws-cdk-how-to-create-an-api-gateway-backed-by-lambda-from-openapi-spec
