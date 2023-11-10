@@ -27,7 +27,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
         child: Column(
           children: <Widget>[
             Padding(
@@ -53,7 +53,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                   ),
                   const Spacer(),
-                  const Icon(Icons.keyboard_arrow_down),
+                  const Icon(
+                    Icons.delete_forever,
+                    color: Colors.red,
+                  ),
                 ],
               ),
             ),

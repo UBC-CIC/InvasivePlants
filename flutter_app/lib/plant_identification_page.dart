@@ -48,7 +48,7 @@ class _PlantIdentificationPageState extends State<PlantIdentificationPage> {
               _buildGridItem("FLOWER", 'assets/images/flower.png'),
               _buildGridItem("FRUIT", 'assets/images/fruit.png'),
               _buildGridItem("BARK", 'assets/images/bark.png'),
-              _buildGridItem("HABIT", 'assets/images/habit.png'),
+              _buildGridItem("HABITAT", 'assets/images/habit.png'),
               _buildGridItem("OTHER", 'assets/images/other.png'),
             ],
           ),

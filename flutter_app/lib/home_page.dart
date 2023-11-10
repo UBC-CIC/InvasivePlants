@@ -2,10 +2,10 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/plant_info_from_category_page.dart';
 import 'camera_page.dart';
 import 'my_plants_page.dart';
 import 'settings_page.dart';
-import 'category_info_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,6 +22,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      extendBody: true,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -79,7 +81,7 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+            padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
             child: CupertinoSearchTextField(
               placeholder: 'Search',
               onChanged: (value) {
@@ -93,7 +95,7 @@ class _HomePageState extends State<HomePage> {
             child: ListView(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                   child: GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -110,39 +112,56 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded, size: 40),
-            label: '',
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(30), topLeft: Radius.circular(30)),
+          boxShadow: [
+            BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 10),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.camera_alt_outlined, size: 40),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark_border, size: 40),
-            label: '',
-          ),
-        ],
-        onTap: (int index) {
-          if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const CameraPage(),
+          child: BottomNavigationBar(
+            selectedFontSize: 0.0,
+            unselectedFontSize: 0.0,
+            backgroundColor: Colors.white,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_rounded, size: 40),
+                label: '',
               ),
-            );
-          } else if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MyPlantsPage(),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.camera_alt_outlined, size: 40),
+                label: '',
               ),
-            );
-          }
-        },
+              BottomNavigationBarItem(
+                icon: Icon(Icons.bookmark, size: 40),
+                label: '',
+              ),
+            ],
+            onTap: (int index) {
+              if (index == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CameraPage(),
+                  ),
+                );
+              } else if (index == 2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MyPlantsPage(),
+                  ),
+                );
+              }
+            },
+          ),
+        ),
       ),
     );
   }
@@ -168,23 +187,32 @@ class _HomePageState extends State<HomePage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CategoryInfoPage(
-              categoryTitle: speciesName,
+            builder: (context) => PlantInfoFromCategoryPage(
+              plantName: speciesName,
             ),
           ),
         );
       },
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20.0),
-        child: Container(
+      child: Container(
+        margin: const EdgeInsets.all(2.0),
+        decoration: BoxDecoration(
           color: isBCSelected ? Colors.blue : Colors.green,
-          child: Center(
-            child: Text(
-              speciesName,
-              style: const TextStyle(
-                fontSize: 15,
-                color: Colors.black,
-              ),
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 3,
+              blurRadius: 6,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Text(
+            speciesName,
+            style: const TextStyle(
+              fontSize: 15,
+              color: Colors.white,
             ),
           ),
         ),

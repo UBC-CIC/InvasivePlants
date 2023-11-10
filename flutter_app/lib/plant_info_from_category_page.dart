@@ -1,6 +1,9 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'camera_page.dart';
+import 'home_page.dart';
+import 'my_plants_page.dart';
 
 class PlantInfoFromCategoryPage extends StatefulWidget {
   final String plantName;
@@ -18,6 +21,8 @@ class _PlantInfoFromCategoryPageState extends State<PlantInfoFromCategoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(widget.plantName), // Plant name as app bar title
         actions: [
@@ -106,17 +111,6 @@ class _PlantInfoFromCategoryPageState extends State<PlantInfoFromCategoryPage> {
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: const BottomAppBar(
-        color: Colors.grey,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Icon(Icons.home_outlined),
-            Icon(Icons.camera_alt_outlined),
-            Icon(Icons.bookmark_border),
-          ],
-        ),
       ),
     );
   }
