@@ -298,19 +298,6 @@ function InvasiveSpeciesPage() {
                             />
                           </TableCell>
 
-                          {/* common name */}
-                          {/* <TableCell>
-                            <TextField
-                              value={
-                                Array.isArray(tempData.commonName)
-                                  ? tempData.commonName.join(", ")
-                                  : tempData.commonName
-                              }
-                              onChange={(e) =>
-                                handleSearchInputChange("commonName", e.target.value)
-                              }
-                            />
-                          </TableCell> */}
 
                           {/* decsription */}
                           <TableCell>
@@ -347,7 +334,11 @@ function InvasiveSpeciesPage() {
                           {/* links */}
                           <TableCell>
                             <TextField
-                              value={tempData.resource_links?.join(", ")}
+                              value={
+                                Array.isArray(tempData.resource_links)
+                                  ? tempData.resource_links.join(", ")
+                                  : tempData.resource_links
+                              }
                               onChange={(e) =>
                                 handleSearchInputChange(
                                   "resource_links",
@@ -511,7 +502,11 @@ function InvasiveSpeciesPage() {
                           {/* links */}
                           <TableCell>
                             <TextField
-                              value={tempData.resource_links?.join(", ")}
+                              value={
+                                Array.isArray(tempData.resource_links)
+                                  ? tempData.resource_links.join(", ")
+                                  : tempData.resource_links
+                              }
                               onChange={(e) =>
                                 handleSearchInputChange(
                                   "resource_links",
@@ -559,11 +554,6 @@ function InvasiveSpeciesPage() {
                                 ? row.scientific_name.join(", ")
                                 : row.scientific_name}
                             </TableCell>
-                            {/* <TableCell>
-                            {Array.isArray(row.commonName)
-                              ? row.commonName.join(", ")
-                              : row.commonName}
-                          </TableCell> */}
                             <TableCell>{boldText(row.species_description)}</TableCell>
                           <TableCell>
                               {Array.isArray(row.alternative_species)

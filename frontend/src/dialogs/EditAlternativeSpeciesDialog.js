@@ -87,7 +87,11 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
 
                     <TextField
                         label="Resource links (separate by commas)"
-                        value={tempData.resource_links?.join(", ")}
+                        value={
+                            Array.isArray(tempData.resource_links)
+                                ? tempData.resource_links.join(", ")
+                                : tempData.resource_links
+                        } 
                         onChange={(e) =>
                             handleSearchInputChange("resource_links", e.target.value.split(", "))
                         }

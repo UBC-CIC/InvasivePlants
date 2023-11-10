@@ -315,10 +315,14 @@ function AlternativeSpeciesPage() {
                         {/* resource links */}
                         <TableCell>
                           <TextField
-                            value={tempData.resource_links?.join(", ")}
+                            value={
+                              Array.isArray(tempData.resource_links)
+                                ? tempData.resource_links.join(", ")
+                                : tempData.resource_links
+                            }
                             onChange={(e) =>
                               handleSearchInputChange(
-                                "resourceLinks",
+                                "resource_links",
                                 e.target.value.split(", ")
                               )
                             }
