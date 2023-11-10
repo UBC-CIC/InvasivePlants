@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { Autocomplete, Tooltip, alpha, Snackbar, Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import RegionsTestData from "../test_data/regionsTestData";
-import AddAlternativeSpeciesDialog from "./AddAlternativeSpeciesDialogComponent";
+import AddAlternativeSpeciesDialog from "./AddAlternativeSpeciesDialog";
 import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData";
 import SearchIcon from '@mui/icons-material/Search';
-import SavedSnackbar from "./SaveSnackBar";
+import SnackbarOnSuccess from "../components/SnackbarComponent";
+import CustomAlert from "../components/AlertComponent";
+import CustomWarning from '../components/WarningComponent';
+
 
 const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialSpeciesData = {
@@ -97,53 +100,16 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     return (
         <div>
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}>
-                <Alert severity="error">
-                    <AlertTitle>Empty Field!</AlertTitle>
-                    Please enter a <strong>valid scientific name.</strong>
-                    <Box sx={{ display: 'flex', width: '100%', marginTop: '10px', justifyContent: 'flex-end' }}>
-                        <Button
-                            onClick={() => setShowAlert(false)}
-                            sx={{
-                                color: "#241c1a",
-                                "&:hover": {
-                                    backgroundColor: "#d9b1a7"
-                                }
-                            }}
-                        >OK</Button>
-                    </Box>
-                </Alert>
-
+                <CustomAlert onClose={() => setShowAlert(false)} />
             </Dialog>
 
             <Dialog open={showWarning} onClose={() => setShowWarning(false)}>
                 {speciesData.scientificName && (
                     <div>
-                        <Alert severity="warning">
-                            <AlertTitle><strong>{speciesData.scientificName}</strong> already exists!</AlertTitle>
-                            Do you want to <strong>add anyways?</strong>
-                            <Box sx={{ display: 'flex', width: '100%', marginTop: '10px', justifyContent: 'flex-end' }}>
-                                <Button onClick={() => setShowWarning(false)}
-                                    sx={{
-                                        color: "#362502",
-                                        "&:hover": {
-                                            backgroundColor: "#dbc8a0"
-                                        }
-                                    }}>Cancel</Button>
-
-                                <Button
-                                    onClick={() => {
-                                        handleAddSpecies();
-                                    }}
-                                    sx={{
-                                        color: "#362502",
-                                        "&:hover": {
-                                            backgroundColor: "#dbc8a0"
-                                        }
-                                    }} autoFocus>
-                                    Add
-                                </Button>
-                            </Box>
-                        </Alert>
+                        <CustomWarning
+                            data={speciesData.scientificName}
+                            onClose={() => setShowWarning(false)}
+                            handleAdd={() => handleAddSpecies()} />
                     </div>
                 )}
             </Dialog>
@@ -274,7 +240,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                     Added successfully!
                 </Alert>
             </Snackbar> */}
-            <SavedSnackbar open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
+            <SnackbarOnSuccess open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
 
             {/* <SavedSnackbar open={showOpen} onClose={setShowOpen(false)} text={"Added successfully!"} /> */}
 

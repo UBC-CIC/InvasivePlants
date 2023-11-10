@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { Snackbar, Box, Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import RegionsTestData from "../test_data/regionsTestData";
-import SavedSnackbar from "./SaveSnackBar";
+import SnackbarOnSuccess from "../components/SnackbarComponent";
+import CustomAlert from "../components/AlertComponent";
+import CustomWarning from "../components/WarningComponent";
+
 const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialRegionData = {
         regionFullName: "",
@@ -78,49 +81,16 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
     return (
         <div>
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}>
-                <Alert severity="error">
-                    <AlertTitle>Empty Field!</AlertTitle>
-                    Please enter a <strong>valid region name.</strong>
-                    <Box sx={{ display: 'flex', width: '100%', marginTop: '10px', justifyContent: 'flex-end' }}>
-                        <Button
-                            onClick={() => setShowAlert(false)}
-                            sx={{
-                                color: "#241c1a",
-                                "&:hover": {
-                                    backgroundColor: "#d9b1a7"
-                                }
-                            }}
-                        >OK</Button>
-                    </Box>
-                </Alert>
-
+                <CustomAlert onClose={() => setShowAlert(false)} />
             </Dialog>
 
             <Dialog open={showWarning} onClose={() => setShowWarning(false)}>
                 {regionData.regionFullName && (
                     <div>
-                        <Alert severity="warning">
-                            <AlertTitle>Region already Exists!</AlertTitle>
-                            Do you want to <strong>add anyways?</strong>
-                            <Box sx={{ display: 'flex', width: '100%', marginTop: '10px', justifyContent: 'flex-end' }}>
-                                <Button onClick={() => setShowWarning(false)}
-                                    sx={{
-                                        color: "#362502",
-                                        "&:hover": {
-                                            backgroundColor: "#dbc8a0"
-                                        }
-                                    }}>Cancel</Button>
-                                <Button onClick={() => handleAddRegion()}
-                                    sx={{
-                                        color: "#362502",
-                                        "&:hover": {
-                                            backgroundColor: "#dbc8a0"
-                                        }
-                                    }} autoFocus>
-                                    Add
-                                </Button>
-                            </Box>
-                        </Alert>
+                        <CustomWarning
+                            data={regionData.regionFullName}
+                            onClose={() => setShowWarning(false)}
+                            handleAdd={() => handleAddRegion()} />
                     </div>
                 )}
             </Dialog>
@@ -187,7 +157,7 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                 </DialogActions>
             </Dialog >
 
-            <SavedSnackbar open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
+            <SnackbarOnSuccess open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
 
         </div>
     );

@@ -11,7 +11,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import HomeIcon from '@material-ui/icons/Home';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import { makeStyles } from '@material-ui/core/styles';
-import Navbar from "../../Components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import { connect } from "react-redux";
 import { updateMenuState } from "../../Actions/menuActions";
 

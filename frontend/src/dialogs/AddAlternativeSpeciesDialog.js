@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Typography, Snackbar, Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import SavedSnackbar from "./SaveSnackBar";
+import SnackbarOnSuccess from "../components/SnackbarComponent";
+import CustomAlert from '../components/AlertComponent';
+import CustomWarning from '../components/WarningComponent';
 
 const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
 
@@ -71,80 +73,48 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
   return (
     <div>
       <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
-        <Alert severity="error">
-          <AlertTitle>Empty Field!</AlertTitle>
-          Please enter a <strong>valid scientific name.</strong>
-          <Box sx={{ display: 'flex', width: '100%', marginTop: '10px', justifyContent: 'flex-end' }}>
-            <Button
-              onClick={() => setShowAlert(false)}
-              sx={{
-                color: "#241c1a",
-                "&:hover": {
-                  backgroundColor: "#d9b1a7"
-                }
-              }}
-            >OK</Button>
-          </Box>
-        </Alert>
+        <CustomAlert onClose={() => setShowAlert(false)} />
       </Dialog>
 
       <Dialog open={showWarning} onClose={() => setShowWarning(false)}>
         {speciesData.alternativeScientificName && (
           <div>
-            <Alert severity="warning">
-              <AlertTitle><strong>{speciesData.alternativeScientificName}</strong> already exists!</AlertTitle>
-              Do you want to <strong>add anyways?</strong>
-              <Box sx={{ display: 'flex', width: '100%', marginTop: '10px', justifyContent: 'flex-end' }}>
-                <Button onClick={() => setShowWarning(false)}
-                  sx={{
-                    color: "#362502",
-                    "&:hover": {
-                      backgroundColor: "#dbc8a0"
-                    }
-                  }}>Cancel</Button>
-                <Button onClick={handleAddAlternativeSpecies}
-                  sx={{
-                    color: "#362502",
-                    "&:hover": {
-                      backgroundColor: "#dbc8a0"
-                    }
-                  }} autoFocus>
-                  Add
-                </Button>
-              </Box>
-            </Alert>
+            <CustomWarning
+              data={speciesData.alternativeScientificName}
+              onClose={() => setShowWarning(false)}
+              handleAdd={handleAddAlternativeSpecies} />
           </div>
         )}
-      </Dialog> 
+      </Dialog>
 
-    < Dialog open={open} onClose={handleClose} >
+      < Dialog open={open} onClose={handleClose} >
         <DialogTitle>Add an Alternative Species</DialogTitle>
-      <DialogContent>
-        <TextField
-          fullWidth
-          label="Scientific Name"
+        <DialogContent>
+          <TextField
+            fullWidth
+            label="Scientific Name"
             value={speciesData.alternativeScientificName}
             onChange={(e) => handleInputChange("alternativeScientificName", e.target.value)}
-          sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}
-        />
-        <TextField
-          fullWidth
-          label="Common Name (separate with commas)"
+            sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}
+          />
+          <TextField
+            fullWidth
+            label="Common Name (separate with commas)"
             value={speciesData.alternativeCommonName}
             onChange={(e) => handleInputChange("alternativeCommonName", e.target.value)}
-          sx={{ width: "100%", marginBottom: "1rem" }}
-        />
-        <TextField
-          fullWidth
-          label="Description"
-          multiline
-          minRows={3}
-          value={speciesData.description}
-          onChange={(e) => handleInputChange("description", e.target.value)}
-          sx={{ width: "100%", marginBottom: "1rem" }}
-        />
-        <TextField
-          fullWidth
+            sx={{ width: "100%", marginBottom: "1rem" }}
+          />
+          <TextField
+            fullWidth
+            label="Description"
+            multiline
+            minRows={3}
+            value={speciesData.description}
+            onChange={(e) => handleInputChange("description", e.target.value)}
+            sx={{ width: "100%", marginBottom: "1rem" }}
+          />
+          <TextField
+            fullWidth
             label="Resource links (separate with commas)"
             value={speciesData.resource_links}
             onChange={(e) => handleInputChange("resource_links", e.target.value)}
@@ -156,22 +126,22 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
             <Typography variant="body1" sx={{ marginBottom: "3px" }}>
               Upload Images:
             </Typography>
-          <input
-            type="file"
-            multiple
-            onChange={handleImageUpload}
-            sx={{ width: '100%', marginBottom: '1rem' }}
-          />
+            <input
+              type="file"
+              multiple
+              onChange={handleImageUpload}
+              sx={{ width: '100%', marginBottom: '1rem' }}
+            />
           </Box>
 
-      </DialogContent>
-      <DialogActions>
+        </DialogContent>
+        <DialogActions>
           <Button onClick={handleCancel}>Cancel</Button>
           <Button onClick={handleConfirmAddAlternativeSpecies}>Submit</Button>
-      </DialogActions>
+        </DialogActions>
       </Dialog >
 
-      <SavedSnackbar open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
+      <SnackbarOnSuccess open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
     </div >
   );
 };

@@ -3,10 +3,10 @@ import { Dialog, Snackbar, Alert, AlertTitle, Tooltip, IconButton, Table, TableB
 import Theme from '../../admin_pages/Theme';
 
 import RegionMap from "../../functions/RegionMap";
-import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialogComponent";
-import LocationFilterComponent from '../../Components/LocationFilterComponent';
-import SearchComponent from '../../Components/SearchComponent';
-import AddInvasiveSpeciesDialog from "../../dialogs/AddInvasiveSpeciesDialogComponent";
+import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialog";
+import LocationFilterComponent from '../../components/LocationFilterComponent';
+import SearchComponent from '../../components/SearchComponent';
+import AddInvasiveSpeciesDialog from "../../dialogs/AddInvasiveSpeciesDialog";
 import SpeciesTestData from "../../test_data/speciesTestData";
 import AlternativeSpeciesTestData from "../../test_data/alternativeSpeciesTestData";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";

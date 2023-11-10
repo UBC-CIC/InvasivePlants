@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Box, Alert, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
-import SavedSnackbar from './SaveSnackBar';
+import SnackbarOnSuccess from '../components/SnackbarComponent';
+import CustomAlert from '../components/AlertComponent';
 
 const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
@@ -12,16 +13,34 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
         setShowSaveConfirmation(false);
     };
 
+    const [showAlert, setShowAlert] = useState(false);
+    const handleConfirmRegion = () => {
+        if (!tempData.regionFullName || tempData.regionFullName.trim() === "") {
+            setShowAlert(true);
+            return false;
+        }
+        setShowSaveConfirmation(true);
+        return true;
+    };
+
     return (
         <div>
             <Dialog open={open} onClose={handleFinishEditingRow}>
-                <DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#c8dbe6" }}>
+                <DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#c8dbe6", height: "60px" }}>
                     <Typography variant="h5" component="div">
                         {tempData.regionFullName}
                     </Typography>
                 </DialogTitle>
 
                 <DialogContent>
+
+                    <TextField
+                        label="Region"
+                        value={tempData.regionFullName}
+                        onChange={(e) => handleSearchInputChange("regionFullName", e.target.value)}
+                        sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
+                    />
+
                     <TextField
                         label="Region Code"
                         value={tempData.regionCode}
@@ -60,8 +79,10 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>
                     <Button
                         onClick={() => {
-                            handleSave();
-                            setShowSaveConfirmation(true);
+                            // handleSave();
+                            // setShowSaveConfirmation(true);
+                            handleSave(handleConfirmRegion());
+
                         }}
                     >
                         Save
@@ -69,7 +90,11 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
                 </DialogActions>
             </Dialog>
 
-            <SavedSnackbar open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />
+            <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
+                <CustomAlert onClose={() => setShowAlert(false)} />
+            </Dialog>
+
+            <SnackbarOnSuccess open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />
 
         </div>
     );

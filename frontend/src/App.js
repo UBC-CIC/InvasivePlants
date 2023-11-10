@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter } from "react-router-dom";
 import { StylesProvider, ThemeProvider } from '@material-ui/core/styles';
-import Login from "./Components/Authentication/Login_material";
+import Login from "./components/Authentication/Login_material";
 import PageContainer from "./Views/PageContainer/PageContainer";
 import { Hub } from "aws-amplify";
 import React, { useState, useEffect } from "react";

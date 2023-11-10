@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Box, AlertTitle, TableCell, Alert, Snackbar, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
-import SavedSnackbar from './SaveSnackBar';
+import SnackbarOnSuccess from '../components/SnackbarComponent';
+import CustomAlert from '../components/AlertComponent';
+
 const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
@@ -43,7 +45,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         <div>
             <Dialog open={open} onClose={handleFinishEditingRow} maxWidth="sm" fullWidth>
                 {/* scientific name as title */}
-                < DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#c8dbe6" }
+                < DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#c8dbe6", height: "60px" }
                 }>
                     <Typography
                         variant="h5"
@@ -119,21 +121,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
 
 
                 <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
-                    <Alert severity="error">
-                        <AlertTitle>Empty Field!</AlertTitle>
-                        Please enter a <strong>valid scientific name.</strong>
-                        <Box sx={{ display: 'flex', width: '100%', marginTop: '10px', justifyContent: 'flex-end' }}>
-                            <Button
-                                onClick={() => setShowAlert(false)}
-                                sx={{
-                                    color: "#241c1a",
-                                    "&:hover": {
-                                        backgroundColor: "#d9b1a7"
-                                    }
-                                }}
-                            >OK</Button>
-                        </Box>
-                    </Alert>
+                    <CustomAlert onClose={() => setShowAlert(false)} />
                 </Dialog>
 
 
@@ -149,7 +137,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                 </DialogActions>
             </Dialog >
 
-            <SavedSnackbar open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />
+            <SnackbarOnSuccess open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />
 
         </div >
     );

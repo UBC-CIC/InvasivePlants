@@ -5,9 +5,10 @@ import {
 } from '@mui/material';
 import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData";
 import SearchIcon from '@mui/icons-material/Search';
-import AddAlternativeSpeciesDialog from './AddAlternativeSpeciesDialogComponent';
+import AddAlternativeSpeciesDialog from './AddAlternativeSpeciesDialog';
 import RegionsTestData from "../test_data/regionsTestData";
-import SavedSnackbar from './SaveSnackBar';
+import SnackbarOnSuccess from '../components/SnackbarComponent';
+import CustomAlert from '../components/AlertComponent';
 
 const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
@@ -54,7 +55,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
         <div>
             <Dialog open={open} onClose={handleFinishEditingRow} maxWidth="sm" fullWidth>
                 {/* scientific name as title */}
-                < DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#c8dbe6" }
+                < DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#c8dbe6", height: "60px" }
                 }>
                     <Typography
                         variant="h5"
@@ -187,24 +188,10 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
 
 
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
-                <Alert severity="error">
-                    <AlertTitle>Empty Field!</AlertTitle>
-                    Please enter a <strong>valid scientific name.</strong>
-                    <Box sx={{ display: 'flex', width: '100%', marginTop: '10px', justifyContent: 'flex-end' }}>
-                        <Button
-                            onClick={() => setShowAlert(false)}
-                            sx={{
-                                color: "#241c1a",
-                                "&:hover": {
-                                    backgroundColor: "#d9b1a7"
-                                }
-                            }}
-                        >OK</Button>
-                    </Box>
-                </Alert>
+                <CustomAlert onClose={() => setShowAlert(false)} />
             </Dialog>
 
-            <SavedSnackbar open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />
+            <SnackbarOnSuccess open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />
 
             <AddAlternativeSpeciesDialog
                 open={alternativeDialog}

@@ -3,16 +3,16 @@ import { Autocomplete, Tooltip, IconButton, Table, TableBody, TableCell, TableHe
 // import CountryMap from "../functions/countryMap";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import RegionsTestData from "../../test_data/regionsTestData";
-import AddRegionDialog from "../../dialogs/AddRegionDialogComponent";
+import AddRegionDialog from "../../dialogs/AddRegionDialog";
 import Theme from '../../admin_pages/Theme';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditRegionsDialog from "../../dialogs/EditRegionsDialogComponent";
+import EditRegionsDialog from "../../dialogs/EditRegionsDialog";
 import SearchIcon from '@mui/icons-material/Search';
 import PublicIcon from '@mui/icons-material/Public';
-import LocationFilterComponent from '../../Components/LocationFilterComponent';
+import LocationFilterComponent from '../../components/LocationFilterComponent';
 
 function RegionsPage() {
     const [data, setData] = useState(RegionsTestData);
@@ -64,7 +64,8 @@ function RegionsPage() {
     };
 
     // saves edited row
-    const handleSave = () => {
+    const handleSave = (confirmed) => {
+        if (confirmed) {
         const updatedData = data.map((item) => {
             if (item.regionId === tempData.regionId) {
                 return { ...tempData };
@@ -85,6 +86,7 @@ function RegionsPage() {
 
         // TODO: update the database with the updatedData
         handleFinishEditingRow();
+    };
     };
 
 

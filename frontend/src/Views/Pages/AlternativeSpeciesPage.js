@@ -2,15 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 import Theme from '../../admin_pages/Theme';
 
-import RegionMap from "../../functions/RegionMap";
 import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";
-import SearchComponent from '../../Components/SearchComponent';
+import SearchComponent from '../../components/SearchComponent';
 import AlternativeSpeciesTestData from "../../test_data/alternativeSpeciesTestData";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddAlternativeSpeciesDialog from "../../dialogs/AddAlternativeSpeciesDialogComponent";
+import AddAlternativeSpeciesDialog from "../../dialogs/AddAlternativeSpeciesDialog";
 import boldText from "./formatDescriptionHelper";
 
 function AlternativeSpeciesPage() {
@@ -24,7 +23,6 @@ function AlternativeSpeciesPage() {
   const [searchResults, setSearchResults] = useState(AlternativeSpeciesTestData.map((item) => ({ label: item.alternativeScientificName, value: item.alternativeScientificName })));
   const [deleteId, setDeleteId] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
-  const [alternativeSpeciesTestData, setAlternativeSpeciesTestData] = useState(AlternativeSpeciesTestData);
 
   // gets rows that matches search and location input 
   const filterData = data.filter((item) =>
@@ -134,8 +132,6 @@ function AlternativeSpeciesPage() {
       setDisplayData(results);
     }
   };
-
-
 
   // add species
   const handleAddSpecies = (newSpeciesData) => {
