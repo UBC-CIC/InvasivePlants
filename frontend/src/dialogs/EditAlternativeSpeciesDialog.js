@@ -4,7 +4,8 @@ import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 
 const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
-    // console.log(tempData);
+    const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
+
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
     const handleClose = (event, reason) => {
@@ -115,6 +116,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                             tempData.image_links.map((imageName, index) => (
                                 <div key={index}>
                                     <p>{imageName}</p>
+                                    {/* TODO: figure out actual path? */}
                                     <img src={imageName} alt={`image-${index}`} />
                                     <button onClick={() => handleImageDelete(index)}>Delete</button>
                                 </div>
@@ -134,8 +136,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>
                     <Button
                         onClick={() => {
-                            // handleSave();
-                            // setShowSaveConfirmation(true);
                             handleSave(handleConfirmAddAlternativeSpecies());
                         }}
                     >Save</Button>

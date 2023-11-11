@@ -14,13 +14,6 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     image_links: [],
   };
 
-  // const initialSpeciesData = {
-  //   scientific_name: "",
-  //   common_name: [],
-  //   description: "",
-  //   resource_links: [],
-  //   image_links: [],
-  // };
 
   const [showOpen, setShowOpen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -52,17 +45,24 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     }
   };
 
+
   const handleAddAlternativeSpecies = () => {
-    setShowOpen(true)
+    setShowOpen(true);
+
+    const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
+
     const modifiedSpeciesData = {
       ...speciesData,
-      common_name: typeof speciesData.common_name === 'string' ? speciesData.common_name.split(",") : [],
-      image_links: typeof speciesData.image_links === 'string' ? speciesData.image_links.split(",") : [],
+      scientific_name: typeof speciesData.common_name === 'string' ? splitByCommaWithSpaces(speciesData.scientific_name) : [],
+      common_name: typeof speciesData.common_name === 'string' ? splitByCommaWithSpaces(speciesData.common_name) : [],
+      resource_links: typeof speciesData.resource_links === 'string' ? splitByCommaWithSpaces(speciesData.resource_links) : [],
+      image_links: typeof speciesData.image_links === 'string' ? splitByCommaWithSpaces(speciesData.image_links) : [],
     };
-    console.log("mod data: ", modifiedSpeciesData);
+
     handleAdd(modifiedSpeciesData);
     handleCancel();
   };
+
 
   const handleCancel = () => {
     setShowWarning(false);
@@ -81,7 +81,6 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
       handleInputChange("image_links", imageLinks);
     }
   };
-
 
   const handleCloseSnackbar = () => {
     setShowOpen(false)

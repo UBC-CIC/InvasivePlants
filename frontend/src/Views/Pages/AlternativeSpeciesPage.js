@@ -15,6 +15,8 @@ import boldText from "./formatDescriptionHelper";
 import axios from "axios";
 
 function AlternativeSpeciesPage() {
+  const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
+
   const [data, setData] = useState(AlternativeSpeciesTestData);
   const [displayData, setDisplayData] = useState(AlternativeSpeciesTestData);
   const [editingId, setEditingId] = useState(null);
@@ -26,8 +28,23 @@ function AlternativeSpeciesPage() {
   const [deleteId, setDeleteId] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
 
+  const handleGetSpecies = () => {
+    axios
+      .get(API_ENDPOINT + "alternativeSpecies")
+      .then((response) => {
+        console.log("Alternative species retrieved successfully", response.data);
+        // Assuming response.data is an array of species data
+        setDisplayData(response.data);
+      })
+      .catch((error) => {
+        console.error("Error retrieving alternative species", error);
+      });
+  };
 
-  const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/region";
+  useEffect(() => {
+    // Call the function to fetch species data when the component mounts
+    handleGetSpecies();
+  }, []); 
 
   const filterData = data.filter((item) =>
   (searchTerm === "" || (
@@ -58,8 +75,8 @@ function AlternativeSpeciesPage() {
   }, [searchTerm, filterData]);
 
   // edit species row
-  const startEdit = (id, rowData) => {
-    setEditingId(id);
+  const startEdit = (species_id, rowData) => {
+    setEditingId(species_id);
     setTempData(rowData);
     setOpenEditSpeciesDialog(true);
   };
@@ -74,7 +91,7 @@ function AlternativeSpeciesPage() {
   const handleSave = (confirmed) => {
     if (confirmed) {
     const updatedData = data.map((item) => {
-      if (item.alternativeSpeciesId === tempData.alternativeSpeciesId) {
+      if (item.species_id === tempData.species_id) {
         return { ...tempData };
       }
       return item;
@@ -85,7 +102,7 @@ function AlternativeSpeciesPage() {
 
     // Preserve the edited row in the display data
     const updatedDisplayData = displayData.map((item) => {
-      if (item.alternativeSpeciesId === tempData.alternativeSpeciesId) {
+      if (item.species_id === tempData.species_id) {
         return { ...tempData };
       }
       return item;
@@ -98,21 +115,43 @@ function AlternativeSpeciesPage() {
   };
 
   // delete row with Confirmation before deletion
-  const handleDeleteRow = (alternativeSpeciesId) => {
-    setDeleteId(alternativeSpeciesId);
+  const handleDeleteRow = (species_id) => {
+    setDeleteId(species_id);
     setOpenConfirmation(true);
     // console.log("id to delete: ", deleteId);
   };
 
   // Confirm delete
+  // const handleConfirmDelete = () => {
+  //   if (deleteId) {
+  //     setDisplayData((prev) =>
+  //       prev.filter((item) => item.species_id !== deleteId));
+  //     // TODO: need to delete in from database
+  //   }
+  //   setOpenConfirmation(false);
+  // };
+
   const handleConfirmDelete = () => {
     if (deleteId) {
-      setDisplayData((prev) =>
-        prev.filter((item) => item.alternativeSpeciesId !== deleteId));
-      // TODO: need to delete in from database
+      axios
+        .delete(`${API_ENDPOINT}/alternativeSpecies/${deleteId}`)
+        .then((response) => {
+          console.log("Species deleted successfully", response.data);
+          setDisplayData((prev) =>
+            prev.filter((item) => item.species_id !== deleteId)
+          );
+        })
+        .catch((error) => {
+          console.error("Error deleting species", error);
+        })
+        .finally(() => {
+          setOpenConfirmation(false);
+        });
+    } else {
+      setOpenConfirmation(false);
     }
-    setOpenConfirmation(false);
   };
+
 
   // helper function when search input changes
   const handleSearchInputChange = (field, value) => {
@@ -157,42 +196,20 @@ function AlternativeSpeciesPage() {
 
   // add species
   const handleAddSpecies = (newSpeciesData) => {
-    // TODO: get species id from database
-    // Generate a unique alternativeSpeciesId for the new species
-    // const newSpeciesId = displayData.length + 1;
+    console.log("new alternative species: ", newSpeciesData);
 
-    // Create a new species object with the generated speciesId
-    const newSpecies = {
-      // alternativeSpeciesId: newSpeciesId,
-      ...newSpeciesData,
-    };
-
-    console.log("new alternative species: ", newSpecies);
-
-    setDisplayData([...displayData, newSpecies]);
-    setOpenAddSpeciesDialog(false);
-
-    // TODO: update the database with the new entry
-    // curl -X POST -H "Content-Type: application/json" -d '{
-    //   "scientific_name": ["test"],
-    //   "common_name": ["test1"],
-    //   "resource_links": ["11"],
-    //   "image_links": [],
-    //   "species_description": "balbslbflkasjdfhkjasdhf"
-    // }' "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/alternativeSpecies"
-
-
-    // axios
-    //   .post(API_ENDPOINT, newSpecies)
-    //   .then((response) => {
-    //     console.log("species added successfully", response.data);
-    //     setDisplayData([...displayData, newSpecies]);
-    //     setOpenAddSpeciesDialog(false);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error adding alternative species", error);
-    //   });
+    axios
+      .post(API_ENDPOINT + "alternativeSpecies", newSpeciesData)
+      .then((response) => {
+        console.log("Alternative species added successfully", response.data);
+        setDisplayData([...displayData, newSpeciesData]);
+        setOpenAddSpeciesDialog(false);
+      })
+      .catch((error) => {
+        console.error("Error adding alternative species", error);
+      });
   };
+
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -270,9 +287,9 @@ function AlternativeSpeciesPage() {
               displayData
               // .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
                 .map((row) => (
-                  <TableRow key={row.alternativeSpeciesId}>
+                  <TableRow key={row.species_id}>
                     {/* editing the row */}
-                    {editingId === row.alternativeSpeciesId ? (
+                    {editingId === row.species_id ? (
                       <>
                         {/* scientific name */}
                         <TableCell>
@@ -346,14 +363,14 @@ function AlternativeSpeciesPage() {
                         {/* edit/delete */}
                         <TableCell>
                           <Tooltip title="Edit"
-                            onClick={() => startEdit(row.alternativeSpeciesId, row)}>
+                            onClick={() => startEdit(row.species_id, row)}>
                             <IconButton>
                               <EditIcon />
                             </IconButton>
                           </Tooltip>
                           <Tooltip
                             title="Delete"
-                            onClick={() => handleDeleteRow(row.alternativeSpeciesId, row)}>
+                            onClick={() => handleDeleteRow(row.species_id, row)}>
                             <IconButton>
                               <DeleteIcon />
                             </IconButton>
@@ -381,14 +398,14 @@ function AlternativeSpeciesPage() {
                         </TableCell>
                         <TableCell>
                           <Tooltip title="Edit"
-                            onClick={() => startEdit(row.alternativeSpeciesId, row)}>
+                              onClick={() => startEdit(row.species_id, row)}>
                             <IconButton>
                               <EditIcon />
                             </IconButton>
                           </Tooltip>
                           <Tooltip
                             title="Delete"
-                            onClick={() => handleDeleteRow(row.alternativeSpeciesId, row)}>
+                              onClick={() => handleDeleteRow(row.species_id, row)}>
                             <IconButton>
                               <DeleteIcon />
                             </IconButton>

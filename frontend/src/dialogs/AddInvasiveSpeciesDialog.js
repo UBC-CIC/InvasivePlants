@@ -12,7 +12,6 @@ import CustomWarning from '../components/WarningComponent';
 const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialSpeciesData = {
         scientific_name: [],
-        // commonName: [],
         resource_links: [],
         species_description	: "",
         alternative_species: [],
@@ -54,16 +53,34 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         }
     };
 
+    // const handleAddSpecies = () => {
+    //     setOpenAddAlternativeDialog(false);
+    //     setShowOpen(true);
+    //     const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
+
+    //     const modifiedSpeciesData = {
+    //         ...speciesData,
+    //         resource_links: speciesData.resource_links,
+    //         alternative_species: speciesData.alternative_species,
+    //         region_id: speciesData.region_id
+    //     };
+    //     handleAdd(modifiedSpeciesData);
+    //     handleCancel();
+    // };
+
     const handleAddSpecies = () => {
         setOpenAddAlternativeDialog(false);
         setShowOpen(true);
+
+        const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
+
         const modifiedSpeciesData = {
             ...speciesData,
-            // commonName: speciesData.commonName,
-            resource_links: speciesData.resource_links,
-            alternative_species: speciesData.alternative_species,
+            resource_links: typeof speciesData.resource_links === 'string' ? splitByCommaWithSpaces(speciesData.resource_links) : [],
+            alternative_species: typeof speciesData.alternative_species === 'string' ? splitByCommaWithSpaces(speciesData.alternative_species) : [],
             region_id: speciesData.region_id
         };
+
         handleAdd(modifiedSpeciesData);
         handleCancel();
     };
@@ -130,13 +147,6 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                         onChange={(e) => handleInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}
                     />
-                    {/* <TextField
-                        fullWidth
-                        label="Common Name (separate with commas)"
-                        value={speciesData.commonName}
-                        onChange={(e) => handleInputChange("commonName", e.target.value)}
-                        sx={{ width: "100%", marginBottom: "1rem" }}
-                    /> */}
 
                     <TextField
                         fullWidth
@@ -240,15 +250,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                 handleAdd={handleAddAlternativeSpecies}
             />
 
-            {/* <Snackbar open={showOpen} autoHideDuration={4000} onClose={() => setShowOpen(false)}>
-                <Alert onClose={() => setShowOpen(false)} severity="success" sx={{ width: '100%' }}>
-                    Added successfully!
-                </Alert>
-            </Snackbar> */}
             <SnackbarOnSuccess open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
-
-            {/* <SavedSnackbar open={showOpen} onClose={setShowOpen(false)} text={"Added successfully!"} /> */}
-
 
         </div >
     );

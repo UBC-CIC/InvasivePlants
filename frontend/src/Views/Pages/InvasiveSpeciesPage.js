@@ -14,9 +14,13 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import boldText from "./formatDescriptionHelper";
-import RegionsTestData from '../../test_data/regionsTestData'
+import RegionsTestData from '../../test_data/regionsTestData';
+
+import axios from "axios";
 
 function InvasiveSpeciesPage() {
+  const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
+
   const [data, setData] = useState(SpeciesTestData);
   const [displayData, setDisplayData] = useState(SpeciesTestData);
   const [editingId, setEditingId] = useState(null);
@@ -172,20 +176,32 @@ function InvasiveSpeciesPage() {
   }
   // add species
   const handleAddSpecies = (newSpeciesData) => {
-    // Generate a unique speciesId for the new species
-    const newSpeciesId = displayData.length + 1;
+    // // Generate a unique speciesId for the new species
+    // const newSpeciesId = displayData.length + 1;
 
-    // Create a new species object with the generated speciesId
-    const newSpecies = {
-      speciesId: newSpeciesId,
-      ...newSpeciesData,
-    };
+    // // Create a new species object with the generated speciesId
+    // const newSpecies = {
+    //   speciesId: newSpeciesId,
+    //   ...newSpeciesData,
+    // };
 
-    setDisplayData([...displayData, newSpecies]);
-    setOpenAddSpeciesDialog(false);
-    console.log("speciesId: ", newSpecies.speciesId);
+    // setDisplayData([...displayData, newSpecies]);
+    // setOpenAddSpeciesDialog(false);
+    // console.log("speciesId: ", newSpecies.speciesId);
 
     // TODO: update the database with the new entry
+    console.log("new alternative species: ", newSpeciesData);
+
+    axios
+      .post(API_ENDPOINT + "invasiveSpecies", newSpeciesData)
+      .then((response) => {
+        console.log("Invasive Species added successfully", response.data);
+        setDisplayData([...displayData, newSpeciesData]);
+        setOpenAddSpeciesDialog(false);
+      })
+      .catch((error) => {
+        console.error("Error adding invasive species", error);
+      });
   };
 
   return (
@@ -547,8 +563,7 @@ function InvasiveSpeciesPage() {
                           </TableCell>
                         </>
                       ) : (
-                        <>
-                            {/* <TableCell>{row.scientific_name}</TableCell> */}
+                          <>
                             <TableCell>
                               {Array.isArray(row.scientific_name)
                                 ? row.scientific_name.join(", ")
