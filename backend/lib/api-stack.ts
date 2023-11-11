@@ -57,6 +57,12 @@ export class APIStack extends Stack {
               },
         });
 
+        // Create a deafult CORS Policy
+        api.root.addCorsPreflight({
+          allowOrigins: apigateway.Cors.ALL_ORIGINS,
+          allowMethods: apigateway.Cors.ALL_METHODS
+        });
+
         // Source Code: https://stackoverflow.com/questions/62179893/aws-cdk-how-to-create-an-api-gateway-backed-by-lambda-from-openapi-spec
         // https://medium.com/@gwieser/solving-a-nightmare-aws-cdk-openapi-and-api-gateway-a1b6fdc1fd24 
 
