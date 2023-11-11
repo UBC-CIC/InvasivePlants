@@ -36,7 +36,12 @@ async function initializeConnection() {
 exports.handler = async (event) => {
 	const response = {
 		statusCode: 200,
-		body: "Hello World, Region!",
+		headers: {
+            "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*"
+        },
+		body: "",
 	};
 
 	// Initialize the database connection if not already initialized
