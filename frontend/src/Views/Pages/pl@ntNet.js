@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
-import { webscrapeBCInvasive, webscrapeONInvasive, webscrapeWikipedia } from '../../functions/webscrape';
+import { webscrapeBCInvasive, webscrapeONInvasive } from '../../functions/webscrape';
+import { webscrapeWikipedia } from '../../functions/webscrapeWiki';
 import { webscrapeInvasiveSpecies, flagedSpeciesToPlanetAPI, fullIntegrationOfFlaggingSpecies, dataPipelineForDB } from '../../functions/pipeline';
 
 // const FormData = require('form-data');
@@ -107,28 +108,29 @@ function PlantNet() {
 
         // dataPipelineForDB();
 
+        webscrapeWikipedia("hydrocharis_morsus-ranae");
 
-        const fetchData = async () => {
-            try {
-                if (!isFileSaved && modelObjResult && modelObjResult.results) {
-                    const speciesInfoArray = await getSpeciesResultInfo(modelObjResult.results);
-                    console.log("species info: ", speciesInfoArray);
+        // const fetchData = async () => {
+        //     try {
+        //         if (!isFileSaved && modelObjResult && modelObjResult.results) {
+        //             const speciesInfoArray = await getSpeciesResultInfo(modelObjResult.results);
+        //             console.log("species info: ", speciesInfoArray);
 
-                    if (speciesInfoArray.length === Math.min(modelObjResult.results.length, 3)) {
-                        const data = JSON.stringify(speciesInfoArray, null, 2);
-                        const blob = new Blob([data], { type: 'application/json' });
+        //             if (speciesInfoArray.length === Math.min(modelObjResult.results.length, 3)) {
+        //                 const data = JSON.stringify(speciesInfoArray, null, 2);
+        //                 const blob = new Blob([data], { type: 'application/json' });
 
-                        const fileName = 'speciesData.json';
+        //                 const fileName = 'speciesData.json';
 
-                        saveAs(blob, fileName);
-                        setIsFileSaved(true);
-                    }
-                }
-            } catch (error) {
-                console.log("error getting species info: ", error);
-            }
-        };
-        fetchData();
+        //                 saveAs(blob, fileName);
+        //                 setIsFileSaved(true);
+        //             }
+        //         }
+        //     } catch (error) {
+        //         console.log("error getting species info: ", error);
+        //     }
+        // };
+        // fetchData();
     }, [isFileSaved, modelObjResult, getSpeciesResultInfo, selectedLocation]);
 
 

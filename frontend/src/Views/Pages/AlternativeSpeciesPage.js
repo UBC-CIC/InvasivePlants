@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
+import { Select, MenuItem, TablePagination, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 import Theme from '../../admin_pages/Theme';
 
 import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";
@@ -19,30 +19,32 @@ function AlternativeSpeciesPage() {
 
   const [data, setData] = useState(AlternativeSpeciesTestData);
   const [displayData, setDisplayData] = useState(AlternativeSpeciesTestData);
+  // const [data, setData] = useState([]);
+  // const [displayData, setDisplayData] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [tempData, setTempData] = useState({});
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false);
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState(AlternativeSpeciesTestData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
+  // const [searchResults, setSearchResults] = useState(displayData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
   const [deleteId, setDeleteId] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
 
   const handleGetSpecies = () => {
     axios
-      .get(API_ENDPOINT + "alternativeSpecies")
+      .get(`${API_ENDPOINT}alternativeSpecies`)
       .then((response) => {
         console.log("Alternative species retrieved successfully", response.data);
-        // Assuming response.data is an array of species data
         setDisplayData(response.data);
+        setData(response.data);
+        setSearchResults(response.data.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
       })
       .catch((error) => {
         console.error("Error retrieving alternative species", error);
       });
   };
-
   useEffect(() => {
-    // Call the function to fetch species data when the component mounts
     handleGetSpecies();
   }, []); 
 
@@ -64,6 +66,7 @@ function AlternativeSpeciesPage() {
 
   useEffect(() => {
     if (searchTerm === "") {
+      // handleGetSpecies();
       setData(AlternativeSpeciesTestData);
     } else {
       const results = filterData.map((item) => ({
@@ -109,8 +112,19 @@ function AlternativeSpeciesPage() {
     });
     setDisplayData(updatedDisplayData);
 
-    // TODO: update the database with the updatedData
-    handleFinishEditingRow();
+      // handleFinishEditingRow();
+
+      // TODO: update the database with the updatedData: cors error
+      console.log("put: ", typeof tempData.species_id, tempData.species_id);
+      axios
+        .put(`${API_ENDPOINT}alternativeSpecies/${tempData.species_id}`, tempData)
+        .then((response) => {
+          console.log("Species updated successfully", response.data);
+          handleFinishEditingRow();
+        })
+        .catch((error) => {
+          console.error("Error updating species", error);
+        });
   };
   };
 
@@ -118,23 +132,23 @@ function AlternativeSpeciesPage() {
   const handleDeleteRow = (species_id) => {
     setDeleteId(species_id);
     setOpenConfirmation(true);
-    // console.log("id to delete: ", deleteId);
   };
 
   // Confirm delete
   // const handleConfirmDelete = () => {
   //   if (deleteId) {
+  //     console.log("delete id: ", deleteId);
   //     setDisplayData((prev) =>
   //       prev.filter((item) => item.species_id !== deleteId));
-  //     // TODO: need to delete in from database
   //   }
   //   setOpenConfirmation(false);
   // };
 
+  // TODO: fix cors thing
   const handleConfirmDelete = () => {
     if (deleteId) {
       axios
-        .delete(`${API_ENDPOINT}/alternativeSpecies/${deleteId}`)
+        .delete(`${API_ENDPOINT}alternativeSpecies/${deleteId}`)
         .then((response) => {
           console.log("Species deleted successfully", response.data);
           setDisplayData((prev) =>
@@ -152,7 +166,6 @@ function AlternativeSpeciesPage() {
     }
   };
 
-
   // helper function when search input changes
   const handleSearchInputChange = (field, value) => {
     setTempData((prev) => ({ ...prev, [field]: value }));
@@ -164,6 +177,7 @@ function AlternativeSpeciesPage() {
     console.log("search input: ", searchInput);
 
     if (searchInput === "") {
+      // handleGetSpecies();
       setDisplayData(data);
     } else {
       const terms = searchInput.toLowerCase().split(" ");
@@ -210,6 +224,18 @@ function AlternativeSpeciesPage() {
       });
   };
 
+  const rowsPerPageOptions = [3, 6, 10, 25, 50, 100];
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[3]);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -240,8 +266,21 @@ function AlternativeSpeciesPage() {
         </ThemeProvider>
       </div>
 
+      {/* Pagination */}
+      <div style={{ display: 'flex', marginLeft: "70%", marginTop: '10px' }}>
+        <TablePagination
+          rowsPerPageOptions={rowsPerPageOptions}
+          component="div"
+          count={displayData ? displayData.length : 0}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </div>
+
       {/* table */}
-      <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
+      <div style={{ width: "90%", display: "flex", justifyContent: "center", marginTop: "0px" }}>
         <Table style={{ width: "100%", tableLayout: "fixed" }}>
           {/* table header */}
           <TableHead>
@@ -283,8 +322,11 @@ function AlternativeSpeciesPage() {
 
           {/* table body: display species */}
           <TableBody>
-            {displayData &&
-              displayData
+            {(displayData && displayData.length > 0
+              ? displayData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : [])
+            // {displayData &&
+            //   displayData
               // .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
                 .map((row) => (
                   <TableRow key={row.species_id}>
@@ -418,6 +460,18 @@ function AlternativeSpeciesPage() {
           </TableBody>
         </Table>
       </div >
+      {/* Pagination */}
+      <div style={{ display: 'flex', marginLeft: "70%", marginTop: '10px' }}>
+        <TablePagination
+          rowsPerPageOptions={rowsPerPageOptions}
+          component="div"
+          count={displayData ? displayData.length : 0}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </div>
 
       {/* Add species dialog */}
       <AddAlternativeSpeciesDialog

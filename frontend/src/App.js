@@ -18,23 +18,23 @@ function App(props) {
   const [currentLoginState, updateCurrentLoginState] = useState(loginState);
 
   useEffect(() => {
-    console.log("currentLoginState in useEffect:", currentLoginState);
+    // console.log("currentLoginState in useEffect:", currentLoginState);
     setAuthListener();
   }, []);
 
   useEffect(() => {
-    console.log("Login state updated:", loginState);
+    // console.log("Login state updated:", loginState);
     updateCurrentLoginState(loginState);
   }, [loginState]);
 
 
   async function setAuthListener() {
-    console.log("Setting up auth listener");
+    // console.log("Setting up auth listener");
     Hub.listen('auth', (data) => {
-      console.log("Auth event:", data.payload.event);
+      // console.log("Auth event:", data.payload.event);
       switch (data.payload.event) {
         case "signOut":
-          console.log("User signed out");
+          // console.log("User signed out");
           updateLoginState("signIn");
           break;
         default:

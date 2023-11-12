@@ -64,23 +64,23 @@ const mapInvasiveToAlternativeON = async () => {
     alternative_plants_ON["hemerocallis_fulva"] = ["lilium_michiganense", "echinacea_pallida", "rudbeckia_hirta"];
     alternative_plants_ON["miscanthus_sinensis"] = ["andropogon_gerardii", "schizachyrium_scoparium", "elymus_hystrix",
         "panicum_virgatum", "sorghastrum_nutans", "carex_pensylvanica", "carex_eburnea"];
-    alternative_plants_ON["m._sacchariflorus"] = ["andropogon_gerardii", "schizachyrium_scoparium", "elymus_hystrix",
+    alternative_plants_ON["miscanthus_sacchariflorus"] = ["andropogon_gerardii", "schizachyrium_scoparium", "elymus_hystrix",
         "panicum_virgatum", "sorghastrum_nutans", "carex_pensylvanica", "carex_eburnea"];
-    alternative_plants_ON["acer_platanoides"] = ["acer_saccharum", "a._saccharinum", "a.x_freemanii"];
-    alternative_plants_ON["acer_ginnala"] = ["gleditsia_triacanthos_var._inermis"];
-    alternative_plants_ON["euonymus_alatus"] = ["amelanchier_arborea", "a._laevis", "a. canadensis",
+    alternative_plants_ON["acer_platanoides"] = ["acer_saccharum", "acer_saccharinum", "acer_x_freemanii"];
+    alternative_plants_ON["acer_ginnala"] = ["gleditsia_triacanthos"];
+    alternative_plants_ON["euonymus_alatus"] = ["amelanchier_arborea", "amelanchier_laevis", "amelanchier_canadensis",
         "lindera_benzoin", "rhus_aromatica"];
     alternative_plants_ON["elaeagnus_angustifolia"] = ["hamamelis_virginiana", "elaeagnus_commutata", "cornus_sericea"];
-    alternative_plants_ON["e._umbellata"] = ["hamamelis_virginiana", "elaeagnus_commutata", "cornus_sericea"];
-    alternative_plants_ON["berberis_thunbergii"] = ["viburnum_lentago", "v._lantanoides"];
+    alternative_plants_ON["elaeagnus_umbellata"] = ["hamamelis_virginiana", "elaeagnus_commutata", "cornus_sericea"];
+    alternative_plants_ON["berberis_thunbergii"] = ["viburnum_lentago", "viburnum_lantanoides"];
     alternative_plants_ON["lonicera_tatarica"] = ["diervilla_lonicera"];
-    alternative_plants_ON["l._maackii"] = ["diervilla_lonicera"];
-    alternative_plants_ON["l._morrowii"] = ["diervilla_lonicera"];
-    alternative_plants_ON["l_x_bella"] = ["diervilla_lonicera"];
-    alternative_plants_ON["l._xylosteum"] = ["diervilla_lonicera"];
-    alternative_plants_ON["rosa_multiflora"] = ["rosa_carolina", "r._virginiana", "ribes_americanum", "cephalanthus_occidentalis"];
+    alternative_plants_ON["lonicera_maackii"] = ["diervilla_lonicera"];
+    alternative_plants_ON["lonicera_morrowii"] = ["diervilla_lonicera"];
+    alternative_plants_ON["lonicera_x_bella"] = ["diervilla_lonicera"];
+    alternative_plants_ON["lonicera_xylosteum"] = ["diervilla_lonicera"];
+    alternative_plants_ON["rosa_multiflora"] = ["rosa_carolina", "rosa_virginiana", "ribes_americanum", "cephalanthus_occidentalis"];
     alternative_plants_ON["hippophae_rhamnoides"] = ["hippophae_rhamnoides", "aronia_melanocarpa", "morella_pensylvanica", "prunus_virginiana",
-        "Common sambucus_canadensis", "physocarpus_opulifolius", "cornus_alternifolia"];
+        "sambucus_canadensis", "physocarpus_opulifolius", "cornus_alternifolia"];
     alternative_plants_ON["lonicera_japonica"] = ["parthenocissus_quinquefolia", "hydrangea_petiolaris", "lonicera_x_heckrotti"];
     alternative_plants_ON["celastrus_orbiculatus"] = ["clematis_x_jackmanii", "aristolochia_macrophylla", "clematis_virginiana"];
     alternative_plants_ON["iris_pseudacorus"] = ["lobelia_cardinalis", "iris_versicolor", "acorus_calamus"];

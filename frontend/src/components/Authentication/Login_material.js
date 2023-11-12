@@ -263,7 +263,6 @@ function Login(props) {
 
     async function signIn() {
         try {
-            console.log("try sign in"); // good!
             setLoading(true);
             const { email, password } = formState;
             let user = await Auth.signIn(email, password);

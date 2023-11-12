@@ -53,8 +53,6 @@ const useStyles = makeStyles((theme) => ({
 
 
 function PageContainer(props) {
-    console.log("got to page container");
-
     const { menuEnabled, updateMenuState } = props;
     const classes = useStyles();
     const history = useNavigate();
