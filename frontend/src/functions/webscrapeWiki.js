@@ -31,7 +31,7 @@ const webscrapeWikipedia = async (scientificName) => {
 
 		// following two lines for testing: format so it's easier to see in console
 		const jsonResult = JSON.stringify(wiki_info, null, 2);
-		console.log("from wiki: ", jsonResult);
+		// console.log("from wiki: ", jsonResult);
 		return wiki_info;
 	} catch (error) {
 		console.error("Error while scraping wikipedia site:", error.message);

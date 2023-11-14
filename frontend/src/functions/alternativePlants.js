@@ -168,7 +168,7 @@ const getAlternativePlantsForDB = async (scientificName) => {
         const promiseData = await Promise.all([webscrapeWikipedia(modSciName), getCommonName(scientificName)]);
 
         // Promise from wiki 
-        alternativeRecord.species_description = promiseData[0].speciesDescription ? promiseData[0].speciesDescription: promiseData[0].speciesOverview;
+        alternativeRecord.species_description = promiseData[0].speciesDescription === undefined ? promiseData[0].speciesDescription: promiseData[0].speciesOverview;
         alternativeRecord.resource_links = promiseData[0].wikiUrl;
         
         for(let i = 0; i < Math.min(MAX_NUMBER_IMAGE, promiseData[0].speciesImages.length); i++){

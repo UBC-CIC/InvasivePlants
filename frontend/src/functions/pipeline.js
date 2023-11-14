@@ -10,16 +10,16 @@ const webscrapeInvasiveSpecies = async () => {
         if (result.BCInvasiveSpeciesPlants) {
             region.push({
                 region_code_name: "BC",
-                region_fullname: "British Columbia",
-                country_fullname: "Canada",
+                region_fullname: "british_columbia",
+                country_fullname: "canada",
                 geographic_coordinate: "(53.726669, -127.647621)",
                 invasive_species_list: result.BCInvasiveSpeciesPlants
             });
         } else if (result.ONInvasiveSpeciesPlants) {
             region.push({
                 region_code_name: "ON",
-                region_fullname: "Ontario",
-                country_fullname: "Canada",
+                region_fullname: "ontario",
+                country_fullname: "canada",
                 geographic_coordinate: "(50.000000, -85.000000)",
                 invasive_species_list: result.ONInvasiveSpeciesPlants
             });
@@ -205,9 +205,9 @@ const dataPipelineForDB = async () => {
     const speciesDataXRegion = await webscrapeInvasiveSpecies();
     const flaggedSpecies = await fullIntegrationOfFlaggingSpecies(speciesDataXRegion);
 
-    // TODO 
     // The flagged species should not be added, they need to be fixed first.
-    
+    console.log("Flagged species: ", flaggedSpecies);
+
     speciesDataXRegion.forEach((region) => {
         const scienceName = region.invasive_species_list.map((species)=> species.scientific_name[0]);
 
@@ -229,6 +229,8 @@ const dataPipelineForDB = async () => {
     console.log("regions_tb: ", regions_tb);
     console.log("invasive_species_tb: ", invasive_species_tb);
     console.log("alternative_species_tb: ", alternative_species_tb);
+
+    return {regions_tb, invasive_species_tb, alternative_species_tb};
 }
 
 export {

@@ -115,6 +115,7 @@ const getListOfSpeciesFromBCInvasive = async (url) => {
                   resource_links: [paredJSON.link.trim()],
                   species_description: paredJSON.summary.trim(),
                   alternative_species: [],
+				  region_id: "BC"
                 });
               }
             } catch (error) {
@@ -369,7 +370,8 @@ const getListOfSpeciesFromONInvasive = async (output, url) => {
 				scientific_name: undefined,
 				resource_links: [link.trim()],
 				species_description: undefined,
-				alternative_species: []
+				alternative_species: [],
+				region_id: "ON"
 			});
       });
     })
