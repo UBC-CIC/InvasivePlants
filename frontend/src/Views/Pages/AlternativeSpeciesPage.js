@@ -92,32 +92,42 @@ function AlternativeSpeciesPage() {
 
   // saves edited row
   const handleSave = (confirmed) => {
+    const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
+
     if (confirmed) {
+      // make sure that fields are proper data structure
+      const updatedTempData = {
+        ...tempData,
+        scientific_name: typeof tempData.scientific_name === 'string' ? splitByCommaWithSpaces(tempData.scientific_name) : [tempData.scientific_name],
+        common_name: typeof tempData.common_name === 'string' ? splitByCommaWithSpaces(tempData.common_name) : [tempData.common_name],
+      };
+
     const updatedData = data.map((item) => {
       if (item.species_id === tempData.species_id) {
-        return { ...tempData };
+        return { ...updatedTempData };
       }
       return item;
-
     });
 
     setData(updatedData);
+      // console.log("updated data: ", updatedData);
 
     // Preserve the edited row in the display data
     const updatedDisplayData = displayData.map((item) => {
       if (item.species_id === tempData.species_id) {
-        return { ...tempData };
+        return { ...updatedTempData };
       }
       return item;
     });
     setDisplayData(updatedDisplayData);
+      console.log("updated display data: ", updatedDisplayData);
 
-      // handleFinishEditingRow();
 
-      // TODO: update the database with the updatedData: cors error
-      console.log("put: ", typeof tempData.species_id, tempData.species_id);
+      console.log("put: ", typeof updatedTempData.species_id, updatedTempData.species_id);
+      console.log("data: ", updatedTempData);
+
       axios
-        .put(`${API_ENDPOINT}alternativeSpecies/${tempData.species_id}`, tempData)
+        .put(`${API_ENDPOINT}alternativeSpecies/${tempData.species_id}`, updatedTempData)
         .then((response) => {
           console.log("Species updated successfully", response.data);
           handleFinishEditingRow();
@@ -125,6 +135,7 @@ function AlternativeSpeciesPage() {
         .catch((error) => {
           console.error("Error updating species", error);
         });
+      handleFinishEditingRow();
   };
   };
 
@@ -146,6 +157,7 @@ function AlternativeSpeciesPage() {
 
   // TODO: fix cors thing
   const handleConfirmDelete = () => {
+    console.log("alt species id to delete: ", deleteId);
     if (deleteId) {
       axios
         .delete(`${API_ENDPOINT}alternativeSpecies/${deleteId}`)
@@ -280,7 +292,7 @@ function AlternativeSpeciesPage() {
       </div>
 
       {/* table */}
-      <div style={{ width: "90%", display: "flex", justifyContent: "center", marginTop: "0px" }}>
+      <div style={{ width: "90%", display: "flex", justifyContent: "center", marginTop: "-20px" }}>
         <Table style={{ width: "100%", tableLayout: "fixed" }}>
           {/* table header */}
           <TableHead>

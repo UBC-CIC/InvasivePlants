@@ -209,7 +209,7 @@ function Navbar(props) {
     return (
         <Grid item xs={12} className={classes.appBar}>
             <AppBar position="static" style={{ backgroundColor: '#3f5f70' }}>
-                <Toolbar>
+                <Toolbar >
                     <Typography className={`${classes.title} ${classes.bold}`} variant="h6" component={"h1"} noWrap>
                         Invasive Plants Management System
                     </Typography>

@@ -35,6 +35,25 @@ function InvasiveSpeciesPage() {
   const [alternativeSpeciesTestData, setAlternativeSpeciesTestData] = useState(AlternativeSpeciesTestData);
   const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
+
+
+  const handleGetSpecies = () => {
+    axios
+      .get(`${API_ENDPOINT}invasiveSpecies`)
+      .then((response) => {
+        console.log("Invasive species retrieved successfully", response.data);
+        setDisplayData(response.data);
+        setData(response.data);
+        setSearchResults(response.data.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
+      })
+      .catch((error) => {
+        console.error("Error retrieving invasive species", error);
+      });
+  };
+  useEffect(() => {
+    handleGetSpecies();
+  }, []); 
+
   // gets rows that matches search and location input 
   const filterData = data.filter((item) =>
     (searchTerm === "" || (
@@ -84,7 +103,7 @@ function InvasiveSpeciesPage() {
   const handleSave = (confirmed) => {
     if (confirmed) {
     const updatedData = data.map((item) => {
-      if (item.speciesId === tempData.speciesId) {
+      if (item.species_id === tempData.species_id) {
         return { ...tempData };
       }
       return item;
@@ -95,7 +114,7 @@ function InvasiveSpeciesPage() {
 
     // Preserve the edited row in the display data
     const updatedDisplayData = displayData.map((item) => {
-      if (item.speciesId === tempData.speciesId) {
+      if (item.species_id === tempData.species_id) {
         return { ...tempData };
       }
       return item;
@@ -108,21 +127,43 @@ function InvasiveSpeciesPage() {
   };
 
   // delete row with Confirmation before deletion
-  const handleDeleteRow = (speciesId) => {
-    setDeleteId(speciesId);
+  const handleDeleteRow = (species_id) => {
+    setDeleteId(species_id);
     setOpenConfirmation(true);
-    console.log("id to delete: ", deleteId);
   };
 
   // Confirm delete
   const handleConfirmDelete = () => {
+    // if (deleteId) {
+    //   setDisplayData((prev) =>
+    //     prev.filter((item) => item.speciesId !== deleteId));
+    //   // TODO: need to delete in from database
+    // }
+    // setOpenConfirmation(false);
+
+    console.log("invasive species id to delete: ", deleteId);
+
     if (deleteId) {
-      setDisplayData((prev) =>
-        prev.filter((item) => item.speciesId !== deleteId));
-      // TODO: need to delete in from database
+      axios
+        .delete(`${API_ENDPOINT}invasiveSpecies/${deleteId}`)
+        .then((response) => {
+          console.log("Species deleted successfully", response.data);
+          setDisplayData((prev) =>
+            prev.filter((item) => item.species_id !== deleteId)
+          );
+        })
+        .catch((error) => {
+          console.error("Error deleting species", error);
+        })
+        .finally(() => {
+          setOpenConfirmation(false);
+        });
+    } else {
+      setOpenConfirmation(false);
     }
-    setOpenConfirmation(false);
   };
+
+
   // helper function when search input changes
   const handleSearchInputChange = (field, value) => {
     if (field === "region_code_name") {
@@ -190,7 +231,7 @@ function InvasiveSpeciesPage() {
     // console.log("speciesId: ", newSpecies.speciesId);
 
     // TODO: update the database with the new entry
-    console.log("new alternative species: ", newSpeciesData);
+    console.log("new invasive species: ", newSpeciesData);
 
     axios
       .post(API_ENDPOINT + "invasiveSpecies", newSpeciesData)
@@ -296,9 +337,9 @@ function InvasiveSpeciesPage() {
                   )
                 // .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
                   .map((row) => (
-                    <TableRow key={row.speciesId}>
+                    <TableRow key={row.species_id}>
                       {/* editing the row */}
-                      {editingId === row.speciesId ? (
+                      {editingId === row.species_id ? (
                         <>
                           {/* scientific name */}
                           <TableCell>
@@ -382,14 +423,14 @@ function InvasiveSpeciesPage() {
                           {/* edit/delete */}
                           <TableCell>
                             <Tooltip title="Edit"
-                              onClick={() => startEdit(row.speciesId, row)}>
+                              onClick={() => startEdit(row.species_id, row)}>
                               <IconButton>
                                 <EditIcon />
                               </IconButton>
                             </Tooltip>
                             <Tooltip
                               title="Delete"
-                              onClick={() => handleDeleteRow(row.speciesId, row)}>
+                              onClick={() => handleDeleteRow(row.species_id, row)}>
                               <IconButton>
                                 <DeleteIcon />
                               </IconButton>
@@ -425,14 +466,14 @@ function InvasiveSpeciesPage() {
                           </TableCell>
                           <TableCell>
                             <Tooltip title="Edit"
-                              onClick={() => startEdit(row.speciesId, row)}>
+                                onClick={() => startEdit(row.species_id, row)}>
                               <IconButton>
                                 <EditIcon />
                               </IconButton>
                             </Tooltip>
                             <Tooltip
                               title="Delete"
-                              onClick={() => handleDeleteRow(row.speciesId, row)}>
+                                onClick={() => handleDeleteRow(row.species_id, row)}>
                               <IconButton>
                                 <DeleteIcon />
                               </IconButton>
@@ -445,9 +486,9 @@ function InvasiveSpeciesPage() {
                 : displayData
                 // .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
                   .map((row) => (
-                    <TableRow key={row.speciesId}>
+                    <TableRow key={row.species_id}>
                       {/* editing the row */}
-                      {editingId === row.speciesId ? (
+                      {editingId === row.species_id ? (
                         <>
                           {/* scientific name */}
                           <TableCell>
@@ -548,14 +589,14 @@ function InvasiveSpeciesPage() {
                           {/* edit/delete */}
                           <TableCell>
                             <Tooltip title="Edit"
-                              onClick={() => startEdit(row.speciesId, row)}>
+                              onClick={() => startEdit(row.species_id, row)}>
                               <IconButton>
                                 <EditIcon />
                               </IconButton>
                             </Tooltip>
                             <Tooltip
                               title="Delete"
-                              onClick={() => handleDeleteRow(row.speciesId, row)}>
+                              onClick={() => handleDeleteRow(row.species_id, row)}>
                               <IconButton>
                                 <DeleteIcon />
                               </IconButton>
@@ -585,14 +626,14 @@ function InvasiveSpeciesPage() {
                           </TableCell>
                           <TableCell>
                             <Tooltip title="Edit"
-                              onClick={() => startEdit(row.speciesId, row)}>
+                                onClick={() => startEdit(row.species_id, row)}>
                               <IconButton>
                                 <EditIcon />
                               </IconButton>
                             </Tooltip>
                             <Tooltip
                               title="Delete"
-                              onClick={() => handleDeleteRow(row.speciesId, row)}>
+                                onClick={() => handleDeleteRow(row.species_id, row)}>
                               <IconButton>
                                 <DeleteIcon />
                               </IconButton>
