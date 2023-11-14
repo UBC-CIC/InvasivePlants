@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography, Snackbar, Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Typography, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import SnackbarOnSuccess from "../components/SnackbarComponent";
 import CustomAlert from '../components/AlertComponent';
 import CustomWarning from '../components/WarningComponent';
@@ -13,7 +13,6 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     resource_links: [],
     image_links: [],
   };
-
 
   const [showOpen, setShowOpen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -33,9 +32,8 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     const foundSpecies = data.some((item) =>
       Array.isArray(item.scientific_name)
         ? item.scientific_name.some(
-          (name) => speciesData.scientific_name.includes(name.toLowerCase())
-        )
-        : speciesData.scientific_name.includes(item.scientific_name.toLowerCase())
+          (name) => speciesData.scientific_name === name.toLowerCase())
+        : speciesData.scientific_name === item.scientific_name.toLowerCase()
     );
 
     if (foundSpecies) {

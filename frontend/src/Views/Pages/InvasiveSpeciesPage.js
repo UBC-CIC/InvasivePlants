@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Dialog, Snackbar, Alert, AlertTitle, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
+import { TablePagination, Dialog, Snackbar, Alert, AlertTitle, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 import Theme from '../../admin_pages/Theme';
 
 import RegionMap from "../../functions/RegionMap";
@@ -21,27 +21,24 @@ import axios from "axios";
 function InvasiveSpeciesPage() {
   const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
 
-  const [data, setData] = useState(SpeciesTestData);
-  const [displayData, setDisplayData] = useState(SpeciesTestData);
+  const [data, setData] = useState([]);
+  const [displayData, setDisplayData] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [tempData, setTempData] = useState({});
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false);
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState(SpeciesTestData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
+  const [searchResults, setSearchResults] = useState(displayData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
   const [region_id, setRegionId] = useState("");
   const [deleteId, setDeleteId] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
-  const [alternativeSpeciesTestData, setAlternativeSpeciesTestData] = useState(AlternativeSpeciesTestData);
-  const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
-
 
 
   const handleGetSpecies = () => {
     axios
       .get(`${API_ENDPOINT}invasiveSpecies`)
       .then((response) => {
-        console.log("Invasive species retrieved successfully", response.data);
+        // console.log("Invasive species retrieved successfully", response.data);
         setDisplayData(response.data);
         setData(response.data);
         setSearchResults(response.data.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
@@ -62,21 +59,14 @@ function InvasiveSpeciesPage() {
           name.toLowerCase().includes(searchTerm.toLowerCase())
         )
         : item.scientific_name.toLowerCase().includes(searchTerm.toLowerCase()))
-
-      // item.scientific_name.toLowerCase().includes(searchTerm.toLowerCase())
-      // ||
-      // (Array.isArray(item.commonName)
-      //   ? item.commonName.some((name) =>
-      //     name.toLowerCase().includes(searchTerm.toLowerCase())
-      //   )
-      //   : item.commonName.toLowerCase().includes(searchTerm.toLowerCase()))
     )) &&
     (region_id === "" || item.region_id.some((loc) => RegionMap[loc.toLowerCase()] === RegionMap[region_id]))
   );
 
   useEffect(() => {
     if (searchTerm === "" && region_id === "") {
-      setData(SpeciesTestData);
+      // do nothing
+      // setData(SpeciesTestData);
     } else {
       const results = filterData.map((item) => ({
         label: item.scientific_name,
@@ -101,28 +91,28 @@ function InvasiveSpeciesPage() {
 
   // saves edited row
   const handleSave = (confirmed) => {
+    const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
+
     if (confirmed) {
-    const updatedData = data.map((item) => {
-      if (item.species_id === tempData.species_id) {
-        return { ...tempData };
-      }
-      return item;
 
-    });
+      const updatedTempData = {
+        ...tempData,
+        scientific_name: typeof tempData.scientific_name === 'string' ? splitByCommaWithSpaces(tempData.scientific_name) : tempData.scientific_name,
+        common_name: typeof tempData.common_name === 'string' ? splitByCommaWithSpaces(tempData.common_name) : tempData.common_name,
+      };
 
-    setData(updatedData);
+      console.log("data: ", updatedTempData);
 
-    // Preserve the edited row in the display data
-    const updatedDisplayData = displayData.map((item) => {
-      if (item.species_id === tempData.species_id) {
-        return { ...tempData };
-      }
-      return item;
-    });
-    setDisplayData(updatedDisplayData);
-
-    // TODO: update the database with the updatedData
-    handleFinishEditingRow();
+      axios
+        .put(`${API_ENDPOINT}invasiveSpecies/${tempData.species_id}`, updatedTempData)
+        .then((response) => {
+          console.log("Species updated successfully", response.data);
+          handleGetSpecies();
+          handleFinishEditingRow();
+        })
+        .catch((error) => {
+          console.error("Error updating species", error);
+        });
   };
   };
 
@@ -134,23 +124,14 @@ function InvasiveSpeciesPage() {
 
   // Confirm delete
   const handleConfirmDelete = () => {
-    // if (deleteId) {
-    //   setDisplayData((prev) =>
-    //     prev.filter((item) => item.speciesId !== deleteId));
-    //   // TODO: need to delete in from database
-    // }
-    // setOpenConfirmation(false);
-
     console.log("invasive species id to delete: ", deleteId);
 
     if (deleteId) {
       axios
         .delete(`${API_ENDPOINT}invasiveSpecies/${deleteId}`)
         .then((response) => {
+          handleGetSpecies();
           console.log("Species deleted successfully", response.data);
-          setDisplayData((prev) =>
-            prev.filter((item) => item.species_id !== deleteId)
-          );
         })
         .catch((error) => {
           console.error("Error deleting species", error);
@@ -194,7 +175,6 @@ function InvasiveSpeciesPage() {
 
 
         return scientificNameMatch || searchInput === item.scientific_name.join(", ");
-        // || commonNameMatch;
       });
 
       setDisplayData(results);
@@ -217,27 +197,13 @@ function InvasiveSpeciesPage() {
   }
   // add species
   const handleAddSpecies = (newSpeciesData) => {
-    // // Generate a unique speciesId for the new species
-    // const newSpeciesId = displayData.length + 1;
-
-    // // Create a new species object with the generated speciesId
-    // const newSpecies = {
-    //   speciesId: newSpeciesId,
-    //   ...newSpeciesData,
-    // };
-
-    // setDisplayData([...displayData, newSpecies]);
-    // setOpenAddSpeciesDialog(false);
-    // console.log("speciesId: ", newSpecies.speciesId);
-
-    // TODO: update the database with the new entry
     console.log("new invasive species: ", newSpeciesData);
 
     axios
       .post(API_ENDPOINT + "invasiveSpecies", newSpeciesData)
       .then((response) => {
         console.log("Invasive Species added successfully", response.data);
-        setDisplayData([...displayData, newSpeciesData]);
+        handleGetSpecies();
         setOpenAddSpeciesDialog(false);
       })
       .catch((error) => {
@@ -245,6 +211,19 @@ function InvasiveSpeciesPage() {
       });
   };
 
+
+  const rowsPerPageOptions = [3, 10, 25, 50, 100];
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[2]);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
       {/* title */}
@@ -281,6 +260,19 @@ function InvasiveSpeciesPage() {
             Add Invasive Species
           </Button>
         </ThemeProvider>
+      </div>
+
+      {/* Pagination */}
+      <div style={{ display: 'flex', marginLeft: "70%", marginTop: '10px' }}>
+        <TablePagination
+          rowsPerPageOptions={rowsPerPageOptions}
+          component="div"
+          count={displayData ? displayData.length : 0}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </div>
 
       {/* table */}
@@ -509,20 +501,6 @@ function InvasiveSpeciesPage() {
                               }
                             />
                           </TableCell>
-
-                          {/* common name */}
-                          {/* <TableCell>
-                            <TextField
-                              value={
-                                Array.isArray(tempData.commonName)
-                                  ? tempData.commonName.join(", ")
-                                  : tempData.commonName
-                              }
-                              onChange={(e) =>
-                                handleSearchInputChange("commonName", e.target.value)
-                              }
-                            />
-                          </TableCell> */}
 
                           {/* decsription */}
                           <TableCell>

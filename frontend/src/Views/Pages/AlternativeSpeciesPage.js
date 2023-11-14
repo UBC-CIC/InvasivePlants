@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Select, MenuItem, TablePagination, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
+import { TablePagination, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 import Theme from '../../admin_pages/Theme';
 
 import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";
 import SearchComponent from '../../components/SearchComponent';
-import AlternativeSpeciesTestData from "../../test_data/alternativeSpeciesTestData";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -17,17 +16,14 @@ import axios from "axios";
 function AlternativeSpeciesPage() {
   const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
 
-  const [data, setData] = useState(AlternativeSpeciesTestData);
-  const [displayData, setDisplayData] = useState(AlternativeSpeciesTestData);
-  // const [data, setData] = useState([]);
-  // const [displayData, setDisplayData] = useState([]);
+  const [data, setData] = useState([]);
+  const [displayData, setDisplayData] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [tempData, setTempData] = useState({});
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false);
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState(AlternativeSpeciesTestData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
-  // const [searchResults, setSearchResults] = useState(displayData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
+  const [searchResults, setSearchResults] = useState(displayData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
   const [deleteId, setDeleteId] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
 
@@ -35,7 +31,6 @@ function AlternativeSpeciesPage() {
     axios
       .get(`${API_ENDPOINT}alternativeSpecies`)
       .then((response) => {
-        console.log("Alternative species retrieved successfully", response.data);
         setDisplayData(response.data);
         setData(response.data);
         setSearchResults(response.data.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
@@ -63,11 +58,9 @@ function AlternativeSpeciesPage() {
   ))
   );
 
-
   useEffect(() => {
     if (searchTerm === "") {
-      // handleGetSpecies();
-      setData(AlternativeSpeciesTestData);
+      // do nothing
     } else {
       const results = filterData.map((item) => ({
         label: item.scientific_name,
@@ -98,44 +91,23 @@ function AlternativeSpeciesPage() {
       // make sure that fields are proper data structure
       const updatedTempData = {
         ...tempData,
-        scientific_name: typeof tempData.scientific_name === 'string' ? splitByCommaWithSpaces(tempData.scientific_name) : [tempData.scientific_name],
-        common_name: typeof tempData.common_name === 'string' ? splitByCommaWithSpaces(tempData.common_name) : [tempData.common_name],
+        scientific_name: typeof tempData.scientific_name === 'string' ? splitByCommaWithSpaces(tempData.scientific_name) : tempData.scientific_name,
+        common_name: typeof tempData.common_name === 'string' ? splitByCommaWithSpaces(tempData.common_name) : tempData.common_name,
       };
 
-    const updatedData = data.map((item) => {
-      if (item.species_id === tempData.species_id) {
-        return { ...updatedTempData };
-      }
-      return item;
-    });
-
-    setData(updatedData);
-      // console.log("updated data: ", updatedData);
-
-    // Preserve the edited row in the display data
-    const updatedDisplayData = displayData.map((item) => {
-      if (item.species_id === tempData.species_id) {
-        return { ...updatedTempData };
-      }
-      return item;
-    });
-    setDisplayData(updatedDisplayData);
-      console.log("updated display data: ", updatedDisplayData);
-
-
-      console.log("put: ", typeof updatedTempData.species_id, updatedTempData.species_id);
       console.log("data: ", updatedTempData);
 
       axios
         .put(`${API_ENDPOINT}alternativeSpecies/${tempData.species_id}`, updatedTempData)
         .then((response) => {
           console.log("Species updated successfully", response.data);
+          handleGetSpecies();
           handleFinishEditingRow();
         })
         .catch((error) => {
           console.error("Error updating species", error);
         });
-      handleFinishEditingRow();
+
   };
   };
 
@@ -145,27 +117,14 @@ function AlternativeSpeciesPage() {
     setOpenConfirmation(true);
   };
 
-  // Confirm delete
-  // const handleConfirmDelete = () => {
-  //   if (deleteId) {
-  //     console.log("delete id: ", deleteId);
-  //     setDisplayData((prev) =>
-  //       prev.filter((item) => item.species_id !== deleteId));
-  //   }
-  //   setOpenConfirmation(false);
-  // };
-
-  // TODO: fix cors thing
   const handleConfirmDelete = () => {
     console.log("alt species id to delete: ", deleteId);
     if (deleteId) {
       axios
         .delete(`${API_ENDPOINT}alternativeSpecies/${deleteId}`)
         .then((response) => {
+          handleGetSpecies();
           console.log("Species deleted successfully", response.data);
-          setDisplayData((prev) =>
-            prev.filter((item) => item.species_id !== deleteId)
-          );
         })
         .catch((error) => {
           console.error("Error deleting species", error);
@@ -183,13 +142,11 @@ function AlternativeSpeciesPage() {
     setTempData((prev) => ({ ...prev, [field]: value }));
   };
 
-
   const handleSearch = (searchInput) => {
     console.log(typeof searchInput);
     console.log("search input: ", searchInput);
 
     if (searchInput === "") {
-      // handleGetSpecies();
       setDisplayData(data);
     } else {
       const terms = searchInput.toLowerCase().split(" ");
@@ -211,7 +168,6 @@ function AlternativeSpeciesPage() {
             item.common_name.toLowerCase().includes(term)
           );
 
-
         return scientificNameMatch || commonNameMatch || searchInput === item.scientific_name.join(', ');
       });
 
@@ -228,7 +184,7 @@ function AlternativeSpeciesPage() {
       .post(API_ENDPOINT + "alternativeSpecies", newSpeciesData)
       .then((response) => {
         console.log("Alternative species added successfully", response.data);
-        setDisplayData([...displayData, newSpeciesData]);
+        handleGetSpecies();
         setOpenAddSpeciesDialog(false);
       })
       .catch((error) => {
@@ -236,9 +192,9 @@ function AlternativeSpeciesPage() {
       });
   };
 
-  const rowsPerPageOptions = [3, 6, 10, 25, 50, 100];
+  const rowsPerPageOptions = [3, 10, 25, 50, 100];
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[3]);
+  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[2]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -297,17 +253,17 @@ function AlternativeSpeciesPage() {
           {/* table header */}
           <TableHead>
             <TableRow>
-              <TableCell style={{ width: "8%" }}>
+              <TableCell style={{ width: "11%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Scientific Name
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "10%" }}>
+              <TableCell style={{ width: "11%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Common Name(s)
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "40%" }}>
+              <TableCell style={{ width: "30%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Description
                 </Typography>
@@ -339,10 +295,10 @@ function AlternativeSpeciesPage() {
               : [])
             // {displayData &&
             //   displayData
-              // .sort((a, b) => a.scientific_name.localeCompare(b.scientific_name))
+              // .sort((a, b) => a.scientific_name[0].localeCompare(b.scientific_name)[0])
                 .map((row) => (
                   <TableRow key={row.species_id}>
-                    {/* editing the row */}
+                    {/* editing the row */}              
                     {editingId === row.species_id ? (
                       <>
                         {/* scientific name */}
@@ -424,7 +380,9 @@ function AlternativeSpeciesPage() {
                           </Tooltip>
                           <Tooltip
                             title="Delete"
-                            onClick={() => handleDeleteRow(row.species_id, row)}>
+                            onClick={() => {
+                              handleDeleteRow(row.species_id, row)
+                            }}>
                             <IconButton>
                               <DeleteIcon />
                             </IconButton>
@@ -433,6 +391,7 @@ function AlternativeSpeciesPage() {
                       </>
                     ) : (
                       <>
+                          {/* not editing the row */}
                           <TableCell>
                             {Array.isArray(row.scientific_name)
                               ? row.scientific_name.join(", ")
@@ -459,7 +418,10 @@ function AlternativeSpeciesPage() {
                           </Tooltip>
                           <Tooltip
                             title="Delete"
-                              onClick={() => handleDeleteRow(row.species_id, row)}>
+                              onClick={() => {
+                                console.log("got here!!!");
+                                handleDeleteRow(row.species_id, row)
+                              }}>
                             <IconButton>
                               <DeleteIcon />
                             </IconButton>
