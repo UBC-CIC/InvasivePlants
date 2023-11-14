@@ -205,9 +205,6 @@ const dataPipelineForDB = async () => {
     const speciesDataXRegion = await webscrapeInvasiveSpecies();
     const flaggedSpecies = await fullIntegrationOfFlaggingSpecies(speciesDataXRegion);
 
-    // The flagged species should not be added, they need to be fixed first.
-    console.log("Flagged species: ", flaggedSpecies);
-
     speciesDataXRegion.forEach((region) => {
         const scienceName = region.invasive_species_list.map((species)=> species.scientific_name[0]);
 
@@ -230,7 +227,10 @@ const dataPipelineForDB = async () => {
     console.log("invasive_species_tb: ", invasive_species_tb);
     console.log("alternative_species_tb: ", alternative_species_tb);
 
-    return {regions_tb, invasive_species_tb, alternative_species_tb};
+    // The flagged species should not be added, they need to be fixed first.
+    console.log("Flagged species: ", flaggedSpecies);
+
+    return {regions_tb, invasive_species_tb, alternative_species_tb, flaggedSpecies};
 }
 
 export {

@@ -22,6 +22,7 @@ export default function DownloadWebscrap() {
             saveToFile(data.regions_tb, "regions_tb.json");
             saveToFile(data.invasive_species_tb, "invasive_species_tb.json");
             saveToFile(data.alternative_species_tb, "alternative_species_tb.json");
+            saveToFile(data.flaggedSpecies, "flaggedSpecies.json");
             
             console.log("Data ready!");
 
