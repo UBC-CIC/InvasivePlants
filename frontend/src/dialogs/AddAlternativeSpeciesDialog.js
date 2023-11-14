@@ -14,7 +14,6 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     image_links: [],
   };
 
-
   const [showOpen, setShowOpen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
@@ -33,9 +32,8 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     const foundSpecies = data.some((item) =>
       Array.isArray(item.scientific_name)
         ? item.scientific_name.some(
-          (name) => speciesData.scientific_name.includes(name.toLowerCase())
-        )
-        : speciesData.scientific_name.includes(item.scientific_name.toLowerCase())
+          (name) => speciesData.scientific_name === name.toLowerCase())
+        : speciesData.scientific_name === item.scientific_name.toLowerCase()
     );
 
     if (foundSpecies) {
@@ -44,6 +42,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
       handleAddAlternativeSpecies();
     }
   };
+
 
 
   const handleAddAlternativeSpecies = () => {
