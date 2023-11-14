@@ -53,21 +53,6 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         }
     };
 
-    // const handleAddSpecies = () => {
-    //     setOpenAddAlternativeDialog(false);
-    //     setShowOpen(true);
-    //     const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
-
-    //     const modifiedSpeciesData = {
-    //         ...speciesData,
-    //         resource_links: speciesData.resource_links,
-    //         alternative_species: speciesData.alternative_species,
-    //         region_id: speciesData.region_id
-    //     };
-    //     handleAdd(modifiedSpeciesData);
-    //     handleCancel();
-    // };
-
     const handleAddSpecies = () => {
         setOpenAddAlternativeDialog(false);
         setShowOpen(true);
@@ -76,6 +61,8 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
 
         const modifiedSpeciesData = {
             ...speciesData,
+            scientific_name: typeof speciesData.scientific_name === 'string' ? splitByCommaWithSpaces(speciesData.scientific_name) : [],
+            common_name: typeof speciesData.common_name === 'string' ? splitByCommaWithSpaces(speciesData.common_name) : [],
             resource_links: typeof speciesData.resource_links === 'string' ? splitByCommaWithSpaces(speciesData.resource_links) : [],
             alternative_species: typeof speciesData.alternative_species === 'string' ? splitByCommaWithSpaces(speciesData.alternative_species) : [],
             region_id: speciesData.region_id
@@ -93,6 +80,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     };
 
 
+    // add a new alternative species
     const handleAddAlternativeSpecies = (newAlternativeSpeciesData) => {
         // Generate a unique regionId for the new alternative species
         const newAltSpeciesId = alternativeSpeciesTestData.length + 1;

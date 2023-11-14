@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography, Snackbar, Alert, AlertTitle, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Typography, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import SnackbarOnSuccess from "../components/SnackbarComponent";
 import CustomAlert from '../components/AlertComponent';
 import CustomWarning from '../components/WarningComponent';
@@ -42,7 +42,6 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
       handleAddAlternativeSpecies();
     }
   };
-
 
 
   const handleAddAlternativeSpecies = () => {
