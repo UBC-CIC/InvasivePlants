@@ -146,11 +146,16 @@ const getAlternativePlantsForDB = async (scientificName) => {
 
 			if (response.data && response.data.results.length > 0){
                 // Order return by relevance
-                if(response.data.results[0].vernacularNames)
-                response.data.results[0].vernacularNames.forEach(element => {
-                    if(element.language === "eng")
-                        commonName.push(element.vernacularName)
-                });
+                for(let i = 0; i < response.data.results.length; i++){
+                    if(response.data.results[i].canonicalName.trim().toLowerCase() === modSciName && response.data.results[i].vernacularNames.length > 0){
+                        response.data.results[i].vernacularNames.forEach(element => {
+                            if(element.language === "eng")
+                                commonName.push(element.vernacularName)
+                        });
+                        if(commonName.length > 0)
+                            break;
+                    }
+                }
 
                 // Update scientific name
                 const newSciName = response.data.results[0].canonicalName.toLowerCase().replace(/\s+/g, '_').trim();
@@ -172,7 +177,7 @@ const getAlternativePlantsForDB = async (scientificName) => {
         alternativeRecord.resource_links = promiseData[0].wikiUrl;
         
         for(let i = 0; i < Math.min(MAX_NUMBER_IMAGE, promiseData[0].speciesImages.length); i++){
-            alternativeRecord.image_links.push(promiseData[0].wikiUrl[i]);
+            alternativeRecord.image_links.push(promiseData[0].speciesImages[i]);
         }
 
         // Promise from GBIF

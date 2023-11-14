@@ -3,6 +3,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 // Import components
 import { webscrapeInvasiveSpecies } from '../../functions/pipeline';
 import { dataPipelineForDB } from '../../functions/pipeline';
+import { getAlternativePlantsForDB } from '../../functions/alternativePlants';
 
 
 export default function DownloadWebscrap() {
@@ -21,8 +22,9 @@ export default function DownloadWebscrap() {
             saveToFile(data.regions_tb, "regions_tb.json");
             saveToFile(data.invasive_species_tb, "invasive_species_tb.json");
             saveToFile(data.alternative_species_tb, "alternative_species_tb.json");
-
+            
             console.log("Data ready!");
+
         }
 
         getData();
