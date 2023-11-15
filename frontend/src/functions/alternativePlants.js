@@ -126,7 +126,7 @@ const getAlternativePlantsForDB = async (scientificName) => {
         common_name: [],
         resource_links: [],
         image_links: [],
-        species_description: undefined
+        species_description: ""
     }
 
     const MAX_NUMBER_IMAGE = 5;
@@ -174,7 +174,7 @@ const getAlternativePlantsForDB = async (scientificName) => {
 
         // Promise from wiki 
         alternativeRecord.species_description = promiseData[0].speciesDescription === undefined ? promiseData[0].speciesDescription: promiseData[0].speciesOverview;
-        alternativeRecord.resource_links = promiseData[0].wikiUrl;
+        alternativeRecord.resource_links.push(promiseData[0].wikiUrl);
         
         for(let i = 0; i < Math.min(MAX_NUMBER_IMAGE, promiseData[0].speciesImages.length); i++){
             alternativeRecord.image_links.push(promiseData[0].speciesImages[i]);
