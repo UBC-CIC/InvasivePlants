@@ -108,7 +108,12 @@ function PlantNet() {
 
         // dataPipelineForDB();
 
-        webscrapeWikipedia("hydrocharis_morsus-ranae");
+        // TESTING WEBSCRAPE
+        webscrapeWikipedia("perovskia_atriplicifolia");
+        webscrapeWikipedia("rose");
+        webscrapeWikipedia("Hemerocallis_fulva");
+        webscrapeWikipedia("clematis_x_jackmanii");
+        webscrapeWikipedia("bamboo");
 
         // const fetchData = async () => {
         //     try {

@@ -1,121 +1,136 @@
-import * as cheerio from "cheerio";
 import axios from "axios";
+import cheerio from "cheerio";
 
-// List of website to links to invasive species website
-const WIKIPEDIA_SEARCH_URL = "https://en.wikipedia.org/wiki/";
+const MEDIAWIKI_API_URL = "https://en.wikipedia.org/w/api.php";
 
-/**
- *
- * This function only webscrapes from wikipedia given the species name and collects the following:
- *  - species overview
- *  - species description
- *  - gallery of images
- *  - wiki url
- */
-
-// TODO: fix this function!!!
 const webscrapeWikipedia = async (scientificName) => {
 	try {
-		const wikiUrl = `${WIKIPEDIA_SEARCH_URL}${encodeURIComponent(
-			scientificName
-		)}`;
-		const searchResponse = await axios.get(wikiUrl);
-		const $ = cheerio.load(searchResponse.data);
+		const params = {
+			action: "query",
+			format: "json",
+			titles: scientificName,
+			prop: "extracts|images",
+			redirects: true,
+			exintro: true,
+			explaintext: true,
+			imlimit: 15,
+		};
 
-		let wiki_info = {
-			speciesOverview: extractSpeciesOverview($, scientificName),
-			speciesDescription: extractSpeciesDescription($),
-			speciesImages: extractSpeciesImages($),
-			wikiUrl: wikiUrl
+		const response = await axios.get(MEDIAWIKI_API_URL, { params });
+		const pages = response.data.query.pages;
+
+		// handle redirected pages
+		let redirectedTitle = scientificName;
+		if (response.data.query.redirects && response.data.query.redirects.length > 0) {
+			redirectedTitle = response.data.query.redirects[0].to;
 		}
 
-		// following two lines for testing: format so it's easier to see in console
-		const jsonResult = JSON.stringify(wiki_info, null, 2);
-		// console.log("from wiki: ", jsonResult);
-		return wiki_info;
+		if (!pages || Object.keys(pages).length === 0) {
+			throw new Error("Species not found on Wikipedia.");
+		}
+
+		const pageId = Object.keys(pages)[0];
+		const page = pages[pageId];
+
+		// find Description section
+		const sections = await fetchSections(page.pageid);
+		const descriptionSection = sections.find(section => section.line === "Description");
+		const descriptionContent = descriptionSection ? await fetchSectionContent(page.pageid, descriptionSection.index) : null;
+
+		// get images
+		const imageInfo = (page.images && Array.isArray(page.images)) ? await fetchImageUrls(page.images, scientificName, redirectedTitle) : [];
+
+		const wikiInfo = {
+			speciesOverview: cleanUpString(page.extract),
+			speciesDescription: descriptionContent,
+			speciesImages: imageInfo,
+			wikiUrl: `https://en.wikipedia.org/wiki/${encodeURIComponent(scientificName)}`,
+		};
+
+		console.log("From Wikipedia: ", JSON.stringify(wikiInfo, null, 2));
+		return wikiInfo;
 	} catch (error) {
-		console.error("Error while scraping wikipedia site:", error.message);
+		console.error("Error while fetching Wikipedia data:", error.message);
+		return null;
 	}
 };
 
-const extractSpeciesOverview = ($) => {
-	let speciesParagraphs = "";
-	const paragraphs = $("div.mw-content-ltr.mw-parser-output p");
+async function fetchSections(pageId) {
+	const sectionsParams = {
+		action: "parse",
+		format: "json",
+		pageid: pageId,
+		prop: "sections",
+	};
 
-	// Iterate over each paragraph
-	paragraphs.each(function () {
-		// Check if the paragraph is within a table
-		const isInTable = $(this).closest('table').length > 0;
+	const sectionsResponse = await axios.get(MEDIAWIKI_API_URL, { params: sectionsParams });
+	return sectionsResponse.data.parse.sections || [];
+}
 
-		// Check if the paragraph is after an h2
-		const isAfterH2 = $(this).prevAll('h2').length > 0;
+async function fetchSectionContent(pageId, sectionIndex) {
+	const sectionParams = {
+		action: "parse",
+		format: "json",
+		pageid: pageId,
+		prop: "text",
+		section: sectionIndex,
+	};
 
-		if (!isInTable) {
-			if (isAfterH2) {
-				return false; // Break out of the loop
-			}
-			const paragraphText = $(this).text();
-			speciesParagraphs += cleanUpString(paragraphText);
+	const sectionResponse = await axios.get(MEDIAWIKI_API_URL, { params: sectionParams });
+	const htmlContent = sectionResponse.data.parse.text["*"];
+
+	const $ = cheerio.load(htmlContent);
+
+	// Extract text content from the paragraphs
+	const speciesDescription = [];
+	$("p").each(function () {
+		// Exclude content within <style> tags with the specified class
+		if (!$(this).find("style[data-mw-deduplicate='TemplateStyles:r1154941027']").length) {
+			speciesDescription.push($(this).text());
 		}
 	});
 
-	return speciesParagraphs;
-};
+	return cleanUpString(speciesDescription.join("\n"));
+}
 
 
-// get species description
-const extractSpeciesDescription = ($) => {
-	let speciesDescription = [];
-	let found = false;
-
-	// Update selector to target the h2 with the specified span and ID
-	$("h2 span.mw-headline#Description")
-		.parent()
-		.nextAll()
-		.each(function () {
-			// Break the loop when the next h2 is found
-			if ($(this).is("h2")) {
-				found = true;
-				return false;
-			}
-
-			// Exclude content within <style> tags with the specified class
-			if (!found && $(this).is("p")) {
-				// Exclude content within <style> tags
-				let $pClone = $(this).clone();
-				$pClone.find("style[data-mw-deduplicate='TemplateStyles:r1154941027']").remove();
-				speciesDescription.push($pClone.text());
-			}
-		});
-
-	return cleanUpString(speciesDescription);
-};
+// get url of 5 images
+async function fetchImageUrls(images, prevTitle, pageTitle) {
+	const imageInfo = [];
+	const matchNameRedirectedTitle = pageTitle.split(' ').map(word => encodeURIComponent(word.toLowerCase()));
+	const matchNamePrevTitle = prevTitle.split(' ').map(word => encodeURIComponent(word.toLowerCase()));
+	let imageCount = 0; 
 
 
-// get species images
-const extractSpeciesImages = ($) => {
-	const speciesImages = [];
+	for (const image of images) {
+		if (imageCount >= 5) {
+			break; 
+		}
 
-	// Update selector to target the table with class "infobox biota"
-	$("table.infobox.biota img").each((index, element) => {
-		let src = $(element).attr("src");
+		const imageParams = {
+			action: "query",
+			format: "json",
+			titles: image.title,
+			prop: "imageinfo",
+			iiprop: "url",
+		};
 
-		// Exclude specific images based on the src attribute
+		const response = await axios.get(MEDIAWIKI_API_URL, { params: imageParams });
+		const pages = response.data.query.pages;
+		const page = pages[Object.keys(pages)[0]];
+
 		if (
-			src &&
-			src.startsWith("//") &&
-			src !== "//upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Status_iucn3.1_LC.svg/220px-Status_iucn3.1_LC.svg.png" &&
-			src !== "//upload.wikimedia.org/wikipedia/commons/thumb/8/8a/OOjs_UI_icon_edit-ltr.svg/15px-OOjs_UI_icon_edit-ltr.svg.png"
+			page.imageinfo &&
+			page.imageinfo[0]?.url &&
+			(matchNameRedirectedTitle.some(word => decodeURIComponent(page.imageinfo[0].url).toLowerCase().includes(word)) ||
+				matchNamePrevTitle.some(word => decodeURIComponent(page.imageinfo[0].url).toLowerCase().includes(word)))
 		) {
-			src = "https:" + src;
-			speciesImages.push(src);
+			imageInfo.push(page.imageinfo[0].url);
+			imageCount++;
 		}
-	});
-
-	return speciesImages;
-};
-
-
+	}
+	return imageInfo;
+}
 
 
 // helper function to clean up data
@@ -126,6 +141,9 @@ const cleanUpString = (input) => {
 
 	// remove brackets []
 	input = input.replace(/\[[^\]]*\]/g, "");
+
+	// remove parentheses ()
+	input = input.replace(/[()]/g, "");
 
 	// remove commas preceded by a line break and divide with a new line
 	input = input.replace(/(\r\n|[\r\n])\s*,/g, "$1\n");
