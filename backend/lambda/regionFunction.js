@@ -51,35 +51,30 @@ exports.handler = async (event) => {
 	
 	let data;
 	try {
+		console.log("Event: ", event);
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
-			case "GET /alternativeSpecies":
-			  if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
-			    data = await sql`SELECT * FROM alternative_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
-			  } else {
-				  data = await sql`SELECT * FROM alternative_species`;
-			  }
+			case "GET /region":
+				data = await sql`SELECT * FROM regions`;
 				response.body = JSON.stringify(data);
 				break;
-			case "POST /alternativeSpecies":
+			case "POST /region":
 				if(event.body != null){
 					const bd = JSON.parse(event.body);
 					
 					// Check if required parameters are passed
-					if( bd.scientific_name ){
+					if( bd.region_code_name && 
+						bd.region_fullname && 
+						bd.country_fullname){
 						
 						// Optional parameters
-						const common_name = (bd.common_name) ? bd.common_name : [];
-						const resource_links = (bd.resource_links) ? bd.resource_links : [];
-						const image_links = (bd.image_links) ? bd.image_links : [];
-						const species_description = (bd.species_description) ? bd.species_description : "";
-						
+						const geographic_coordinate = (bd.geographic_coordinate) ? bd.geographic_coordinate : "";
 						await sql`
-							INSERT INTO alternative_species (scientific_name, common_name, resource_links, image_links, species_description)
-							VALUES (${bd.scientific_name}, ${common_name}, ${resource_links}, ${image_links}, ${species_description});
+							INSERT INTO regions (region_code_name, region_fullname, country_fullname, geographic_coordinate)
+							VALUES (${bd.region_code_name}, ${bd.region_fullname}, ${bd.country_fullname}, ${geographic_coordinate});
 						`;
 						
-						response.body = "Added data to alternative species";
+						response.body = "Added data to region";
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
@@ -89,13 +84,13 @@ exports.handler = async (event) => {
 					response.body = "Invalid value";	
 				}
 				break;
-			case "GET /alternativeSpecies/{species_id}":
+			case "GET /region/{region_id}":
 				if(event.pathParameters != null){
 					const bd = event.pathParameters;
 					
 					// Check if required parameters are passed
-					if(bd.species_id){
-						data = await sql`SELECT * FROM alternative_species WHERE species_id = ${bd.species_id};`;
+					if(bd.region_id){
+						data = await sql`SELECT * FROM regions WHERE region_id = ${bd.region_id};`;
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
@@ -106,30 +101,27 @@ exports.handler = async (event) => {
 					response.body = "Invalid value";	
 				}
 				break;
-			case "PUT /alternativeSpecies/{species_id}":
+			case "PUT /region/{region_id}":
 				if(event.body != null && event.pathParameters != null){
 					const bd = JSON.parse(event.body);
 					
 					// Check if required parameters are passed
-					if( bd.species_id && bd.scientific_name ){
-						
-						// Optional parameters
-						const common_name = (bd.common_name) ? bd.common_name : [];
-						const resource_links = (bd.resource_links) ? bd.resource_links : [];
-						const image_links = (bd.image_links) ? bd.image_links : [];
-						const species_description = (bd.species_description) ? bd.species_description : "";
+					if( bd.region_code_name && 
+						bd.region_fullname && 
+						bd.country_fullname &&
+						bd.geographic_coordinate &&
+						event.pathParameters.region_id){
 						
 						await sql`
-							UPDATE alternative_species
-							SET scientific_name = ${bd.scientific_name}, 
-							  common_name = ${common_name},
-								resource_links = ${resource_links}, 
-								image_links = ${image_links},
-								species_description = ${species_description},
-							WHERE species_id = ${event.pathParameters.species_id};
+							UPDATE regions
+							SET region_code_name = ${bd.region_code_name}, 
+								region_fullname = ${bd.region_fullname}, 
+								country_fullname = ${bd.country_fullname},
+								geographic_coordinate = ${bd.geographic_coordinate}
+							WHERE region_id = ${event.pathParameters.region_id};
 						`;
 						
-						response.body = "Updated the data to the alternative species";
+						response.body = "Updated the data to the region";
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
@@ -139,14 +131,14 @@ exports.handler = async (event) => {
 					response.body = "Invalid value";	
 				}
 				break;
-			case "DELETE /alternativeSpecies/{species_id}":
+			case "DELETE /region/{region_id}":
 				if(event.pathParameters != null){
 					const bd = event.pathParameters;
 					
 					// Check if required parameters are passed
-					if(bd.species_id){
-						data = await sql`DELETE FROM alternative_species WHERE species_id = ${bd.species_id};`;
-						response.body = "Deleted an alternative species";
+					if(bd.region_id){
+						data = await sql`DELETE FROM regions WHERE region_id = ${bd.region_id};`;
+						response.body = "Deleted a region";
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";

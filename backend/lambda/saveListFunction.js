@@ -53,33 +53,28 @@ exports.handler = async (event) => {
 	try {
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
-			case "GET /alternativeSpecies":
-			  if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
-			    data = await sql`SELECT * FROM alternative_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
-			  } else {
-				  data = await sql`SELECT * FROM alternative_species`;
-			  }
+		  case "GET /saveList":
+				data = await sql`SELECT * FROM save_lists`;
 				response.body = JSON.stringify(data);
 				break;
-			case "POST /alternativeSpecies":
+			case "POST /saveList":
 				if(event.body != null){
 					const bd = JSON.parse(event.body);
 					
 					// Check if required parameters are passed
-					if( bd.scientific_name ){
+					// TODO: check for user_uuid
+					if( bd.list_name && bd.saved_species){
 						
 						// Optional parameters
-						const common_name = (bd.common_name) ? bd.common_name : [];
-						const resource_links = (bd.resource_links) ? bd.resource_links : [];
-						const image_links = (bd.image_links) ? bd.image_links : [];
-						const species_description = (bd.species_description) ? bd.species_description : "";
+						const user_uuid = "123-fad-453-ball";
 						
-						await sql`
-							INSERT INTO alternative_species (scientific_name, common_name, resource_links, image_links, species_description)
-							VALUES (${bd.scientific_name}, ${common_name}, ${resource_links}, ${image_links}, ${species_description});
-						`;
+						let list_id_returns = await sql`
+							INSERT INTO save_lists (user_uuid, list_name, saved_species)
+							VALUES (${user_uuid}, ${bd.list_name}, ${bd.saved_species})
+							RETURNING list_id;
+						`; 
 						
-						response.body = "Added data to alternative species";
+						response.body = JSON.stringify(list_id_returns[0]);
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
@@ -89,13 +84,13 @@ exports.handler = async (event) => {
 					response.body = "Invalid value";	
 				}
 				break;
-			case "GET /alternativeSpecies/{species_id}":
+			case "GET /saveList/{list_id}":
 				if(event.pathParameters != null){
 					const bd = event.pathParameters;
 					
 					// Check if required parameters are passed
-					if(bd.species_id){
-						data = await sql`SELECT * FROM alternative_species WHERE species_id = ${bd.species_id};`;
+					if(bd.list_id){
+						data = await sql`SELECT * FROM save_lists WHERE list_id = ${bd.list_id};`;
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
@@ -106,30 +101,25 @@ exports.handler = async (event) => {
 					response.body = "Invalid value";	
 				}
 				break;
-			case "PUT /alternativeSpecies/{species_id}":
+			case "PUT /saveList/{list_id}":
 				if(event.body != null && event.pathParameters != null){
 					const bd = JSON.parse(event.body);
 					
 					// Check if required parameters are passed
-					if( bd.species_id && bd.scientific_name ){
+					if( event.pathParameters.list_id && bd.list_name && bd.saved_species){
 						
 						// Optional parameters
-						const common_name = (bd.common_name) ? bd.common_name : [];
-						const resource_links = (bd.resource_links) ? bd.resource_links : [];
-						const image_links = (bd.image_links) ? bd.image_links : [];
-						const species_description = (bd.species_description) ? bd.species_description : "";
+						const user_uuid = "123-fad-453-ball";
 						
 						await sql`
-							UPDATE alternative_species
-							SET scientific_name = ${bd.scientific_name}, 
-							  common_name = ${common_name},
-								resource_links = ${resource_links}, 
-								image_links = ${image_links},
-								species_description = ${species_description},
-							WHERE species_id = ${event.pathParameters.species_id};
+							UPDATE save_lists
+							SET list_name = ${bd.list_name}, 
+							  saved_species = ${bd.saved_species},
+								user_uuid = ${user_uuid}, 
+							WHERE list_id = ${event.pathParameters.list_id};
 						`;
 						
-						response.body = "Updated the data to the alternative species";
+						response.body = "Updated the data to the save list";
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
@@ -139,14 +129,14 @@ exports.handler = async (event) => {
 					response.body = "Invalid value";	
 				}
 				break;
-			case "DELETE /alternativeSpecies/{species_id}":
+			case "DELETE /saveList/{list_id}":
 				if(event.pathParameters != null){
 					const bd = event.pathParameters;
 					
 					// Check if required parameters are passed
-					if(bd.species_id){
-						data = await sql`DELETE FROM alternative_species WHERE species_id = ${bd.species_id};`;
-						response.body = "Deleted an alternative species";
+					if(bd.list_id){
+						data = await sql`DELETE FROM save_lists WHERE list_id = ${bd.list_id};`;
+						response.body = "Deleted a save list";
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";

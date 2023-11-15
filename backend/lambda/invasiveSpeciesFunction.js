@@ -51,17 +51,18 @@ exports.handler = async (event) => {
 	
 	let data;
 	try {
+		console.log("Event: ", event);
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
-			case "GET /alternativeSpecies":
+			case "GET /invasiveSpecies":
 			  if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
-			    data = await sql`SELECT * FROM alternative_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
+			    data = await sql`SELECT * FROM invasive_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
 			  } else {
-				  data = await sql`SELECT * FROM alternative_species`;
+				  data = await sql`SELECT * FROM invasive_species`;
 			  }
 				response.body = JSON.stringify(data);
 				break;
-			case "POST /alternativeSpecies":
+			case "POST /invasiveSpecies":
 				if(event.body != null){
 					const bd = JSON.parse(event.body);
 					
@@ -69,17 +70,17 @@ exports.handler = async (event) => {
 					if( bd.scientific_name ){
 						
 						// Optional parameters
-						const common_name = (bd.common_name) ? bd.common_name : [];
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
-						const image_links = (bd.image_links) ? bd.image_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
+						const region_id = (bd.region_id) ? bd.region_id : [];
+						const alternative_species = (bd.alternative_species) ? bd.alternative_species : [];
 						
 						await sql`
-							INSERT INTO alternative_species (scientific_name, common_name, resource_links, image_links, species_description)
-							VALUES (${bd.scientific_name}, ${common_name}, ${resource_links}, ${image_links}, ${species_description});
+							INSERT INTO invasive_species (scientific_name, resource_links, species_description, region_id, alternative_species)
+							VALUES (${bd.scientific_name}, ${resource_links}, ${species_description}, ${region_id}, ${alternative_species});
 						`;
 						
-						response.body = "Added data to alternative species";
+						response.body = "Added data to region";
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
@@ -89,13 +90,13 @@ exports.handler = async (event) => {
 					response.body = "Invalid value";	
 				}
 				break;
-			case "GET /alternativeSpecies/{species_id}":
+			case "GET /invasiveSpecies/{species_id}":
 				if(event.pathParameters != null){
 					const bd = event.pathParameters;
 					
 					// Check if required parameters are passed
 					if(bd.species_id){
-						data = await sql`SELECT * FROM alternative_species WHERE species_id = ${bd.species_id};`;
+						data = await sql`SELECT * FROM invasive_species WHERE species_id = ${bd.species_id};`;
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
@@ -106,7 +107,7 @@ exports.handler = async (event) => {
 					response.body = "Invalid value";	
 				}
 				break;
-			case "PUT /alternativeSpecies/{species_id}":
+			case "PUT /invasiveSpecies/{species_id}":
 				if(event.body != null && event.pathParameters != null){
 					const bd = JSON.parse(event.body);
 					
@@ -114,22 +115,22 @@ exports.handler = async (event) => {
 					if( bd.species_id && bd.scientific_name ){
 						
 						// Optional parameters
-						const common_name = (bd.common_name) ? bd.common_name : [];
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
-						const image_links = (bd.image_links) ? bd.image_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
+						const region_id = (bd.region_id) ? bd.region_id : [];
+						const alternative_species = (bd.alternative_species) ? bd.alternative_species : [];
 						
 						await sql`
-							UPDATE alternative_species
+							UPDATE invasive_species
 							SET scientific_name = ${bd.scientific_name}, 
-							  common_name = ${common_name},
 								resource_links = ${resource_links}, 
-								image_links = ${image_links},
 								species_description = ${species_description},
+								region_id = ${region_id}
+								alternative_species = ${alternative_species}
 							WHERE species_id = ${event.pathParameters.species_id};
 						`;
 						
-						response.body = "Updated the data to the alternative species";
+						response.body = "Updated the data to the region";
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
@@ -139,14 +140,14 @@ exports.handler = async (event) => {
 					response.body = "Invalid value";	
 				}
 				break;
-			case "DELETE /alternativeSpecies/{species_id}":
+			case "DELETE /invasiveSpecies/{species_id}":
 				if(event.pathParameters != null){
 					const bd = event.pathParameters;
 					
 					// Check if required parameters are passed
 					if(bd.species_id){
-						data = await sql`DELETE FROM alternative_species WHERE species_id = ${bd.species_id};`;
-						response.body = "Deleted an alternative species";
+						data = await sql`DELETE FROM invasive_species WHERE species_id = ${bd.species_id};`;
+						response.body = "Deleted a region";
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
