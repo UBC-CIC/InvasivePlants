@@ -31,6 +31,7 @@ function AlternativeSpeciesPage() {
     axios
       .get(`${API_ENDPOINT}alternativeSpecies`)
       .then((response) => {
+        // console.log("got alt data: ", response.data);
         setDisplayData(response.data);
         setData(response.data);
         setSearchResults(response.data.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));

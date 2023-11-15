@@ -23,6 +23,7 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
         return true;
     };
 
+
     return (
         <div>
             <Dialog open={open} onClose={handleFinishEditingRow}>
@@ -54,12 +55,12 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
                         onChange={(e) => handleSearchInputChange("country_fullname", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
-                    {tempData.geographic_coordinates && (
+                    {tempData.geographic_coordinate && (
                         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                             <TextField
                                 fullWidth
                                 label="Latitude"
-                                value={tempData.geographic_coordinates[0]}
+                                value={tempData.geographic_coordinate.split(',')[0]}
                                 onChange={(e) => handleSearchInputChange("geographic_latitude", e.target.value)}
                                 sx={{ width: "100%", marginRight: "4px" }}
                             />
@@ -67,7 +68,7 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
                             <TextField
                                 fullWidth
                                 label="Longitude"
-                                value={tempData.geographic_coordinates[1]}
+                                value={tempData.geographic_coordinate.split(',')[1]}
                                 onChange={(e) => handleSearchInputChange("geographic_longitude", e.target.value)}
                                 sx={{ width: "100%", marginLeft: "4px" }}
                             />
@@ -80,7 +81,6 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
                     <Button
                         onClick={() => {
                             handleSave(handleConfirmRegion());
-
                         }}
                     >
                         Save

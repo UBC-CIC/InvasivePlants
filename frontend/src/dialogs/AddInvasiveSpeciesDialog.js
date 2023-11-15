@@ -34,7 +34,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     };
 
     const handleConfirmAddSpecies = () => {
-        if (speciesData.scientific_name.length === 0) {
+        if (speciesData.scientific_name.length === 0 || speciesData.region_id.length === 0) {
             setShowAlert(true);
             return;
         }
@@ -111,7 +111,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     return (
         <div>
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}>
-                <CustomAlert text={"scientific name"} onClose={() => setShowAlert(false)} />
+                <CustomAlert text={"scientific name AND region"} onClose={() => setShowAlert(false)} />
             </Dialog>
 
             <Dialog open={showWarning} onClose={() => setShowWarning(false)}>
@@ -130,7 +130,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                 <DialogContent>
                     <TextField
                         fullWidth
-                        label="Scientific Name"
+                        label="Scientific Name*"
                         value={speciesData.scientific_name}
                         onChange={(e) => handleInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}
@@ -207,7 +207,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                     />
 
                     <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
-                        <InputLabel id="region-label">Region (multiselect)</InputLabel>
+                        <InputLabel id="region-label">Region (multiselect)*</InputLabel>
                         <Select
                             labelId="region-label"
                             multiple

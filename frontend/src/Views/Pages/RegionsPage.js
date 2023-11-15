@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Autocomplete, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
-import RegionsTestData from "../../test_data/regionsTestData";
+// import RegionsTestData from "../../test_data/regionsTestData";
 import AddRegionDialog from "../../dialogs/AddRegionDialog";
 import Theme from '../../admin_pages/Theme';
 
@@ -10,27 +10,42 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditRegionsDialog from "../../dialogs/EditRegionsDialog";
 import SearchIcon from '@mui/icons-material/Search';
-import PublicIcon from '@mui/icons-material/Public';
 import LocationFilterComponent from '../../components/LocationFilterComponent';
 
 import axios from "axios";
 
 function RegionsPage() {
-    const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/region";
+    const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
 
-    const [data, setData] = useState(RegionsTestData);
-    const [displayData, setDisplayData] = useState(RegionsTestData);
+    const [data, setData] = useState([]);
+    const [displayData, setDisplayData] = useState([]);
     const [editingId, setEditingId] = useState(null);
     const [tempData, setTempData] = useState({});
     const [openEditRegionDialog, setOpenEditRegionDialog] = useState(false);
     const [openAddRegionDialog, setOpenAddRegionDialog] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-    const [searchResults, setSearchResults] = useState(RegionsTestData.map((item) => ({ label: item.region_fullname, value: item.region_fullname })));
+    const [searchResults, setSearchResults] = useState(displayData.map((item) => ({ label: item.region_fullname, value: item.region_fullname })));
     const [country, setCountry] = useState("");
 
     const [deleteId, setDeleteId] = useState(null);
     const [openConfirmation, setOpenConfirmation] = useState(false);
 
+    const handleGetRegions = () => {
+        axios
+            .get(`${API_ENDPOINT}region`)
+            .then((response) => {
+                // console.log("Regions retrieved successfully", response.data);
+                setDisplayData(response.data);
+                setData(response.data);
+                setSearchResults(response.data.map((item) => ({ label: item.region_fullname, value: item.region_fullname })));
+            })
+            .catch((error) => {
+                console.error("Error retrieving region", error);
+            });
+    };
+    useEffect(() => {
+        handleGetRegions();
+    }, []); 
 
     // gets rows that matches search and country input 
     const filterData = data.filter((item) =>
@@ -43,7 +58,8 @@ function RegionsPage() {
 
     useEffect(() => {
         if (searchTerm === "" && country === "") {
-            setData(RegionsTestData);
+            // do nothing
+            // setData(RegionsTestData);
         } else {
             const results = filterData.map((item) => ({
                 label: item.region_fullname,
@@ -53,9 +69,9 @@ function RegionsPage() {
         }
     }, [searchTerm, filterData, country]);
 
-    // edit species row
-    const startEdit = (id, rowData) => {
-        setEditingId(id);
+    // edit region row
+    const startEdit = (region_id, rowData) => {
+        setEditingId(region_id);
         setTempData(rowData);
         setOpenEditRegionDialog(true);
     };
@@ -69,61 +85,73 @@ function RegionsPage() {
     // saves edited row
     const handleSave = (confirmed) => {
         if (confirmed) {
-        const updatedData = data.map((item) => {
-            if (item.regionId === tempData.regionId) {
-                return { ...tempData };
-            }
-            return item;
-        });
-
-        setData(updatedData);
-
-        // Preserve the edited row in the display data
-        const updatedDisplayData = displayData.map((item) => {
-            if (item.regionId === tempData.regionId) {
-                return { ...tempData };
-            }
-            return item;
-        });
-        setDisplayData(updatedDisplayData);
-
-        // TODO: update the database with the updatedData
-        handleFinishEditingRow();
-    };
+            console.log("data: ", tempData);
+            axios
+                .put(`${API_ENDPOINT}region/${tempData.region_id}`, tempData)
+                .then((response) => {
+                    console.log("Region updated successfully", response.data);
+                    handleGetRegions();
+                    handleFinishEditingRow();
+                })
+                .catch((error) => {
+                    console.error("Error updating region", error);
+                });
+        };
     };
 
 
     // delete row with Confirmation before deletion
-    const handleDeleteRow = (regionId) => {
-        setDeleteId(regionId);
+    const handleDeleteRow = (region_id) => {
+        setDeleteId(region_id);
         setOpenConfirmation(true);
     };
 
     // Confirm delete
     const handleConfirmDelete = () => {
+        console.log("region id to delete: ", deleteId);
         if (deleteId) {
-            setDisplayData((prev) =>
-                prev.filter((item) => item.regionId !== deleteId));
-            // TODO: need to delete in from database
+            axios
+                .delete(`${API_ENDPOINT}region/${deleteId}`)
+                .then((response) => {
+                    handleGetRegions();
+                    console.log("region deleted successfully", response.data);
+                })
+                .catch((error) => {
+                    console.error("Error deleting region", error);
+                })
+                .finally(() => {
+                    setOpenConfirmation(false);
+                });
+        } else {
+            setOpenConfirmation(false);
         }
-        setOpenConfirmation(false);
     };
 
 
     // helper function when search input changes
     const handleSearchInputChange = (field, value) => {
-        if (field === 'geographic_latitude') {
-            setTempData((prev) => ({ ...prev, geographic_coordinates: [value, prev.geographic_coordinates[1]] }));
-        } else if (field === 'geographic_longitude') {
-            setTempData((prev) => ({ ...prev, geographic_coordinates: [prev.geographic_coordinates[0], value] }));
-        } else {
+        // only take in numbers and decimal
+        const isValidInput = /^[+-]?\d+(\.\d*)?$/.test(value);
+
+        if (field !== 'geographic_latitude' && field !== 'geographic_longitude') {
             setTempData((prev) => ({ ...prev, [field]: value }));
+        } else if (isValidInput || value === '') {
+            if (field === 'geographic_latitude') {
+                setTempData((prev) => ({ ...prev, geographic_coordinate: `${value},${prev.geographic_coordinate.split(',')[1]}` }));
+            } else if (field === 'geographic_longitude') {
+                setTempData((prev) => ({ ...prev, geographic_coordinate: `${prev.geographic_coordinate.split(',')[0]},${value}` }));
+            }
+        } else {
+            alert('Invalid input. Please enter numerical values or decimals.');
         }
     };
 
-    // search species
+
+    // search region
     const handleSearch = (searchInput) => {
         if (searchInput === "") {
+            console.log(typeof searchInput);
+            console.log("search input: ", searchInput);
             setDisplayData(data);
         } else {
             const terms = searchInput.toLowerCase().split(" ");
@@ -157,34 +185,13 @@ function RegionsPage() {
         }
     };
 
-    // add species
+    // add region
     const handleAddRegion = (newRegionData) => {
-        // Generate a unique regionId for the new species
-        const newRegionId = displayData.length + 1;
-
-        // Create a new region object with the generated regionId
-        const newRegion = {
-            regionId: newRegionId,
-            ...newRegionData,
-        };
-
-        // setData([...data, newRegion]);
-        setDisplayData([...displayData, newRegion]);
-        setOpenAddRegionDialog(false);
-
-        // TODO: update the database with the new entry
-        // curl -X POST -H "Content-Type: application/json" -d ' 
-        // { "region_code_name": "ON", 
-        // "region_fullname": "ontario", 
-        // "country_fullname": "canada", 
-        // "geographic_coordinate": "(1,2)" }' 
-        // "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod"
-
         axios
-            .post(API_ENDPOINT, newRegion)
+            .post(API_ENDPOINT + "region", newRegionData)
             .then((response) => {
-                console.log("Region added successfully", response.data);
-                setDisplayData([...displayData, newRegion]);
+                console.log("region added successfully", response.data);
+                handleGetRegions();
                 setOpenAddRegionDialog(false);
             })
             .catch((error) => {
@@ -279,7 +286,7 @@ function RegionsPage() {
                         </TableRow>
                     </TableHead>
 
-                    {/* table body: display species */}
+                    {/* table body: display regions */}
                     <TableBody>
                         {displayData &&
                             (country !== ""
@@ -289,14 +296,14 @@ function RegionsPage() {
                                     .map((row) => (
                                         <TableRow key={row.region_code_name}>
                                             {/* editing the row */}
-                                            {editingId === row.regionId ? (
+                                            {editingId === row.region_id ? (
                                                 <>
                                                     {/* region full name */}
                                                     <TableCell>
                                                         <TextField
                                                             value={tempData.region_fullname}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("region", e.target.value)
+                                                                handleSearchInputChange("region_fullname", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -316,7 +323,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.country_fullname}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("country", e.target.value)
+                                                                handleSearchInputChange("country_fullname", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -324,9 +331,9 @@ function RegionsPage() {
                                                     {/* coordinates */}
                                                     <TableCell>
                                                         <TextField
-                                                            value={tempData.geographic_coordinates}
+                                                            value={tempData.geographic_coordinate}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("coordinates", e.target.value)
+                                                                handleSearchInputChange("geographic_coordinate", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -334,14 +341,14 @@ function RegionsPage() {
                                                     {/* edit/delete */}
                                                     <TableCell>
                                                         <Tooltip title="Edit"
-                                                            onClick={() => startEdit(row.regionId, row)}>
+                                                            onClick={() => startEdit(row.region_id, row)}>
                                                             <IconButton>
                                                                 <EditIcon />
                                                             </IconButton>
                                                         </Tooltip>
                                                         <Tooltip
                                                             title="Delete"
-                                                            onClick={() => handleDeleteRow(row.regionId, row)}>
+                                                            onClick={() => handleDeleteRow(row.region_id, row)}>
                                                             <IconButton>
                                                                 <DeleteIcon />
                                                             </IconButton>
@@ -353,17 +360,17 @@ function RegionsPage() {
                                                         <TableCell>{row.region_fullname}</TableCell>
                                                         <TableCell> {row.region_code_name} </TableCell>
                                                         <TableCell>{row.country_fullname}</TableCell>
-                                                    <TableCell>{row.geographic_coordinates.join(', ')}</TableCell>
+                                                        <TableCell>{row.geographic_coordinate}</TableCell>
                                                     <TableCell>
                                                         <Tooltip title="Edit"
-                                                            onClick={() => startEdit(row.regionId, row)}>
+                                                                onClick={() => startEdit(row.region_id, row)}>
                                                             <IconButton>
                                                                 <EditIcon />
                                                             </IconButton>
                                                         </Tooltip>
                                                         <Tooltip
                                                             title="Delete"
-                                                            onClick={() => handleDeleteRow(row.regionId, row)}>
+                                                                onClick={() => handleDeleteRow(row.region_id, row)}>
                                                             <IconButton>
                                                                 <DeleteIcon />
                                                             </IconButton>
@@ -376,16 +383,16 @@ function RegionsPage() {
                                 : displayData
                                 .sort((a, b) => a.region_fullname.localeCompare(b.region_fullname))
                                     .map((row) => (
-                                        <TableRow key={row.regionId}>
+                                        <TableRow key={row.region_id}>
                                             {/* editing the row */}
-                                            {editingId === row.regionId ? (
+                                            {editingId === row.region_id ? (
                                                 <>
                                                     {/* region full name */}
                                                     <TableCell>
                                                         <TextField
                                                             value={tempData.region_fullname}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("region", e.target.value)
+                                                                handleSearchInputChange("region_fullname", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -405,7 +412,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.country_fullname}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("country", e.target.value)
+                                                                handleSearchInputChange("country_fullname", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -413,9 +420,9 @@ function RegionsPage() {
                                                     {/* coordinates */}
                                                     <TableCell>
                                                         <TextField
-                                                            value={tempData.geographic_coordinates}
+                                                            value={tempData.geographic_coordinate}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("coordinates", e.target.value)
+                                                                handleSearchInputChange("geographic_coordinate", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -423,14 +430,14 @@ function RegionsPage() {
                                                     {/* edit/delete */}
                                                     <TableCell>
                                                         <Tooltip title="Edit"
-                                                            onClick={() => startEdit(row.regionId, row)}>
+                                                            onClick={() => startEdit(row.region_id, row)}>
                                                             <IconButton>
                                                                 <EditIcon />
                                                             </IconButton>
                                                         </Tooltip>
                                                         <Tooltip
                                                             title="Delete"
-                                                            onClick={() => handleDeleteRow(row.regionId, row)}>
+                                                            onClick={() => handleDeleteRow(row.region_id, row)}>
                                                             <IconButton>
                                                                 <DeleteIcon />
                                                             </IconButton>
@@ -442,17 +449,17 @@ function RegionsPage() {
                                                         <TableCell>{row.region_fullname}</TableCell>
                                                         <TableCell> {row.region_code_name} </TableCell>
                                                         <TableCell>{row.country_fullname}</TableCell>
-                                                    <TableCell>{row.geographic_coordinates.join(', ')}</TableCell>
+                                                        <TableCell>{row.geographic_coordinate}</TableCell>
                                                     <TableCell>
                                                         <Tooltip title="Edit"
-                                                            onClick={() => startEdit(row.regionId, row)}>
+                                                                onClick={() => startEdit(row.region_id, row)}>
                                                             <IconButton>
                                                                 <EditIcon />
                                                             </IconButton>
                                                         </Tooltip>
                                                         <Tooltip
                                                             title="Delete"
-                                                            onClick={() => handleDeleteRow(row.regionId, row)}>
+                                                                onClick={() => handleDeleteRow(row.region_id, row)}>
                                                             <IconButton>
                                                                 <DeleteIcon />
                                                             </IconButton>

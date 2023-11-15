@@ -11,7 +11,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     common_name: [],
     species_description: "",
     resource_links: [],
-    image_links: [],
+    // image_links: [],
   };
 
   const [showOpen, setShowOpen] = useState(false);
@@ -48,13 +48,12 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     setShowOpen(true);
 
     const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
-
     const modifiedSpeciesData = {
       ...speciesData,
       scientific_name: typeof speciesData.scientific_name === 'string' ? splitByCommaWithSpaces(speciesData.scientific_name) : [],
       common_name: typeof speciesData.common_name === 'string' ? splitByCommaWithSpaces(speciesData.common_name) : [],
       resource_links: typeof speciesData.resource_links === 'string' ? splitByCommaWithSpaces(speciesData.resource_links) : [],
-      image_links: typeof speciesData.image_links === 'string' ? splitByCommaWithSpaces(speciesData.image_links) : [],
+      // image_links: typeof speciesData.image_links === 'string' ? splitByCommaWithSpaces(speciesData.image_links) : [],
     };
 
     handleAdd(modifiedSpeciesData);
@@ -76,7 +75,8 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
       for (let i = 0; i < files.length; i++) {
         imageLinks += (i === 0 ? '' : ',') + files[i].name;
       }
-      handleInputChange("image_links", imageLinks);
+      // TODO: fix
+      // handleInputChange("image_links", imageLinks);
     }
   };
 
@@ -106,7 +106,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
         <DialogContent>
           <TextField
             fullWidth
-            label="Scientific Name"
+            label="Scientific Name*"
             value={speciesData.scientific_name}
             onChange={(e) => handleInputChange("scientific_name", e.target.value)}
             sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}

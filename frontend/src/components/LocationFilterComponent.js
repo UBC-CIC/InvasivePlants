@@ -5,7 +5,6 @@ const LocationFilterComponent = ({ text, mapTo, handleLocationSearch, inputData,
   return (
     <Box style={{ flex: 1, marginRight: "10px" }}>
       <Autocomplete
-        if
         options={Array.from(new Set(inputData.map((data) => data[mapTo])))}
         getOptionLabel={(option) => option}
         onInputChange={(e, newInputValue) => handleLocationSearch(newInputValue.toLowerCase())}
