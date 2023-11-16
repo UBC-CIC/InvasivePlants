@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Tooltip } from '@mui/material';
+import React, { useState } from 'react';
+import { Button } from '@mui/material';
 import Container from '@mui/material/Container';
 
 // icons

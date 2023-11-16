@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Box, Alert, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 
-const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
+const EditRegionDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
     const handleClose = (event, reason) => {
@@ -78,11 +78,7 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
 
                 <DialogActions >
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>
-                    <Button
-                        onClick={() => {
-                            handleSave(handleConfirmRegion());
-                        }}
-                    >
+                    <Button onClick={() => { handleSave(handleConfirmRegion()); }}>
                         Save
                     </Button>
                 </DialogActions>
@@ -98,4 +94,4 @@ const EditRegionsDialog = ({ open, tempData, handleSearchInputChange, handleFini
     );
 };
 
-export default EditRegionsDialog;
+export default EditRegionDialog;

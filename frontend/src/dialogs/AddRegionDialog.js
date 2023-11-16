@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Snackbar, Box, Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import RegionsTestData from "../test_data/regionsTestData";
 import SnackbarOnSuccess from "../components/SnackbarComponent";
 import CustomAlert from "../components/AlertComponent";
@@ -43,7 +43,7 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
         }
     };
 
-
+    // make sure has all required fields 
     const handleConfirmAddRegion = () => {
         const foundRegion = data.find((item) => item.region_fullname.toLowerCase() === regionData.region_fullname.toLowerCase());
 
@@ -75,8 +75,6 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
         setSelectedCountry("");
         handleClose();
     };
-
-
 
     return (
         <div>

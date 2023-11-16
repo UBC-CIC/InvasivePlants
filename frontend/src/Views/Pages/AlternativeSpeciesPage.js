@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TablePagination, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
+import { TablePagination, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, TextField, Typography, ThemeProvider } from "@mui/material";
 import Theme from '../../admin_pages/Theme';
 
 import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";
@@ -22,10 +22,10 @@ function AlternativeSpeciesPage() {
   const [tempData, setTempData] = useState({});
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false);
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [searchResults, setSearchResults] = useState(displayData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
   const [deleteId, setDeleteId] = useState(null);
-  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
 
   const handleGetSpecies = () => {
     axios
@@ -45,22 +45,22 @@ function AlternativeSpeciesPage() {
   }, []); 
 
   const filterData = data.filter((item) =>
-  (searchTerm === "" || (
+  (searchInput === "" || (
     (Array.isArray(item.scientific_name)
       ? item.scientific_name.some((name) =>
-        name.toLowerCase().includes(searchTerm.toLowerCase())
+        name.toLowerCase().includes(searchInput.toLowerCase())
       )
-      : item.scientific_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      : item.scientific_name.toLowerCase().includes(searchInput.toLowerCase())) ||
     (Array.isArray(item.common_name)
       ? item.common_name.some((name) =>
-        name.toLowerCase().includes(searchTerm.toLowerCase())
+        name.toLowerCase().includes(searchInput.toLowerCase())
       )
-      : item.common_name.toLowerCase().includes(searchTerm.toLowerCase()))
+      : item.common_name.toLowerCase().includes(searchInput.toLowerCase()))
   ))
   );
 
   useEffect(() => {
-    if (searchTerm === "") {
+    if (searchInput === "") {
       // do nothing
     } else {
       const results = filterData.map((item) => ({
@@ -69,7 +69,7 @@ function AlternativeSpeciesPage() {
       }));
       setSearchResults(results);
     }
-  }, [searchTerm, filterData]);
+  }, [searchInput, filterData]);
 
   // edit species row
   const startEdit = (species_id, rowData) => {
@@ -115,7 +115,7 @@ function AlternativeSpeciesPage() {
   // delete row with Confirmation before deletion
   const handleDeleteRow = (species_id) => {
     setDeleteId(species_id);
-    setOpenConfirmation(true);
+    setOpenDeleteConfirmation(true);
   };
 
   const handleConfirmDelete = () => {
@@ -131,10 +131,10 @@ function AlternativeSpeciesPage() {
           console.error("Error deleting species", error);
         })
         .finally(() => {
-          setOpenConfirmation(false);
+          setOpenDeleteConfirmation(false);
         });
     } else {
-      setOpenConfirmation(false);
+      setOpenDeleteConfirmation(false);
     }
   };
 
@@ -144,8 +144,8 @@ function AlternativeSpeciesPage() {
   };
 
   const handleSearch = (searchInput) => {
-    console.log(typeof searchInput);
-    console.log("search input: ", searchInput);
+    // console.log(typeof searchInput);
+    // console.log("search input: ", searchInput);
 
     if (searchInput === "") {
       setDisplayData(data);
@@ -221,8 +221,8 @@ function AlternativeSpeciesPage() {
           text={"Search alternative species (scientific or common name)"}
           handleSearch={handleSearch}
           searchResults={searchResults}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
+          searchTerm={searchInput}
+          setSearchTerm={setSearchInput}
         />
       </div>
 
@@ -465,8 +465,8 @@ function AlternativeSpeciesPage() {
       />
 
       <DeleteDialog
-        open={openConfirmation}
-        handleClose={() => setOpenConfirmation(false)}
+        open={openDeleteConfirmation}
+        handleClose={() => setOpenDeleteConfirmation(false)}
         handleDelete={handleConfirmDelete}
       />
     </div >

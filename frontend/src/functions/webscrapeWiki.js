@@ -18,11 +18,12 @@ const webscrapeWikipedia = async (scientificName) => {
 
 		const response = await axios.get(MEDIAWIKI_API_URL, { params });
 		const pages = response.data.query.pages;
+		// console.log(pages);
 
 		// handle redirected pages
-		let redirectedTitle = scientificName;
+		let redirectedTitleName = scientificName;
 		if (response.data.query.redirects && response.data.query.redirects.length > 0) {
-			redirectedTitle = response.data.query.redirects[0].to;
+			redirectedTitleName = response.data.query.redirects[0].to;
 		}
 
 		if (!pages || Object.keys(pages).length === 0) {
@@ -38,7 +39,7 @@ const webscrapeWikipedia = async (scientificName) => {
 		const descriptionContent = descriptionSection ? await fetchSectionContent(page.pageid, descriptionSection.index) : null;
 
 		// get images
-		const imageInfo = (page.images && Array.isArray(page.images)) ? await fetchImageUrls(page.images, scientificName, redirectedTitle) : [];
+		const imageInfo = (page.images && Array.isArray(page.images)) ? await fetchImageUrls(page.images, scientificName, redirectedTitleName) : [];
 
 		const wikiInfo = {
 			speciesOverview: cleanUpString(page.extract),
@@ -47,7 +48,7 @@ const webscrapeWikipedia = async (scientificName) => {
 			wikiUrl: `https://en.wikipedia.org/wiki/${encodeURIComponent(scientificName)}`,
 		};
 
-		console.log("From Wikipedia: ", JSON.stringify(wikiInfo, null, 2));
+		console.log("From Wikipedia: ", scientificName, JSON.stringify(wikiInfo, null, 2));
 		return wikiInfo;
 	} catch (error) {
 		console.error("Error while fetching Wikipedia data:", error.message);
@@ -77,9 +78,9 @@ async function fetchSectionContent(pageId, sectionIndex) {
 	};
 
 	const sectionResponse = await axios.get(MEDIAWIKI_API_URL, { params: sectionParams });
-	const htmlContent = sectionResponse.data.parse.text["*"];
+	const content = sectionResponse.data.parse.text["*"];
 
-	const $ = cheerio.load(htmlContent);
+	const $ = cheerio.load(content);
 
 	// Extract text content from the paragraphs
 	const speciesDescription = [];
@@ -96,14 +97,13 @@ async function fetchSectionContent(pageId, sectionIndex) {
 
 // get url of 5 images
 async function fetchImageUrls(images, prevTitle, pageTitle) {
-	const imageInfo = [];
+	const imageUrls = [];
 	const matchNameRedirectedTitle = pageTitle.split(' ').map(word => encodeURIComponent(word.toLowerCase()));
-	const matchNamePrevTitle = prevTitle.split(' ').map(word => encodeURIComponent(word.toLowerCase()));
-	let imageCount = 0; 
-
+	const matchNameOrginalTitle = prevTitle.split(' ').map(word => encodeURIComponent(word.toLowerCase()));
+	let numImage = 0; 
 
 	for (const image of images) {
-		if (imageCount >= 5) {
+		if (numImage >= 5) {
 			break; 
 		}
 
@@ -122,14 +122,14 @@ async function fetchImageUrls(images, prevTitle, pageTitle) {
 		if (
 			page.imageinfo &&
 			page.imageinfo[0]?.url &&
-			(matchNameRedirectedTitle.some(word => decodeURIComponent(page.imageinfo[0].url).toLowerCase().includes(word)) ||
-				matchNamePrevTitle.some(word => decodeURIComponent(page.imageinfo[0].url).toLowerCase().includes(word)))
+			(matchNameRedirectedTitle.some(name => decodeURIComponent(page.imageinfo[0].url).toLowerCase().includes(name)) ||
+				matchNameOrginalTitle.some(name => decodeURIComponent(page.imageinfo[0].url).toLowerCase().includes(name)))
 		) {
-			imageInfo.push(page.imageinfo[0].url);
-			imageCount++;
+			imageUrls.push(page.imageinfo[0].url);
+			numImage++;
 		}
 	}
-	return imageInfo;
+	return imageUrls;
 }
 
 

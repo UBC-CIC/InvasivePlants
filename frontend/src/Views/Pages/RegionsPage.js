@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Autocomplete, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
-// import RegionsTestData from "../../test_data/regionsTestData";
 import AddRegionDialog from "../../dialogs/AddRegionDialog";
 import Theme from '../../admin_pages/Theme';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditRegionsDialog from "../../dialogs/EditRegionsDialog";
+import EditRegionDialog from "../../dialogs/EditRegionsDialog";
 import SearchIcon from '@mui/icons-material/Search';
 import LocationFilterComponent from '../../components/LocationFilterComponent';
 
@@ -19,16 +18,15 @@ function RegionsPage() {
 
     const [data, setData] = useState([]);
     const [displayData, setDisplayData] = useState([]);
-    const [editingId, setEditingId] = useState(null);
     const [tempData, setTempData] = useState({});
+    const [editingId, setEditingId] = useState(null);
     const [openEditRegionDialog, setOpenEditRegionDialog] = useState(false);
     const [openAddRegionDialog, setOpenAddRegionDialog] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchInput, setSearchInput] = useState("");
     const [searchResults, setSearchResults] = useState(displayData.map((item) => ({ label: item.region_fullname, value: item.region_fullname })));
     const [country, setCountry] = useState("");
-
     const [deleteId, setDeleteId] = useState(null);
-    const [openConfirmation, setOpenConfirmation] = useState(false);
+    const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
 
     const handleGetRegions = () => {
         axios
@@ -49,17 +47,15 @@ function RegionsPage() {
 
     // gets rows that matches search and country input 
     const filterData = data.filter((item) =>
-        (searchTerm === "" || (
-            item.region_fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.region_code_name.toLowerCase().includes(searchTerm.toLowerCase())
-        )) &&
+        (searchInput === "" ||
+            (item.region_fullname.toLowerCase().includes(searchInput.toLowerCase()) ||
+                item.region_code_name.toLowerCase().includes(searchInput.toLowerCase()))) &&
         (country === "" || item.country_fullname.toLowerCase() === country.toLowerCase())
     );
 
     useEffect(() => {
-        if (searchTerm === "" && country === "") {
+        if (searchInput === "" && country === "") {
             // do nothing
-            // setData(RegionsTestData);
         } else {
             const results = filterData.map((item) => ({
                 label: item.region_fullname,
@@ -67,7 +63,7 @@ function RegionsPage() {
             }));
             setSearchResults(results);
         }
-    }, [searchTerm, filterData, country]);
+    }, [searchInput, filterData, country]);
 
     // edit region row
     const startEdit = (region_id, rowData) => {
@@ -85,7 +81,7 @@ function RegionsPage() {
     // saves edited row
     const handleSave = (confirmed) => {
         if (confirmed) {
-            console.log("data: ", tempData);
+            // console.log("data: ", tempData);
             axios
                 .put(`${API_ENDPOINT}region/${tempData.region_id}`, tempData)
                 .then((response) => {
@@ -99,16 +95,15 @@ function RegionsPage() {
         };
     };
 
-
     // delete row with Confirmation before deletion
     const handleDeleteRow = (region_id) => {
         setDeleteId(region_id);
-        setOpenConfirmation(true);
+        setOpenDeleteConfirmation(true);
     };
 
     // Confirm delete
     const handleConfirmDelete = () => {
-        console.log("region id to delete: ", deleteId);
+        // console.log("region id to delete: ", deleteId);
         if (deleteId) {
             axios
                 .delete(`${API_ENDPOINT}region/${deleteId}`)
@@ -120,10 +115,10 @@ function RegionsPage() {
                     console.error("Error deleting region", error);
                 })
                 .finally(() => {
-                    setOpenConfirmation(false);
+                    setOpenDeleteConfirmation(false);
                 });
         } else {
-            setOpenConfirmation(false);
+            setOpenDeleteConfirmation(false);
         }
     };
 
@@ -142,16 +137,15 @@ function RegionsPage() {
                 setTempData((prev) => ({ ...prev, geographic_coordinate: `${prev.geographic_coordinate.split(',')[0]},${value}` }));
             }
         } else {
-            alert('Invalid input. Please enter numerical values or decimals.');
+            alert('Invalid input. Please enter a numerical value.');
         }
     };
 
-
-    // search region
+    // search region by full name or code name
     const handleSearch = (searchInput) => {
         if (searchInput === "") {
-            console.log(typeof searchInput);
-            console.log("search input: ", searchInput);
+            // console.log(typeof searchInput);
+            // console.log("search input: ", searchInput);
             setDisplayData(data);
         } else {
             const terms = searchInput.toLowerCase().split(" ");
@@ -166,7 +160,6 @@ function RegionsPage() {
 
                 return regionFullNameMatch || regionCodeMatch;
             });
-
             setDisplayData(results);
         }
     };
@@ -233,9 +226,9 @@ function RegionsPage() {
                                         Search region
                                     </div>
                                 }
-                                value={searchTerm}
+                                value={searchInput}
                                 onChange={(e) => {
-                                    setSearchTerm(e.target.value);
+                                    setSearchInput(e.target.value);
                                 }}
                                 style={{ marginTop: "2rem", marginBottom: "1rem" }}
                             />
@@ -255,7 +248,6 @@ function RegionsPage() {
 
             <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
                 <Table style={{ width: "100%", tableLayout: "fixed" }}>
-                    {/* table header */}
                     <TableHead>
                         <TableRow>
                             <TableCell style={{ width: "10%" }}>
@@ -286,7 +278,6 @@ function RegionsPage() {
                         </TableRow>
                     </TableHead>
 
-                    {/* table body: display regions */}
                     <TableBody>
                         {displayData &&
                             (country !== ""
@@ -295,7 +286,7 @@ function RegionsPage() {
                                 .sort((a, b) => a.region_fullname.localeCompare(b.region_fullname))
                                     .map((row) => (
                                         <TableRow key={row.region_code_name}>
-                                            {/* editing the row */}
+                                            {/* editing the row and no country search*/}
                                             {editingId === row.region_id ? (
                                                 <>
                                                     {/* region full name */}
@@ -356,6 +347,7 @@ function RegionsPage() {
                                                     </TableCell>
                                                 </>
                                             ) : (
+                                                    // not editing row and no country search
                                                 <>
                                                         <TableCell>{row.region_fullname}</TableCell>
                                                         <TableCell> {row.region_code_name} </TableCell>
@@ -384,7 +376,7 @@ function RegionsPage() {
                                 .sort((a, b) => a.region_fullname.localeCompare(b.region_fullname))
                                     .map((row) => (
                                         <TableRow key={row.region_id}>
-                                            {/* editing the row */}
+                                            {/* editing the row and country */}
                                             {editingId === row.region_id ? (
                                                 <>
                                                     {/* region full name */}
@@ -445,7 +437,9 @@ function RegionsPage() {
                                                     </TableCell>
                                                 </>
                                             ) : (
+                                                    //  not editing the row and no country
                                                 <>
+
                                                         <TableCell>{row.region_fullname}</TableCell>
                                                         <TableCell> {row.region_code_name} </TableCell>
                                                         <TableCell>{row.country_fullname}</TableCell>
@@ -473,15 +467,14 @@ function RegionsPage() {
                 </Table>
             </div>
 
-
-            {/* Add region dialog */}
             <AddRegionDialog
                 open={openAddRegionDialog}
                 handleClose={() => setOpenAddRegionDialog(false)}
                 handleAdd={handleAddRegion}
                 data={displayData}
             />
-            <EditRegionsDialog
+
+            <EditRegionDialog
                 open={openEditRegionDialog}
                 tempData={tempData}
                 handleSearchInputChange={handleSearchInputChange}
@@ -490,8 +483,8 @@ function RegionsPage() {
             />
 
             <DeleteDialog
-                open={openConfirmation}
-                handleClose={() => setOpenConfirmation(false)}
+                open={openDeleteConfirmation}
+                handleClose={() => setOpenDeleteConfirmation(false)}
                 handleDelete={handleConfirmDelete}
             />
 

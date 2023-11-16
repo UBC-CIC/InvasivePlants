@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Box, AlertTitle, TableCell, Alert, Snackbar, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 
@@ -122,15 +122,11 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                                 </div>
                             ))}
                     </div>
-
-
                 </DialogContent>
-
 
                 <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
                     <CustomAlert text={"scientific name"} onClose={() => setShowAlert(false)} />
                 </Dialog>
-
 
                 <DialogActions>
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
-    Select, AlertTitle, MenuItem, FormControl, InputLabel, Tooltip, Box, alpha, Autocomplete, Alert
-    , Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography
+    Select, MenuItem, FormControl, InputLabel, Tooltip, Box, alpha, Autocomplete,
+    Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography
 } from '@mui/material';
 import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData";
 import SearchIcon from '@mui/icons-material/Search';

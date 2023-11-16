@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TablePagination, Dialog, Snackbar, Alert, AlertTitle, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
+import { TablePagination, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 import Theme from '../../admin_pages/Theme';
 
 import RegionMap from "../../functions/RegionMap";
@@ -7,7 +7,6 @@ import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialog";
 import LocationFilterComponent from '../../components/LocationFilterComponent';
 import SearchComponent from '../../components/SearchComponent';
 import AddInvasiveSpeciesDialog from "../../dialogs/AddInvasiveSpeciesDialog";
-import SpeciesTestData from "../../test_data/invasiveSpeciesTestData";
 import AlternativeSpeciesTestData from "../../test_data/alternativeSpeciesTestData";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -27,11 +26,11 @@ function InvasiveSpeciesPage() {
   const [tempData, setTempData] = useState({});
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false);
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [searchResults, setSearchResults] = useState(displayData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
   const [region_id, setRegionId] = useState("");
   const [deleteId, setDeleteId] = useState(null);
-  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
 
 
   const handleGetSpecies = () => {
@@ -53,18 +52,19 @@ function InvasiveSpeciesPage() {
 
   // gets rows that matches search and location input 
   const filterData = data.filter((item) =>
-    (searchTerm === "" || (
+    (searchInput === "" || (
       (Array.isArray(item.scientific_name)
         ? item.scientific_name.some((name) =>
-          name.toLowerCase().includes(searchTerm.toLowerCase())
+          name.toLowerCase().includes(searchInput.toLowerCase())
         )
-        : item.scientific_name.toLowerCase().includes(searchTerm.toLowerCase()))
+        : item.scientific_name.toLowerCase().includes(searchInput.toLowerCase()))
     )) &&
+    // TODO!!! -- RegionMap???
     (region_id === "" || item.region_id.some((loc) => RegionMap[loc.toLowerCase()] === RegionMap[region_id]))
   );
 
   useEffect(() => {
-    if (searchTerm === "" && region_id === "") {
+    if (searchInput === "" && region_id === "") {
       // do nothing
       // setData(SpeciesTestData);
     } else {
@@ -74,7 +74,7 @@ function InvasiveSpeciesPage() {
       }));
       setSearchResults(results);
     }
-  }, [searchTerm, filterData, region_id]);
+  }, [searchInput, filterData, region_id]);
 
   // edit species row
   const startEdit = (id, rowData) => {
@@ -119,7 +119,7 @@ function InvasiveSpeciesPage() {
   // delete row with Confirmation before deletion
   const handleDeleteRow = (species_id) => {
     setDeleteId(species_id);
-    setOpenConfirmation(true);
+    setOpenDeleteConfirmation(true);
   };
 
   // Confirm delete
@@ -137,10 +137,10 @@ function InvasiveSpeciesPage() {
           console.error("Error deleting species", error);
         })
         .finally(() => {
-          setOpenConfirmation(false);
+          setOpenDeleteConfirmation(false);
         });
     } else {
-      setOpenConfirmation(false);
+      setOpenDeleteConfirmation(false);
     }
   };
 
@@ -248,8 +248,8 @@ function InvasiveSpeciesPage() {
           text={"Search invasive species (scientific name)"}
           handleSearch={handleSearch}
           searchResults={searchResults}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
+          searchTerm={searchInput}
+          setSearchTerm={setSearchInput}
         />
       </div>
 
@@ -642,8 +642,8 @@ function InvasiveSpeciesPage() {
       />
 
       <DeleteDialog
-        open={openConfirmation}
-        handleClose={() => setOpenConfirmation(false)}
+        open={openDeleteConfirmation}
+        handleClose={() => setOpenDeleteConfirmation(false)}
         handleDelete={handleConfirmDelete}
       />
     </div >
