@@ -115,7 +115,7 @@ exports.handler = async (event) => {
 							UPDATE save_lists
 							SET list_name = ${bd.list_name}, 
 							  saved_species = ${bd.saved_species},
-								user_uuid = ${user_uuid}, 
+								user_uuid = ${user_uuid}
 							WHERE list_id = ${event.pathParameters.list_id};
 						`;
 						

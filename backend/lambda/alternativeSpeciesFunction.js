@@ -55,7 +55,8 @@ exports.handler = async (event) => {
 		switch(pathData) {
 			case "GET /alternativeSpecies":
 			  if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
-			    data = await sql`SELECT * FROM alternative_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
+			    // data = await sql`SELECT * FROM alternative_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
+			    data = await sql`SELECT * FROM images`;
 			  } else {
 				  data = await sql`SELECT * FROM alternative_species`;
 			  }
@@ -125,7 +126,7 @@ exports.handler = async (event) => {
 							  common_name = ${common_name},
 								resource_links = ${resource_links}, 
 								image_links = ${image_links},
-								species_description = ${species_description},
+								species_description = ${species_description}
 							WHERE species_id = ${event.pathParameters.species_id};
 						`;
 						

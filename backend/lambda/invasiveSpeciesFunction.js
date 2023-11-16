@@ -125,7 +125,7 @@ exports.handler = async (event) => {
 							SET scientific_name = ${bd.scientific_name}, 
 								resource_links = ${resource_links}, 
 								species_description = ${species_description},
-								region_id = ${region_id}
+								region_id = ${region_id},
 								alternative_species = ${alternative_species}
 							WHERE species_id = ${event.pathParameters.species_id};
 						`;
