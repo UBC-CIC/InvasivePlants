@@ -28,13 +28,31 @@ function AlternativeSpeciesPage() {
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
 
   const handleGetSpecies = () => {
+    const capitalizeWordsSplitUnderscore = (str) => {
+      return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    };
+
+    const capitalizeWordsSplitSpace = (str) => {
+      return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    };
+
     axios
       .get(`${API_ENDPOINT}alternativeSpecies`)
       .then((response) => {
-        // console.log("got alt data: ", response.data);
-        setDisplayData(response.data);
-        setData(response.data);
-        setSearchResults(response.data.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
+        // Capitalize each scientific_name 
+        const formattedData = response.data.map(item => {
+          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeWordsSplitUnderscore(name));
+          const capitalizedCommonNames = item.common_name.map(name => capitalizeWordsSplitSpace(name));
+          return {
+            ...item,
+            scientific_name: capitalizedScientificNames,
+            common_name: capitalizedCommonNames
+          };
+        });
+
+        setDisplayData(formattedData);
+        setData(formattedData);
+        setSearchResults(formattedData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
       })
       .catch((error) => {
         console.error("Error retrieving alternative species", error);
@@ -269,13 +287,13 @@ function AlternativeSpeciesPage() {
                   Description
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "12%" }}>
+              <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Resource Links
                 </Typography>
               </TableCell>
 
-              <TableCell style={{ width: "12%" }}>
+              <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Image Links
                 </Typography>
@@ -303,7 +321,7 @@ function AlternativeSpeciesPage() {
                     {editingId === row.species_id ? (
                       <>
                         {/* scientific name */}
-                        <TableCell>
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           <TextField
                             value={
                               Array.isArray(tempData.scientific_name)
@@ -317,7 +335,7 @@ function AlternativeSpeciesPage() {
                         </TableCell>                    
 
                         {/* common name */}
-                        <TableCell>
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           <TextField
                             value={
                               Array.isArray(tempData.common_name)
@@ -331,7 +349,7 @@ function AlternativeSpeciesPage() {
                         </TableCell>
 
                         {/* decsription */}
-                        <TableCell>
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           <TextField
                             value={boldText(tempData.species_description)}
                             onChange={(e) =>
@@ -341,7 +359,7 @@ function AlternativeSpeciesPage() {
                         </TableCell>
 
                         {/* resource links */}
-                        <TableCell>
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           <TextField
                             value={
                               Array.isArray(tempData.resource_links)
@@ -358,7 +376,7 @@ function AlternativeSpeciesPage() {
                         </TableCell>
 
                         {/* image links */}
-                        <TableCell>
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           <TextField
                             value={
                               Array.isArray(tempData.image_links)
@@ -393,21 +411,23 @@ function AlternativeSpeciesPage() {
                     ) : (
                       <>
                           {/* not editing the row */}
-                          <TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             {Array.isArray(row.scientific_name)
                               ? row.scientific_name.join(", ")
                               : row.scientific_name}
                           </TableCell>
-                        <TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             {Array.isArray(row.common_name)
                               ? row.common_name.join(", ")
                               : row.common_name}
-                        </TableCell>
-                          <TableCell>{boldText(row.species_description)}</TableCell>
-                        <TableCell>
+                          </TableCell >
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                            {boldText(row.species_description)}
+                          </TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           {Array.isArray(row.resource_links) ? row.resource_links.join(", ") : row.resource_links}
                         </TableCell>
-                        <TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           {Array.isArray(row.image_links) ? row.image_links.join(", ") : row.image_links}
                         </TableCell>
                         <TableCell>

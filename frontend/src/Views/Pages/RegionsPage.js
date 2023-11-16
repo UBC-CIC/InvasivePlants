@@ -10,6 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditRegionDialog from "../../dialogs/EditRegionsDialog";
 import SearchIcon from '@mui/icons-material/Search';
 import LocationFilterComponent from '../../components/LocationFilterComponent';
+import Pagination from '../../components/TablePaginationComponent';
 
 import axios from "axios";
 
@@ -80,10 +81,22 @@ function RegionsPage() {
 
     // saves edited row
     const handleSave = (confirmed) => {
+        // capitalize anything separated by a space
+        const capitalizeString = (str) => {
+            return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        };
+
+        const formattedData = {
+            ...tempData,
+            region_fullname: capitalizeString(tempData.region_fullname),
+            region_code_name: tempData.region_code_name.toUpperCase(),
+            country_fullname: capitalizeString(tempData.country_fullname)
+        }
+
         if (confirmed) {
             // console.log("data: ", tempData);
             axios
-                .put(`${API_ENDPOINT}region/${tempData.region_id}`, tempData)
+                .put(`${API_ENDPOINT}region/${formattedData.region_id}`, formattedData)
                 .then((response) => {
                     console.log("Region updated successfully", response.data);
                     handleGetRegions();
@@ -123,29 +136,27 @@ function RegionsPage() {
     };
 
 
+
     // helper function when search input changes
     const handleSearchInputChange = (field, value) => {
-        // only take in numbers and decimal
-        const isValidInput = /^[+-]?\d+(\.\d*)?$/.test(value);
 
-        if (field !== 'geographic_latitude' && field !== 'geographic_longitude') {
-            setTempData((prev) => ({ ...prev, [field]: value }));
-        } else if (isValidInput || value === '') {
-            if (field === 'geographic_latitude') {
+        // only take in numbers and decimal or empty 
+        const isValidInput = /^[+-]?\d*(\.\d*)?$/.test(value);
+
+        if ((field === 'geographic_latitude' && !isValidInput) || (field === 'geographic_longitude' && !isValidInput)) {
+            alert('Invalid input. Please enter a numerical value.');
+        } else if (field === 'geographic_latitude') {
                 setTempData((prev) => ({ ...prev, geographic_coordinate: `${value},${prev.geographic_coordinate.split(',')[1]}` }));
             } else if (field === 'geographic_longitude') {
-                setTempData((prev) => ({ ...prev, geographic_coordinate: `${prev.geographic_coordinate.split(',')[0]},${value}` }));
-            }
+            setTempData((prev) => ({ ...prev, geographic_coordinate: `${prev.geographic_coordinate.split(',')[0]},${value}` }));
         } else {
-            alert('Invalid input. Please enter a numerical value.');
+            setTempData((prev) => ({ ...prev, [field]: value }));
         }
     };
 
     // search region by full name or code name
     const handleSearch = (searchInput) => {
         if (searchInput === "") {
-            // console.log(typeof searchInput);
-            // console.log("search input: ", searchInput);
             setDisplayData(data);
         } else {
             const terms = searchInput.toLowerCase().split(" ");
@@ -246,6 +257,7 @@ function RegionsPage() {
                 </ThemeProvider>
             </div >
 
+
             <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
                 <Table style={{ width: "100%", tableLayout: "fixed" }}>
                     <TableHead>
@@ -265,7 +277,7 @@ function RegionsPage() {
                                     Country
                                 </Typography>
                             </TableCell>
-                            <TableCell style={{ width: "10%" }}>
+                            <TableCell style={{ width: "15%" }}>
                                 <Typography variant="subtitle1" fontWeight="bold">
                                     Geographic Coordinates (latitude, longitude)
                                 </Typography>

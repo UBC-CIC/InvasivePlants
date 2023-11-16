@@ -15,7 +15,9 @@ const EditRegionDialog = ({ open, tempData, handleSearchInputChange, handleFinis
 
     const [showAlert, setShowAlert] = useState(false);
     const handleConfirmRegion = () => {
-        if (!tempData.region_fullname || tempData.region_fullname.trim() === "") {
+        if (tempData.region_fullname.trim() === "" ||
+            tempData.region_code_name.trim() === "" ||
+            tempData.country_fullname.trim() === "") {
             setShowAlert(true);
             return false;
         }
@@ -36,21 +38,21 @@ const EditRegionDialog = ({ open, tempData, handleSearchInputChange, handleFinis
                 <DialogContent>
 
                     <TextField
-                        label="Region"
+                        label="Region*"
                         value={tempData.region_fullname}
                         onChange={(e) => handleSearchInputChange("region_fullname", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
 
                     <TextField
-                        label="Region Code"
+                        label="Region Code*"
                         value={tempData.region_code_name}
                         onChange={(e) => handleSearchInputChange("region_code_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
 
                     <TextField
-                        label="Country"
+                        label="Country*"
                         value={tempData.country_fullname}
                         onChange={(e) => handleSearchInputChange("country_fullname", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
@@ -85,7 +87,7 @@ const EditRegionDialog = ({ open, tempData, handleSearchInputChange, handleFinis
             </Dialog>
 
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
-                <CustomAlert text={"region"} onClose={() => setShowAlert(false)} />
+                <CustomAlert text={"region, region code, and country"} onClose={() => setShowAlert(false)} />
             </Dialog>
 
             <SnackbarOnSuccess open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />

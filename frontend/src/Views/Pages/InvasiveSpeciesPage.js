@@ -7,7 +7,7 @@ import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialog";
 import LocationFilterComponent from '../../components/LocationFilterComponent';
 import SearchComponent from '../../components/SearchComponent';
 import AddInvasiveSpeciesDialog from "../../dialogs/AddInvasiveSpeciesDialog";
-import AlternativeSpeciesTestData from "../../test_data/alternativeSpeciesTestData";
+// import AlternativeSpeciesTestData from "../../test_data/alternativeSpeciesTestData";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
@@ -34,13 +34,28 @@ function InvasiveSpeciesPage() {
 
 
   const handleGetSpecies = () => {
+    const capitalizeWords = (str) => {
+      return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    };
+
     axios
       .get(`${API_ENDPOINT}invasiveSpecies`)
       .then((response) => {
-        // console.log("Invasive species retrieved successfully", response.data);
-        setDisplayData(response.data);
-        setData(response.data);
-        setSearchResults(response.data.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
+        console.log("Invasive species retrieved successfully", response.data);
+
+        // Capitalize each scientific_name 
+        const formattedData = response.data.map(item => {
+          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeWords(name));
+          return {
+            ...item,
+            scientific_name: capitalizedScientificNames
+          };
+        });
+        console.log(formattedData)
+
+        setDisplayData(formattedData);
+        setData(formattedData);
+        setSearchResults(formattedData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
       })
       .catch((error) => {
         console.error("Error retrieving invasive species", error);
@@ -301,7 +316,7 @@ function InvasiveSpeciesPage() {
                   Alternative Species
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "12%" }}>
+              <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Resources
                 </Typography>
@@ -334,7 +349,7 @@ function InvasiveSpeciesPage() {
                       {editingId === row.species_id ? (
                         <>
                           {/* scientific name */}
-                          <TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
                               value={
                                 Array.isArray(tempData.scientific_name)
@@ -349,7 +364,7 @@ function InvasiveSpeciesPage() {
 
 
                           {/* decsription */}
-                          <TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
                               value={boldText(tempData.species_description)}
                               onChange={(e) =>
@@ -359,18 +374,18 @@ function InvasiveSpeciesPage() {
                           </TableCell>
 
                           {/* alternative plants */}
-                          <TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
-                              value={
-                                Array.isArray(tempData.alternative_species)
-                                  ? tempData.alternative_species.map((alternative) => {
-                                    const foundOption = AlternativeSpeciesTestData.find(
-                                      (option) => option.scientific_name === alternative
-                                    );
-                                    return foundOption ? foundOption.scientific_name : "";
-                                  })
-                                  : []
-                              }
+                              // value={
+                              // Array.isArray(tempData.alternative_species)
+                              //   ? tempData.alternative_species.map((alternative) => {
+                              //     const foundOption = AlternativeSpeciesTestData.find(
+                              //       (option) => option.scientific_name === alternative
+                              //     );
+                              //     return foundOption ? foundOption.scientific_name : "";
+                              //   })
+                              //   : []
+                              // }
                               onChange={(e) =>
                                 handleSearchInputChange(
                                   "alternative_species",
@@ -381,7 +396,7 @@ function InvasiveSpeciesPage() {
                           </TableCell>
 
                           {/* links */}
-                          <TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
                               value={
                                 Array.isArray(tempData.resource_links)
@@ -398,7 +413,7 @@ function InvasiveSpeciesPage() {
                           </TableCell>
 
                           {/* region */}
-                          <TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
                               value={tempData.region_id.join(", ")}
                               onChange={(e) =>
@@ -431,27 +446,21 @@ function InvasiveSpeciesPage() {
                         </>
                       ) : (
                         <>
-                            {/* <TableCell>{row.scientific_name}</TableCell> */}
-                            <TableCell>
+                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                               {Array.isArray(row.scientific_name)
                                 ? row.scientific_name.join(", ")
                                 : row.scientific_name}
                             </TableCell>
-                            {/* <TableCell>
-                            {Array.isArray(row.commonName)
-                              ? row.commonName.join(", ")
-                              : row.commonName}
-                          </TableCell> */}
-                            <TableCell>{boldText(row.species_description)}</TableCell>
-                          <TableCell>
+                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }} >{boldText(row.species_description)}</TableCell>
+                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                               {Array.isArray(row.alternative_species)
                                 ? row.alternative_species.map((item) => item.scientific_name).join(", ")
                                 : row.alternative_species}
                           </TableCell>
-                          <TableCell>
+                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                               {Array.isArray(row.resource_links) ? row.resource_links.join(", ") : row.resource_links}
                           </TableCell>
-                          <TableCell>
+                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                               {Array.isArray(row.region_id)
                                 ? row.region_id.join(", ")
                                 : row.region_id}
@@ -483,13 +492,7 @@ function InvasiveSpeciesPage() {
                       {editingId === row.species_id ? (
                         <>
                           {/* scientific name */}
-                          <TableCell>
-                            {/* <TextField
-                              value={tempData.scientific_name}
-                              onChange={(e) =>
-                                handleSearchInputChange("scientific_name", e.target.value)
-                              }
-                            /> */}
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
                               value={
                                 Array.isArray(tempData.scientific_name)
@@ -503,7 +506,7 @@ function InvasiveSpeciesPage() {
                           </TableCell>
 
                           {/* decsription */}
-                          <TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
                               value={boldText(tempData.species_description)}
                               onChange={(e) =>
@@ -513,18 +516,18 @@ function InvasiveSpeciesPage() {
                           </TableCell>
 
                           {/* alternative plants */}
-                          <TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
-                              value={
-                                Array.isArray(tempData.alternative_species)
-                                  ? tempData.alternative_species.map((alternative) => {
-                                    const foundOption = AlternativeSpeciesTestData.find(
-                                      (option) => option.scientific_name === alternative
-                                    );
-                                    return foundOption ? foundOption.scientific_name : "";
-                                  })
-                                  : []
-                              }
+                              // value={
+                              //   Array.isArray(tempData.alternative_species)
+                              //     ? tempData.alternative_species.map((alternative) => {
+                              //       const foundOption = AlternativeSpeciesTestData.find(
+                              //         (option) => option.scientific_name === alternative
+                              //       );
+                              //       return foundOption ? foundOption.scientific_name : "";
+                              //     })
+                              //     : []
+                              // }
                               onChange={(e) =>
                                 handleSearchInputChange(
                                   "alternative_species",
@@ -535,7 +538,7 @@ function InvasiveSpeciesPage() {
                           </TableCell>
 
                           {/* links */}
-                          <TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
                               value={
                                 Array.isArray(tempData.resource_links)
@@ -552,7 +555,7 @@ function InvasiveSpeciesPage() {
                           </TableCell>
 
                           {/* region */}
-                          <TableCell>
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
                               value={tempData.region_id.join(", ")}
                               onChange={(e) =>
@@ -583,21 +586,21 @@ function InvasiveSpeciesPage() {
                         </>
                       ) : (
                           <>
-                            <TableCell>
+                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                               {Array.isArray(row.scientific_name)
                                 ? row.scientific_name.join(", ")
                                 : row.scientific_name}
                             </TableCell>
                             <TableCell>{boldText(row.species_description)}</TableCell>
-                          <TableCell>
+                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                               {Array.isArray(row.alternative_species)
                                 ? row.alternative_species.map((item) => item.scientific_name).join(", ")
                                 : row.alternative_species}
                           </TableCell>
-                          <TableCell>
+                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                               {Array.isArray(row.resource_links) ? row.resource_links.join(", ") : row.resource_links}
                           </TableCell>
-                          <TableCell>
+                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                               {Array.isArray(row.region_id)
                                 ? row.region_id.join(", ")
                                 : row.region_id}
