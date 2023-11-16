@@ -1,12 +1,15 @@
 import { Autocomplete, Box, TextField } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
-const LocationFilterComponent = ({ text, mapTo, handleLocationSearch, inputData, location, setLocation }) => {
+const LocationFilterComponent = ({ text, handleLocationSearch, inputData, location, setLocation }) => {
+  // get the region code names to display
+  const options = Object.values(inputData);
+
   return (
     <Box style={{ flex: 1, marginRight: "10px" }}>
       <Autocomplete
-        options={Array.from(new Set(inputData.map((data) => data[mapTo])))}
-        getOptionLabel={(option) => option}
+        options={options}
+        getOptionLabel={(option) => option} 
         onInputChange={(e, newInputValue) => handleLocationSearch(newInputValue.toLowerCase())}
         renderInput={(params) => (
           <TextField

@@ -6,15 +6,25 @@ import {
 import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData";
 import SearchIcon from '@mui/icons-material/Search';
 import AddAlternativeSpeciesDialog from './AddAlternativeSpeciesDialog';
-import RegionsTestData from "../test_data/regionsTestData";
+// import RegionsTestData from "../test_data/regionsTestData";
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
+import handleGetRegions from '../functions/RegionMap';
 
 const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
     const [alternativeDialog, setOpenAddAlternativeDialog] = useState(false);
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
     const [alternativeSpeciesTestData, setAlternativeSpeciesTestData] = useState(AlternativeSpeciesTestData);
+    const [regionMap, setRegionsMap] = useState({});
+
+    handleGetRegions()
+        .then(regionMap => {
+            setRegionsMap(regionMap);
+        })
+        .catch(error => {
+            console.error('Error fetching region map:', error);
+        });
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -54,6 +64,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
         return true
     };
 
+
     return (
         <div>
             <Dialog open={open} onClose={handleFinishEditingRow} maxWidth="sm" fullWidth>
@@ -80,16 +91,6 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                         } onChange={(e) => handleSearchInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
-                    {/* <TextField
-                        label="Common Name(s) (separate by commas)"
-                        value={
-                            Array.isArray(tempData.commonName)
-                                ? tempData.commonName.join(", ")
-                                : tempData.commonName
-                        }
-                        onChange={(e) => handleSearchInputChange("commonName", e.target.value)}
-                        sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
-                    /> */}
 
                     <TextField
                         label="Description"
@@ -166,14 +167,15 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                         <Select
                             labelId="region-label"
                             multiple
+                            // value={[regionMap[tempData.region_id]]}
                             value={tempData.region_id}
                             onChange={(e) => handleSearchInputChange("region_code_name", e.target.value)}
                             label="Region (multiselect)"
                             renderValue={(selected) => selected.join(", ")}
                         >
-                            {RegionsTestData.map((item) => (
-                                <MenuItem key={item.region_code_name} value={item.region_code_name}>
-                                    {item.region_code_name}
+                            {Object.entries(regionMap).map(([region_id, region_code_name]) => (
+                                <MenuItem key={region_id} value={region_id}>
+                                    {region_code_name}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -184,9 +186,8 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>
                     <Button
                         onClick={() => {
-                            // handleConfirmAddAlternativeSpecies();
-                            handleSave(handleConfirmAddAlternativeSpecies());
-                            // setShowSaveConfirmation(true);
+                            handleSave(true);
+                            // handleSave(handleConfirmAddAlternativeSpecies());
                         }}
                     >Save</Button>
                 </DialogActions>

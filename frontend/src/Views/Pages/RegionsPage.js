@@ -10,7 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditRegionDialog from "../../dialogs/EditRegionsDialog";
 import SearchIcon from '@mui/icons-material/Search';
 import LocationFilterComponent from '../../components/LocationFilterComponent';
-import Pagination from '../../components/TablePaginationComponent';
+// import Pagination from '../../components/TablePaginationComponent';
 
 import axios from "axios";
 
