@@ -252,6 +252,37 @@ export class APIStack extends Stack {
         // Change Logical ID to match the one decleared in YAML file of Open API
         const cfnLambda_saveList  = IL_saveList.node.defaultChild as lambda.CfnFunction;
         cfnLambda_saveList.overrideLogicalId("IntegLambSaveList");
+
+        /**
+         * 
+         * Create Integration Lambda for Images API Gateway endpoint
+         */
+        const IL_images = new lambda.Function(this, 'IntegLambImages', {
+          runtime: lambda.Runtime.NODEJS_16_X,    // Execution environment
+          code: lambda.Code.fromAsset('lambda'),  // Code loaded from "lambda" directory
+          handler: 'imagesFunction.handler',      // Code handler
+          timeout: Duration.seconds(300),
+          vpc: vpcStack.vpc,
+          environment: {
+            SM_DB_CREDENTIALS: db.secretPath,
+            RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint
+          },
+          functionName: "IntegLambImages",
+          memorySize: 512,
+          layers: [postgres],
+          role: lambdaRole
+        });
+
+        // Add the permission to the Lambda function's policy to allow API Gateway access
+        IL_images.addPermission('AllowApiGatewayInvoke', {
+            principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
+            action: 'lambda:InvokeFunction',
+            sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:${api.restApiId}/*/*/plantsImages*`
+        });
+        
+        // Change Logical ID to match the one decleared in YAML file of Open API
+        const cfnLambda_images = IL_images.node.defaultChild as lambda.CfnFunction;
+        cfnLambda_images.overrideLogicalId("IntegLambImages");
         
     }
 }
