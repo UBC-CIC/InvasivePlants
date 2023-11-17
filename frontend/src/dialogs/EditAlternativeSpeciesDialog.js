@@ -15,23 +15,23 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         setShowSaveConfirmation(false);
     };
 
-    const handleImageUpload = (e) => {
-        const files = e.target.files;
-        if (files) {
-            let imageLinks = tempData.image_links ? [...tempData.image_links] : [];
-            for (let i = 0; i < files.length; i++) {
-                imageLinks.push(files[i].name);
-            }
-            handleSearchInputChange("image_links", imageLinks);
-        }
-    };
+    // const handleImageUpload = (e) => {
+    //     const files = e.target.files;
+    //     if (files) {
+    //         let imageLinks = tempData.image_links ? [...tempData.image_links] : [];
+    //         for (let i = 0; i < files.length; i++) {
+    //             imageLinks.push(files[i].name);
+    //         }
+    //         handleSearchInputChange("image_links", imageLinks);
+    //     }
+    // };
 
-    const handleImageDelete = (index) => {
-        const updatedImageLinks = tempData.image_links.filter(
-            (image, i) => i !== index
-        );
-        handleSearchInputChange("image_links", updatedImageLinks);
-    };
+    // const handleImageDelete = (index) => {
+    //     const updatedImageLinks = tempData.image_links.filter(
+    //         (image, i) => i !== index
+    //     );
+    //     handleSearchInputChange("image_links", updatedImageLinks);
+    // };
 
     const [showAlert, setShowAlert] = useState(false);
     const handleConfirmAddAlternativeSpecies = () => {
@@ -99,8 +99,8 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
-
-                    <div sx={{ marginBottom: "2rem" }}>
+                    {/* TODO!! */}
+                    {/* <div sx={{ marginBottom: "2rem" }}>
                         <Typography variant="body1" sx={{ marginBottom: "3px", justifyContent: "left" }}>
                             Upload Images:
                         </Typography>
@@ -110,18 +110,17 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                             onChange={handleImageUpload}
                             sx={{ marginBottom: "2rem", textAlign: "left" }}
                         />
-                    </div>
-                    <div sx={{ marginTop: "2rem" }}>
+                    </div> */}
+                    {/* <div sx={{ marginTop: "2rem" }}>
                         {Array.isArray(tempData.image_links) &&
                             tempData.image_links.map((imageName, index) => (
                                 <div key={index}>
                                     <p>{imageName}</p>
-                                    {/* TODO: figure out actual path? */}
                                     <img src={imageName} alt={`image-${index}`} />
                                     <button onClick={() => handleImageDelete(index)}>Delete</button>
                                 </div>
                             ))}
-                    </div>
+                    </div> */}
                 </DialogContent>
 
                 <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >

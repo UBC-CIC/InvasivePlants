@@ -296,11 +296,11 @@ function AlternativeSpeciesPage() {
                 </Typography>
               </TableCell>
 
-              <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
+              {/* <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Image Links
                 </Typography>
-              </TableCell>
+              </TableCell> */}
 
               <TableCell style={{ width: "9%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
@@ -411,7 +411,7 @@ function AlternativeSpeciesPage() {
                         </TableCell>
 
                         {/* image links */}
-                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                        {/* <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           <TextField
                             value={
                               Array.isArray(tempData.image_links)
@@ -422,7 +422,7 @@ function AlternativeSpeciesPage() {
                               handleSearchInputChange("image_links", e.target.value.split(", "))
                             }
                           />
-                        </TableCell>
+                        </TableCell> */}
 
                         {/* edit/delete */}
                         <TableCell>
@@ -482,9 +482,9 @@ function AlternativeSpeciesPage() {
                             )}
                           </TableCell>
 
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                          {/* <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           {Array.isArray(row.image_links) ? row.image_links.join(", ") : row.image_links}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <Tooltip title="Edit"
                               onClick={() => startEdit(row.species_id, row)}>
