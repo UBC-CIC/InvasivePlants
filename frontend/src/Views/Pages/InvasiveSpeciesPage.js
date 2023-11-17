@@ -55,7 +55,7 @@ function InvasiveSpeciesPage() {
         // const speciesData = response.data;
 
         // Limit the number of species to 10 test
-        const speciesData = response.data.slice(80, 97);
+        const speciesData = response.data.slice(80, 100);
 
         const promises = speciesData.flatMap(item =>
           item.region_id.map(regionId =>
@@ -87,16 +87,40 @@ function InvasiveSpeciesPage() {
   }, []); 
 
   // gets rows that matches search and location input 
-  const filterData = data.filter((item) =>
-    (searchInput === "" || (
+  // const filterData = data.filter((item) =>
+  //   (searchInput === "" || (
+  //     (Array.isArray(item.scientific_name)
+  //       ? item.scientific_name.some((name) =>
+  //         name.toLowerCase().includes(searchInput.toLowerCase())
+  //       )
+  //       : item.scientific_name.toLowerCase().includes(searchInput.toLowerCase()))
+  //   )) &&
+  //   (regionMap[region_id] === "" || item.region_id.some((id) => regionMap[id] === region_id))
+  // );
+
+  const filterData = data.filter((item) => {
+    const matchesSearchInput = searchInput === "" ||
       (Array.isArray(item.scientific_name)
         ? item.scientific_name.some((name) =>
           name.toLowerCase().includes(searchInput.toLowerCase())
         )
-        : item.scientific_name.toLowerCase().includes(searchInput.toLowerCase()))
-    )) &&
-    (region_id === "" || item.region_id.some((id) => regionMap[id] === region_id))
-  );
+        : item.scientific_name.toLowerCase().includes(searchInput.toLowerCase())
+      );
+
+    const matchesRegionID = regionMap[region_id] === "" ||
+      item.region_id.some((id) => regionMap[id] === region_id);
+
+    if (searchInput && region_id) {
+      return matchesSearchInput && matchesRegionID;
+    } else if (searchInput) {
+      return matchesSearchInput;
+    } else if (region_id) {
+      return matchesRegionID;
+    } else {
+      return true; // No filters applied, show all data
+    }
+  });
+
 
   useEffect(() => {
     if (searchInput === "" && region_id === "") {
@@ -195,7 +219,8 @@ function InvasiveSpeciesPage() {
     if (field === "region_code_name") {
       const selectedRegionCodes = value.map((region_id) => regionMap[region_id]);
       setTempData((prev) => ({ ...prev, region_id: value, region_code_name: selectedRegionCodes }));
-    } else {
+    }
+    else {
       setTempData((prev) => ({ ...prev, [field]: value }));
     }
   };
@@ -231,7 +256,13 @@ function InvasiveSpeciesPage() {
     if (locationInput === "") {
       setDisplayData(data);
     } else {
-      const results = data.filter((item) => regionMap[item.region_id].toLowerCase().trim() === locationInput.toLowerCase().trim());
+      const results = data.filter((item) =>
+        item.region_id.some(
+          (id) =>
+            regionMap[id] &&
+            regionMap[id].toLowerCase().trim() === locationInput.toLowerCase().trim()
+        )
+      );
       setDisplayData(results);
     }
   }

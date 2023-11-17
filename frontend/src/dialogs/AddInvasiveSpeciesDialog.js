@@ -1,13 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Autocomplete, Tooltip, alpha, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
-import RegionsTestData from "../test_data/regionsTestData";
 import AddAlternativeSpeciesDialog from "./AddAlternativeSpeciesDialog";
-import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData";
 import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from "../components/SnackbarComponent";
 import CustomAlert from "../components/AlertComponent";
 import CustomWarning from '../components/WarningComponent';
-
+import handleGetRegions from "../functions/RegionMap"
 
 const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialSpeciesData = {
@@ -23,7 +21,20 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     const [showWarning, setShowWarning] = useState(false);
     const [speciesData, setSpeciesData] = useState(initialSpeciesData);
     const [alternativeDialog, setOpenAddAlternativeDialog] = useState(false);
-    const [alternativeSpeciesTestData, setAlternativeSpeciesTestData] = useState(AlternativeSpeciesTestData);
+    const [alternativeSpeciesData, setAlternativeSpeciesData] = useState([]);
+    const [regionMap, setRegionsMap] = useState({});
+
+    useEffect(() => {
+        const fetchRegionData = async () => {
+            try {
+                const regions = await handleGetRegions();
+                setRegionsMap(regions);
+            } catch (error) {
+                console.error('Error fetching region map 3:', error);
+            }
+        };
+        fetchRegionData();
+    }, []);
 
     const handleInputChange = (field, value) => {
         if (field === "region_code_name") {
@@ -80,30 +91,29 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     };
 
 
-    // TODO!!!!
     // add a new alternative species
-    const handleAddAlternativeSpecies = (newAlternativeSpeciesData) => {
-        // Generate a unique regionId for the new alternative species
-        const newAltSpeciesId = alternativeSpeciesTestData.length + 1;
+    // const handleAddAlternativeSpecies = (newAlternativeSpeciesData) => {
+    //     // Generate a unique regionId for the new alternative species
+    //     const newAltSpeciesId = alternativeSpeciesData.length + 1;
 
-        // Create a new region object with the generated regionId
-        const newAlternativeSpecies = {
-            regionId: newAltSpeciesId,
-            ...newAlternativeSpeciesData,
-        };
+    //     // Create a new region object with the generated regionId
+    //     const newAlternativeSpecies = {
+    //         regionId: newAltSpeciesId,
+    //         ...newAlternativeSpeciesData,
+    //     };
 
-        setAlternativeSpeciesTestData([...alternativeSpeciesTestData, newAlternativeSpecies]);
-        setOpenAddAlternativeDialog(false);
+    //     setAlternativeSpeciesData([...alternativeSpeciesData, newAlternativeSpecies]);
+    //     setOpenAddAlternativeDialog(false);
 
-        // TODO: update the alternative table database with the new entry
-    }
+    //     // TODO: update the alternative table database with the new entry
+    // }
 
-    const handleCloseAlt = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpenAddAlternativeDialog(false);
-    };
+    // const handleCloseAlt = (event, reason) => {
+    //     if (reason === 'clickaway') {
+    //         return;
+    //     }
+    //     setOpenAddAlternativeDialog(false);
+    // };
 
 
     const handleCloseSnackbar = () => {
@@ -151,7 +161,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                         <Autocomplete
                             multiple
                             id="alternative-species-autocomplete"
-                            options={alternativeSpeciesTestData}
+                            options={alternativeSpeciesData}
                             getOptionLabel={(option) =>
                                 `${option.scientific_name ? option.scientific_name.join(", ") : ''} (${option.common_name ? option.common_name.join(', ') : ''})`
                             }
@@ -181,7 +191,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                             )}
                             sx={{ flex: 5, marginRight: '1rem', height: '100%', width: "100%" }}
                         />
-                        <Tooltip title="Alternative species not in list?" placement="top">
+                        {/* <Tooltip title="Alternative species not in list?" placement="top">
                             <Button
                                 variant="contained"
                                 onClick={() => setOpenAddAlternativeDialog(true)}
@@ -195,7 +205,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                             >
                                 Add alternative
                             </Button>
-                        </Tooltip>
+                        </Tooltip> */}
 
                     </Box>
 
@@ -215,13 +225,17 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                             value={speciesData.region_id}
                             onChange={(e) => handleInputChange("region_code_name", e.target.value)}
                             label="Region (multiselect)"
-                            renderValue={(selected) => selected.join(", ")}
+                            renderValue={(selected) => {
+                                const selectedNames = selected.map(id => regionMap[id]);
+                                return selectedNames.join(", ");
+                            }}
                         >
-                            {RegionsTestData.map((item) => (
-                                <MenuItem key={item.region_code_name} value={item.region_code_name}>
-                                    {item.region_code_name}
+                            {Object.entries(regionMap).map(([region_id, region_code_name]) => (
+                                <MenuItem key={region_id} value={region_id}>
+                                    {region_code_name}
                                 </MenuItem>
                             ))}
+
                         </Select>
                     </FormControl>
 
@@ -232,12 +246,12 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                 </DialogActions>
             </Dialog>
 
-            <AddAlternativeSpeciesDialog
+            {/* <AddAlternativeSpeciesDialog
                 open={alternativeDialog}
                 handleClose={handleCloseAlt}
                 data={alternativeSpeciesTestData}
                 handleAdd={handleAddAlternativeSpecies}
-            />
+            /> */}
 
             <SnackbarOnSuccess open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
 

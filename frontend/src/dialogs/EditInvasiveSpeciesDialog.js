@@ -210,15 +210,15 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                             labelId="region-label"
                             multiple
                             value={tempData.region_id}
-                            // value={[regionMap[tempData.region_id]]}
-
                             onChange={(e) => handleSearchInputChange("region_code_name", e.target.value)}
                             label="Region (multiselect)"
-                            renderValue={(selected) => selected.join(", ")}
-                        >
+                            renderValue={(selected) => {
+                                const selectedNames = selected.map(id => regionMap[id]);
+                                return selectedNames.join(", ");
+                            }}                        >
                             {Object.entries(regionMap).map(([region_id, region_code_name]) => (
                                 <MenuItem key={region_id} value={region_id}>
-                                    {`${region_code_name}: ${region_id}`}
+                                    {region_code_name}
                                 </MenuItem>
                             ))}
                         </Select>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import RegionsTestData from "../test_data/regionsTestData";
+// import RegionsTestData from "../test_data/regionsTestData";
 import SnackbarOnSuccess from "../components/SnackbarComponent";
 import CustomAlert from "../components/AlertComponent";
 import CustomWarning from "../components/WarningComponent";
@@ -103,6 +103,7 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                         onChange={(e) => handleInputChange("region_fullname", e.target.value)}
                         sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}
                     />
+
                     <TextField
                         fullWidth
                         label="Region Code*"
@@ -110,7 +111,16 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                         onChange={(e) => handleInputChange("region_code_name", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
-                    <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
+
+                    <TextField
+                        fullWidth
+                        label="Country*"
+                        value={regionData.country_fullname}
+                        onChange={(e) => handleInputChange("country_fullname", e.target.value)}
+                        sx={{ width: "100%", marginBottom: "1rem" }}
+                    />
+
+                    {/* <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
                         <InputLabel id="country-label">Country*</InputLabel>
                         <Select
                             labelId="country-label"
@@ -124,7 +134,8 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                                 </MenuItem>
                             ))}
                         </Select>
-                    </FormControl>
+                    </FormControl> */}
+
                     <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                         <TextField
                             fullWidth

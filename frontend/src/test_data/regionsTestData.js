@@ -12,13 +12,6 @@ const RegionsTestData = [
         region_fullname: "Ontario",
         country_fullname: "Canada",
         geographic_coordinates: [51.2538, -85.3232]
-    },
-    {
-        regionId: 3,
-        region_code_name: "test",
-        region_fullname: "test",
-        country_fullname: "test",
-        geographic_coordinates: [0, 0]
     }
 ];
 

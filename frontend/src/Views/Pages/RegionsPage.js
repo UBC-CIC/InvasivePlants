@@ -9,6 +9,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditRegionDialog from "../../dialogs/EditRegionsDialog";
 import SearchIcon from '@mui/icons-material/Search';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+
 import LocationFilterComponent from '../../components/LocationFilterComponent';
 // import Pagination from '../../components/TablePaginationComponent';
 
@@ -79,12 +81,13 @@ function RegionsPage() {
         setEditingId(null);
     };
 
+    // helper function that capitalizes a string
+    const capitalizeString = (str) => {
+        return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    };
+
     // saves edited row
     const handleSave = (confirmed) => {
-        // capitalize anything separated by a space
-        const capitalizeString = (str) => {
-            return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-        };
 
         const formattedData = {
             ...tempData,
@@ -191,8 +194,17 @@ function RegionsPage() {
 
     // add region
     const handleAddRegion = (newRegionData) => {
+
+        const formattedData = {
+            ...newRegionData,
+            region_fullname: capitalizeString(newRegionData.region_fullname),
+            region_code_name: newRegionData.region_code_name.toUpperCase(),
+            country_fullname: capitalizeString(newRegionData.country_fullname)
+        }
+
+
         axios
-            .post(API_ENDPOINT + "region", newRegionData)
+            .post(API_ENDPOINT + "region", formattedData)
             .then((response) => {
                 console.log("region added successfully", response.data);
                 handleGetRegions();
@@ -214,14 +226,38 @@ function RegionsPage() {
 
             {/* location and search bars*/}
             <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
-                <LocationFilterComponent
+                {/* <LocationFilterComponent
                     text={"Search by country"}
                     mapTo={"country_fullname"}
                     inputData={displayData}
                     handleLocationSearch={handleCountrySearch}
                     location={country}
                     setLocation={setCountry}
-                />
+                /> */}
+
+                <Box style={{ flex: 1, marginRight: "10px" }}>
+                    <Autocomplete
+                        options={Array.from(new Set(displayData.map((region) => region.country_fullname)))}
+                        getOptionLabel={(option) => option}
+                        onInputChange={(e, newInputValue) => handleCountrySearch(newInputValue.toLowerCase())}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label={
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <LocationOnIcon sx={{ marginRight: '0.5rem' }} />
+                                        {"Search by country"}
+                                    </div>
+                                }
+                                value={country}
+                                onChange={(e) => {
+                                    setCountry(e.target.value.toLowerCase());
+                                }}
+                                style={{ marginTop: "2rem", marginBottom: "1rem" }}
+                            />
+                        )}
+                    />
+                </Box>
 
                 <Box style={{ flex: 2, marginLeft: "10px" }}>
                     <Autocomplete
