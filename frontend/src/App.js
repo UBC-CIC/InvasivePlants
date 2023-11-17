@@ -8,10 +8,6 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { updateLoginState } from "./Actions/loginActions";
 import theme from "./themes";
-import { Amplify } from 'aws-amplify'
-import awsmobile from "./aws-exports";
-
-Amplify.configure(awsmobile);
 
 function App(props) {
   const { loginState, updateLoginState } = props;
@@ -62,7 +58,7 @@ function App(props) {
 
               <Login logo={"custom"} type={"image"} themeColor={"standard"} animateTitle={true}
                 title={"Invasive Plants"} darkMode={true}
-                disableSignUp={true}
+                disableSignUp={false}
               />
             )
           }
