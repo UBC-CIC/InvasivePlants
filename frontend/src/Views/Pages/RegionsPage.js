@@ -155,6 +155,7 @@ function RegionsPage() {
         } else {
             setTempData((prev) => ({ ...prev, [field]: value }));
         }
+
     };
 
     // search region by full name or code name
@@ -202,7 +203,7 @@ function RegionsPage() {
             country_fullname: capitalizeString(newRegionData.country_fullname)
         }
 
-
+        console.log("new region: ", formattedData)
         axios
             .post(API_ENDPOINT + "region", formattedData)
             .then((response) => {

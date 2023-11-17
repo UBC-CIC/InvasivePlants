@@ -120,22 +120,6 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
-                    {/* <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
-                        <InputLabel id="country-label">Country*</InputLabel>
-                        <Select
-                            labelId="country-label"
-                            value={selectedCountry}
-                            onChange={(e) => handleInputChange("country_fullname", e.target.value)}
-                            label="Country*"
-                        >
-                            {Array.from(new Set(RegionsTestData.map((data) => data.country_fullname))).map((country_fullname, index) => (
-                                <MenuItem key={index} value={country_fullname}>
-                                    {country_fullname}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl> */}
-
                     <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                         <TextField
                             fullWidth

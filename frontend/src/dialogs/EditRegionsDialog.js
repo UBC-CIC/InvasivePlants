@@ -57,7 +57,9 @@ const EditRegionDialog = ({ open, tempData, handleSearchInputChange, handleFinis
                         onChange={(e) => handleSearchInputChange("country_fullname", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
-                    {tempData.geographic_coordinate && (
+
+                    {/* conditional check if there are coordinates or not */}
+                    {tempData.geographic_coordinate ? (
                         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                             <TextField
                                 fullWidth
@@ -66,7 +68,6 @@ const EditRegionDialog = ({ open, tempData, handleSearchInputChange, handleFinis
                                 onChange={(e) => handleSearchInputChange("geographic_latitude", e.target.value)}
                                 sx={{ width: "100%", marginRight: "4px" }}
                             />
-
                             <TextField
                                 fullWidth
                                 label="Longitude"
@@ -75,7 +76,23 @@ const EditRegionDialog = ({ open, tempData, handleSearchInputChange, handleFinis
                                 sx={{ width: "100%", marginLeft: "4px" }}
                             />
                         </Box>
+                    ) : (
+                        <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                            <TextField
+                                fullWidth
+                                label="Latitude"
+                                onChange={(e) => handleSearchInputChange("geographic_latitude", e.target.value)}
+                                sx={{ width: "100%", marginRight: "4px" }}
+                            />
+                            <TextField
+                                fullWidth
+                                label="Longitude"
+                                onChange={(e) => handleSearchInputChange("geographic_longitude", e.target.value)}
+                                sx={{ width: "100%", marginLeft: "4px" }}
+                            />
+                        </Box>
                     )}
+
                 </DialogContent>
 
                 <DialogActions >
