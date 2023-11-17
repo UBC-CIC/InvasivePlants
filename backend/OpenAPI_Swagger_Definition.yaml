@@ -218,6 +218,13 @@ paths:
           description: Scientific name following lowercase and underscore for space format
           schema: 
             type: string
+        - in: query
+          name: region_id
+          required: false
+          description: uuid of a region
+          schema: 
+            type: string
+            format: uuid
       responses:
         "200": 
           description: Data Available

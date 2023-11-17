@@ -55,11 +55,22 @@ exports.handler = async (event) => {
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
 			case "GET /invasiveSpecies":
-			  if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
-			    data = await sql`SELECT * FROM invasive_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
-			  } else {
-				  data = await sql`SELECT * FROM invasive_species`;
-			  }
+				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
+					data = await sql`SELECT * FROM invasive_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
+				} if(event.queryStringParameters != null && event.queryStringParameters.region_id){
+					data = await sql`SELECT * FROM invasive_species WHERE ${event.queryStringParameters.region_id} = ANY(region_id)`;
+				} else {
+					data = await sql`SELECT * FROM invasive_species`;
+				}
+				for(let d in data){
+					// Get alternative species and images
+					data[d].alternative_species = await sql`SELECT * FROM alternative_species WHERE species_id = ANY(${data[d].alternative_species});`;
+					
+					// Get images for each species
+					for(let d_alt in data[d].alternative_species){
+						data[d].alternative_species[d_alt].images = await sql`SELECT * FROM images WHERE species_id = ${data[d].alternative_species[d_alt].species_id};`;
+					}
+				}
 				response.body = JSON.stringify(data);
 				break;
 			case "POST /invasiveSpecies":
@@ -97,6 +108,15 @@ exports.handler = async (event) => {
 					// Check if required parameters are passed
 					if(bd.species_id){
 						data = await sql`SELECT * FROM invasive_species WHERE species_id = ${bd.species_id};`;
+						
+						// Get alternative species and images
+						data[0].alternative_species = await sql`SELECT * FROM alternative_species WHERE species_id = ANY(${data[0].alternative_species});`;
+						
+						// Get images for each species
+						for(let i in data[0].alternative_species){
+							data[0].alternative_species[i].images = await sql`SELECT * FROM images WHERE species_id = ${data[0].alternative_species[i].species_id};`;
+						}
+						
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
