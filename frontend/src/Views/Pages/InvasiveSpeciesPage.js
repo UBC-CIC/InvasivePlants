@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TablePagination, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
+import { InputAdornment, TablePagination, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 import Theme from '../../admin_pages/Theme';
 
 import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialog";
@@ -31,8 +31,7 @@ function InvasiveSpeciesPage() {
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const [region_id, setRegionId] = useState("");
 
-  const handleGetSpecies = () => {
-    handleGetRegions()
+  handleGetRegions()
       .then(regionMap => {
         setRegionsMap(regionMap);
       })
@@ -40,6 +39,7 @@ function InvasiveSpeciesPage() {
         console.error('Error fetching region map:', error);
       });
 
+  const handleGetSpecies = () => {
     const capitalizeWords = (str) => {
       return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     };
@@ -47,9 +47,16 @@ function InvasiveSpeciesPage() {
     axios
       .get(`${API_ENDPOINT}invasiveSpecies`)
       .then((response) => {
-        const speciesData = response.data;
-        const promises = speciesData.map(item =>
-          axios.get(`${API_ENDPOINT}region/${item.region_id}`)
+        // TODO: uncomment later
+        // const speciesData = response.data;
+
+        // Limit the number of species to 10 test
+        const speciesData = response.data.slice(80, 97);
+
+        const promises = speciesData.flatMap(item =>
+          item.region_id.map(regionId =>
+            axios.get(`${API_ENDPOINT}region/${regionId}`)
+          )
         );
 
         return Promise.all(promises)
@@ -177,8 +184,10 @@ function InvasiveSpeciesPage() {
   };
 
 
-  // helper function when search input changes
+  // helper function when input changes
   const handleSearchInputChange = (field, value) => {
+    console.log("value: ", value);
+
     if (field === "region_code_name") {
       const selectedRegionCodes = value.map((region_id) => regionMap[region_id]);
       setTempData((prev) => ({ ...prev, region_id: value, region_code_name: selectedRegionCodes }));
@@ -308,17 +317,17 @@ function InvasiveSpeciesPage() {
           {/* table header */}
           <TableHead>
             <TableRow>
-              <TableCell style={{ width: "8%" }}>
+              <TableCell style={{ width: "10%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Scientific Name
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "40%" }}>
+              <TableCell style={{ width: "35%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Description
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "10%" }}>
+              <TableCell style={{ width: "13%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Alternative Species
                 </Typography>
@@ -328,12 +337,12 @@ function InvasiveSpeciesPage() {
                   Resources
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "8%" }}>
+              <TableCell style={{ width: "7%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Region(s)
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "9%" }}>
+              <TableCell style={{ width: "7%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Actions
                 </Typography>
@@ -381,6 +390,7 @@ function InvasiveSpeciesPage() {
                           {/* alternative plants */}
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
+                            // TODO: fix this
                               // value={
                               // Array.isArray(tempData.alternative_species)
                               //   ? tempData.alternative_species.map((alternative) => {
@@ -402,19 +412,52 @@ function InvasiveSpeciesPage() {
 
                           {/* links */}
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            <TextField
-                              value={
-                                Array.isArray(tempData.resource_links)
-                                  ? tempData.resource_links.join(", ")
-                                  : tempData.resource_links
-                              }
-                              onChange={(e) =>
-                                handleSearchInputChange(
-                                  "resource_links",
-                                  e.target.value.split(", ")
-                                )
-                              }
-                            />
+                          <TextField
+                            value={
+                              Array.isArray(tempData.resource_links)
+                                ? tempData.resource_links.join(", ")
+                                : tempData.resource_links
+                            }
+                            onChange={(e) =>
+                              handleSearchInputChange(
+                                "resource_links",
+                                e.target.value.split(", ")
+                              )
+                            }
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  {Array.isArray(tempData.resource_links) ? (
+                                    tempData.resource_links.map((link, index) => (
+                                      <span key={index}>
+                                        <a
+                                          href={link}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          {link}
+                                        </a>
+                                        <br />
+                                        <br />
+                                      </span>
+                                    ))
+                                  ) : (
+                                    <span>
+                                      <a
+                                        href={tempData.resource_links}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        {tempData.resource_links}
+                                      </a>
+                                      <br />
+                                      <br />
+                                    </span>
+                                  )}
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
                           </TableCell>
 
                           {/* region */}
@@ -460,8 +503,26 @@ function InvasiveSpeciesPage() {
                                 ? row.alternative_species.map((item) => item.scientific_name).join(", ")
                                 : row.alternative_species}
                           </TableCell>
-                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                              {Array.isArray(row.resource_links) ? row.resource_links.join(", ") : row.resource_links}
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                            {Array.isArray(row.resource_links) ? (
+                              row.resource_links.map((link, index) => (
+                                <span key={index}>
+                                  <a href={link} target="_blank" rel="noopener noreferrer">
+                                    {link}
+                                  </a>
+                                  <br />
+                                  <br />
+                                </span>
+                              ))
+                            ) : (
+                              <span>
+                                <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
+                                  {row.resource_links}
+                                </a>
+                                <br />
+                                <br />
+                              </span>
+                            )}
                           </TableCell>
                             <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             {Array.isArray(row.region_id)
@@ -521,6 +582,7 @@ function InvasiveSpeciesPage() {
                           {/* alternative plants */}
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
+                              // TODO: fix this
                               // value={
                               //   Array.isArray(tempData.alternative_species)
                               //     ? tempData.alternative_species.map((alternative) => {
@@ -554,6 +616,39 @@ function InvasiveSpeciesPage() {
                                   e.target.value.split(", ")
                                 )
                               }
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="end">
+                                    {Array.isArray(tempData.resource_links) ? (
+                                      tempData.resource_links.map((link, index) => (
+                                        <span key={index}>
+                                          <a
+                                            href={link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                          >
+                                            {link}
+                                          </a>
+                                          <br />
+                                          <br />
+                                        </span>
+                                      ))
+                                    ) : (
+                                      <span>
+                                        <a
+                                          href={tempData.resource_links}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          {tempData.resource_links}
+                                        </a>
+                                        <br />
+                                        <br />
+                                      </span>
+                                    )}
+                                  </InputAdornment>
+                                ),
+                              }}
                             />
                           </TableCell>
 
@@ -601,8 +696,27 @@ function InvasiveSpeciesPage() {
                                 : row.alternative_species}
                           </TableCell>
                             <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                              {Array.isArray(row.resource_links) ? row.resource_links.join(", ") : row.resource_links}
-                          </TableCell>
+                              {Array.isArray(row.resource_links) ? (
+                                row.resource_links.map((link, index) => (
+                                  <span key={index}>
+                                    <a href={link} target="_blank" rel="noopener noreferrer">
+                                      {link}
+                                    </a>
+                                    <br />
+                                    <br />
+                                  </span>
+                                ))
+                              ) : (
+                                <span>
+                                  <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
+                                    {row.resource_links}
+                                  </a>
+                                  <br />
+                                  <br />
+                                </span>
+                              )}
+                            </TableCell>
+
                             <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                               {Array.isArray(row.region_id)
                                 ? row.region_id.map((id) => regionMap[id]).join(", ")

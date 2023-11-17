@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TablePagination, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, TextField, Typography, ThemeProvider } from "@mui/material";
+import { TablePagination, InputAdornment, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, TextField, Typography, ThemeProvider } from "@mui/material";
 import Theme from '../../admin_pages/Theme';
 
 import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";
@@ -39,8 +39,11 @@ function AlternativeSpeciesPage() {
     axios
       .get(`${API_ENDPOINT}alternativeSpecies`)
       .then((response) => {
+        // Limit the number of species for testing
+        const speciesData = response.data.slice(120, 128);
+
         // Capitalize each scientific_name 
-        const formattedData = response.data.map(item => {
+        const formattedData = speciesData.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeWordsSplitUnderscore(name));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeWordsSplitSpace(name));
           return {
@@ -359,7 +362,7 @@ function AlternativeSpeciesPage() {
                         </TableCell>
 
                         {/* resource links */}
-                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>                        
                           <TextField
                             value={
                               Array.isArray(tempData.resource_links)
@@ -372,7 +375,39 @@ function AlternativeSpeciesPage() {
                                 e.target.value.split(", ")
                               )
                             }
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  {Array.isArray(tempData.resource_links) ? (
+                                    tempData.resource_links.map((link, index) => (
+                                      <span key={index}>
+                                        <a
+                                          href={link}
+                                          target="_blank" // new tab
+                                          rel="noopener noreferrer" // security stuff
+                                        >
+                                          {link}
+                                        </a>
+                                        <br />
+                                      </span>
+                                    ))
+                                  ) : (
+                                    <span>
+                                      <a
+                                        href={tempData.resource_links}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        {tempData.resource_links}
+                                      </a>
+                                      <br />
+                                    </span>
+                                  )}
+                                </InputAdornment>
+                              ),
+                            }}
                           />
+
                         </TableCell>
 
                         {/* image links */}
@@ -416,17 +451,37 @@ function AlternativeSpeciesPage() {
                               ? row.scientific_name.join(", ")
                               : row.scientific_name}
                           </TableCell>
+
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             {Array.isArray(row.common_name)
                               ? row.common_name.join(", ")
                               : row.common_name}
-                          </TableCell >
+                          </TableCell>
+
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             {boldText(row.species_description)}
                           </TableCell>
+
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                          {Array.isArray(row.resource_links) ? row.resource_links.join(", ") : row.resource_links}
-                        </TableCell>
+                            {Array.isArray(row.resource_links) ? (
+                              row.resource_links.map((link, index) => (
+                                <span key={index}>
+                                  <a href={link} target="_blank" rel="noopener noreferrer">
+                                    {link}
+                                  </a>
+                                  <br />
+                                </span>
+                              ))
+                            ) : (
+                              <span>
+                                <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
+                                  {row.resource_links}
+                                </a>
+                                <br />
+                              </span>
+                            )}
+                          </TableCell>
+
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           {Array.isArray(row.image_links) ? row.image_links.join(", ") : row.image_links}
                         </TableCell>

@@ -6,7 +6,6 @@ import {
 import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData";
 import SearchIcon from '@mui/icons-material/Search';
 import AddAlternativeSpeciesDialog from './AddAlternativeSpeciesDialog';
-// import RegionsTestData from "../test_data/regionsTestData";
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 import handleGetRegions from '../functions/RegionMap';
@@ -156,6 +155,8 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                     <TextField
                         label="Resource links (separate by commas)"
                         value={Array.isArray(tempData.resource_links) ? tempData.resource_links.join(", ") : tempData.resource_links}
+                        multiline
+                        rows={3}
                         onChange={(e) =>
                             handleSearchInputChange("resource_links", e.target.value.split(", "))
                         }
@@ -167,15 +168,16 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                         <Select
                             labelId="region-label"
                             multiple
-                            // value={[regionMap[tempData.region_id]]}
                             value={tempData.region_id}
+                            // value={[regionMap[tempData.region_id]]}
+
                             onChange={(e) => handleSearchInputChange("region_code_name", e.target.value)}
                             label="Region (multiselect)"
                             renderValue={(selected) => selected.join(", ")}
                         >
                             {Object.entries(regionMap).map(([region_id, region_code_name]) => (
                                 <MenuItem key={region_id} value={region_id}>
-                                    {region_code_name}
+                                    {`${region_code_name}: ${region_id}`}
                                 </MenuItem>
                             ))}
                         </Select>
