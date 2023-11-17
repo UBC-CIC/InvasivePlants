@@ -31,13 +31,17 @@ function InvasiveSpeciesPage() {
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const [region_id, setRegionId] = useState("");
 
-  handleGetRegions()
-      .then(regionMap => {
+  useEffect(() => {
+    const fetchRegionData = async () => {
+      try {
+        const regionMap = await handleGetRegions();
         setRegionsMap(regionMap);
-      })
-      .catch(error => {
-        console.error('Error fetching region map:', error);
-      });
+      } catch (error) {
+        console.error('Error fetching region map 2:', error);
+      }
+    };
+    fetchRegionData();
+  }, []);
 
   const handleGetSpecies = () => {
     const capitalizeWords = (str) => {
