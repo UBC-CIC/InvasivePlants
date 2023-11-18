@@ -1,8 +1,8 @@
 import * as cheerio from "cheerio";
 import axios from "axios";
 import { jsonrepair } from "jsonrepair";
-import { getDocument } from "pdfjs-dist";
-import "pdfjs-dist/build/pdf.worker.entry"; // Attach pdfJsworker to window
+// import { getDocument } from "pdfjs-dist";
+// import "pdfjs-dist/build/pdf.worker.entry"; // Attach pdfJsworker to window
 
 // List of website to links to invasive species website
 const BC_INVASIVE_URL = "https://bcinvasives.ca/take-action/identify/";
@@ -140,158 +140,158 @@ const getListOfSpeciesFromBCInvasive = async (url) => {
  *  - Each species about section
  *  - Link to PDFs ...
  */
-const webscrapeONInvasive_ONInvasivePlantCouncil = async () => {
-	// Get the list of invasive species
-	const speciesList = await getListOfSpeciesFromONInvasive(ON_INVASIVE_URL);
+// const webscrapeONInvasive_ONInvasivePlantCouncil = async () => {
+// 	// Get the list of invasive species
+// 	const speciesList = await getListOfSpeciesFromONInvasive(ON_INVASIVE_URL);
 
-	// Configuration on web scraping
-	const scientificName_FontSize = 14;
-	const torlerance = 1;
-	const stringIndicatorForDocument = "for more information";
-	const documentNameToLook = "best management practices";
+// 	// Configuration on web scraping
+// 	const scientificName_FontSize = 14;
+// 	const torlerance = 1;
+// 	const stringIndicatorForDocument = "for more information";
+// 	const documentNameToLook = "best management practices";
 
-	await Promise.all(
-		speciesList.ONInvasiveSpeciesPlants.map(async (specie, index) => {
-			// Go to each subpage and webscrapee the about section and references on the species
-			// Get about section of the species and related documents
-			let aboutSection = "";
-			const relatedDocuments = [];
-			await axios
-				.get(specie.link)
-				.then(async (response) => {
-					const $ = await cheerio.load(response.data);
+// 	await Promise.all(
+// 		speciesList.ONInvasiveSpeciesPlants.map(async (specie, index) => {
+// 			// Go to each subpage and webscrapee the about section and references on the species
+// 			// Get about section of the species and related documents
+// 			let aboutSection = "";
+// 			const relatedDocuments = [];
+// 			await axios
+// 				.get(specie.link)
+// 				.then(async (response) => {
+// 					const $ = await cheerio.load(response.data);
 
-					// web scraping data for about section and related documents
-					await $("div.entry-content")
-						.contents()
-						.each((i, ele) => {
-							if ($(ele).is("p")) {
-								// Potential about section
-								const pString = $(ele).text();
+// 					// web scraping data for about section and related documents
+// 					await $("div.entry-content")
+// 						.contents()
+// 						.each((i, ele) => {
+// 							if ($(ele).is("p")) {
+// 								// Potential about section
+// 								const pString = $(ele).text();
 
-								// Regx for this format to get scientific name in the middle
-								if (
-									!pString.toLowerCase().includes(stringIndicatorForDocument) &&
-									!pString.toLowerCase().includes("download")
-								) {
-									aboutSection += $(ele).text();
-								}
-							} else if ($(ele).is("ul")) {
-								// Potential block for list of related about section
-								$(ele)
-									.children("li")
-									.each((i, ele) => {
-										aboutSection += "\n* " + $(ele).text();
-									});
-							} else if ($(ele).is("div")) {
-								// Potential block for PDF
-								$(ele)
-									.children("a")
-									.each((i, ele) => {
-										if (!$(ele).text().toLowerCase().includes("download")) {
-											relatedDocuments.push({
-												title: $(ele).text(),
-												link: $(ele).attr("href"),
-											});
-										}
-									});
-							}
-						});
-				})
-				.catch((err) => {
-					console.log(err);
-				});
+// 								// Regx for this format to get scientific name in the middle
+// 								if (
+// 									!pString.toLowerCase().includes(stringIndicatorForDocument) &&
+// 									!pString.toLowerCase().includes("download")
+// 								) {
+// 									aboutSection += $(ele).text();
+// 								}
+// 							} else if ($(ele).is("ul")) {
+// 								// Potential block for list of related about section
+// 								$(ele)
+// 									.children("li")
+// 									.each((i, ele) => {
+// 										aboutSection += "\n* " + $(ele).text();
+// 									});
+// 							} else if ($(ele).is("div")) {
+// 								// Potential block for PDF
+// 								$(ele)
+// 									.children("a")
+// 									.each((i, ele) => {
+// 										if (!$(ele).text().toLowerCase().includes("download")) {
+// 											relatedDocuments.push({
+// 												title: $(ele).text(),
+// 												link: $(ele).attr("href"),
+// 											});
+// 										}
+// 									});
+// 							}
+// 						});
+// 				})
+// 				.catch((err) => {
+// 					console.log(err);
+// 				});
 
-			// web scraping data for scientific name and common name based on front size
-			let scienceName = "";
-			if (relatedDocuments.length !== 0) {
-				// Select the right document
-				let pdfURL = undefined;
-				relatedDocuments.forEach((ele) => {
-					if (ele.title.toLowerCase().includes(documentNameToLook)) {
-						pdfURL = ele.link;
-					}
-				});
+// 			// web scraping data for scientific name and common name based on front size
+// 			let scienceName = "";
+// 			if (relatedDocuments.length !== 0) {
+// 				// Select the right document
+// 				let pdfURL = undefined;
+// 				relatedDocuments.forEach((ele) => {
+// 					if (ele.title.toLowerCase().includes(documentNameToLook)) {
+// 						pdfURL = ele.link;
+// 					}
+// 				});
 
-				// Just use the first one if no PDF is found.
-				if (pdfURL === undefined) {
-					pdfURL = relatedDocuments[0].link;
-				}
+// 				// Just use the first one if no PDF is found.
+// 				if (pdfURL === undefined) {
+// 					pdfURL = relatedDocuments[0].link;
+// 				}
 
-				// Request PDF document
-				await axios
-					.get(pdfURL, { responseType: "arraybuffer" })
-					.then(async (response) => {
-						const pdf = await getDocument({ data: response.data }).promise;
-						const firstPage = await pdf.getPage(1);
-						const content = await firstPage.getTextContent();
+// 				// Request PDF document
+// 				await axios
+// 					.get(pdfURL, { responseType: "arraybuffer" })
+// 					.then(async (response) => {
+// 						const pdf = await getDocument({ data: response.data }).promise;
+// 						const firstPage = await pdf.getPage(1);
+// 						const content = await firstPage.getTextContent();
 
-						content.items.forEach((res, index) => {
-							if (
-								scientificName_FontSize - torlerance <= res.height &&
-								res.height <= scientificName_FontSize + torlerance
-							) {
-								// Assume species name uses the Binomial nomenclature which the common naming convention.
-								const potentialScientificName = res.str
-									.trim()
-									.replace(/\(|\)/g, "");
-								if (potentialScientificName.split(" ").length === 2) {
-									scienceName = potentialScientificName;
-								}
-							}
-						});
-					})
-					.catch((err) => {
-						console.log(err);
-					});
-			}
+// 						content.items.forEach((res, index) => {
+// 							if (
+// 								scientificName_FontSize - torlerance <= res.height &&
+// 								res.height <= scientificName_FontSize + torlerance
+// 							) {
+// 								// Assume species name uses the Binomial nomenclature which the common naming convention.
+// 								const potentialScientificName = res.str
+// 									.trim()
+// 									.replace(/\(|\)/g, "");
+// 								if (potentialScientificName.split(" ").length === 2) {
+// 									scienceName = potentialScientificName;
+// 								}
+// 							}
+// 						});
+// 					})
+// 					.catch((err) => {
+// 						console.log(err);
+// 					});
+// 			}
 
-			// Assign data to global variables
-			speciesList.ONInvasiveSpeciesPlants[index].aboutSection = aboutSection;
-			if (relatedDocuments)
-				speciesList.ONInvasiveSpeciesPlants[index].relatedDocuments =
-					relatedDocuments;
-			if (scienceName !== "") {
-				const parsedScienceName = scienceName.trim().replace(/\(|\)/g, "");
-				speciesList.ONInvasiveSpeciesPlants[index].species = parsedScienceName;
-			}
-		})
-	);
+// 			// Assign data to global variables
+// 			speciesList.ONInvasiveSpeciesPlants[index].aboutSection = aboutSection;
+// 			if (relatedDocuments)
+// 				speciesList.ONInvasiveSpeciesPlants[index].relatedDocuments =
+// 					relatedDocuments;
+// 			if (scienceName !== "") {
+// 				const parsedScienceName = scienceName.trim().replace(/\(|\)/g, "");
+// 				speciesList.ONInvasiveSpeciesPlants[index].species = parsedScienceName;
+// 			}
+// 		})
+// 	);
 
-	// Grabing other data
-	// Library to get data from wiki: https://github.com/Requarks/wiki
+// 	// Grabing other data
+// 	// Library to get data from wiki: https://github.com/Requarks/wiki
 
-	console.log(speciesList);
-};
+// 	console.log(speciesList);
+// };
 
 // Helper Function to get a list of invasive species
-const getListOfSpeciesFromONInvasive_ONInvasivePlantCouncil = async (url) => {
-  const output = {
-    ONInvasiveSpeciesPlants: [],
-  };
+// const getListOfSpeciesFromONInvasive_ONInvasivePlantCouncil = async (url) => {
+//   const output = {
+//     ONInvasiveSpeciesPlants: [],
+//   };
 
-	// Scraping list of all species
-	await axios
-		.get(url)
-		.then(async (response) => {
-			const $ = await cheerio.load(response.data);
+// 	// Scraping list of all species
+// 	await axios
+// 		.get(url)
+// 		.then(async (response) => {
+// 			const $ = await cheerio.load(response.data);
 
-			// Get species links
-			await $("div.entry-content li > a").each((i, ele) => {
-				const link = $(ele).attr("href");
-				const commonName = $(ele).text();
-				output.ONInvasiveSpeciesPlants.push({
-					name: commonName,
-					link: link,
-				});
-			});
-		})
-		.catch((err) => {
-			console.log(err);
-		});
+// 			// Get species links
+// 			await $("div.entry-content li > a").each((i, ele) => {
+// 				const link = $(ele).attr("href");
+// 				const commonName = $(ele).text();
+// 				output.ONInvasiveSpeciesPlants.push({
+// 					name: commonName,
+// 					link: link,
+// 				});
+// 			});
+// 		})
+// 		.catch((err) => {
+// 			console.log(err);
+// 		});
 
-	return output;
-};
+// 	return output;
+// };
 
 /**
  *
