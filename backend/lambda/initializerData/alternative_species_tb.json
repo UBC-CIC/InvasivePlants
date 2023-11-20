@@ -6,7 +6,9 @@
     "common_name": [
       "Russian-sage"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/perovskia%20atriplicifolia",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/perovskia%20atriplicifolia"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Russian_sage_by_RO_IV.jpg/220px-Russian_sage_by_RO_IV.jpg"
     ],
@@ -20,7 +22,9 @@
       "statice",
       "Tartarian statice"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/goniolimon%20tataricum",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/goniolimon%20tataricum"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Goniolimon_tataricum.jpg/220px-Goniolimon_tataricum.jpg"
     ],
@@ -32,14 +36,17 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
       "anaphalis_margaritacea"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/anaphalis%20margaritacea",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/anaphalis%20margaritacea"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Anapahlis_margaritacea.jpg/220px-Anapahlis_margaritacea.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -51,7 +58,9 @@
       "limonium_latifolium"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/limonium%20latifolium",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/limonium%20latifolium"
+    ],
     "image_links": [],
     "species_description": "Limonium latifolium can refer to:"
   },
@@ -70,7 +79,9 @@
       "prairie flax",
       "wild blue flax"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/linum%20lewisii",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/linum%20lewisii"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Linum_lewisii%2C_blue_flax%2C_Albuquerque.JPG/220px-Linum_lewisii%2C_blue_flax%2C_Albuquerque.JPG",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -84,7 +95,9 @@
     "common_name": [
       "blue thimble-flower"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/gilia%20capitata",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/gilia%20capitata"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Gilia_capitata.JPG/220px-Gilia_capitata.JPG"
     ],
@@ -99,7 +112,9 @@
       "lady's leek",
       "nodding onion"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/allium%20cernuum",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/allium%20cernuum"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Allium_cernuum_1.jpg/220px-Allium_cernuum_1.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -118,7 +133,9 @@
       "Purple Coneflower",
       "Purple-Coneflower"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/echinacea%20purpurea",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/echinacea%20purpurea"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Echinacea_purpurea_Grandview_Prairie.jpg/220px-Echinacea_purpurea_Grandview_Prairie.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Status_TNC_G4.svg/220px-Status_TNC_G4.svg.png"
@@ -130,7 +147,9 @@
       "erigeron_speciosus"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/erigeron%20speciosus",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/erigeron%20speciosus"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Erigeron_speciosus_01.jpg/220px-Erigeron_speciosus_01.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -144,7 +163,9 @@
     "common_name": [
       "arctic lupine"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/lupinus%20arcticus",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/lupinus%20arcticus"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Lupinus_arcticus.jpg/220px-Lupinus_arcticus.jpg"
     ],
@@ -155,7 +176,9 @@
       "campanula_rotundifolia"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/campanula%20rotundifolia",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/campanula%20rotundifolia"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Campanula_rotondifolia.jpg/220px-Campanula_rotondifolia.jpg"
     ],
@@ -170,7 +193,9 @@
       "Large-leaved lupin",
       "Russel lupin"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/lupinus%20polyphyllus",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/lupinus%20polyphyllus"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Lupinus_polyphyllus.JPG/220px-Lupinus_polyphyllus.JPG"
     ],
@@ -182,7 +207,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -190,16 +216,19 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
       "aruncus_dioicus"
     ],
     "common_name": [
-      "Buck's-beard"
+      "bride's feathers"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/aruncus%20dioicus",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/aruncus%20dioicus"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Aruncus_dioicus_1549.JPG/220px-Aruncus_dioicus_1549.JPG"
     ],
@@ -212,7 +241,9 @@
     "common_name": [
       "Red-Osier Dogwood"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/cornus%20stolonifera",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/cornus%20stolonifera"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Red_Osier_Dogwood.jpg/220px-Red_Osier_Dogwood.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png",
@@ -226,7 +257,9 @@
       "amelanchier_alnifolia"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/amelanchier%20alnifolia",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/amelanchier%20alnifolia"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Amelanchier_alnifolia_var._semiintegrifolia_4.jpg/220px-Amelanchier_alnifolia_var._semiintegrifolia_4.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Amelanchier_alnifolia_range_map_1.png/220px-Amelanchier_alnifolia_range_map_1.png"
@@ -238,9 +271,11 @@
       "sambucus_cerulea"
     ],
     "common_name": [
-      "Blue elderberry"
+      "Sambucus cerulea Sambucus nigra subsp. cerulea"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/sambucus%20cerulea",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/sambucus%20cerulea"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Sambucus_caerulea_8012.jpg/220px-Sambucus_caerulea_8012.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Sambucus_nigra_cerulea_range_map_3.png/220px-Sambucus_nigra_cerulea_range_map_3.png"
@@ -253,7 +288,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -262,7 +298,9 @@
     "common_name": [
       "Lewis' mock-orange"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/philadelphus%20lewisii",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/philadelphus%20lewisii"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Philadelphus_lewisii_5.jpg/220px-Philadelphus_lewisii_5.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png",
@@ -275,7 +313,9 @@
       "syringa_meyeri"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/syringa%20meyeri",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/syringa%20meyeri"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Syringia_julianae0.jpg/220px-Syringia_julianae0.jpg"
     ],
@@ -288,7 +328,9 @@
     "common_name": [
       "Redflower currant"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/ribes%20sanguineum",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/ribes%20sanguineum"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Pink_Flowering_Currant_closeup%2C_Ribes_sanguineum.jpg/220px-Pink_Flowering_Currant_closeup%2C_Ribes_sanguineum.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png",
@@ -302,7 +344,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -310,7 +353,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -319,7 +363,9 @@
     "common_name": [
       "Lamb's-ear"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/stachys%20byzantina",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/stachys%20byzantina"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/0_Stachys_byzantina_-_Yvoire_%282%29.JPG/220px-0_Stachys_byzantina_-_Yvoire_%282%29.JPG"
     ],
@@ -333,7 +379,9 @@
       "blue lungwort",
       "common lungwort"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/pulmonaria%20officinalis",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/pulmonaria%20officinalis"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Pulmonaria_officinalis_800.jpg/220px-Pulmonaria_officinalis_800.jpg"
     ],
@@ -344,7 +392,9 @@
       "cornus_canadensis"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/cornus%20canadensis",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/cornus%20canadensis"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/CanadianDogwoodGrowingTrailSide_cropped.jpg/220px-CanadianDogwoodGrowingTrailSide_cropped.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -360,7 +410,9 @@
       "May-lily",
       "false lily-of-the-valley"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/maianthemum%20dilatatum",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/maianthemum%20dilatatum"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Maianthemum_dilatatum_0764.JPG/220px-Maianthemum_dilatatum_0764.JPG"
     ],
@@ -373,7 +425,9 @@
     "common_name": [
       "Bearberry"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/arctostaphylos%20uva-ursi",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/arctostaphylos%20uva-ursi"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Arctostaphylos_uva-ursi_25924.JPG/220px-Arctostaphylos_uva-ursi_25924.JPG",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -386,7 +440,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -396,7 +451,9 @@
       "Oregon wood-sorrel",
       "redwood-sorrel"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/oxalis%20oregana",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/oxalis%20oregana"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Oxalis_oregana_4988.JPG/220px-Oxalis_oregana_4988.JPG"
     ],
@@ -411,7 +468,9 @@
       "broad-leaved stonecrop",
       "spatula-leaved stonecrop"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/sedum%20spathulifolium",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/sedum%20spathulifolium"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Sedum_spathulifolium_5165.JPG/220px-Sedum_spathulifolium_5165.JPG"
     ],
@@ -422,7 +481,9 @@
       "euphorbia_polychroma"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/euphorbia%20polychroma",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/euphorbia%20polychroma"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Euphorbia_epithymoides_MA.jpg/220px-Euphorbia_epithymoides_MA.jpg"
     ],
@@ -433,11 +494,13 @@
       "sedum_lanceolatum"
     ],
     "common_name": [
-      "lance-leaf stonecrop",
-      "lanceleaf stonecrop",
-      "spearleaf stonecrop"
+      "common stonecrop",
+      "lance-leaved stonecrop",
+      "spear-leaved stonecrop"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/sedum%20lanceolatum",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/sedum%20lanceolatum"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Sedum_lanceolatum_5926.JPG/220px-Sedum_lanceolatum_5926.JPG"
     ],
@@ -449,16 +512,20 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
       "euphorbia_amygdaloides"
     ],
     "common_name": [
+      "wood spurge",
       "Wood Spurge"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/euphorbia%20amygdaloides",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/euphorbia%20amygdaloides"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Amandelwolfsmelk_Euphorbia_amygdaloides_closeup.jpg/220px-Amandelwolfsmelk_Euphorbia_amygdaloides_closeup.jpg"
     ],
@@ -470,7 +537,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -481,7 +549,9 @@
       "evergreen blueberry",
       "evergreen huckleberry"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/vaccinium%20ovatum",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/vaccinium%20ovatum"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Vacciniumovatum.jpg/220px-Vacciniumovatum.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Vaccinium_ovatum_%283438582162%29.jpg/220px-Vaccinium_ovatum_%283438582162%29.jpg"
@@ -494,7 +564,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -507,11 +578,13 @@
       "Oregon grape-holly",
       "Oregon-grape"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/berberis%20nervosa",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/berberis%20nervosa"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Mahonia_nervosa_-_Oregon_grape.jpg/220px-Mahonia_nervosa_-_Oregon_grape.jpg"
     ],
-    "species_description": "Mahonia nervosa, commonly known as dwarf Oregon-grape, Cascade barberry, Cascade Oregon-grape, or dull Oregon-grape, is a flowering plant native to the northwest coast of North America from southern British Columbia south to central California, with an isolated population inland in northern Idaho. It is especially common in second growth, Douglas-fir or western redcedar forests, making use of those pools of sunlight that intermittently reach the ground.Some authors place the entire genus Mahonia within the genus Berberis.The plant was collected by Lewis and Clark during their famous expedition to the West before being described for western science by Frederick T. Pursh in 1813."
+    "species_description": "Berberis nervosa, commonly known as dwarf Oregon-grape, Cascade barberry, Cascade Oregon-grape, or dull Oregon-grape, is a flowering plant native to the northwest coast of North America from southern British Columbia south to central California, with an isolated population inland in northern Idaho. It is especially common in second growth, Douglas-fir or western redcedar forests, making use of those pools of sunlight that intermittently reach the ground.The plant was collected by Lewis and Clark during their famous expedition to the West before being described for western science by Frederick T. Pursh in 1813."
   },
   {
     "scientific_name": [
@@ -521,7 +594,9 @@
       "Oregon-grape",
       "hollyleaved barberry"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/berberis%20aquifolium",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/berberis%20aquifolium"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Mahonia_aquifolium.jpg/220px-Mahonia_aquifolium.jpg"
     ],
@@ -534,7 +609,9 @@
     "common_name": [
       "winter daphne"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/daphne%20odora",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/daphne%20odora"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Daphne_odora-ja01.jpg/220px-Daphne_odora-ja01.jpg"
     ],
@@ -549,7 +626,9 @@
       "holly osmanthus",
       "holly-olive"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/osmanthus%20heterophyllus",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/osmanthus%20heterophyllus"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Osmanthus_heterophyllus3.jpg/220px-Osmanthus_heterophyllus3.jpg"
     ],
@@ -561,7 +640,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -569,7 +649,9 @@
       "sambucus_racemosa_melanocarpa"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/sambucus%20racemosa%20subsp.%20pubens",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/sambucus%20racemosa%20subsp.%20pubens"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Sambucus_pubens.jpg/220px-Sambucus_pubens.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Sambucus_pubens_2_%285098100028%29.jpg/220px-Sambucus_pubens_2_%285098100028%29.jpg"
@@ -582,7 +664,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -596,7 +679,9 @@
       "Japanese-Creeper",
       "Japanese-Ivy"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/parthenocissus%20tricuspidata",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/parthenocissus%20tricuspidata"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Poertschach_Hauptstrasse_Parthenocissus_tricuspidata_Blattwerk_04062015_4423.jpg/220px-Poertschach_Hauptstrasse_Parthenocissus_tricuspidata_Blattwerk_04062015_4423.jpg"
     ],
@@ -609,7 +694,9 @@
     "common_name": [
       "hard fern"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/blechnum%20spicant",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/blechnum%20spicant"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Blechnum_spicant_%28fertile_and_sterile_fronts%29.jpg/220px-Blechnum_spicant_%28fertile_and_sterile_fronts%29.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -624,7 +711,9 @@
       "pick-a-back-plant",
       "youth-on-age"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/tolmiea%20menziesii",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/tolmiea%20menziesii"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Tolmiea_menziesii_-_Youth-on-Age.jpg/220px-Tolmiea_menziesii_-_Youth-on-Age.jpg"
     ],
@@ -638,7 +727,9 @@
       "salal",
       "shallal"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/gaultheria%20shallon",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/gaultheria%20shallon"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Gaultheria_shallon_RF.jpg/220px-Gaultheria_shallon_RF.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png",
@@ -653,7 +744,9 @@
     "common_name": [
       "orange honeysuckle"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/lonicera%20ciliosa",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/lonicera%20ciliosa"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Lonicera_ciliosa_13335.JPG/220px-Lonicera_ciliosa_13335.JPG"
     ],
@@ -665,7 +758,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -673,26 +767,19 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
       "iris_ensata"
     ],
     "common_name": [
-      "Japanese iris",
-      "Beaked Iris",
-      "Japanese iris",
-      "Kaempfer's iris",
-      "Russian iris",
-      "Japanese iris",
-      "beaked iris",
-      "jade cicada-flower",
-      "Japanese water iris",
-      "sword-leaf iris",
       "Beaked Iris"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/iris%20ensata",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/iris%20ensata"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Iris_ensata_Thunb.jpg/220px-Iris_ensata_Thunb.jpg"
     ],
@@ -703,7 +790,9 @@
       "eriophorum_angustifolium"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/eriophorum%20angustifolium",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/eriophorum%20angustifolium"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Eriophorum_angustifolium_upernavik_2007-08-01_1.jpg/220px-Eriophorum_angustifolium_upernavik_2007-08-01_1.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -719,7 +808,9 @@
       "western blue flag",
       "western blue iris"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/iris%20missouriensis",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/iris%20missouriensis"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Iris_missouriensis_9423.JPG/220px-Iris_missouriensis_9423.JPG"
     ],
@@ -736,7 +827,9 @@
       "Small-Flowered Bulrush",
       "Small-Fruited Bulrush"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/scirpus%20microcarpus",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/scirpus%20microcarpus"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Scirpus_microcarpus_FWS-1.jpg/220px-Scirpus_microcarpus_FWS-1.jpg"
     ],
@@ -747,7 +840,9 @@
       "penstemon_barbatus"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/penstemon%20barbatus",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/penstemon%20barbatus"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Penstemon_barbatus_kz01.jpg/220px-Penstemon_barbatus_kz01.jpg"
     ],
@@ -760,7 +855,9 @@
     "common_name": [
       "dense blazing star"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/liatris%20spicata",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/liatris%20spicata"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Liatris_spicata_002.JPG/220px-Liatris_spicata_002.JPG",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -773,7 +870,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -781,7 +879,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -789,14 +888,17 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
       "aurinia_saxatilis"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/aurinia%20saxatilis",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/aurinia%20saxatilis"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Aurinia_saxatilis_TK_2021-04-22_4.jpg/220px-Aurinia_saxatilis_TK_2021-04-22_4.jpg"
     ],
@@ -809,7 +911,9 @@
     "common_name": [
       "Oregon stonecrop"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/sedum%20oreganum",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/sedum%20oreganum"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Sedum_oreganum_0958.JPG/220px-Sedum_oreganum_0958.JPG"
     ],
@@ -820,7 +924,9 @@
       "helianthemum_nummularium"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/helianthemum%20nummularium",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/helianthemum%20nummularium"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Sonnenr%C3%B6schen.jpg/220px-Sonnenr%C3%B6schen.jpg"
     ],
@@ -834,7 +940,9 @@
       "Pacific bleeding-heart",
       "bleeding-heart"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/dicentra%20formosa",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/dicentra%20formosa"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Dicentra_formosa_6897.JPG/220px-Dicentra_formosa_6897.JPG"
     ],
@@ -849,7 +957,9 @@
       "Lewis' monkeyflower",
       "purple monkeyflower"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/mimulus%20lewisii",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/mimulus%20lewisii"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Mimulus_lewisii_8189.JPG/220px-Mimulus_lewisii_8189.JPG"
     ],
@@ -861,7 +971,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -870,7 +981,9 @@
     "common_name": [
       "Western Columbine"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/aquilegia%20formosa",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/aquilegia%20formosa"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Aquilegia_formosa_6742.JPG/220px-Aquilegia_formosa_6742.JPG"
     ],
@@ -883,7 +996,9 @@
     "common_name": [
       "clustered bellflower"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/campanula%20glomerata",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/campanula%20glomerata"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Campanula_glomerata.JPG/220px-Campanula_glomerata.JPG"
     ],
@@ -900,7 +1015,9 @@
       "wildbergamot beebalm",
       "wildbergamot horsemint"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/monarda%20fistulosa",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/monarda%20fistulosa"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Monarda_fistulosa_Arkansas.jpg/220px-Monarda_fistulosa_Arkansas.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -913,7 +1030,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -922,7 +1040,9 @@
     "common_name": [
       "dwarf mountain fleabane"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/erigeron%20compositus",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/erigeron%20compositus"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Erigeron_compositus_%288161931839%29.jpg/220px-Erigeron_compositus_%288161931839%29.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Erigeron_compositus_JHT_IMG_3791.jpg/220px-Erigeron_compositus_JHT_IMG_3791.jpg",
@@ -935,7 +1055,9 @@
       "leucanthemum_x_superbum"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/leucanthemum%20x%20superbum",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/leucanthemum%20x%20superbum"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Leucanthemum_x_superbum_%27Becky%27_in_NH.jpg/220px-Leucanthemum_x_superbum_%27Becky%27_in_NH.jpg"
     ],
@@ -949,7 +1071,9 @@
       "smooth fleabane",
       "streamside fleabane"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/erigeron%20glabellus",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/erigeron%20glabellus"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Erigeron_glabellus0.jpg/220px-Erigeron_glabellus0.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -962,16 +1086,19 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
       "cerastium_tomentosum"
     ],
     "common_name": [
-      "Snow in summer"
+      "Snow-in-summer"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/cerastium%20tomentosum",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/cerastium%20tomentosum"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Cerastium_tomentosum.jpg/220px-Cerastium_tomentosum.jpg"
     ],
@@ -987,7 +1114,9 @@
       "western wild ginger",
       "wild ginger"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/asarum%20caudatum",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/asarum%20caudatum"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Asarum_caudatum_10993.JPG/220px-Asarum_caudatum_10993.JPG",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -999,7 +1128,9 @@
       "astilbe_x_arendsii"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/astilbe%20x%20arendsii",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/astilbe%20x%20arendsii"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/AstilbeArendsiiGroupWeisseGloria1UME.jpg/220px-AstilbeArendsiiGroupWeisseGloria1UME.jpg"
     ],
@@ -1012,7 +1143,9 @@
     "common_name": [
       "Steeple-bush"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/spiraea%20douglasii",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/spiraea%20douglasii"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Spiraea_douglasii_01.jpg/220px-Spiraea_douglasii_01.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -1024,7 +1157,9 @@
       "veronica_spicata"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/veronica%20spicata",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/veronica%20spicata"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Bombus_norvegicus_-_Veronica_spicata_-_Keila.jpg/220px-Bombus_norvegicus_-_Veronica_spicata_-_Keila.jpg"
     ],
@@ -1037,7 +1172,9 @@
     "common_name": [
       "Pacific ninebark"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/physocarpus%20capitatus",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/physocarpus%20capitatus"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Physocarpus_capitatus_9540.JPG/220px-Physocarpus_capitatus_9540.JPG"
     ],
@@ -1048,12 +1185,17 @@
       "salix_exigua"
     ],
     "common_name": [
-      "coyote willow",
-      "desert willow",
-      "narrowleaf willow",
-      "sandbar willow"
+      "Coyote Willow",
+      "Desert Willow",
+      "Narrow-Leaf Willow",
+      "Narrow-Leaved Willow",
+      "Narrowleaf Willow",
+      "Sandbar Willow",
+      "Western Sandbar Willow"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/salix%20exigua",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/salix%20exigua"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Salix_exigua_staminate_catkin_2003-06-04.jpg/220px-Salix_exigua_staminate_catkin_2003-06-04.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Salix_exigua_exigua%2C_interior_%26_hindsiana_range_map_2.png/220px-Salix_exigua_exigua%2C_interior_%26_hindsiana_range_map_2.png"
@@ -1065,7 +1207,9 @@
       "salix_scouleriana"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/salix%20scouleriana",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/salix%20scouleriana"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Salix_scouleriana_UGA.jpg/220px-Salix_scouleriana_UGA.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Salix_scouleriana_range_map_1.png/220px-Salix_scouleriana_range_map_1.png"
@@ -1079,7 +1223,9 @@
     "common_name": [
       "Silver-berry"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/elaeagnus%20commutata",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/elaeagnus%20commutata"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Elaeagnus_commutata_USDA.jpg/220px-Elaeagnus_commutata_USDA.jpg"
     ],
@@ -1091,7 +1237,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -1099,44 +1246,19 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
       "cotinus_coggygria"
     ],
     "common_name": [
-      "Common Smoketree",
-      "European Smoketree",
-      "Fustet",
-      "Smoke-Bush",
-      "Smoke-Tree",
-      "Smokebush",
-      "Smoketree",
-      "Venetian Sumac",
-      "Venetian-Sumac",
-      "Wig Tree",
-      "Wigtree",
-      "Young Fustic",
-      "Smoke-Tree",
-      "Smoke-bush",
-      "Venetian Sumac",
-      "Wig tree",
-      "European smoketree",
-      "European smoketree",
-      "common smoketree",
-      "smokebush",
-      "smoketree",
-      "fustet",
-      "Venetian-sumac",
-      "young fustic",
-      "smokebush",
-      "smoketree",
-      "wigtree",
-      "Smoke-Tree",
-      "Smoke-tree"
+      "European smoketree"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/cotinus%20coggygria",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/cotinus%20coggygria"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Cotinus_coggygria5.jpg/220px-Cotinus_coggygria5.jpg"
     ],
@@ -1148,7 +1270,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -1163,7 +1286,9 @@
       "Pride-Of-India",
       "Pride-of-India"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/koelreuteria%20paniculata",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/koelreuteria%20paniculata"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/%28MHNT%29_Koelreuteria_paniculata_-Leaves_and_inflorescences_-_Palais_Niel.jpg/220px-%28MHNT%29_Koelreuteria_paniculata_-Leaves_and_inflorescences_-_Palais_Niel.jpg"
     ],
@@ -1176,7 +1301,9 @@
     "common_name": [
       "Oregon ash"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/fraxinus%20latifolia",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/fraxinus%20latifolia"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Fraxinus_latifolia_JPG1A.jpg/220px-Fraxinus_latifolia_JPG1A.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Fraxinus_latifolia_JPG1Fe.jpg/220px-Fraxinus_latifolia_JPG1Fe.jpg",
@@ -1217,7 +1344,9 @@
       "red sumac",
       "upland sumach"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/rhus%20glabra",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/rhus%20glabra"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Rhus_glabra_AR.jpg/220px-Rhus_glabra_AR.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Rhus_glabra_range_map_4.png/220px-Rhus_glabra_range_map_4.png"
@@ -1233,7 +1362,9 @@
       "tulip-poplar",
       "yellow-poplar"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/liriodendron%20tulipifera",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/liriodendron%20tulipifera"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Liriodendron_tulipifera_%28arbre%29_-_Laeken.JPG/220px-Liriodendron_tulipifera_%28arbre%29_-_Laeken.JPG",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Liriodendron_tulipifera12.jpg/220px-Liriodendron_tulipifera12.jpg",
@@ -1247,7 +1378,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -1255,7 +1387,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -1266,7 +1399,9 @@
       "Oregon tea",
       "yerba buena"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/clinopodium%20douglasii",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/clinopodium%20douglasii"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Yerba_Buena_-_Clinopodium_douglasii.jpg/220px-Yerba_Buena_-_Clinopodium_douglasii.jpg"
     ],
@@ -1280,7 +1415,9 @@
     "common_name": [
       "Bearded Iris"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/iris%20germanica",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/iris%20germanica"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Iris_Germanica_2012-2.jpg/220px-Iris_Germanica_2012-2.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Deutsche_Schwertlilie_%28Iris_%C3%97_germanica%29_im_Garten.jpg/220px-Deutsche_Schwertlilie_%28Iris_%C3%97_germanica%29_im_Garten.jpg"
@@ -1295,7 +1432,9 @@
       "blue flag",
       "southern blue flag"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/iris%20virginica",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/iris%20virginica"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Iris_virginica_2.jpg/220px-Iris_virginica_2.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -1310,7 +1449,9 @@
       "tough-leaf iris",
       "Oregon flag"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/iris%20tenax",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/iris%20tenax"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Iris_Tenax%2C_Coastal_Oregon%2C_April_2015.jpg/220px-Iris_Tenax%2C_Coastal_Oregon%2C_April_2015.jpg"
     ],
@@ -1322,7 +1463,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -1330,7 +1472,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -1338,7 +1481,8 @@
     ],
     "common_name": [],
     "resource_links": [],
-    "image_links": []
+    "image_links": [],
+    "species_description": ""
   },
   {
     "scientific_name": [
@@ -1347,7 +1491,9 @@
     "common_name": [
       "pineneedle beardtongue"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/penstemon%20pinifolius",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/penstemon%20pinifolius"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Penstemon_pinifolius2.jpg/220px-Penstemon_pinifolius2.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Status_TNC_G4.svg/220px-Status_TNC_G4.svg.png"
@@ -1361,7 +1507,9 @@
     "common_name": [
       "Snapdragon"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/antirrhinum%20majus",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/antirrhinum%20majus"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Antirrhinum_majus_from_Thasos.JPG/220px-Antirrhinum_majus_from_Thasos.JPG"
     ],
@@ -1374,7 +1522,9 @@
     "common_name": [
       "Duck-potato"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/sagittaria%20latifolia",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/sagittaria%20latifolia"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Sagittaria_latifolia_%28flowers%29.jpg/220px-Sagittaria_latifolia_%28flowers%29.jpg"
     ],
@@ -1391,7 +1541,9 @@
       "coontail",
       "hornwort"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/ceratophyllum%20demersum",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/ceratophyllum%20demersum"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ceratophyllum_demersum.jpg/220px-Ceratophyllum_demersum.jpg"
     ],
@@ -1404,7 +1556,9 @@
     "common_name": [
       "American Vervain"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/verbena%20hastata",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/verbena%20hastata"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Verbena_hastata.JPG/220px-Verbena_hastata.JPG",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -1418,7 +1572,9 @@
     "common_name": [
       "White turtlehead or balmony"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/chelone%20glabra",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/chelone%20glabra"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Chelone_glabra_Red_River_Gorge.JPG/220px-Chelone_glabra_Red_River_Gorge.JPG",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -1430,10 +1586,10 @@
       "eupatorium_maculatum",
       "eupatorium_maculatum_maculatum"
     ],
-    "common_name": [
-      "Joe Pye Weed"
+    "common_name": [],
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/eupatorium%20maculatum"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/eupatorium%20maculatum",
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Flower_Buds.JPG/220px-Flower_Buds.JPG",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -1451,7 +1607,9 @@
       "swamp rose-mallow",
       "water mallow"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/hibiscus%20moscheutos",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/hibiscus%20moscheutos"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Swamp_rose-mallow.jpg/220px-Swamp_rose-mallow.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -1472,7 +1630,9 @@
       "swamp milkweed",
       "swamp milkweed"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/asclepias%20incarnata",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/asclepias%20incarnata"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Swamp_milkweed_monarch.jpg/220px-Swamp_milkweed_monarch.jpg"
     ],
@@ -1483,27 +1643,13 @@
       "eupatorium_perfoliatum"
     ],
     "common_name": [
-      "Boneset",
-      "Chapman'S Thoroughwort",
-      "Common Boneset",
-      "Perfoliate Thoroughwort",
-      "Thoroughwax",
-      "Thoroughwort",
-      "Boneset",
-      "Chapman'S Thoroughwort",
-      "Common Boneset",
-      "Perfoliate Thoroughwort",
-      "Thoroughwax",
-      "Thoroughwort",
       "boneset",
       "common boneset",
-      "perfoliate thoroughwort",
-      "boneset",
-      "common boneset",
-      "thoroughwax",
-      "thoroughwort"
+      "perfoliate thoroughwort"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/eupatorium%20perfoliatum",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/eupatorium%20perfoliatum"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Eupatorium_perfoliatum_001.JPG/220px-Eupatorium_perfoliatum_001.JPG",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png",
@@ -1548,7 +1694,9 @@
       "meadow-bright",
       "kingcup"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/caltha%20palustris",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/caltha%20palustris"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Caltha_palustris_plant.JPG/220px-Caltha_palustris_plant.JPG"
     ],
@@ -1563,7 +1711,9 @@
       "eel-grass",
       "watercelery"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/vallisneria%20americana",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/vallisneria%20americana"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Vallisneria_americana_UMFS_3.JPG/220px-Vallisneria_americana_UMFS_3.JPG"
     ],
@@ -1574,9 +1724,11 @@
       "pontederia_cordata"
     ],
     "common_name": [
-      "pickerelweed"
+      "Pickerelweed"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/pontederia%20cordata",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/pontederia%20cordata"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Pontederia_cordata_4_PP.jpg/220px-Pontederia_cordata_4_PP.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png"
@@ -1588,7 +1740,9 @@
       "hippuris_vulgaris"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/hippuris%20vulgaris",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/hippuris%20vulgaris"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Hippuris_vulgaris_%28aka%29.jpg/220px-Hippuris_vulgaris_%28aka%29.jpg"
     ],
@@ -1599,7 +1753,9 @@
       "nymphaea_odorata"
     ],
     "common_name": [],
-    "resource_links": "https://en.wikipedia.org/wiki/nymphaea%20odorata",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/nymphaea%20odorata"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/N.Odorata.jpg/220px-N.Odorata.jpg"
     ],
@@ -1612,7 +1768,9 @@
     "common_name": [
       "cardinal flower"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/lobelia%20cardinalis",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/lobelia%20cardinalis"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Lobelia_cardinalis_-_Cardinal_Flower.jpg/220px-Lobelia_cardinalis_-_Cardinal_Flower.jpg"
     ],
@@ -1629,7 +1787,9 @@
       "multi-coloured blue flag",
       "northern blue flag"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/iris%20versicolor",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/iris%20versicolor"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Blue_Flag%2C_Ottawa.jpg/220px-Blue_Flag%2C_Ottawa.jpg"
     ],
@@ -1640,9 +1800,16 @@
       "acorus_calamus"
     ],
     "common_name": [
-      "Calamus"
+      "calamus",
+      "flagroot",
+      "sweet calamus",
+      "sweet-flag",
+      "sweetroot",
+      "myrtle-flag"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/acorus%20calamus",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/acorus%20calamus"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Acorus_calamus1.jpg/220px-Acorus_calamus1.jpg"
     ],
@@ -1658,7 +1825,9 @@
       "sheepberry",
       "sweet viburnum"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/viburnum%20lentago",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/viburnum%20lentago"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Viburnum_lentago_NRCS-006.jpg/220px-Viburnum_lentago_NRCS-006.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Viburnum_lentago_NRCS-005.jpg/220px-Viburnum_lentago_NRCS-005.jpg",
@@ -1676,7 +1845,9 @@
       "hobblebush",
       "witch hobble"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/viburnum%20lantanoides",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/viburnum%20lantanoides"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/ON_-_Algonquin_Provincial_Park_-_Bl%C3%BCte.jpg/220px-ON_-_Algonquin_Provincial_Park_-_Bl%C3%BCte.jpg"
     ],
@@ -1696,7 +1867,9 @@
       "Juneberry",
       "Shadblow"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/amelanchier%20arborea",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/amelanchier%20arborea"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Amelanchier_arborea_leaves.JPG/220px-Amelanchier_arborea_leaves.JPG",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png",
@@ -1711,7 +1884,9 @@
     "common_name": [
       "Allegheny serviceberry"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/amelanchier%20laevis",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/amelanchier%20laevis"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Amelanchier_laevis.jpg/220px-Amelanchier_laevis.jpg"
     ],
@@ -1724,7 +1899,9 @@
     "common_name": [
       "Canadian serviceberry"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/amelanchier%20canadensis",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/amelanchier%20canadensis"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Amelanchier_canadensis_flower.jpg/220px-Amelanchier_canadensis_flower.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Amelanchier_canadensis_berry.jpg/220px-Amelanchier_canadensis_berry.jpg"
@@ -1756,7 +1933,9 @@
       "benjamin-bush",
       "spicebush"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/lindera%20benzoin",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/lindera%20benzoin"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Spicebush_%284506720062%29.jpg/220px-Spicebush_%284506720062%29.jpg",
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/LIBE3.png/220px-LIBE3.png"
@@ -1774,7 +1953,9 @@
       "skunkbrush",
       "sweet sumac"
     ],
-    "resource_links": "https://en.wikipedia.org/wiki/rhus%20aromatica",
+    "resource_links": [
+      "https://en.wikipedia.org/wiki/rhus%20aromatica"
+    ],
     "image_links": [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Rhus_aromatica_foliage_catkins.jpg/220px-Rhus_aromatica_foliage_catkins.jpg"
     ],

@@ -54,11 +54,16 @@ exports.handler = async (event) => {
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
 			case "GET /alternativeSpecies":
-			  if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
-			    data = await sql`SELECT * FROM alternative_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
-			  } else {
-				  data = await sql`SELECT * FROM alternative_species`;
-			  }
+				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
+					data = await sql`SELECT * FROM alternative_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
+				} else {
+					data = await sql`SELECT * FROM alternative_species`;
+				}
+				
+				for(let i in data){
+					// Get list of images
+					data[i].images = await sql`SELECT * FROM images WHERE species_id = ${data[i].species_id};`;
+				}
 				response.body = JSON.stringify(data);
 				break;
 			case "POST /alternativeSpecies":
@@ -96,6 +101,10 @@ exports.handler = async (event) => {
 					// Check if required parameters are passed
 					if(bd.species_id){
 						data = await sql`SELECT * FROM alternative_species WHERE species_id = ${bd.species_id};`;
+						
+						// Get list of images
+						data[0].images = await sql`SELECT * FROM images WHERE species_id = ${data[0].species_id};`;
+						
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
@@ -111,32 +120,30 @@ exports.handler = async (event) => {
 					const bd = JSON.parse(event.body);
 					
 					// Check if required parameters are passed
-					if( bd.species_id && bd.scientific_name ){
+					if( event.pathParameters.species_id && bd.scientific_name ){
 						
 						// Optional parameters
 						const common_name = (bd.common_name) ? bd.common_name : [];
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
-						const image_links = (bd.image_links) ? bd.image_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
 						
 						await sql`
 							UPDATE alternative_species
 							SET scientific_name = ${bd.scientific_name}, 
-							  common_name = ${common_name},
+								common_name = ${common_name},
 								resource_links = ${resource_links}, 
-								image_links = ${image_links},
-								species_description = ${species_description},
+								species_description = ${species_description}
 							WHERE species_id = ${event.pathParameters.species_id};
 						`;
 						
 						response.body = "Updated the data to the alternative species";
 					} else {
 						response.statusCode = 400;
-						response.body = "Invalid value";
+						response.body = `Invalid value, required parameters are not provided`;
 					}
 				} else {
 					response.statusCode = 400;
-					response.body = "Invalid value";	
+					response.body = "Invalid value, body does not found" ;	
 				}
 				break;
 			case "DELETE /alternativeSpecies/{species_id}":

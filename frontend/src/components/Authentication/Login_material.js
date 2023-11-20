@@ -15,7 +15,7 @@ import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { green, red } from '@material-ui/core/colors';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Auth } from 'aws-amplify';
+import {Amplify, Auth} from 'aws-amplify';
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { updateLoginState } from "../../Actions/loginActions";
@@ -129,6 +129,9 @@ function Login(props) {
     const classes = useStyles();
 
     useEffect(() => {
+        console.log("process.env.REACT_APP_USERPOOL_ID: ", process.env.REACT_APP_USERPOOL_ID);
+        console.log("process.env.REACT_APP_USERPOOL_WEB_CLIENT_ID: ", process.env.REACT_APP_USERPOOL_WEB_CLIENT_ID);
+
         async function retrieveUser() {
             try {
                 Auth.currentAuthenticatedUser().then(user => {
@@ -179,87 +182,87 @@ function Login(props) {
         e.target.value === confirmPasswordString ? setPasswordUnmatchError(false) : setPasswordUnmatchError(true)
     }
 
-    // async function signUp() {
-    //     try {
-    //         console.log("try signup");
+    async function signUp() {
+        try {
+            console.log("try signup");
 
-    //         // check if both passwords match first before signing up
-    //         checkMatchingPasswords();
+            // check if both passwords match first before signing up
+            checkMatchingPasswords();
 
-    //         const { email, password, given_name, family_name } = formState;
-    //         checkEmptyString(given_name);
-    //         checkEmptyString(family_name);
+            const { email, password, given_name, family_name } = formState;
+            checkEmptyString(given_name);
+            checkEmptyString(family_name);
 
-    //         setLoading(true);
-    //         await Auth.signUp({
-    //             username: email,
-    //             password: password,
-    //             attributes: {
-    //                 given_name: given_name,
-    //                 family_name: family_name
-    //             }
-    //         });
-    //         updateFormState(() => ({ ...initialFormState, email }))
-    //         updateLoginState("confirmSignUp");
-    //         setLoading(false);
-    //     } catch (e) {
-    //         setLoading(false);
-    //         setEmptyInputError(false);
+            setLoading(true);
+            await Auth.signUp({
+                username: email,
+                password: password,
+                attributes: {
+                    given_name: given_name,
+                    family_name: family_name
+                }
+            });
+            updateFormState(() => ({ ...initialFormState, email }))
+            updateLoginState("confirmSignUp");
+            setLoading(false);
+        } catch (e) {
+            setLoading(false);
+            setEmptyInputError(false);
 
-    //         const errorMsg = e.message;
+            const errorMsg = e.message;
 
-    //         if (errorMsg.includes("empty")) {
-    //             setEmptyInputError(true);
-    //         } else if (errorMsg.includes("Username should be an email.")) {
-    //             setInvalidEmailError(true);
-    //         } else if (errorMsg.includes("given email already exists")) {
-    //             setAccountCreationEmailExistError(true);
-    //         } else if (errorMsg.includes("Passwords do not match")) {
-    //             setPasswordUnmatchError(true)
-    //         } else {
-    //             setAccountCreationPasswordError(true);
-    //         }
-    //     }
-    // }
+            if (errorMsg.includes("empty")) {
+                setEmptyInputError(true);
+            } else if (errorMsg.includes("Username should be an email.")) {
+                setInvalidEmailError(true);
+            } else if (errorMsg.includes("given email already exists")) {
+                setAccountCreationEmailExistError(true);
+            } else if (errorMsg.includes("Passwords do not match")) {
+                setPasswordUnmatchError(true)
+            } else {
+                setAccountCreationPasswordError(true);
+            }
+        }
+    }
 
     // confirmSignUp shows after signUp page
-    // async function confirmSignUp() {
-    //     // Verify Account with confirmation code after sign up page
-    //     try {
-    //         console.log("try confirm signup");
+    async function confirmSignUp() {
+        // Verify Account with confirmation code after sign up page
+        try {
+            console.log("try confirm signup");
 
-    //         setNewVerification(false);
-    //         const { email, authCode } = formState;
-    //         setLoading(true);
-    //         await Auth.confirmSignUp(email, authCode);
-    //         resetStates("signedIn");
-    //         setLoading(false);
-    //     } catch (e) {
-    //         setVerificationError(true);
-    //         setLoading(false);
+            setNewVerification(false);
+            const { email, authCode } = formState;
+            setLoading(true);
+            await Auth.confirmSignUp(email, authCode);
+            resetStates("signedIn");
+            setLoading(false);
+        } catch (e) {
+            setVerificationError(true);
+            setLoading(false);
 
-    //         const errorMsg = e.message;
-    //         if (errorMsg.includes("time")) {
-    //             setTimeLimitError(errorMsg);
-    //         }
-    //     }
-    // }
+            const errorMsg = e.message;
+            if (errorMsg.includes("time")) {
+                setTimeLimitError(errorMsg);
+            }
+        }
+    }
 
-    // async function resendConfirmationCode() {
-    //     try {
-    //         const { email } = formState;
-    //         setVerificationError(false);
-    //         await Auth.resendSignUp(email);
-    //         setNewVerification(true);
-    //     } catch (err) {
-    //         setNewVerification(false);
+    async function resendConfirmationCode() {
+        try {
+            const { email } = formState;
+            setVerificationError(false);
+            await Auth.resendSignUp(email);
+            setNewVerification(true);
+        } catch (err) {
+            setNewVerification(false);
 
-    //         const errorMsg = err.message;
-    //         if (errorMsg.includes("time")) {
-    //             setTimeLimitError(errorMsg);
-    //         }
-    //     }
-    // }
+            const errorMsg = err.message;
+            if (errorMsg.includes("time")) {
+                setTimeLimitError(errorMsg);
+            }
+        }
+    }
 
     async function signIn() {
         try {
@@ -661,7 +664,7 @@ function Login(props) {
                                         }}
                                     />
                                     <BackAndSubmitButtons backAction={() => resetStates("signIn")}
-                                        // submitAction={signUp} submitMessage={"Sign Up"}
+                                        submitAction={signUp} submitMessage={"Sign Up"}
                                         loadingState={loading} />
                                 </Grid>
                             )
@@ -687,13 +690,13 @@ function Login(props) {
                                     </Grid>
                                     <Grid>
                                         <span>Didn't receive your verification code?</span>
-                                        {/* <Button onClick={resendConfirmationCode}>
+                                        <Button onClick={resendConfirmationCode}>
                                             <span className={classes.underlineText}>Resend Code</span>
-                                        </Button> */}
+                                        </Button>
                                     </Grid>
                                     <BackAndSubmitButtons
                                         backAction={() => resetStates("signUp")}
-                                        // submitAction={confirmSignUp}
+                                        submitAction={confirmSignUp}
                                         submitMessage={"Verify"}
                                         loadingState={loading}
                                     />

@@ -13,6 +13,8 @@ tags:
     description: The alternative spcies route information
   - name: Save List
     description: The save list route information
+  - name: Images
+    description: The image route information
 x-amazon-apigateway-request-validators: 
   all:
     validateRequestParameters : true
@@ -216,6 +218,13 @@ paths:
           description: Scientific name following lowercase and underscore for space format
           schema: 
             type: string
+        - in: query
+          name: region_id
+          required: false
+          description: uuid of a region
+          schema: 
+            type: string
+            format: uuid
       responses:
         "200": 
           description: Data Available
@@ -526,6 +535,90 @@ paths:
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         type: "aws_proxy" 
+  /plantsImages:
+    <<: *commonOptions
+    get: 
+      tags:
+        - Images
+      summary: Get the list of available images
+      operationId: images_GET
+      responses:
+        "200": 
+          description: Data Available
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Internal Server Error
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambImages.Arn}/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+    post: 
+      tags:
+        - Images
+      summary: Add an image
+      operationId: images_POST
+      responses:
+        "200": 
+          description: Data Available
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Internal Server Error    
+      x-amazon-apigateway-request-validator: all        
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambImages.Arn}/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Image'
+  /plantsImages/{image_id}:
+    <<: *commonOptions
+    delete: 
+      tags:
+        - Images
+      summary: Delete an image from images table
+      operationId: image_imageID_DELETE
+      parameters:
+        - in: path
+          name: image_id
+          required: true
+          schema: 
+            type: string
+            format: uuid
+      responses:
+        "200": 
+          description: Data Available
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "429":
+          description: Too Many Requests
+        "500":
+          description: Internal Server Error             
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambImages.Arn}/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "POST"
+        type: "aws_proxy" 
   /saveList:
     <<: *commonOptions
     get: 
@@ -727,7 +820,6 @@ components:
           description: List of links to the resources
           items:
             type: string
-          example: [ "http://example.com/resources/tiger", "http://example.com/resources/cheetah" ]
         species_description:
           type: string
           description: Description of the species
@@ -737,12 +829,13 @@ components:
           description: List of region_id
           items:
             type: string
+            format: uuid
         alternative_species:
           type: array
           description: List of alternative species based on alternative species_id
           items:
             type: string
-          example: [ "lycaon_pictus", "vulpes_vulpes" ]
+            format: uuid
     AlternativeSpecies:
       type: object
       required:
@@ -785,3 +878,24 @@ components:
           description: List of saved species based on scientific name
           items:
             type: string
+    Image:
+      type: object
+      required:
+        - species_id
+      properties:
+        species_id:
+          type: string
+          format: uuid
+          description: Unique identifier for the species.
+        s3_key:
+          type: string
+          description: The S3 key where the image is stored. Either s3_key or image_url is required.
+        image_url:
+          type: string
+          description: URL of the image. Either image_url or s3_key is required.
+        description:
+          type: string
+          description: Description of the image.
+        license:
+          type: string
+          description: License information for the image.
