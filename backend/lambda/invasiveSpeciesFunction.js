@@ -132,7 +132,7 @@ exports.handler = async (event) => {
 					const bd = JSON.parse(event.body);
 					
 					// Check if required parameters are passed
-					if( bd.species_id && bd.scientific_name ){
+					if( event.pathParameters.species_id && bd.scientific_name ){
 						
 						// Optional parameters
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];

@@ -120,20 +120,18 @@ exports.handler = async (event) => {
 					const bd = JSON.parse(event.body);
 					
 					// Check if required parameters are passed
-					if( bd.species_id && bd.scientific_name ){
+					if( event.pathParameters.species_id && bd.scientific_name ){
 						
 						// Optional parameters
 						const common_name = (bd.common_name) ? bd.common_name : [];
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
-						const image_links = (bd.image_links) ? bd.image_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
 						
 						await sql`
 							UPDATE alternative_species
 							SET scientific_name = ${bd.scientific_name}, 
-							  common_name = ${common_name},
+								common_name = ${common_name},
 								resource_links = ${resource_links}, 
-								image_links = ${image_links},
 								species_description = ${species_description}
 							WHERE species_id = ${event.pathParameters.species_id};
 						`;
@@ -141,11 +139,11 @@ exports.handler = async (event) => {
 						response.body = "Updated the data to the alternative species";
 					} else {
 						response.statusCode = 400;
-						response.body = "Invalid value";
+						response.body = `Invalid value, required parameters are not provided`;
 					}
 				} else {
 					response.statusCode = 400;
-					response.body = "Invalid value";	
+					response.body = "Invalid value, body does not found" ;	
 				}
 				break;
 			case "DELETE /alternativeSpecies/{species_id}":
