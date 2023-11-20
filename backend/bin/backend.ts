@@ -5,7 +5,6 @@ import { VpcStack } from '../lib/vpc-stack';
 import {DBStack} from '../lib/database-stack';
 import {DBFlowStack} from '../lib/dbFlow-stack';
 import { FunctionalityStack } from '../lib/functionality-stack';
-import { EcrStack } from '../lib/ecr-stack';
 import { HostStack } from '../lib/host-stack';
 // Create application
 const app = new cdk.App();
