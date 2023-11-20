@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-// import RegionsTestData from "../test_data/regionsTestData";
 import SnackbarOnSuccess from "../components/SnackbarComponent";
 import CustomAlert from "../components/AlertComponent";
 import CustomWarning from "../components/WarningComponent";

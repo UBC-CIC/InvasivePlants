@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
+import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 
@@ -15,23 +15,23 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         setShowSaveConfirmation(false);
     };
 
-    // const handleImageUpload = (e) => {
-    //     const files = e.target.files;
-    //     if (files) {
-    //         let imageLinks = tempData.image_links ? [...tempData.image_links] : [];
-    //         for (let i = 0; i < files.length; i++) {
-    //             imageLinks.push(files[i].name);
-    //         }
-    //         handleSearchInputChange("image_links", imageLinks);
-    //     }
-    // };
+    const handleImageUpload = (e) => {
+        const files = e.target.files;
+        if (files) {
+            let imageLinks = tempData.image_links ? [...tempData.image_links] : [];
+            for (let i = 0; i < files.length; i++) {
+                imageLinks.push(files[i].name);
+            }
+            handleSearchInputChange("image_links", imageLinks);
+        }
+    };
 
-    // const handleImageDelete = (index) => {
-    //     const updatedImageLinks = tempData.image_links.filter(
-    //         (image, i) => i !== index
-    //     );
-    //     handleSearchInputChange("image_links", updatedImageLinks);
-    // };
+    const handleImageDelete = (index) => {
+        const updatedImageLinks = tempData.image_links.filter(
+            (image, i) => i !== index
+        );
+        handleSearchInputChange("image_links", updatedImageLinks);
+    };
 
     const [showAlert, setShowAlert] = useState(false);
     const handleConfirmAddAlternativeSpecies = () => {
@@ -99,28 +99,48 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
-                    {/* TODO!! */}
-                    {/* <div sx={{ marginBottom: "2rem" }}>
-                        <Typography variant="body1" sx={{ marginBottom: "3px", justifyContent: "left" }}>
+
+                    {/* TODO!!  images post new image*/}
+                    <TextField
+                        multiline
+                        rows={4}
+                        label="Image links (separate by commas)"
+                        value={
+                            Array.isArray(tempData.image_links)
+                                ? tempData.image_links.join(", ")
+                                : tempData.image_links
+                        }
+                        onChange={(e) =>
+                            handleSearchInputChange("image_links", e.target.value.split(", "))
+                        }
+                        sx={{ width: "100%", marginBottom: "1rem" }}
+                    />
+
+                    <Box sx={{ width: '100%', textAlign: 'left', marginBottom: '2rem' }}>
+                        <Typography variant="body1" sx={{ width: '100%' }}>
                             Upload Images:
-                        </Typography>
+                        </Typography> 
                         <input
                             type="file"
                             multiple
                             onChange={handleImageUpload}
-                            sx={{ marginBottom: "2rem", textAlign: "left" }}
+                            sx={{ width: '100%' }}
                         />
-                    </div> */}
-                    {/* <div sx={{ marginTop: "2rem" }}>
+                    </Box>
+
+                    <Box sx={{ width: '100%', textAlign: 'left' }}>
                         {Array.isArray(tempData.image_links) &&
                             tempData.image_links.map((imageName, index) => (
-                                <div key={index}>
-                                    <p>{imageName}</p>
+                                <div key={index} sx={{ width: '90%', marginBottom: "2rem", textAlign: "left" }}>
+                                    {/* <p>{imageName}</p> */}
                                     <img src={imageName} alt={`image-${index}`} />
+                                    {/* TODO: delete from database too */}
                                     <button onClick={() => handleImageDelete(index)}>Delete</button>
                                 </div>
                             ))}
-                    </div> */}
+                    </Box>
+
+
                 </DialogContent>
 
                 <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >

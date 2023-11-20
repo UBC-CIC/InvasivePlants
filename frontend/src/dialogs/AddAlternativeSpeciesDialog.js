@@ -68,17 +68,17 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     handleClose();
   };
 
-  // const handleImageUpload = (e) => {
-  //   const files = e.target.files;
-  //   if (files) {
-  //     let imageLinks = speciesData.image_links ? speciesData.image_links : '';
-  //     for (let i = 0; i < files.length; i++) {
-  //       imageLinks += (i === 0 ? '' : ',') + files[i].name;
-  //     }
-  //     // TODO: fix
-  //     // handleInputChange("image_links", imageLinks);
-  //   }
-  // };
+  const handleImageUpload = (e) => {
+    const files = e.target.files;
+    if (files) {
+      let imageLinks = speciesData.image_links ? speciesData.image_links : '';
+      for (let i = 0; i < files.length; i++) {
+        imageLinks += (i === 0 ? '' : ',') + files[i].name;
+      }
+      // TODO: fix
+      // handleInputChange("image_links", imageLinks);
+    }
+  };
 
   const handleCloseSnackbar = () => {
     setShowOpen(false)
@@ -136,7 +136,14 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
           />
 
           {/* add images  */}
-          {/* <Box>
+          <Box>
+            <TextField
+              fullWidth
+              label="Image links (separate with commas)"
+              value={speciesData.image_links}
+              onChange={(e) => handleInputChange("image_links", e.target.value)}
+              sx={{ width: "100%", marginBottom: "1rem" }}
+            />
             <Typography variant="body1" sx={{ marginBottom: "3px" }}>
               Upload Images:
             </Typography>
@@ -146,7 +153,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
               onChange={handleImageUpload}
               sx={{ width: '100%', marginBottom: '1rem' }}
             />
-          </Box> */}
+          </Box>
 
         </DialogContent>
         <DialogActions>

@@ -26,6 +26,20 @@ function AlternativeSpeciesPage() {
   const [searchResults, setSearchResults] = useState(displayData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
   const [deleteId, setDeleteId] = useState(null);
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
+  // const [images, setImages] = useState([])
+
+  // const handleGetImages = () => {
+  //   axios
+  //     .get(`${API_ENDPOINT}plantsImages`)
+  //     .then((response) => {
+  //       console.log("images:", response.data);
+  //       setImages(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error retrieving images", error);
+  //     });
+  // };
+
 
   const handleGetSpecies = () => {
     const capitalizeWordsSplitUnderscore = (str) => {
@@ -36,23 +50,29 @@ function AlternativeSpeciesPage() {
       return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     };
 
+    // handleGetImages();
+
     axios
       .get(`${API_ENDPOINT}alternativeSpecies`)
       .then((response) => {
         // Limit the number of species for testing
-        const speciesData = response.data.slice(120, 128);
+        const speciesData = response.data.slice(120, 130);
 
         // Capitalize each scientific_name 
         const formattedData = speciesData.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeWordsSplitUnderscore(name));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeWordsSplitSpace(name));
+          const image_links = item.images.map(img => img.image_url);
+
           return {
             ...item,
             scientific_name: capitalizedScientificNames,
-            common_name: capitalizedCommonNames
+            common_name: capitalizedCommonNames,
+            image_links: image_links
           };
         });
 
+        console.log("data:", formattedData)
         setDisplayData(formattedData);
         setData(formattedData);
         setSearchResults(formattedData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
@@ -275,12 +295,12 @@ function AlternativeSpeciesPage() {
           {/* table header */}
           <TableHead>
             <TableRow>
-              <TableCell style={{ width: "11%" }}>
+              <TableCell style={{ width: "8%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Scientific Name
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "11%" }}>
+              <TableCell style={{ width: "12%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Common Name(s)
                 </Typography>
@@ -296,11 +316,11 @@ function AlternativeSpeciesPage() {
                 </Typography>
               </TableCell>
 
-              {/* <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
+              <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Image Links
                 </Typography>
-              </TableCell> */}
+              </TableCell>
 
               <TableCell style={{ width: "9%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
@@ -389,6 +409,7 @@ function AlternativeSpeciesPage() {
                                           {link}
                                         </a>
                                         <br />
+                                        <br />
                                       </span>
                                     ))
                                   ) : (
@@ -401,6 +422,7 @@ function AlternativeSpeciesPage() {
                                         {tempData.resource_links}
                                       </a>
                                       <br />
+                                        <br />
                                     </span>
                                   )}
                                 </InputAdornment>
@@ -410,8 +432,7 @@ function AlternativeSpeciesPage() {
 
                         </TableCell>
 
-                        {/* image links */}
-                        {/* <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           <TextField
                             value={
                               Array.isArray(tempData.image_links)
@@ -419,10 +440,46 @@ function AlternativeSpeciesPage() {
                                 : tempData.image_links
                             }
                             onChange={(e) =>
-                              handleSearchInputChange("image_links", e.target.value.split(", "))
+                              handleSearchInputChange(
+                                "image_links",
+                                e.target.value.split(", ")
+                              )
                             }
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  {Array.isArray(tempData.image_links) ? (
+                                    tempData.image_links.map((link, index) => (
+                                      <span key={index}>
+                                        <a
+                                          href={link}
+                                          target="_blank" // new tab
+                                          rel="noopener noreferrer" // security stuff
+                                        >
+                                          {link}
+                                        </a>
+                                        <br />
+                                        <br />
+                                      </span>
+                                    ))
+                                  ) : (
+                                    <span>
+                                      <a
+                                        href={tempData.image_links}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        {tempData.image_links}
+                                      </a>
+                                      <br />
+                                      <br />
+                                    </span>
+                                  )}
+                                </InputAdornment>
+                              ),
+                            }}
                           />
-                        </TableCell> */}
+                        </TableCell>
 
                         {/* edit/delete */}
                         <TableCell>
@@ -470,6 +527,7 @@ function AlternativeSpeciesPage() {
                                     {link}
                                   </a>
                                   <br />
+                                  <br />
                                 </span>
                               ))
                             ) : (
@@ -478,13 +536,33 @@ function AlternativeSpeciesPage() {
                                   {row.resource_links}
                                 </a>
                                 <br />
+                                <br />
                               </span>
                             )}
                           </TableCell>
 
-                          {/* <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                          {Array.isArray(row.image_links) ? row.image_links.join(", ") : row.image_links}
-                        </TableCell> */}
+                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                            {Array.isArray(row.image_links) ? (
+                              row.image_links.map((link, index) => (
+                                <span key={index}>
+                                  <a href={link} target="_blank" rel="noopener noreferrer">
+                                    {link}
+                                  </a>
+                                  <br />
+                                  <br />
+                                </span>
+                              ))
+                            ) : (
+                              <span>
+                                <a href={row.image_links} target="_blank" rel="noopener noreferrer">
+                                  {row.image_links}
+                                </a>
+                                <br />
+                                <br />
+                              </span>
+                            )}
+                          </TableCell>
+
                         <TableCell>
                           <Tooltip title="Edit"
                               onClick={() => startEdit(row.species_id, row)}>

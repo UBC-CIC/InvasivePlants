@@ -54,8 +54,8 @@ function InvasiveSpeciesPage() {
         // TODO: uncomment later
         // const speciesData = response.data;
 
-        // Limit the number of species to 10 test
-        const speciesData = response.data.slice(80, 100);
+        // Limit the number of species to test
+        const speciesData = response.data.slice(90, 100);
 
         const promises = speciesData.flatMap(item =>
           item.region_id.map(regionId =>
