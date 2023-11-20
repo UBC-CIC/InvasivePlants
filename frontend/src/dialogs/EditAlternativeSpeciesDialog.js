@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
+import DeleteDialog from '../dialogs/ConfirmDeleteDialog';
+
+import axios from "axios";
 
 const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
@@ -26,12 +29,50 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         }
     };
 
-    const handleImageDelete = (index) => {
-        const updatedImageLinks = tempData.image_links.filter(
-            (image, i) => i !== index
-        );
-        handleSearchInputChange("image_links", updatedImageLinks);
+
+    const [showWarning, setShowWarning] = useState(false);
+    const [deleteImg, setDeleteImg] = useState(null);
+
+    const handleImageDelete = (img, index) => {
+        setShowWarning(true);
+        setDeleteImg(img);
+
+        // delete the plant images from the plant table
+        console.log("got here", `${API_ENDPOINT}plantsImages/${img.image_id}`)
+        console.log(img, index);
+
     };
+
+
+    const handleConfirmDeleteImage = () => {
+        console.log("img: ", deleteImg)
+        setShowWarning(false)
+
+        // remove the image from the display
+        if (deleteImg) {
+            axios
+                .delete(`${API_ENDPOINT}plantsImages/${deleteImg.image_id}`)
+                .then((response) => {
+                    // Filter out the deleted image from tempData.images
+                    const updatedImages = tempData.images.filter(
+                        (img) => img.image_id !== deleteImg.image_id
+                    );
+                    console.log("updatedImages: ", updatedImages);
+                    handleSearchInputChange("images", updatedImages);
+                    console.log("images deleted successfully", response.data);
+                })
+                .catch((error) => {
+                    console.error("Error deleting image", error);
+                }).finally(() => {
+                    // Reset states
+                    setDeleteImg(null);
+                    setShowWarning(false);
+                });
+        } else {
+            setShowWarning(false);
+        }
+    }
+
 
     const [showAlert, setShowAlert] = useState(false);
     const handleConfirmAddAlternativeSpecies = () => {
@@ -105,11 +146,11 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         multiline
                         rows={4}
                         label="Image links (separate by commas)"
-                        value={
-                            Array.isArray(tempData.image_links)
-                                ? tempData.image_links.join(", ")
-                                : tempData.image_links
-                        }
+                        // value={
+                        //     Array.isArray(tempData.image_links)
+                        //         ? tempData.image_links.join(", ")
+                        //         : tempData.image_links
+                        // }
                         onChange={(e) =>
                             handleSearchInputChange("image_links", e.target.value.split(", "))
                         }
@@ -129,23 +170,26 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                     </Box>
 
                     <Box sx={{ width: '100%', textAlign: 'left' }}>
-                        {Array.isArray(tempData.image_links) &&
-                            tempData.image_links.map((imageName, index) => (
-                                <div key={index} sx={{ width: '90%', marginBottom: "2rem", textAlign: "left" }}>
-                                    {/* <p>{imageName}</p> */}
-                                    <img src={imageName} alt={`image-${index}`} />
-                                    {/* TODO: delete from database too */}
-                                    <button onClick={() => handleImageDelete(index)}>Delete</button>
+                        {console.log("tempdata:", tempData)}
+                        {Array.isArray(tempData.images) &&
+                            tempData.images.map((img, index) => (
+                                <div key={img.image_id} sx={{ width: '90%', marginBottom: "2rem", textAlign: "left" }}>
+                                    <img src={img.image_url} alt={`image-${index}`} />
+                                    <button onClick={() => handleImageDelete(img, index)}>Delete</button>
                                 </div>
                             ))}
                     </Box>
-
-
                 </DialogContent>
 
                 <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
                     <CustomAlert text={"scientific name"} onClose={() => setShowAlert(false)} />
                 </Dialog>
+
+                <DeleteDialog
+                    open={showWarning}
+                    handleClose={() => setShowWarning(false)}
+                    handleDelete={handleConfirmDeleteImage}
+                />
 
                 <DialogActions>
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>

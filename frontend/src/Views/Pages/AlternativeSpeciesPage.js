@@ -26,19 +26,6 @@ function AlternativeSpeciesPage() {
   const [searchResults, setSearchResults] = useState(displayData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
   const [deleteId, setDeleteId] = useState(null);
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
-  // const [images, setImages] = useState([])
-
-  // const handleGetImages = () => {
-  //   axios
-  //     .get(`${API_ENDPOINT}plantsImages`)
-  //     .then((response) => {
-  //       console.log("images:", response.data);
-  //       setImages(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error retrieving images", error);
-  //     });
-  // };
 
 
   const handleGetSpecies = () => {
@@ -50,7 +37,6 @@ function AlternativeSpeciesPage() {
       return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     };
 
-    // handleGetImages();
 
     axios
       .get(`${API_ENDPOINT}alternativeSpecies`)
@@ -129,6 +115,8 @@ function AlternativeSpeciesPage() {
   const handleSave = (confirmed) => {
     const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
 
+
+
     if (confirmed) {
       // make sure that fields are proper data structure
       const updatedTempData = {
@@ -181,6 +169,7 @@ function AlternativeSpeciesPage() {
 
   // helper function when search input changes
   const handleSearchInputChange = (field, value) => {
+    console.log("got here", field, value)
     setTempData((prev) => ({ ...prev, [field]: value }));
   };
 

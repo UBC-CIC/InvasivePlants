@@ -283,7 +283,6 @@ export class APIStack extends Stack {
         // Change Logical ID to match the one decleared in YAML file of Open API
         const cfnLambda_images = IL_images.node.defaultChild as lambda.CfnFunction;
         cfnLambda_images.overrideLogicalId("IntegLambImages");
-        
     }
 }
 // Cogito is next
