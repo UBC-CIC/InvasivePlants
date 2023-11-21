@@ -23,10 +23,11 @@ export class HostStack extends Stack {
         // For a region, create upto 2 AZ with a public subset each.
         const vpc = vpcStack.vpc;
 
-        // Retrieve a secrete from Secret Manager
         // Example of passing secret using command,
         //      aws secretsmanager create-secret --name SedationSecrets --secret-string '{"REACT_APP_CLIENT_SECRET":"string", "REACT_APP_CLIENT_ID":"string"}' --profile <your-profile-name>
-        // const secret = functionalityStack.secret.secretValue;
+        
+        // Retrieve a secrete from Secret Manager
+        // "Invasive_Plants_Cognito_Secrets" is consistent from functionality stack
         const secret = secretmanager.Secret.fromSecretNameV2(this, "ImportedSecrets", "Invasive_Plants_Cognito_Secrets");
 
 
