@@ -69,12 +69,13 @@ exports.handler = async (event) => {
 						
 						// Optional parameters
 						const geographic_coordinate = (bd.geographic_coordinate) ? bd.geographic_coordinate : "";
-						await sql`
+						data = await sql`
 							INSERT INTO regions (region_code_name, region_fullname, country_fullname, geographic_coordinate)
-							VALUES (${bd.region_code_name}, ${bd.region_fullname}, ${bd.country_fullname}, ${geographic_coordinate});
+							VALUES (${bd.region_code_name}, ${bd.region_fullname}, ${bd.country_fullname}, ${geographic_coordinate})
+							RETURNING *;
 						`;
 						
-						response.body = "Added data to region";
+						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
@@ -112,16 +113,17 @@ exports.handler = async (event) => {
 						bd.geographic_coordinate &&
 						event.pathParameters.region_id){
 						
-						await sql`
+						data = await sql`
 							UPDATE regions
 							SET region_code_name = ${bd.region_code_name}, 
 								region_fullname = ${bd.region_fullname}, 
 								country_fullname = ${bd.country_fullname},
 								geographic_coordinate = ${bd.geographic_coordinate}
-							WHERE region_id = ${event.pathParameters.region_id};
+							WHERE region_id = ${event.pathParameters.region_id}
+							RETURNING *;
 						`;
 						
-						response.body = "Updated the data to the region";
+						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";

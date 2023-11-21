@@ -76,15 +76,15 @@ exports.handler = async (event) => {
 						// Optional parameters
 						const common_name = (bd.common_name) ? bd.common_name : [];
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
-						const image_links = (bd.image_links) ? bd.image_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
 						
-						await sql`
-							INSERT INTO alternative_species (scientific_name, common_name, resource_links, image_links, species_description)
-							VALUES (${bd.scientific_name}, ${common_name}, ${resource_links}, ${image_links}, ${species_description});
+						data = await sql`
+							INSERT INTO alternative_species (scientific_name, common_name, resource_links, species_description)
+							VALUES (${bd.scientific_name}, ${common_name}, ${resource_links}, ${species_description})
+							RETURNING *;
 						`;
 						
-						response.body = "Added data to alternative species";
+						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
@@ -127,16 +127,17 @@ exports.handler = async (event) => {
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
 						
-						await sql`
+						data = await sql`
 							UPDATE alternative_species
 							SET scientific_name = ${bd.scientific_name}, 
 								common_name = ${common_name},
 								resource_links = ${resource_links}, 
 								species_description = ${species_description}
-							WHERE species_id = ${event.pathParameters.species_id};
+							WHERE species_id = ${event.pathParameters.species_id}
+							RETURNING *;
 						`;
 						
-						response.body = "Updated the data to the alternative species";
+						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
 						response.body = `Invalid value, required parameters are not provided`;

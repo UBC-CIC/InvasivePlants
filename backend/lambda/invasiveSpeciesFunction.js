@@ -86,12 +86,13 @@ exports.handler = async (event) => {
 						const region_id = (bd.region_id) ? bd.region_id : [];
 						const alternative_species = (bd.alternative_species) ? bd.alternative_species : [];
 						
-						await sql`
+						data = await sql`
 							INSERT INTO invasive_species (scientific_name, resource_links, species_description, region_id, alternative_species)
-							VALUES (${bd.scientific_name}, ${resource_links}, ${species_description}, ${region_id}, ${alternative_species});
+							VALUES (${bd.scientific_name}, ${resource_links}, ${species_description}, ${region_id}, ${alternative_species})
+							RETURNING *;
 						`;
 						
-						response.body = "Added data to region";
+						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
@@ -140,17 +141,18 @@ exports.handler = async (event) => {
 						const region_id = (bd.region_id) ? bd.region_id : [];
 						const alternative_species = (bd.alternative_species) ? bd.alternative_species : [];
 						
-						await sql`
+						data = await sql`
 							UPDATE invasive_species
 							SET scientific_name = ${bd.scientific_name}, 
 								resource_links = ${resource_links}, 
 								species_description = ${species_description},
 								region_id = ${region_id},
 								alternative_species = ${alternative_species}
-							WHERE species_id = ${event.pathParameters.species_id};
+							WHERE species_id = ${event.pathParameters.species_id}
+							RETURNING *;
 						`;
 						
-						response.body = "Updated the data to the region";
+						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
