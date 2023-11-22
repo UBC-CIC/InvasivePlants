@@ -58,6 +58,14 @@ paths:
         - Region
       summary: Get the list of available regions
       operationId: region_GET
+      parameters:
+        - in: query
+          name: last_region_id
+          required: false
+          description: the latest region_id of the latest recieved page, default is just the first page
+          schema: 
+            type: string
+            format: uuid
       responses:
         "200": 
           description: Data Available
@@ -227,6 +235,13 @@ paths:
           schema: 
             type: string
             format: uuid
+        - in: query
+          name: last_species_id
+          required: false
+          description: the latest species_id of the latest recieved page, default is just the first page
+          schema: 
+            type: string
+            format: uuid
       responses:
         "200": 
           description: Data Available
@@ -390,6 +405,13 @@ paths:
           description: Scientific name following lowercase and underscore for space format
           schema: 
             type: string
+        - in: query
+          name: last_species_id
+          required: false
+          description: the latest species_id of the latest recieved page, default is just the first page
+          schema: 
+            type: string
+            format: uuid
       responses:
         "200": 
           description: Data Available
