@@ -1,6 +1,8 @@
 const postgres = require("postgres");
 const AWS = require("aws-sdk");
 
+const PAGE_LIMIT = 20;
+
 // Gather AWS services
 const secretsManager = new AWS.SecretsManager();
 
@@ -55,7 +57,12 @@ exports.handler = async (event) => {
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
 			case "GET /region":
-				data = await sql`SELECT * FROM regions`;
+				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_region_id) ? event.queryStringParameters.last_region_id : "00000000-0000-0000-0000-000000000000";
+				
+				data = await sql`	SELECT * FROM regions
+									WHERE region_id > ${species_id_pagination}
+									ORDER BY region_fullname, region_id 
+									LIMIT ${PAGE_LIMIT};`;
 				response.body = JSON.stringify(data);
 				break;
 			case "POST /region":

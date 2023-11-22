@@ -1,6 +1,8 @@
 const AWS = require("aws-sdk");
 
 // Inspire by https://aws.amazon.com/blogs/compute/uploading-to-amazon-s3-directly-from-a-web-or-mobile-application/
+// List of contentType: http://www.iana.org/assignments/media-types/media-types.xhtml
+
 // Setting up evironments
 let { AWS_REGION, BUCKET_NAME } = process.env;
 

@@ -1,6 +1,8 @@
 const postgres = require("postgres");
 const AWS = require("aws-sdk");
 
+const PAGE_LIMIT = 20;
+
 // Gather AWS services
 const secretsManager = new AWS.SecretsManager();
 
@@ -54,10 +56,18 @@ exports.handler = async (event) => {
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
 			case "GET /alternativeSpecies":
+				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_species_id) ? event.queryStringParameters.last_species_id : "00000000-0000-0000-0000-000000000000";
+				
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
-					data = await sql`SELECT * FROM alternative_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
+					data = await sql`	SELECT * FROM alternative_species 
+										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and species_id > ${species_id_pagination}
+										ORDER BY scientific_name[1], species_id 
+										LIMIT ${PAGE_LIMIT};`;
 				} else {
-					data = await sql`SELECT * FROM alternative_species`;
+					data = await sql`	SELECT * FROM alternative_species 
+										WHERE species_id > ${species_id_pagination}
+										ORDER BY scientific_name[1], species_id 
+										LIMIT ${PAGE_LIMIT};`;
 				}
 				
 				for(let i in data){

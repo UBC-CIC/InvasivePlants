@@ -1,6 +1,8 @@
 const postgres = require("postgres");
 const AWS = require("aws-sdk");
 
+const PAGE_LIMIT = 20;
+
 // Gather AWS services
 const secretsManager = new AWS.SecretsManager();
 
@@ -51,16 +53,26 @@ exports.handler = async (event) => {
 	
 	let data;
 	try {
-		console.log("Event: ", event);
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
 			case "GET /invasiveSpecies":
+				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_species_id) ? event.queryStringParameters.last_species_id : "00000000-0000-0000-0000-000000000000";
+				
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
-					data = await sql`SELECT * FROM invasive_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
+					data = await sql`	SELECT * FROM invasive_species 
+										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and species_id > ${species_id_pagination}
+										ORDER BY scientific_name[1], species_id 
+										LIMIT ${PAGE_LIMIT};`;
 				} if(event.queryStringParameters != null && event.queryStringParameters.region_id){
-					data = await sql`SELECT * FROM invasive_species WHERE ${event.queryStringParameters.region_id} = ANY(region_id)`;
+					data = await sql`	SELECT * FROM invasive_species 
+										WHERE ${event.queryStringParameters.region_id} = ANY(region_id) and species_id > ${species_id_pagination}
+										ORDER BY scientific_name[1], species_id 
+										LIMIT ${PAGE_LIMIT};`;
 				} else {
-					data = await sql`SELECT * FROM invasive_species`;
+					data = await sql`	SELECT * FROM invasive_species 
+										WHERE species_id > ${species_id_pagination}
+										ORDER BY scientific_name[1], species_id 
+										LIMIT ${PAGE_LIMIT};`;
 				}
 				for(let d in data){
 					// Get alternative species and images
