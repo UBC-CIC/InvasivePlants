@@ -61,6 +61,19 @@ export class FunctionalityStack extends cdk.Stack {
 
         /**
          * 
+         * Create user group for admin
+         */
+        const cfnUserPoolGroup = new cognito.CfnUserPoolGroup(this, 'cognito-userGroup', {
+            userPoolId: userpool.userPoolId,
+          
+            // the properties below are optional
+            description: 'Admin usergroup to perform data manipulation',
+            groupName: 'ADMIN_USER',
+            precedence: 1        
+        });
+
+        /**
+         * 
          * Store secrets to Secret Manager
          * User pool id, client id, and region the user pool deployed
          */
