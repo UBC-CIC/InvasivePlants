@@ -16,13 +16,14 @@ import * as logs from "aws-cdk-lib/aws-logs";
 // Stack import
 import { VpcStack } from './vpc-stack';
 import { DBStack } from './database-stack';
-import { SampleStack } from './sample-stack';
+import { FunctionalityStack } from './functionality-stack';
+
 
 export class APIStack extends Stack {
     private readonly dbInstance: rds.DatabaseInstance;
     private readonly secretPath: string;
     private readonly rdsProxyEndpoint: string; 
-    constructor(scope: Construct, id: string, vpcStack: VpcStack, db: DBStack, functionalityStack: SampleStack, props?: StackProps){
+    constructor(scope: Construct, id: string, vpcStack: VpcStack, db: DBStack, functionalityStack: FunctionalityStack, props?: StackProps){
         super(scope, id, props);
 
         /**
@@ -313,7 +314,11 @@ export class APIStack extends Stack {
         // Add the policy to the Lambda function's policy to access S3 putObjectAcl
         IL_getSignedURL.addToRolePolicy(iam.PolicyStatement.fromJson({
           Effect: "Allow",
-          Action: ["s3:putObjectAcl", "s3:PutObject", "s3:GetObject"],
+          Action: [
+            "s3:putObjectAcl", 
+            "s3:PutObject", 
+            "s3:GetObject"
+          ],
           Resource: `arn:aws:s3:::${functionalityStack.bucketName}/*`
         }));
 
