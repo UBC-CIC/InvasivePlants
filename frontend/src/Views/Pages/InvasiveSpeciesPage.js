@@ -36,6 +36,7 @@ function InvasiveSpeciesPage() {
       try {
         const regionMap = await handleGetRegions();
         setRegionsMap(regionMap);
+        console.log("set regions map: ", regionMap)
       } catch (error) {
         console.error('Error fetching region map 2:', error);
       }
@@ -168,12 +169,12 @@ function InvasiveSpeciesPage() {
         alternative_species: alternativeSpeciesIds,
       };
 
-      console.log("data: ", updatedTempDataWithoutRegionCode);
+      console.log("saved invasive species data: ", updatedTempDataWithoutRegionCode);
 
       axios
         .put(`${API_ENDPOINT}invasiveSpecies/${tempData.species_id}`, updatedTempDataWithoutRegionCode)
         .then((response) => {
-          console.log("Species updated successfully", response.data);
+          console.log("invasive species updated successfully", response.data);
           handleGetSpecies();
           handleFinishEditingRow();
         })
@@ -296,6 +297,7 @@ function InvasiveSpeciesPage() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
       {/* title */}

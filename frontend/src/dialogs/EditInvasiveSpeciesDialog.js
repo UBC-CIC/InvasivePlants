@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import {
-    Select, MenuItem, FormControl, InputLabel, Tooltip, Box, alpha, Autocomplete,
+    Select, MenuItem, FormControl, InputLabel, Box, Autocomplete,
     Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-// import AddAlternativeSpeciesDialog from './AddAlternativeSpeciesDialog';
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 import handleGetRegions from '../functions/RegionMap';
@@ -13,8 +12,8 @@ import axios from "axios";
 const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
 
+    const [showAlert, setShowAlert] = useState(false);
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
-    const [alternativeDialog, setOpenAddAlternativeDialog] = useState(false);
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
     const [alternativeSpeciesData, setAlternativeSpeciesData] = useState([]);
     const [regionMap, setRegionsMap] = useState({});
@@ -43,7 +42,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                         common_name: capitalizedCommonNames
                     };
                 });
-                console.log("data: ", formattedData);
+                console.log("alternative species data from invasive species: ", formattedData);
                 setAlternativeSpeciesData(formattedData);
             })
             .catch((error) => {
@@ -71,39 +70,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
             return;
         }
         setShowSaveConfirmation(false);
-        setOpenAddAlternativeDialog(false);
     };
-
-    // const handleAddAlternativeSpecies = (newAlternativeSpeciesData) => {
-    //     // Generate a unique AltSpeciesId for the new alternative species
-    //     const newAltSpeciesId = alternativeSpeciesData.length + 1;
-
-    //     // Create a new region object with the generated newAltSpeciesId
-    //     const newAlternativeSpecies = {
-    //         regionId: newAltSpeciesId,
-    //         ...newAlternativeSpeciesData,
-    //     };
-
-    //     setAlternativeSpeciesData([...alternativeSpeciesData, newAlternativeSpecies]);
-    //     setOpenAddAlternativeDialog(false);
-
-    //     // TODO: update the database with the new entry
-    // }
-
-
-    const [showAlert, setShowAlert] = useState(false);
-    // const handleConfirmAddAlternativeSpecies = () => {
-    //     console.log(typeof tempData.scientific_name)
-    //     console.log(tempData.scientific_name)
-
-    //     if (!tempData.scientific_name || tempData.scientific_name.length === 0) {
-    //         setShowAlert(true);
-    //         return false;
-    //     }
-    //     setShowSaveConfirmation(true);
-    //     return true
-    // };
-
 
     return (
         <div>
@@ -175,22 +142,6 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                             )}
                             sx={{ flex: 5, marginRight: '1rem', height: '100%', width: "100%" }}
                         />
-                        {/* <Tooltip title="Alternative species not in list?" placement="top">
-                            <Button
-                                variant="contained"
-                                onClick={() => setOpenAddAlternativeDialog(true)}
-                                sx={{
-                                    flex: 1, fontSize: "0.8rem",
-                                    backgroundColor: alpha('#699cb8', 0.9),
-                                    '&:hover': {
-                                        backgroundColor: '#5e8da6',
-                                    },
-                                    width: "100%"
-                                }}
-                            >
-                                Add alternative
-                            </Button>
-                        </Tooltip> */}
                     </Box>
 
                     <TextField
@@ -230,7 +181,6 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                     <Button
                         onClick={() => {
                             handleSave(true);
-                            // handleSave(handleConfirmAddAlternativeSpecies());
                         }}
                     >Save</Button>
                 </DialogActions>
@@ -242,13 +192,6 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
             </Dialog>
 
             <SnackbarOnSuccess open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />
-
-            {/* <AddAlternativeSpeciesDialog
-                open={alternativeDialog}
-                handleClose={handleClose}
-                data={alternativeSpeciesData}
-                handleAdd={handleAddAlternativeSpecies}
-            /> */}
         </div >
     );
 };

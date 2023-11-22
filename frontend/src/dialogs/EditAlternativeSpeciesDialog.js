@@ -36,16 +36,12 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
     const handleImageDelete = (img, index) => {
         setShowWarning(true);
         setDeleteImg(img);
-
-        // delete the plant images from the plant table
-        console.log("got here", `${API_ENDPOINT}plantsImages/${img.image_id}`)
-        console.log(img, index);
-
     };
 
 
+    // TODO: there's a bug here when you add mutliple images
     const handleConfirmDeleteImage = () => {
-        console.log("img: ", deleteImg)
+        console.log("img to delete: ", deleteImg)
         setShowWarning(false)
 
         // remove the image from the display
@@ -59,6 +55,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                     );
                     console.log("updatedImages: ", updatedImages);
                     handleSearchInputChange("images", updatedImages);
+                    handleSearchInputChange("image_links", updatedImages.map((image) => image.image_url));
                     console.log("images deleted successfully", response.data);
                 })
                 .catch((error) => {
@@ -137,22 +134,23 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         onChange={(e) =>
                             handleSearchInputChange("resource_links", e.target.value.split(", "))
                         }
-                        sx={{ width: "100%", marginBottom: "1rem" }}
+                        sx={{
+                            width: "100%", marginBottom: "1rem"
+                        }}
                     />
 
 
-                    {/* TODO!!  images post new image*/}
                     <TextField
                         multiline
-                        rows={4}
                         label="Image links (separate by commas)"
                         // value={
                         //     Array.isArray(tempData.image_links)
                         //         ? tempData.image_links.join(", ")
                         //         : tempData.image_links
                         // }
-                        onChange={(e) =>
+                        onChange={(e) => {
                             handleSearchInputChange("image_links", e.target.value.split(", "))
+                        }
                         }
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
@@ -170,11 +168,15 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                     </Box>
 
                     <Box sx={{ width: '100%', textAlign: 'left' }}>
-                        {console.log("tempdata:", tempData)}
+                        {/* {console.log("tempdata:", tempData)} */}
                         {Array.isArray(tempData.images) &&
                             tempData.images.map((img, index) => (
                                 <div key={img.image_id} sx={{ width: '90%', marginBottom: "2rem", textAlign: "left" }}>
-                                    <img src={img.image_url} alt={`image-${index}`} />
+                                    <img
+                                        src={img.image_url}
+                                        alt={`image-${index}`}
+                                        style={{ maxWidth: '60%', height: 'auto' }}
+                                    />
                                     <button onClick={() => handleImageDelete(img, index)}>Delete</button>
                                 </div>
                             ))}

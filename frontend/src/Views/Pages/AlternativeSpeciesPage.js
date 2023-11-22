@@ -42,7 +42,7 @@ function AlternativeSpeciesPage() {
       .get(`${API_ENDPOINT}alternativeSpecies`)
       .then((response) => {
         // Limit the number of species for testing
-        const speciesData = response.data.slice(120, 130);
+        const speciesData = response.data.slice(110, 130);
 
         // Capitalize each scientific_name 
         const formattedData = speciesData.map(item => {
@@ -58,7 +58,7 @@ function AlternativeSpeciesPage() {
           };
         });
 
-        console.log("data:", formattedData)
+        console.log("get alternative species data:", formattedData)
         setDisplayData(formattedData);
         setData(formattedData);
         setSearchResults(formattedData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
@@ -111,11 +111,9 @@ function AlternativeSpeciesPage() {
     setEditingId(null);
   };
 
-  // saves edited row
+  // TODO: saves edited row
   const handleSave = (confirmed) => {
     const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
-
-
 
     if (confirmed) {
       // make sure that fields are proper data structure
@@ -125,12 +123,38 @@ function AlternativeSpeciesPage() {
         common_name: typeof tempData.common_name === 'string' ? splitByCommaWithSpaces(tempData.common_name) : tempData.common_name,
       };
 
-      console.log("data: ", updatedTempData);
+      const plantImages = updatedTempData.image_links.map((link) => {
+        const image_url = link;
+        const species_id = updatedTempData.species_id;
+        return { species_id, image_url };
+      })
 
+      console.log("updatedTempData:", updatedTempData)
+      console.log("to save images: ", plantImages)
+
+      // add new images only
+      const imagesToAdd = plantImages.filter((img) => {
+        return !updatedTempData.images.some((existingImg) => existingImg.image_url === img.image_url);
+      });
+
+      console.log("to add images: ", imagesToAdd)
+      // update photos
+      imagesToAdd.forEach((img) => {
+        axios
+          .post(API_ENDPOINT + "plantsImages", img)
+          .then((response) => {
+            console.log("images updated successfully", response.data);
+          })
+          .catch((error) => {
+            console.error("Error adding image", error);
+          });
+      });
+
+      // update alternative species
       axios
         .put(`${API_ENDPOINT}alternativeSpecies/${tempData.species_id}`, updatedTempData)
         .then((response) => {
-          console.log("Species updated successfully", response.data);
+          console.log("alternative species updated successfully", response.data);
           handleGetSpecies();
           handleFinishEditingRow();
         })
@@ -214,9 +238,31 @@ function AlternativeSpeciesPage() {
     axios
       .post(API_ENDPOINT + "alternativeSpecies", newSpeciesData)
       .then((response) => {
-        console.log("Alternative species added successfully", response.data);
-        handleGetSpecies();
-        setOpenAddSpeciesDialog(false);
+        console.log("Alternative species added successfully", response);
+
+        // plant data
+        const plantDataArr = newSpeciesData.image_links.map((image_link) => ({
+          species_id: response.data[0].species_id,
+          image_url: image_link,
+        }));
+
+        console.log("plant data array: ", plantDataArr);
+
+        // upload plant image 
+        plantDataArr.forEach((plantData) => {
+          console.log("plant: ", plantData);
+          axios
+            .post(API_ENDPOINT + "plantsImages", plantData)
+            .then((response) => {
+              console.log("images added successfully", response.data);
+              // get updated alternative species
+              handleGetSpecies();
+              setOpenAddSpeciesDialog(false);
+            })
+            .catch((error) => {
+              console.error("Error adding image", error);
+            });
+        });
       })
       .catch((error) => {
         console.error("Error adding alternative species", error);
@@ -384,6 +430,10 @@ function AlternativeSpeciesPage() {
                                 e.target.value.split(", ")
                               )
                             }
+                            sx={{
+                              width: '100%',
+                              wordBreak: 'break-word'
+                            }}
                             InputProps={{
                               endAdornment: (
                                 <InputAdornment position="end">
@@ -418,7 +468,6 @@ function AlternativeSpeciesPage() {
                               ),
                             }}
                           />
-
                         </TableCell>
 
                         <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>

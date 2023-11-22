@@ -53,9 +53,9 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
       scientific_name: typeof speciesData.scientific_name === 'string' ? splitByCommaWithSpaces(speciesData.scientific_name) : [],
       common_name: typeof speciesData.common_name === 'string' ? splitByCommaWithSpaces(speciesData.common_name) : [],
       resource_links: typeof speciesData.resource_links === 'string' ? splitByCommaWithSpaces(speciesData.resource_links) : [],
-      // image_links: typeof speciesData.image_links === 'string' ? splitByCommaWithSpaces(speciesData.image_links) : [],
+      image_links: typeof speciesData.image_links === 'string' ? splitByCommaWithSpaces(speciesData.image_links) : [],
     };
-
+    // TODO: either here or in handleAddSpecies need to add the photo
     handleAdd(modifiedSpeciesData);
     handleCancel();
   };

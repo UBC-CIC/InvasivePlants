@@ -97,7 +97,7 @@ function RegionsPage() {
         }
 
         if (confirmed) {
-            // console.log("data: ", tempData);
+            console.log("saved region data: ", tempData);
             axios
                 .put(`${API_ENDPOINT}region/${formattedData.region_id}`, formattedData)
                 .then((response) => {
