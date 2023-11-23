@@ -56,7 +56,7 @@ function App(props) {
               // * [darkMode (changes font/logo color): true, false]
               // * [disableSignUp: true, false]
 
-              <Login logo={"custom"} type={"image"} themeColor={"standard"} animateTitle={true}
+              <Login logo={"none"} type={"image"} themeColor={"standard"} animateTitle={false}
                 title={"Invasive Plants"} darkMode={true}
                 disableSignUp={true}
               />

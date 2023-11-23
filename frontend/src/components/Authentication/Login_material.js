@@ -21,6 +21,7 @@ import { connect } from "react-redux";
 import { updateLoginState } from "../../Actions/loginActions";
 import TextFieldStartAdornment from "./TextFieldStartAdornment";
 import "./Login.css";
+import Typography from '@material-ui/core/Typography';
 
 const initialFormState = {
     email: "", password: "", given_name: "", family_name: "", authCode: "", resetCode: ""
@@ -437,6 +438,10 @@ function Login(props) {
                 <Grid container item xs={12} md={6} className={`page-info ${classes.centerBox}`}>
                     <Grid container item justify={"space-evenly"} alignItems={"center"} /*style={{height: "60vh"}}*/>
                         <Grid xs item className={`typewriter ${classes.marginHorizontal}`}>
+                            <center>
+                                <Typography variant="h2" style={{fontWeight:"bold"}}>Welcome to</Typography>
+                            </center>
+                            
                             <p className={`${classes.textAlignCenter} ${(animateTitle) ?
                                 (darkMode) ? "line anim-typewriter" : "line anim-typewriter-light lightMode"
                                 :
