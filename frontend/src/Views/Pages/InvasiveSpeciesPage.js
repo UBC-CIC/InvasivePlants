@@ -52,13 +52,7 @@ function InvasiveSpeciesPage() {
     axios
       .get(`${API_ENDPOINT}invasiveSpecies`)
       .then((response) => {
-        // TODO: uncomment later
-        // const speciesData = response.data;
-
-        // Limit the number of species to test
-        const speciesData = response.data.slice(90, 100);
-
-        const promises = speciesData.flatMap(item =>
+        const promises = response.data.flatMap(item =>
           item.region_id.map(regionId =>
             axios.get(`${API_ENDPOINT}region/${regionId}`)
           )
@@ -66,7 +60,7 @@ function InvasiveSpeciesPage() {
 
         return Promise.all(promises)
           .then(regionResponses => {
-            const formattedData = speciesData.map((item, index) => {
+            const formattedData = response.data.map((item, index) => {
               return {
                 ...item,
                 scientific_name: item.scientific_name.map(name => capitalizeWords(name))
@@ -87,18 +81,7 @@ function InvasiveSpeciesPage() {
     handleGetSpecies();
   }, []); 
 
-  // gets rows that matches search and location input 
-  // const filterData = data.filter((item) =>
-  //   (searchInput === "" || (
-  //     (Array.isArray(item.scientific_name)
-  //       ? item.scientific_name.some((name) =>
-  //         name.toLowerCase().includes(searchInput.toLowerCase())
-  //       )
-  //       : item.scientific_name.toLowerCase().includes(searchInput.toLowerCase()))
-  //   )) &&
-  //   (regionMap[region_id] === "" || item.region_id.some((id) => regionMap[id] === region_id))
-  // );
-
+  // TODO: fix this filter
   const filterData = data.filter((item) => {
     const matchesSearchInput = searchInput === "" ||
       (Array.isArray(item.scientific_name)
@@ -118,7 +101,7 @@ function InvasiveSpeciesPage() {
     } else if (region_id) {
       return matchesRegionID;
     } else {
-      return true; // No filters applied, show all data
+      return true; 
     }
   });
 
@@ -336,7 +319,7 @@ function InvasiveSpeciesPage() {
       </div>
 
       {/* Pagination */}
-      <div style={{ display: 'flex', marginLeft: "70%", marginTop: '10px' }}>
+      {/* <div style={{ display: 'flex', marginLeft: "70%", marginTop: '10px' }}>
         <TablePagination
           rowsPerPageOptions={rowsPerPageOptions}
           component="div"
@@ -346,7 +329,7 @@ function InvasiveSpeciesPage() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </div>
+      </div> */}
 
       {/* table */}
       <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>

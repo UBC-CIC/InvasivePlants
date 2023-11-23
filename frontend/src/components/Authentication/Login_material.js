@@ -1,5 +1,3 @@
-// pw: ABCabc123!@#
-
 import { Button, CircularProgress, Divider, Grid, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import Alert from '@mui/material/Alert';
 

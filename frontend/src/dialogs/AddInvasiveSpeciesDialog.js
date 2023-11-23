@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Autocomplete, Tooltip, alpha, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
-import AddAlternativeSpeciesDialog from "./AddAlternativeSpeciesDialog";
+// import AddAlternativeSpeciesDialog from "./AddAlternativeSpeciesDialog";
 import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from "../components/SnackbarComponent";
 import CustomAlert from "../components/AlertComponent";
 import CustomWarning from '../components/WarningComponent';
-import handleGetRegions from "../functions/RegionMap"
+import handleGetRegions from "../functions/RegionMap";
+import axios from "axios";
 
 const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
+    const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
+
     const initialSpeciesData = {
         scientific_name: [],
         resource_links: [],
@@ -20,10 +23,10 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [showWarning, setShowWarning] = useState(false);
     const [speciesData, setSpeciesData] = useState(initialSpeciesData);
-    const [alternativeDialog, setOpenAddAlternativeDialog] = useState(false);
     const [alternativeSpeciesData, setAlternativeSpeciesData] = useState([]);
     const [regionMap, setRegionsMap] = useState({});
 
+    // get regions
     useEffect(() => {
         const fetchRegionData = async () => {
             try {
@@ -34,6 +37,40 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
             }
         };
         fetchRegionData();
+    }, []);
+
+    const handleGetAlternativeSpecies = () => {
+        const capitalizeWordsSplitUnderscore = (str) => {
+            return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        };
+
+        const capitalizeWordsSplitSpace = (str) => {
+            return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        };
+        // get alternative species
+        axios
+            .get(`${API_ENDPOINT}alternativeSpecies`)
+            .then((response) => {
+
+                // Capitalize each scientific_name 
+                const formattedData = response.data.map(item => {
+                    const capitalizedScientificNames = item.scientific_name.map(name => capitalizeWordsSplitUnderscore(name));
+                    const capitalizedCommonNames = item.common_name.map(name => capitalizeWordsSplitSpace(name));
+                    return {
+                        ...item,
+                        scientific_name: capitalizedScientificNames,
+                        common_name: capitalizedCommonNames
+                    };
+                });
+                console.log("alternative species data from invasive species: ", formattedData);
+                setAlternativeSpeciesData(formattedData);
+            })
+            .catch((error) => {
+                console.error("Error retrieving alternative species", error);
+            });
+    };
+    useEffect(() => {
+        handleGetAlternativeSpecies();
     }, []);
 
     const handleInputChange = (field, value) => {
@@ -65,7 +102,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     };
 
     const handleAddSpecies = () => {
-        setOpenAddAlternativeDialog(false);
+        // setOpenAddAlternativeDialog(false);
         setShowOpen(true);
 
         const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);

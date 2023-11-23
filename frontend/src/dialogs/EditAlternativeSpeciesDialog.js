@@ -18,17 +18,54 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         setShowSaveConfirmation(false);
     };
 
-    const handleImageUpload = (e) => {
+    // hanldes user uploaded image files
+    const handleImageUpload = async (e) => {
         const files = e.target.files;
+        let uploadResponse;
+
         if (files) {
-            let imageLinks = tempData.image_links ? [...tempData.image_links] : [];
-            for (let i = 0; i < files.length; i++) {
-                imageLinks.push(files[i].name);
+            let s3Keys = tempData.s3_keys ? [...tempData.s3_keys] : [];
+
+            try {
+                for (let i = 0; i < files.length; i++) {
+
+                    //GET request to getS3SignedURL endpoint
+                    const signedURLResponse = await fetch(
+                        `${API_ENDPOINT}/getS3SignedURL`
+                    );
+
+                    if (!signedURLResponse.ok) {
+                        continue;
+                    }
+
+                    const signedURLData = await signedURLResponse.json();
+                    console.log("signed url data: ", signedURLData)
+
+                    // Use the obtained signed URL to upload the image
+                    uploadResponse = await fetch(signedURLData.uploadURL, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': files[i].type
+                        },
+                        body: files[i]
+                    });
+
+                    console.log("upload response: ", uploadResponse)
+
+                    // Image uploaded successfully, add its s3 key to the list
+                    if (signedURLData.key) {
+                        s3Keys.push(signedURLData.key);
+                    }
+                }
+
+                // Update the state or handle the uploaded image s3 keys
+                handleSearchInputChange('s3_keys', s3Keys);
+
+            } catch (error) {
+                console.error('Error uploading images:', error);
             }
-            handleSearchInputChange("image_links", imageLinks);
         }
     };
-
 
     const [showWarning, setShowWarning] = useState(false);
     const [deleteImg, setDeleteImg] = useState(null);
@@ -39,7 +76,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
     };
 
 
-    // TODO: there's a bug here when you add mutliple images
     const handleConfirmDeleteImage = () => {
         console.log("img to delete: ", deleteImg)
         setShowWarning(false)
@@ -56,6 +92,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                     console.log("updatedImages: ", updatedImages);
                     handleSearchInputChange("images", updatedImages);
                     handleSearchInputChange("image_links", updatedImages.map((image) => image.image_url));
+                    handleSearchInputChange("s3_keys", updatedImages.map((image) => image.s3_key));
                     console.log("images deleted successfully", response.data);
                 })
                 .catch((error) => {
@@ -168,19 +205,37 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                     </Box>
 
                     <Box sx={{ width: '100%', textAlign: 'left' }}>
-                        {/* {console.log("tempdata:", tempData)} */}
+                        {console.log("tempdata in images:", tempData)}
                         {Array.isArray(tempData.images) &&
                             tempData.images.map((img, index) => (
                                 <div key={img.image_id} sx={{ width: '90%', marginBottom: "2rem", textAlign: "left" }}>
-                                    <img
-                                        src={img.image_url}
-                                        alt={`image-${index}`}
-                                        style={{ maxWidth: '60%', height: 'auto' }}
-                                    />
+                                    {/* Display image if image_url exists */}
+                                    {img.image_url && (
+                                        <img
+                                            src={img.image_url}
+                                            alt={`image-${index}`}
+                                            style={{ maxWidth: '60%', height: 'auto' }}
+                                        />
+                                    )}
+
+                                    {/* Display image from S3 bucket if s3_key exists */}
+                                    {img.s3_key && (
+                                        <div>
+                                            <img
+                                                src={`https://d123pl6gvdlen1.cloudfront.net/${img.s3_key}`}
+                                                alt={`image-${index}`}
+                                                style={{ maxWidth: '60%', height: 'auto' }}
+                                            />
+                                        </div>
+                                    )}
+
+
+                                    {/* Delete button for each image */}
                                     <button onClick={() => handleImageDelete(img, index)}>Delete</button>
                                 </div>
                             ))}
                     </Box>
+
                 </DialogContent>
 
                 <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >

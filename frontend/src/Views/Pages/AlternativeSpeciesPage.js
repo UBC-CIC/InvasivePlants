@@ -27,7 +27,7 @@ function AlternativeSpeciesPage() {
   const [deleteId, setDeleteId] = useState(null);
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
 
-
+  // get alternative species
   const handleGetSpecies = () => {
     const capitalizeWordsSplitUnderscore = (str) => {
       return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -37,24 +37,23 @@ function AlternativeSpeciesPage() {
       return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     };
 
-
     axios
       .get(`${API_ENDPOINT}alternativeSpecies`)
-      .then((response) => {
-        // Limit the number of species for testing
-        const speciesData = response.data.slice(110, 130);
+      .then((response) => {  
 
         // Capitalize each scientific_name 
-        const formattedData = speciesData.map(item => {
+        const formattedData = response.data.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeWordsSplitUnderscore(name));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeWordsSplitSpace(name));
           const image_links = item.images.map(img => img.image_url);
+          const s3_keys = item.images.map(img => img.s3_key);
 
           return {
             ...item,
             scientific_name: capitalizedScientificNames,
             common_name: capitalizedCommonNames,
-            image_links: image_links
+            image_links: image_links,
+            s3_keys: s3_keys
           };
         });
 
@@ -71,18 +70,15 @@ function AlternativeSpeciesPage() {
     handleGetSpecies();
   }, []); 
 
+  // filters species based on search input
   const filterData = data.filter((item) =>
   (searchInput === "" || (
-    (Array.isArray(item.scientific_name)
-      ? item.scientific_name.some((name) =>
+    item.scientific_name.some((name) =>
         name.toLowerCase().includes(searchInput.toLowerCase())
-      )
-      : item.scientific_name.toLowerCase().includes(searchInput.toLowerCase())) ||
-    (Array.isArray(item.common_name)
-      ? item.common_name.some((name) =>
+    ) ||
+    item.common_name.some((name) =>
         name.toLowerCase().includes(searchInput.toLowerCase())
-      )
-      : item.common_name.toLowerCase().includes(searchInput.toLowerCase()))
+    )
   ))
   );
 
@@ -94,6 +90,8 @@ function AlternativeSpeciesPage() {
         label: item.scientific_name,
         value: item.scientific_name,
       }));
+      console.log("setting search results: ", results)
+
       setSearchResults(results);
     }
   }, [searchInput, filterData]);
@@ -111,7 +109,6 @@ function AlternativeSpeciesPage() {
     setEditingId(null);
   };
 
-  // TODO: saves edited row
   const handleSave = (confirmed) => {
     const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
 
@@ -123,22 +120,49 @@ function AlternativeSpeciesPage() {
         common_name: typeof tempData.common_name === 'string' ? splitByCommaWithSpaces(tempData.common_name) : tempData.common_name,
       };
 
-      const plantImages = updatedTempData.image_links.map((link) => {
+      console.log("updatedTempData:", updatedTempData)
+
+      let plantImages;
+      if (updatedTempData.image_links && updatedTempData.image_links.length > 0) {
+        plantImages = updatedTempData.image_links.map((link) => {
         const image_url = link;
         const species_id = updatedTempData.species_id;
         return { species_id, image_url };
       })
+      }
 
-      console.log("updatedTempData:", updatedTempData)
+      let imageS3Keys;
+      if (updatedTempData.s3_keys && updatedTempData.s3_keys.length > 0) {
+        imageS3Keys = updatedTempData.s3_keys.map((key) => {
+          const s3_key = key;
+          const species_id = updatedTempData.species_id;
+          return { species_id, s3_key };
+        });
+      }
+
+      console.log("to save s3 keys: ", imageS3Keys)
       console.log("to save images: ", plantImages)
 
       // add new images only
-      const imagesToAdd = plantImages.filter((img) => {
+      let imagesToAdd;
+      if (plantImages && plantImages.length > 0) {
+        imagesToAdd = plantImages.filter((img) => {
         return !updatedTempData.images.some((existingImg) => existingImg.image_url === img.image_url);
       });
+      }
 
-      console.log("to add images: ", imagesToAdd)
-      // update photos
+      let s3KeysToAdd;
+      if (imageS3Keys && imageS3Keys.length > 0) {
+        s3KeysToAdd = imageS3Keys.filter((key) => {
+          return !updatedTempData.images.some((existingImg) => existingImg.s3_key === key.s3_key);
+        });
+      }
+
+      console.log("to add images (links): ", imagesToAdd)
+      console.log("to add images (links): ", s3KeysToAdd)
+
+      // POST user uploaded image links
+      if (imagesToAdd && imagesToAdd.length > 0) {
       imagesToAdd.forEach((img) => {
         axios
           .post(API_ENDPOINT + "plantsImages", img)
@@ -149,6 +173,21 @@ function AlternativeSpeciesPage() {
             console.error("Error adding image", error);
           });
       });
+      }
+
+      // POST user uploaded image files
+      if (s3KeysToAdd && s3KeysToAdd.length > 0) {
+        s3KeysToAdd.forEach((img) => {
+          axios
+            .post(API_ENDPOINT + "plantsImages", img)
+            .then((response) => {
+              console.log("images updated successfully", response.data);
+            })
+            .catch((error) => {
+              console.error("Error adding image", error);
+            });
+        });
+      }
 
       // update alternative species
       axios
@@ -165,12 +204,13 @@ function AlternativeSpeciesPage() {
   };
   };
 
-  // delete row with Confirmation before deletion
+  // opens confirmation dialog before deletion
   const handleDeleteRow = (species_id) => {
     setDeleteId(species_id);
     setOpenDeleteConfirmation(true);
   };
 
+  // deletes species from the table
   const handleConfirmDelete = () => {
     console.log("alt species id to delete: ", deleteId);
     if (deleteId) {
@@ -193,35 +233,27 @@ function AlternativeSpeciesPage() {
 
   // helper function when search input changes
   const handleSearchInputChange = (field, value) => {
-    console.log("got here", field, value)
+    console.log("got here: ", field, value)
     setTempData((prev) => ({ ...prev, [field]: value }));
   };
 
+  // sets species that match search
   const handleSearch = (searchInput) => {
-    // console.log(typeof searchInput);
-    // console.log("search input: ", searchInput);
+    console.log(typeof searchInput);
+    console.log("search input: ", searchInput);
 
     if (searchInput === "") {
       setDisplayData(data);
     } else {
       const terms = searchInput.toLowerCase().split(" ");
       const results = data.filter((item) => {
-        const scientificNameMatch = Array.isArray(item.scientific_name)
-          ? item.scientific_name.some((name) =>
-            terms.every((term) => name.toLowerCase().includes(term))
-          )
-          : terms.every((term) => {
-            item.scientific_name.toLowerCase().includes(term);
-          }
-          );
+        const scientificNameMatch = item.scientific_name.some((name) =>
+          terms.every((term) => name.toLowerCase().includes(term))
+        );
 
-        const commonNameMatch = Array.isArray(item.common_name)
-          ? item.common_name.some((name) =>
-            terms.every((term) => name.toLowerCase().includes(term))
-          )
-          : terms.every((term) =>
-            item.common_name.toLowerCase().includes(term)
-          );
+        const commonNameMatch = item.common_name.some((name) =>
+          terms.every((term) => name.toLowerCase().includes(term))
+        );
 
         return scientificNameMatch || commonNameMatch || searchInput === item.scientific_name.join(', ');
       });
@@ -240,16 +272,25 @@ function AlternativeSpeciesPage() {
       .then((response) => {
         console.log("Alternative species added successfully", response);
 
-        // plant data
-        const plantDataArr = newSpeciesData.image_links.map((image_link) => ({
+        // plant data with image links
+        const plantDataArrLinks = newSpeciesData.image_links.map((image_link) => ({
           species_id: response.data[0].species_id,
           image_url: image_link,
         }));
 
-        console.log("plant data array: ", plantDataArr);
 
-        // upload plant image 
-        plantDataArr.forEach((plantData) => {
+        // plant data with image files
+        const plantDataArrFiles = newSpeciesData.s3_keys.map((key) => ({
+          species_id: response.data[0].species_id,
+          s3_key: key,
+        }));
+
+        const mergedPlantData = plantDataArrLinks.concat(plantDataArrFiles);
+        console.log("plant data array: ", mergedPlantData);
+
+
+        // upload plant images 
+        mergedPlantData.forEach((plantData) => {
           console.log("plant: ", plantData);
           axios
             .post(API_ENDPOINT + "plantsImages", plantData)
@@ -291,7 +332,7 @@ function AlternativeSpeciesPage() {
         </Typography>
       </Box> */}
 
-      {/* lsearch bars*/}
+      {/* search bars*/}
       <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
         <SearchComponent
           text={"Search alternative species (scientific or common name)"}
@@ -340,7 +381,7 @@ function AlternativeSpeciesPage() {
                   Common Name(s)
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "30%" }}>
+              <TableCell style={{ width: "35%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Description
                 </Typography>
@@ -357,7 +398,7 @@ function AlternativeSpeciesPage() {
                 </Typography>
               </TableCell>
 
-              <TableCell style={{ width: "9%" }}>
+              <TableCell style={{ width: "5%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Actions
                 </Typography>
@@ -587,6 +628,15 @@ function AlternativeSpeciesPage() {
                                     {link}
                                   </a>
                                   <br />
+
+                                  {row.s3_keys && row.s3_keys[index] && (
+                                    <span>
+                                      <a href={`https://d123pl6gvdlen1.cloudfront.net/${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
+                                        View Image
+                                      </a>
+                                      <br />
+                                    </span>
+                                  )}
                                   <br />
                                 </span>
                               ))
@@ -596,10 +646,20 @@ function AlternativeSpeciesPage() {
                                   {row.image_links}
                                 </a>
                                 <br />
+                                  {row.s3_keys && row.s3_keys.map((key, index) => (
+                                    <span key={index}>
+                                      <a href={`https://d123pl6gvdlen1.cloudfront.net/${key}`} target="_blank" rel="noopener noreferrer">
+                                        View Image
+                                      </a>
+                                      <br />
+                                    </span>
+                                  ))}
                                 <br />
                               </span>
                             )}
                           </TableCell>
+
+
 
                         <TableCell>
                           <Tooltip title="Edit"

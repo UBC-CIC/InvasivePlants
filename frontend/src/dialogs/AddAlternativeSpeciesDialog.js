@@ -5,13 +5,13 @@ import CustomAlert from '../components/AlertComponent';
 import CustomWarning from '../components/WarningComponent';
 
 const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
+  const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
 
   const initialSpeciesData = {
     scientific_name: [],
     common_name: [],
     species_description: "",
     resource_links: [],
-    // image_links: [],
   };
 
   const [showOpen, setShowOpen] = useState(false);
@@ -20,6 +20,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
   const [speciesData, setSpeciesData] = useState(initialSpeciesData);
 
   const handleInputChange = (field, value) => {
+    console.log("input change: ", field, value)
     setSpeciesData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -54,8 +55,9 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
       common_name: typeof speciesData.common_name === 'string' ? splitByCommaWithSpaces(speciesData.common_name) : [],
       resource_links: typeof speciesData.resource_links === 'string' ? splitByCommaWithSpaces(speciesData.resource_links) : [],
       image_links: typeof speciesData.image_links === 'string' ? splitByCommaWithSpaces(speciesData.image_links) : [],
+      s3_keys: typeof speciesData.s3_keys === 'string' ? splitByCommaWithSpaces(speciesData.s3_keys) : speciesData.s3_keys,
     };
-    // TODO: either here or in handleAddSpecies need to add the photo
+
     handleAdd(modifiedSpeciesData);
     handleCancel();
   };
@@ -68,15 +70,60 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     handleClose();
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
+  // const files = e.target.files;
+  // if (files) {
+  //   let imageLinks = speciesData.image_links ? speciesData.image_links : '';
+  //   for (let i = 0; i < files.length; i++) {
+  //     imageLinks += (i === 0 ? '' : ',') + files[i].name;
+  //   }
+  //   console.log("images uploaded: ", imageLinks)
+  // }
+
     const files = e.target.files;
+    let uploadResponse;
+
     if (files) {
-      let imageLinks = speciesData.image_links ? speciesData.image_links : '';
-      for (let i = 0; i < files.length; i++) {
-        imageLinks += (i === 0 ? '' : ',') + files[i].name;
+      let s3Keys = []
+
+      try {
+        for (let i = 0; i < files.length; i++) {
+
+          //GET request to getS3SignedURL endpoint
+          const signedURLResponse = await fetch(
+            `${API_ENDPOINT}/getS3SignedURL`
+          );
+
+          if (!signedURLResponse.ok) {
+            continue;
+          }
+
+          const signedURLData = await signedURLResponse.json();
+          console.log("signed url data: ", signedURLData)
+
+          // Use the obtained signed URL to upload the image
+          uploadResponse = await fetch(signedURLData.uploadURL, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': files[i].type
+            },
+            body: files[i]
+          });
+
+          console.log("upload response: ", uploadResponse)
+
+          // Image uploaded successfully, add its s3 key to the list
+          if (signedURLData.key) {
+            s3Keys.push(signedURLData.key);
+          }
+
+          // Update the state or handle the uploaded image s3 keys
+          handleInputChange('s3_keys', s3Keys);
+        }
+
+      } catch (error) {
+        console.error('Error uploading images:', error);
       }
-      // TODO: fix
-      // handleInputChange("image_links", imageLinks);
     }
   };
 
