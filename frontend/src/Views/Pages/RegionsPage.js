@@ -48,25 +48,28 @@ function RegionsPage() {
         handleGetRegions();
     }, []); 
 
-    // gets rows that matches search and country input 
-    const filterData = data.filter((item) =>
-        (searchInput === "" ||
-            (item.region_fullname.toLowerCase().includes(searchInput.toLowerCase()) ||
-                item.region_code_name.toLowerCase().includes(searchInput.toLowerCase()))) &&
-        (country === "" || item.country_fullname.toLowerCase() === country.toLowerCase())
-    );
-
     useEffect(() => {
+        const filteredData = data.filter((item) =>
+            (searchInput === "" ||
+                (item.region_fullname.toLowerCase().includes(searchInput.toLowerCase()) ||
+                    item.region_code_name.toLowerCase().includes(searchInput.toLowerCase()))) &&
+            (country === "" || item.country_fullname.toLowerCase() === country.toLowerCase())
+        );
+
         if (searchInput === "" && country === "") {
-            // do nothing
+            setDisplayData(data);
         } else {
-            const results = filterData.map((item) => ({
-                label: item.region_fullname,
-                value: item.region_fullname,
-            }));
-            setSearchResults(results);
+            setDisplayData(filteredData);
         }
-    }, [searchInput, filterData, country]);
+
+        // Update search results based on filtered data
+        const results = filteredData.map((item) => ({
+            label: item.region_fullname,
+            value: item.region_fullname,
+        }));
+        setSearchResults(results);
+    }, [searchInput, country, data]);
+
 
     // edit region row
     const startEdit = (region_id, rowData) => {
@@ -181,8 +184,6 @@ function RegionsPage() {
 
     // search country
     const handleCountrySearch = (countryInput) => {
-        setCountry(countryInput);
-
         if (countryInput === "") {
             setDisplayData(data);
         } else {
@@ -219,23 +220,9 @@ function RegionsPage() {
 
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-            {/* <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
-                <Typography variant="h4" sx={{ textAlign: 'center' }}>
-                    Regions List
-                </Typography>
-            </Box> */}
 
             {/* location and search bars*/}
             <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
-                {/* <LocationFilterComponent
-                    text={"Search by country"}
-                    mapTo={"country_fullname"}
-                    inputData={displayData}
-                    handleLocationSearch={handleCountrySearch}
-                    location={country}
-                    setLocation={setCountry}
-                /> */}
-
                 <Box style={{ flex: 1, marginRight: "10px" }}>
                     <Autocomplete
                         options={Array.from(new Set(displayData.map((region) => region.country_fullname)))}

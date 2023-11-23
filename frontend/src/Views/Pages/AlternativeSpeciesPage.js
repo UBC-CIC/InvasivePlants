@@ -70,31 +70,31 @@ function AlternativeSpeciesPage() {
     handleGetSpecies();
   }, []); 
 
-  // filters species based on search input
-  const filterData = data.filter((item) =>
-  (searchInput === "" || (
-    item.scientific_name.some((name) =>
-        name.toLowerCase().includes(searchInput.toLowerCase())
-    ) ||
-    item.common_name.some((name) =>
-        name.toLowerCase().includes(searchInput.toLowerCase())
-    )
-  ))
-  );
-
   useEffect(() => {
+    const filteredData = data.filter((item) =>
+    (searchInput === "" || (
+      item.scientific_name.some((name) =>
+        name.toLowerCase().includes(searchInput.toLowerCase())
+      ) ||
+      item.common_name.some((name) =>
+        name.toLowerCase().includes(searchInput.toLowerCase())
+      )
+    )))
+
     if (searchInput === "") {
       // do nothing
     } else {
-      const results = filterData.map((item) => ({
-        label: item.scientific_name,
-        value: item.scientific_name,
-      }));
-      console.log("setting search results: ", results)
-
-      setSearchResults(results);
+      setDisplayData(filteredData);
     }
-  }, [searchInput, filterData]);
+
+    // Update search results based on filtered data
+    const results = filteredData.map((item) => ({
+      label: item.scientific_name,
+      value: item.scientific_name,
+    }));
+
+    setSearchResults(results);
+  }, [searchInput, data]);
 
   // edit species row
   const startEdit = (species_id, rowData) => {
@@ -325,12 +325,6 @@ function AlternativeSpeciesPage() {
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-      {/* title */}
-      {/* <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
-        <Typography variant="h4" sx={{ textAlign: 'center' }}>
-          Alternative Species List
-        </Typography>
-      </Box> */}
 
       {/* search bars*/}
       <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>

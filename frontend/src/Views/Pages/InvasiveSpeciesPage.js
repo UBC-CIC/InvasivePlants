@@ -81,42 +81,34 @@ function InvasiveSpeciesPage() {
     handleGetSpecies();
   }, []); 
 
-  // TODO: fix this filter
-  const filterData = data.filter((item) => {
-    const matchesSearchInput = searchInput === "" ||
-      (Array.isArray(item.scientific_name)
-        ? item.scientific_name.some((name) =>
-          name.toLowerCase().includes(searchInput.toLowerCase())
-        )
-        : item.scientific_name.toLowerCase().includes(searchInput.toLowerCase())
-      );
-
-    const matchesRegionID = regionMap[region_id] === "" ||
-      item.region_id.some((id) => regionMap[id] === region_id);
-
-    if (searchInput && region_id) {
-      return matchesSearchInput && matchesRegionID;
-    } else if (searchInput) {
-      return matchesSearchInput;
-    } else if (region_id) {
-      return matchesRegionID;
-    } else {
-      return true; 
-    }
-  });
-
 
   useEffect(() => {
-    if (searchInput === "" && region_id === "") {
+    const filteredData = data.filter((item) => {
+      const matchesSearchInput = searchInput === "" || 
+        item.scientific_name.some((name) => name.toLowerCase().includes(searchInput.toLowerCase())
+      );
+
+      const matchesRegionID = region_id === "" ||
+        item.region_id.includes(region_id);
+
+      return matchesSearchInput && matchesRegionID;
+    });
+
+    if (searchInput === "") {
       // do nothing
     } else {
-      const results = filterData.map((item) => ({
-        label: item.scientific_name,
-        value: item.scientific_name,
-      }));
-      setSearchResults(results);
+      setDisplayData(filteredData);
     }
-  }, [searchInput, filterData, region_id]);
+
+    // Update search results based on filtered data
+    const results = filteredData.map((item) => ({
+      label: item.scientific_name,
+      value: item.scientific_name,
+    }));
+
+    setSearchResults(results);
+  }, [searchInput, data, regionMap, region_id]);
+
 
   // edit species row
   const startEdit = (id, rowData) => {
