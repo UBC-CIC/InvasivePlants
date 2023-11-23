@@ -58,7 +58,7 @@ function App(props) {
 
               <Login logo={"custom"} type={"image"} themeColor={"standard"} animateTitle={true}
                 title={"Invasive Plants"} darkMode={true}
-                disableSignUp={false}
+                disableSignUp={true}
               />
             )
           }
