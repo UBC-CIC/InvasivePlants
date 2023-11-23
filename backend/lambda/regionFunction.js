@@ -1,6 +1,8 @@
 const postgres = require("postgres");
 const AWS = require("aws-sdk");
 
+const PAGE_LIMIT = 20;
+
 // Gather AWS services
 const secretsManager = new AWS.SecretsManager();
 
@@ -55,7 +57,12 @@ exports.handler = async (event) => {
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
 			case "GET /region":
-				data = await sql`SELECT * FROM regions`;
+				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_region_id) ? event.queryStringParameters.last_region_id : "00000000-0000-0000-0000-000000000000";
+				
+				data = await sql`	SELECT * FROM regions
+									WHERE region_id > ${species_id_pagination}
+									ORDER BY region_fullname, region_id 
+									LIMIT ${PAGE_LIMIT};`;
 				response.body = JSON.stringify(data);
 				break;
 			case "POST /region":
@@ -69,12 +76,13 @@ exports.handler = async (event) => {
 						
 						// Optional parameters
 						const geographic_coordinate = (bd.geographic_coordinate) ? bd.geographic_coordinate : "";
-						await sql`
+						data = await sql`
 							INSERT INTO regions (region_code_name, region_fullname, country_fullname, geographic_coordinate)
-							VALUES (${bd.region_code_name}, ${bd.region_fullname}, ${bd.country_fullname}, ${geographic_coordinate});
+							VALUES (${bd.region_code_name}, ${bd.region_fullname}, ${bd.country_fullname}, ${geographic_coordinate})
+							RETURNING *;
 						`;
 						
-						response.body = "Added data to region";
+						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
@@ -112,16 +120,17 @@ exports.handler = async (event) => {
 						bd.geographic_coordinate &&
 						event.pathParameters.region_id){
 						
-						await sql`
+						data = await sql`
 							UPDATE regions
 							SET region_code_name = ${bd.region_code_name}, 
 								region_fullname = ${bd.region_fullname}, 
 								country_fullname = ${bd.country_fullname},
 								geographic_coordinate = ${bd.geographic_coordinate}
-							WHERE region_id = ${event.pathParameters.region_id};
+							WHERE region_id = ${event.pathParameters.region_id}
+							RETURNING *;
 						`;
 						
-						response.body = "Updated the data to the region";
+						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";

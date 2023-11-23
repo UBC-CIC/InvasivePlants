@@ -16,12 +16,14 @@ import * as logs from "aws-cdk-lib/aws-logs";
 // Stack import
 import { VpcStack } from './vpc-stack';
 import { DBStack } from './database-stack';
+import { FunctionalityStack } from './functionality-stack';
+
 
 export class APIStack extends Stack {
     private readonly dbInstance: rds.DatabaseInstance;
     private readonly secretPath: string;
     private readonly rdsProxyEndpoint: string; 
-    constructor(scope: Construct, id: string, vpcStack: VpcStack, db: DBStack, props?: StackProps){
+    constructor(scope: Construct, id: string, vpcStack: VpcStack, db: DBStack, functionalityStack: FunctionalityStack, props?: StackProps){
         super(scope, id, props);
 
         /**
@@ -185,6 +187,7 @@ export class APIStack extends Stack {
             principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
             action: 'lambda:InvokeFunction',
             sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:${api.restApiId}/*/*/invasiveSpecies*`
+            // Note: the /*/*/invasiveSpecies*` means allows any stage and method where path includes invasiveSpecies 
         });
         
         // Change Logical ID to match the one decleared in YAML file of Open API
@@ -283,6 +286,58 @@ export class APIStack extends Stack {
         // Change Logical ID to match the one decleared in YAML file of Open API
         const cfnLambda_images = IL_images.node.defaultChild as lambda.CfnFunction;
         cfnLambda_images.overrideLogicalId("IntegLambImages");
+
+        /**
+         * 
+         * Create Integration Lambda for getSignedURL API Gateway endpoint
+         */
+        const IL_getSignedURL = new lambda.Function(this, 'getSignedURL', {
+          runtime: lambda.Runtime.NODEJS_16_X,    // Execution environment
+          code: lambda.Code.fromAsset('lambda'),  // Code loaded from "lambda" directory
+          handler: 'getSignedURLFunction.handler',      // Code handler
+          timeout: Duration.seconds(300),
+          vpc: vpcStack.vpc,
+          environment: {
+            BUCKET_NAME: functionalityStack.bucketName
+          },
+          functionName: "getSignedURL",
+          memorySize: 512
+        });
+
+        // Add the permission to the Lambda function's policy to allow API Gateway access
+        IL_getSignedURL.addPermission('AllowApiGatewayInvoke', {
+            principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
+            action: 'lambda:InvokeFunction',
+            sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:${api.restApiId}/*/*/getS3SignedURL*`
+        });
+
+        // Add the policy to the Lambda function's policy to access S3 putObjectAcl
+        IL_getSignedURL.addToRolePolicy(iam.PolicyStatement.fromJson({
+          Effect: "Allow",
+          Action: [
+            "s3:putObjectAcl", 
+            "s3:PutObject", 
+            "s3:GetObject"
+          ],
+          Resource: `arn:aws:s3:::${functionalityStack.bucketName}/*`
+        }));
+
+        // Add the policy to the Lambda function's policy to log data to CloudWatch
+        IL_getSignedURL.addToRolePolicy(iam.PolicyStatement.fromJson({
+          Effect: iam.Effect.ALLOW,
+          Action: [
+            //Logs
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+          ],
+          Resource: ["arn:aws:logs:*:*:*"],
+        }));
+        
+        // Change Logical ID to match the one decleared in YAML file of Open API
+        const cfnLambda_getSignedURL = IL_getSignedURL.node.defaultChild as lambda.CfnFunction;
+        cfnLambda_getSignedURL.overrideLogicalId("getSignedURL");
+        
     }
 }
 // Cogito is next

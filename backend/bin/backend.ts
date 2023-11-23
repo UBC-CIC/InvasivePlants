@@ -6,11 +6,15 @@ import {DBStack} from '../lib/database-stack';
 import {DBFlowStack} from '../lib/dbFlow-stack';
 import { FunctionalityStack } from '../lib/functionality-stack';
 import { HostStack } from '../lib/host-stack';
+
 // Create application
 const app = new cdk.App();
 
 // Create instance of a VPC stack
 const vpcStack = new VpcStack(app, 'VpcStack');
+
+// Create an instance of functionality stack
+const functionality = new FunctionalityStack(app, 'FunctionalityStack');
 
 // Create instance of a Database stack
 const dbStack = new DBStack(app, 'DBStack', vpcStack);
@@ -19,10 +23,7 @@ const dbStack = new DBStack(app, 'DBStack', vpcStack);
 const dbFlowStack = new DBFlowStack(app, 'DBFlowStack', vpcStack, dbStack);
 
 // Create an instance of an API stack
-const api = new APIStack(app, 'APIStack', vpcStack, dbStack);
-
-// Create an instance of functionality stack
-const functionality = new FunctionalityStack(app, 'FunctionalityStack');
+const api = new APIStack(app, 'APIStack', vpcStack, dbStack, functionality);
 
 // Create an instance of Host stack
 const hostStack = new HostStack(app, 'hostStack', vpcStack, functionality);

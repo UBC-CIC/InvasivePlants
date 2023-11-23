@@ -1,6 +1,8 @@
 const postgres = require("postgres");
 const AWS = require("aws-sdk");
 
+const PAGE_LIMIT = 20;
+
 // Gather AWS services
 const secretsManager = new AWS.SecretsManager();
 
@@ -54,10 +56,18 @@ exports.handler = async (event) => {
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
 			case "GET /alternativeSpecies":
+				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_species_id) ? event.queryStringParameters.last_species_id : "00000000-0000-0000-0000-000000000000";
+				
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
-					data = await sql`SELECT * FROM alternative_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
+					data = await sql`	SELECT * FROM alternative_species 
+										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and species_id > ${species_id_pagination}
+										ORDER BY scientific_name[1], species_id 
+										LIMIT ${PAGE_LIMIT};`;
 				} else {
-					data = await sql`SELECT * FROM alternative_species`;
+					data = await sql`	SELECT * FROM alternative_species 
+										WHERE species_id > ${species_id_pagination}
+										ORDER BY scientific_name[1], species_id 
+										LIMIT ${PAGE_LIMIT};`;
 				}
 				
 				for(let i in data){
@@ -76,15 +86,15 @@ exports.handler = async (event) => {
 						// Optional parameters
 						const common_name = (bd.common_name) ? bd.common_name : [];
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
-						const image_links = (bd.image_links) ? bd.image_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
 						
-						await sql`
-							INSERT INTO alternative_species (scientific_name, common_name, resource_links, image_links, species_description)
-							VALUES (${bd.scientific_name}, ${common_name}, ${resource_links}, ${image_links}, ${species_description});
+						data = await sql`
+							INSERT INTO alternative_species (scientific_name, common_name, resource_links, species_description)
+							VALUES (${bd.scientific_name}, ${common_name}, ${resource_links}, ${species_description})
+							RETURNING *;
 						`;
 						
-						response.body = "Added data to alternative species";
+						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
@@ -127,16 +137,17 @@ exports.handler = async (event) => {
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
 						
-						await sql`
+						data = await sql`
 							UPDATE alternative_species
 							SET scientific_name = ${bd.scientific_name}, 
 								common_name = ${common_name},
 								resource_links = ${resource_links}, 
 								species_description = ${species_description}
-							WHERE species_id = ${event.pathParameters.species_id};
+							WHERE species_id = ${event.pathParameters.species_id}
+							RETURNING *;
 						`;
 						
-						response.body = "Updated the data to the alternative species";
+						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
 						response.body = `Invalid value, required parameters are not provided`;

@@ -1,6 +1,8 @@
 const postgres = require("postgres");
 const AWS = require("aws-sdk");
 
+const PAGE_LIMIT = 20;
+
 // Gather AWS services
 const secretsManager = new AWS.SecretsManager();
 
@@ -51,16 +53,26 @@ exports.handler = async (event) => {
 	
 	let data;
 	try {
-		console.log("Event: ", event);
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
 			case "GET /invasiveSpecies":
+				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_species_id) ? event.queryStringParameters.last_species_id : "00000000-0000-0000-0000-000000000000";
+				
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
-					data = await sql`SELECT * FROM invasive_species WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)`;
+					data = await sql`	SELECT * FROM invasive_species 
+										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and species_id > ${species_id_pagination}
+										ORDER BY scientific_name[1], species_id 
+										LIMIT ${PAGE_LIMIT};`;
 				} if(event.queryStringParameters != null && event.queryStringParameters.region_id){
-					data = await sql`SELECT * FROM invasive_species WHERE ${event.queryStringParameters.region_id} = ANY(region_id)`;
+					data = await sql`	SELECT * FROM invasive_species 
+										WHERE ${event.queryStringParameters.region_id} = ANY(region_id) and species_id > ${species_id_pagination}
+										ORDER BY scientific_name[1], species_id 
+										LIMIT ${PAGE_LIMIT};`;
 				} else {
-					data = await sql`SELECT * FROM invasive_species`;
+					data = await sql`	SELECT * FROM invasive_species 
+										WHERE species_id > ${species_id_pagination}
+										ORDER BY scientific_name[1], species_id 
+										LIMIT ${PAGE_LIMIT};`;
 				}
 				for(let d in data){
 					// Get alternative species and images
@@ -86,12 +98,13 @@ exports.handler = async (event) => {
 						const region_id = (bd.region_id) ? bd.region_id : [];
 						const alternative_species = (bd.alternative_species) ? bd.alternative_species : [];
 						
-						await sql`
+						data = await sql`
 							INSERT INTO invasive_species (scientific_name, resource_links, species_description, region_id, alternative_species)
-							VALUES (${bd.scientific_name}, ${resource_links}, ${species_description}, ${region_id}, ${alternative_species});
+							VALUES (${bd.scientific_name}, ${resource_links}, ${species_description}, ${region_id}, ${alternative_species})
+							RETURNING *;
 						`;
 						
-						response.body = "Added data to region";
+						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
@@ -140,17 +153,18 @@ exports.handler = async (event) => {
 						const region_id = (bd.region_id) ? bd.region_id : [];
 						const alternative_species = (bd.alternative_species) ? bd.alternative_species : [];
 						
-						await sql`
+						data = await sql`
 							UPDATE invasive_species
 							SET scientific_name = ${bd.scientific_name}, 
 								resource_links = ${resource_links}, 
 								species_description = ${species_description},
 								region_id = ${region_id},
 								alternative_species = ${alternative_species}
-							WHERE species_id = ${event.pathParameters.species_id};
+							WHERE species_id = ${event.pathParameters.species_id}
+							RETURNING *;
 						`;
 						
-						response.body = "Updated the data to the region";
+						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
 						response.body = "Invalid value";

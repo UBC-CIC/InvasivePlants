@@ -4,12 +4,15 @@ import { Construct } from 'constructs';
 // AWS Services
 import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 
 export class FunctionalityStack extends cdk.Stack {
     public readonly secret: secretsmanager.ISecret;
     public readonly userpoolId: string;
     public readonly appClientId: string;
     public readonly region: string;
+    public readonly bucketName: string;
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
@@ -58,6 +61,19 @@ export class FunctionalityStack extends cdk.Stack {
 
         /**
          * 
+         * Create user group for admin
+         */
+        const cfnUserPoolGroup = new cognito.CfnUserPoolGroup(this, 'cognito-userGroup', {
+            userPoolId: userpool.userPoolId,
+          
+            // the properties below are optional
+            description: 'Admin usergroup to perform data manipulation',
+            groupName: 'ADMIN_USER',
+            precedence: 1        
+        });
+
+        /**
+         * 
          * Store secrets to Secret Manager
          * User pool id, client id, and region the user pool deployed
          */
@@ -76,5 +92,59 @@ export class FunctionalityStack extends cdk.Stack {
             },
             removalPolicy: cdk.RemovalPolicy.DESTROY
         });
+
+        /**
+         * 
+         * Create S3 buckets for plants data
+         */
+        
+        const s3bucket = new s3.Bucket(this, 'invasive-plants-bucket', {
+            blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+            encryption: s3.BucketEncryption.S3_MANAGED,
+            removalPolicy: cdk.RemovalPolicy.DESTROY,
+            autoDeleteObjects: true,
+            cors: [{
+                allowedHeaders: ['*'],
+                allowedMethods: [s3.HttpMethods.GET, s3.HttpMethods.PUT, s3.HttpMethods.HEAD],
+                allowedOrigins: ['*'],
+            }]
+        });
+
+        this.bucketName = s3bucket.bucketName;
+
+        /**
+         * 
+         * Create a CloudFront distribution as CDN for plants images.
+         *  - Origin: S3 buckets
+         *  - Cached Optimized
+         */
+        const CFDistribution = new cloudfront.Distribution(this, 'CloudFront-Distribution', {
+            defaultBehavior: {
+                origin: new cdk.aws_cloudfront_origins.S3Origin(s3bucket),
+            },
+            comment: "CloudFront distribution for S3 as origin",
+        });
+
+        // // Output Messages
+        new cdk.CfnOutput(this, 'Output-Message', {
+            value: `
+                CloudFront URL: ${CFDistribution.distributionDomainName}
+            `,
+        })
+
+        // {
+		// 	"Sid": "AllowCloudFrontServicePrincipal",
+		// 	"Effect": "Allow",
+		// 	"Principal": {
+		// 		"Service": "cloudfront.amazonaws.com"
+		// 	},
+		// 	"Action": "s3:GetObject",
+		// 	"Resource": "arn:aws:s3:::invasive-plants-bucket/*",
+		// 	"Condition": {
+		// 		"StringEquals": {
+		// 			"AWS:SourceArn": "arn:aws:cloudfront::925092432586:distribution/E1AEHINADZDZIS"
+		// 		}
+		// 	}
+		// }
     }
 }

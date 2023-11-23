@@ -19,7 +19,7 @@ import { connect } from "react-redux";
 import { updateLoginState } from "../../Actions/loginActions";
 import TextFieldStartAdornment from "./TextFieldStartAdornment";
 import "./Login.css";
-
+import Typography from '@material-ui/core/Typography';
 
 const initialFormState = {
     email: "", password: "", given_name: "", family_name: "", authCode: "", resetCode: ""
@@ -100,6 +100,7 @@ function Login(props) {
     const [accountCreationEmailExistError, setAccountCreationEmailExistError] = useState(false);
     const [accountCreationPasswordError, setAccountCreationPasswordError] = useState(false);
     const [accountLoginError, setAccountLoginError] = useState(false);
+    const [accountLoginErrorMsg, setAccountLoginErrorMsg] = useState(undefined);
     const [verificationError, setVerificationError] = useState(false);
     const [newPasswordError, setNewPasswordError] = useState(false);
     const [newVerification, setNewVerification] = useState(false);
@@ -109,7 +110,6 @@ function Login(props) {
     const [emptyInputError, setEmptyInputError] = useState(false);
     const [invalidEmailError, setInvalidEmailError] = useState(false);
     const [timeLimitError, setTimeLimitError] = useState("");
-
 
     // password check
     const [passwordRequirements, setPasswordRequirements] = useState({
@@ -127,9 +127,6 @@ function Login(props) {
     const classes = useStyles();
 
     useEffect(() => {
-        console.log("process.env.REACT_APP_USERPOOL_ID: ", process.env.REACT_APP_USERPOOL_ID);
-        console.log("process.env.REACT_APP_USERPOOL_WEB_CLIENT_ID: ", process.env.REACT_APP_USERPOOL_WEB_CLIENT_ID);
-
         async function retrieveUser() {
             try {
                 Auth.currentAuthenticatedUser().then(user => {
@@ -267,14 +264,23 @@ function Login(props) {
             setLoading(true);
             const { email, password } = formState;
             let user = await Auth.signIn(email, password);
+
             if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
                 // a new password needs to be set if account is created through Amazon Cognito for the user
                 resetStates("newUserPassword")
                 setLoading(false);
                 setCurrentUser(user);
             } else {
-                resetStates("signedIn")
-                setLoading(false);
+                if(user.signInUserSession.idToken.payload["cognito:groups"] != undefined && user.signInUserSession.idToken.payload["cognito:groups"].some(element => element === "ADMIN_USER")){
+                    resetStates("signedIn");
+                    setLoading(false);
+                } else {
+                    resetStates("signIn");
+                    setLoading(false);
+                    await Auth.signOut();
+                    updateFormState(() => ({ ...initialFormState, email, password }));
+                    throw {message: "Not enough permission", code:"DeniedPermission"};
+                }
             }
         } catch (e) {
             setLoading(false);
@@ -282,13 +288,14 @@ function Login(props) {
 
             // if a password is requested through Amazon Cognito,
             // need to jump to resetPassword page
-            if (errorMsg.includes("PasswordResetRequiredException")) {
+            if (errorMsg && errorMsg.includes("PasswordResetRequiredException")) {
                 const { email } = formState;
 
                 updateFormState(() => ({ ...initialFormState, email }))
                 updateLoginState("resetPassword")
                 setLoading(false);
             } else {
+                setAccountLoginErrorMsg(e.message);
                 setAccountLoginError(true);
             }
         }
@@ -429,6 +436,10 @@ function Login(props) {
                 <Grid container item xs={12} md={6} className={`page-info ${classes.centerBox}`}>
                     <Grid container item justify={"space-evenly"} alignItems={"center"} /*style={{height: "60vh"}}*/>
                         <Grid xs item className={`typewriter ${classes.marginHorizontal}`}>
+                            <center>
+                                <Typography variant="h2" style={{fontWeight:"bold"}}>Welcome to</Typography>
+                            </center>
+                            
                             <p className={`${classes.textAlignCenter} ${(animateTitle) ?
                                 (darkMode) ? "line anim-typewriter" : "line anim-typewriter-light lightMode"
                                 :
@@ -463,7 +474,7 @@ function Login(props) {
                         {
                             loginState === "signIn" && (
                                 <Grid>
-                                    <BannerMessage type={"error"} typeCheck={accountLoginError}>Incorrect username or password.</BannerMessage>
+                                    <BannerMessage type={"error"} typeCheck={accountLoginError}>{accountLoginErrorMsg}</BannerMessage>
                                     {/* username */}
                                     <TextFieldStartAdornment startIcon={<AlternateEmailIcon />} placeholder={"Email"} name={"email"} type={"email"} onChange={onChange} />
                                     {/* password */}
