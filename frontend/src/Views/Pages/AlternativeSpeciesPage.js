@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
   TablePagination, InputAdornment, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button,
-  TextField, Typography, ThemeProvider, listItemTextClasses
+  TextField, Typography, ThemeProvider
 } from "@mui/material";
 import Theme from '../../admin_pages/Theme';
 
@@ -34,11 +34,21 @@ function AlternativeSpeciesPage() {
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
 
   // fetches alternative species data 
-  const handleGetSpecies = () => {
+  const handleGetAlternativeSpecies = () => {
 
-    // helper function that capitalizes each word
-    const capitalizeWordsSplitUnderscore = (str) => {
-      return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    // helper function that capitalizes scientific name
+    const capitalizeScientificName = (str) => {
+      const strSplitUnderscore = str.split("_");
+      const words = strSplitUnderscore.flatMap(word => word.split(" "));
+
+      const formattedWords = words.map((word, index) => {
+        if (index === 0) { // first "word"
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        }
+        return word.toLowerCase();
+      });
+
+      return formattedWords.join(" ");
     };
 
     // helper function that capitalizes each word
@@ -53,7 +63,7 @@ function AlternativeSpeciesPage() {
 
         // formats data 
         const formattedData = response.data.map(item => {
-          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeWordsSplitUnderscore(name));
+          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeScientificName(name, "_"));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeWordsSplitSpace(name));
           const image_links = item.images.map(img => img.image_url);
           const s3_keys = item.images.map(img => img.s3_key);
@@ -67,7 +77,7 @@ function AlternativeSpeciesPage() {
           };
         });
 
-        console.log("get alternative species data:", formattedData)
+        console.log("get alternative species data:", formattedData);
 
         // update states
         setDisplayData(formattedData);
@@ -75,11 +85,11 @@ function AlternativeSpeciesPage() {
         setSearchBarDropdownResults(formattedData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
       })
       .catch((error) => {
-        console.error("Error retrieving alternative species", error);
+        console.error("Error getting alternative species", error);
       });
   };
   useEffect(() => {
-    handleGetSpecies();
+    handleGetAlternativeSpecies();
   }, []); 
 
   // filters display data based on user search input
@@ -131,8 +141,10 @@ function AlternativeSpeciesPage() {
       // make sure that fields are proper data structure
       const formattedData = {
         ...tempEditingData,
-        scientific_name: typeof tempEditingData.scientific_name === 'string' ? formatString(tempEditingData.scientific_name) : tempEditingData.scientific_name,
-        common_name: typeof tempEditingData.common_name === 'string' ? formatString(tempEditingData.common_name) : tempEditingData.common_name,
+        scientific_name: typeof tempEditingData.scientific_name === 'string' ?
+          formatString(tempEditingData.scientific_name) : tempEditingData.scientific_name,
+        common_name: typeof tempEditingData.common_name === 'string' ?
+          formatString(tempEditingData.common_name) : tempEditingData.common_name,
       };
 
       // maps species_id to image_url if links exist and is not empty
@@ -148,16 +160,11 @@ function AlternativeSpeciesPage() {
 
       // add new image links only
       const imagesToAdd = (plantImages && plantImages.length > 0) ?
-        plantImages.filter(img =>
-          !formattedData.images.some(existingImg => existingImg.image_url === img.image_url)
-        ) : null;
+        plantImages.filter(img => !formattedData.images.some(existingImg => existingImg.image_url === img.image_url)) : null;
 
       // add new s3 keys only
       const s3KeysToAdd = (imageS3Keys && imageS3Keys.length > 0) ?
-        imageS3Keys.filter(key =>
-          !formattedData.images.some(existingImg => existingImg.s3_key === key.s3_key)
-        ) : null;
-
+        imageS3Keys.filter(key => !formattedData.images.some(existingImg => existingImg.s3_key === key.s3_key)) : null;
 
       console.log("to add images (links): ", imagesToAdd)
       console.log("to add images (keys): ", s3KeysToAdd)
@@ -169,10 +176,10 @@ function AlternativeSpeciesPage() {
             axios
               .post(API_ENDPOINT + "plantsImages", img)
               .then(response => {
-                console.log("Images updated successfully", response.data);
+                console.log("Images added successfully", response.data);
               })
               .catch(error => {
-                console.error("Error adding image", error);
+                console.error("Error adding images", error);
               });
           });
         }
@@ -186,7 +193,7 @@ function AlternativeSpeciesPage() {
         .put(`${API_ENDPOINT}alternativeSpecies/${tempEditingData.species_id}`, formattedData)
         .then((response) => {
           console.log("alternative species updated successfully", response.data);
-          handleGetSpecies();
+          handleGetAlternativeSpecies();
           handleFinishEditingRow();
         })
         .catch((error) => {
@@ -205,15 +212,16 @@ function AlternativeSpeciesPage() {
   // deletes species from the table
   const handleConfirmDelete = () => {
     console.log("alt species id to delete: ", deleteId);
+
     if (deleteId) {
       axios
         .delete(`${API_ENDPOINT}alternativeSpecies/${deleteId}`)
         .then((response) => {
-          handleGetSpecies();
-          console.log("Species deleted successfully", response.data);
+          handleGetAlternativeSpecies();
+          console.log("alternative species deleted successfully", response.data);
         })
         .catch((error) => {
-          console.error("Error deleting species", error);
+          console.error("Error deleting alternative species", error);
         })
         .finally(() => {
           setOpenDeleteConfirmation(false);
@@ -225,14 +233,14 @@ function AlternativeSpeciesPage() {
 
   // helper function when search input changes
   const handleSearchInputChange = (field, value) => {
-    console.log("got here: ", field, value)
+    console.log("field: ", field, "value: ", value)
     setTempEditingData((prev) => ({ ...prev, [field]: value }));
   };
 
   // sets species that match search
   const handleSearch = (searchInput) => {
-    console.log(typeof searchInput);
-    console.log("search input: ", searchInput);
+    // console.log(typeof searchInput);
+    // console.log("search input: ", searchInput);
 
     // display original data when no search option chosen
     if (searchInput === "") {
@@ -261,33 +269,34 @@ function AlternativeSpeciesPage() {
   const handleAddSpecies = (newSpeciesData) => {
     console.log("new alternative species: ", newSpeciesData);
 
+    // POST new alternative species to database
     axios
       .post(API_ENDPOINT + "alternativeSpecies", newSpeciesData)
       .then((response) => {
         console.log("Alternative species added successfully", response);
 
-        // Plant data with image links
+        // maps species id to plant data with image links
         let plantsWithImgLinks = [];
         if (newSpeciesData.image_links && newSpeciesData.image_links.length > 0) {
           plantsWithImgLinks = newSpeciesData.image_links.map((image_link) => ({
             species_id: response.data[0].species_id,
-            image_url: image_link,
+            image_url: image_link
           }));
         }
 
-        // Plant data with image files
+        // maps species id to plant data with image files
         let plantsWithImgFiles = [];
         if (newSpeciesData.s3_keys && newSpeciesData.s3_keys.length > 0) {
           plantsWithImgFiles = newSpeciesData.s3_keys.map((key) => ({
             species_id: response.data[0].species_id,
-            s3_key: key,
+            s3_key: key
           }));
         }
 
         const allPlantImages = plantsWithImgLinks.concat(plantsWithImgFiles);
         console.log("merged plants: ", allPlantImages);
 
-        // upload plant images 
+        // upload all plant images 
         allPlantImages.forEach((plantData) => {
           console.log("plant: ", plantData);
           axios
@@ -295,7 +304,7 @@ function AlternativeSpeciesPage() {
             .then((response) => {
               console.log("images added successfully", response.data);
               // get updated alternative species
-              handleGetSpecies();
+              handleGetAlternativeSpecies();
               setOpenAddSpeciesDialog(false);
             })
             .catch((error) => {
@@ -308,8 +317,8 @@ function AlternativeSpeciesPage() {
       });
   };
 
-  // pagination states
-  const rowsPerPageOptions = [3, 10, 25, 50, 100];
+  // table pagination states
+  const rowsPerPageOptions = [5, 10, 20];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[2]);
 
@@ -465,6 +474,7 @@ function AlternativeSpeciesPage() {
                               width: '100%',
                               wordBreak: 'break-word'
                             }}
+                            // allows resource links to be opened in a new tab with proper security settings
                             InputProps={{
                               endAdornment: (
                                 <InputAdornment position="end">
@@ -473,8 +483,8 @@ function AlternativeSpeciesPage() {
                                       <span key={index}>
                                         <a
                                           href={link}
-                                          target="_blank" // new tab
-                                          rel="noopener noreferrer" // security stuff
+                                          target="_blank"
+                                          rel="noopener noreferrer" 
                                         >
                                           {link}
                                         </a>
@@ -486,8 +496,8 @@ function AlternativeSpeciesPage() {
                                     <span>
                                       <a
                                           href={tempEditingData.resource_links}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
+                                          target="_blank"
+                                          rel="noopener noreferrer"
                                       >
                                           {tempEditingData.resource_links}
                                       </a>
@@ -514,17 +524,14 @@ function AlternativeSpeciesPage() {
                                 e.target.value.split(", ")
                               )
                             }
+                            // allows resource links to be opened in a new tab with proper security settings
                             InputProps={{
                               endAdornment: (
                                 <InputAdornment position="end">
                                   {Array.isArray(tempEditingData.image_links) ? (
                                     tempEditingData.image_links.map((link, index) => (
                                       <span key={index}>
-                                        <a
-                                          href={link}
-                                          target="_blank" // new tab
-                                          rel="noopener noreferrer" // security stuff
-                                        >
+                                        <a href={link} target="_blank" rel="noopener noreferrer">
                                           {link}
                                         </a>
                                         <br />
@@ -533,15 +540,11 @@ function AlternativeSpeciesPage() {
                                     ))
                                   ) : (
                                     <span>
-                                      <a
-                                          href={tempEditingData.image_links}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                      >
+                                        <a href={tempEditingData.image_links} target="_blank" rel="noopener noreferrer">
                                           {tempEditingData.image_links}
                                       </a>
-                                      <br />
-                                      <br />
+                                        <br />
+                                        <br />
                                     </span>
                                   )}
                                 </InputAdornment>
@@ -554,18 +557,14 @@ function AlternativeSpeciesPage() {
                         <TableCell>
                           <Tooltip title="Edit"
                             onClick={() => startEdit(row.species_id, row)}>
-                            <IconButton>
-                              <EditIcon />
-                            </IconButton>
+                            <IconButton><EditIcon /> </IconButton>
                           </Tooltip>
                           <Tooltip
                             title="Delete"
                             onClick={() => {
                               handleDeleteRow(row.species_id, row)
                             }}>
-                            <IconButton>
-                              <DeleteIcon />
-                            </IconButton>
+                            <IconButton><DeleteIcon /> </IconButton>
                           </Tooltip>
                         </TableCell>
                       </>
@@ -649,24 +648,18 @@ function AlternativeSpeciesPage() {
                             )}
                           </TableCell>
 
-
-
                         <TableCell>
                           <Tooltip title="Edit"
                               onClick={() => startEdit(row.species_id, row)}>
-                            <IconButton>
-                              <EditIcon />
-                            </IconButton>
+                              <IconButton><EditIcon /></IconButton>
                           </Tooltip>
                           <Tooltip
                             title="Delete"
                               onClick={() => {
-                                console.log("got here!!!");
+                                // console.log("got here!!!");
                                 handleDeleteRow(row.species_id, row)
                               }}>
-                            <IconButton>
-                              <DeleteIcon />
-                            </IconButton>
+                              <IconButton><DeleteIcon /></IconButton>
                           </Tooltip>
                         </TableCell>
                       </>

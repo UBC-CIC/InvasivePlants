@@ -4,6 +4,7 @@ import SnackbarOnSuccess from "../components/SnackbarComponent";
 import CustomAlert from '../components/AlertComponent';
 import CustomWarning from '../components/WarningComponent';
 
+// dialog for adding an alternative species
 const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
   const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
 
@@ -13,7 +14,6 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     species_description: "",
     resource_links: [],
   };
-
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
@@ -48,7 +48,6 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
 
   const handleAddAlternativeSpecies = () => {
     setShowSnackbar(true);
-
     const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
     const modifiedSpeciesData = {
       ...speciesData,

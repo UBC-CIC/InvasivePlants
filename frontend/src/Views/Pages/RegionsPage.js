@@ -26,7 +26,10 @@ function RegionsPage() {
     const [openEditRegionDialog, setOpenEditRegionDialog] = useState(false);
     const [openAddRegionDialog, setOpenAddRegionDialog] = useState(false);
     const [searchInput, setSearchInput] = useState("");
-    const [searchResults, setSearchResults] = useState(displayData.map((item) => ({ label: item.region_fullname, value: item.region_fullname })));
+    const [searchResults, setSearchResults] = useState(displayData.map((item) => ({
+        label: item.region_fullname,
+        value: item.region_fullname
+    })));
     const [country, setCountry] = useState("");
     const [deleteId, setDeleteId] = useState(null);
     const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
@@ -205,6 +208,8 @@ function RegionsPage() {
         }
 
         console.log("new region: ", formattedData)
+
+        // request to POST new regions to the database
         axios
             .post(API_ENDPOINT + "region", formattedData)
             .then((response) => {
@@ -213,7 +218,7 @@ function RegionsPage() {
                 setOpenAddRegionDialog(false);
             })
             .catch((error) => {
-                console.error("Error adding region", error);
+                console.error("error adding region", error);
             });
     };
 
@@ -272,7 +277,6 @@ function RegionsPage() {
                 </Box>
             </div>
 
-            {/* button to add region */}
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                 <ThemeProvider theme={Theme}>
                     <Button variant="contained" onClick={() => setOpenAddRegionDialog(true)} startIcon={<AddCircleOutlineIcon />}>

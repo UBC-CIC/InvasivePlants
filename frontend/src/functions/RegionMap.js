@@ -2,6 +2,7 @@ import axios from "axios";
 
 const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
 
+// request to GET regions in the database
 const handleGetRegions = () => {
     return new Promise((resolve, reject) => {
         axios
