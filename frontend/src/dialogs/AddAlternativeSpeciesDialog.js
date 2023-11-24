@@ -14,10 +14,11 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     resource_links: [],
   };
 
-  const [showOpen, setShowOpen] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [speciesData, setSpeciesData] = useState(initialSpeciesData);
+
 
   const handleInputChange = (field, value) => {
     console.log("input change: ", field, value)
@@ -31,8 +32,8 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     }
 
     const foundSpecies = data.some((item) =>
-      Array.isArray(item.scientific_name)
-        ? item.scientific_name.some(
+      Array.isArray(item.scientific_name) ?
+        item.scientific_name.some(
           (name) => speciesData.scientific_name === name.toLowerCase())
         : speciesData.scientific_name === item.scientific_name.toLowerCase()
     );
@@ -46,7 +47,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
 
 
   const handleAddAlternativeSpecies = () => {
-    setShowOpen(true);
+    setShowSnackbar(true);
 
     const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
     const modifiedSpeciesData = {
@@ -54,7 +55,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
       scientific_name: typeof speciesData.scientific_name === 'string' ? splitByCommaWithSpaces(speciesData.scientific_name) : [],
       common_name: typeof speciesData.common_name === 'string' ? splitByCommaWithSpaces(speciesData.common_name) : [],
       resource_links: typeof speciesData.resource_links === 'string' ? splitByCommaWithSpaces(speciesData.resource_links) : [],
-      image_links: typeof speciesData.image_links === 'string' ? splitByCommaWithSpaces(speciesData.image_links) : [],
+      image_links: typeof speciesData.image_links === 'string' ? splitByCommaWithSpaces(speciesData.image_links) : speciesData.image_links,
       s3_keys: typeof speciesData.s3_keys === 'string' ? splitByCommaWithSpaces(speciesData.s3_keys) : speciesData.s3_keys,
     };
 
@@ -62,7 +63,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     handleCancel();
   };
 
-
+  // cancel add alternative species
   const handleCancel = () => {
     setShowWarning(false);
     setShowAlert(false);
@@ -70,16 +71,8 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     handleClose();
   };
 
+  // handles uploading image files to s3 bucket
   const handleImageUpload = async (e) => {
-  // const files = e.target.files;
-  // if (files) {
-  //   let imageLinks = speciesData.image_links ? speciesData.image_links : '';
-  //   for (let i = 0; i < files.length; i++) {
-  //     imageLinks += (i === 0 ? '' : ',') + files[i].name;
-  //   }
-  //   console.log("images uploaded: ", imageLinks)
-  // }
-
     const files = e.target.files;
     let uploadResponse;
 
@@ -90,19 +83,19 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
         for (let i = 0; i < files.length; i++) {
 
           //GET request to getS3SignedURL endpoint
-          const signedURLResponse = await fetch(
+          const signedS3URLResponse = await fetch(
             `${API_ENDPOINT}/getS3SignedURL`
           );
 
-          if (!signedURLResponse.ok) {
+          if (!signedS3URLResponse.ok) {
             continue;
           }
 
-          const signedURLData = await signedURLResponse.json();
-          console.log("signed url data: ", signedURLData)
+          const signedS3URLData = await signedS3URLResponse.json();
+          // console.log("signed url data: ", signedS3URLData)
 
           // Use the obtained signed URL to upload the image
-          uploadResponse = await fetch(signedURLData.uploadURL, {
+          uploadResponse = await fetch(signedS3URLData.uploadURL, {
             method: 'PUT',
             headers: {
               'Content-Type': files[i].type
@@ -112,12 +105,11 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
 
           console.log("upload response: ", uploadResponse)
 
-          // Image uploaded successfully, add its s3 key to the list
-          if (signedURLData.key) {
-            s3Keys.push(signedURLData.key);
+          // add s3 key to the list of s3 keys
+          if (signedS3URLData.key) {
+            s3Keys.push(signedS3URLData.key);
           }
 
-          // Update the state or handle the uploaded image s3 keys
           handleInputChange('s3_keys', s3Keys);
         }
 
@@ -128,7 +120,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
   };
 
   const handleCloseSnackbar = () => {
-    setShowOpen(false)
+    setShowSnackbar(false)
   }
 
   return (
@@ -209,7 +201,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
         </DialogActions>
       </Dialog >
 
-      <SnackbarOnSuccess open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
+      <SnackbarOnSuccess open={showSnackbar} onClose={handleCloseSnackbar} text={"Added successfully!"} />
     </div >
   );
 };

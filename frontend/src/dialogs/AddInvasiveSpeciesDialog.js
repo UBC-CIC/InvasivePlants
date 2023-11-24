@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Autocomplete, Tooltip, alpha, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
-// import AddAlternativeSpeciesDialog from "./AddAlternativeSpeciesDialog";
+import {
+    Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField,
+    Select, MenuItem, FormControl, InputLabel
+} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from "../components/SnackbarComponent";
 import CustomAlert from "../components/AlertComponent";
@@ -19,7 +21,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         region_id: []
     };
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
-    const [showOpen, setShowOpen] = useState(false);
+    const [showSnackbar, setShowSnackbar] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [showWarning, setShowWarning] = useState(false);
     const [speciesData, setSpeciesData] = useState(initialSpeciesData);
@@ -102,8 +104,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     };
 
     const handleAddSpecies = () => {
-        // setOpenAddAlternativeDialog(false);
-        setShowOpen(true);
+        setShowSnackbar(true);
 
         const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
 
@@ -127,34 +128,8 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         handleClose();
     };
 
-
-    // add a new alternative species
-    // const handleAddAlternativeSpecies = (newAlternativeSpeciesData) => {
-    //     // Generate a unique regionId for the new alternative species
-    //     const newAltSpeciesId = alternativeSpeciesData.length + 1;
-
-    //     // Create a new region object with the generated regionId
-    //     const newAlternativeSpecies = {
-    //         regionId: newAltSpeciesId,
-    //         ...newAlternativeSpeciesData,
-    //     };
-
-    //     setAlternativeSpeciesData([...alternativeSpeciesData, newAlternativeSpecies]);
-    //     setOpenAddAlternativeDialog(false);
-
-    //     // TODO: update the alternative table database with the new entry
-    // }
-
-    // const handleCloseAlt = (event, reason) => {
-    //     if (reason === 'clickaway') {
-    //         return;
-    //     }
-    //     setOpenAddAlternativeDialog(false);
-    // };
-
-
     const handleCloseSnackbar = () => {
-        setShowOpen(false)
+        setShowSnackbar(false)
     }
     return (
         <div>
@@ -228,22 +203,6 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                             )}
                             sx={{ flex: 5, marginRight: '1rem', height: '100%', width: "100%" }}
                         />
-                        {/* <Tooltip title="Alternative species not in list?" placement="top">
-                            <Button
-                                variant="contained"
-                                onClick={() => setOpenAddAlternativeDialog(true)}
-                                sx={{
-                                    flex: 1, fontSize: "0.8rem",
-                                    backgroundColor: alpha('#699cb8', 0.9),
-                                    '&:hover': {
-                                        backgroundColor: '#5e8da6',
-                                    },
-                                }}
-                            >
-                                Add alternative
-                            </Button>
-                        </Tooltip> */}
-
                     </Box>
 
                     <TextField
@@ -283,14 +242,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                 </DialogActions>
             </Dialog>
 
-            {/* <AddAlternativeSpeciesDialog
-                open={alternativeDialog}
-                handleClose={handleCloseAlt}
-                data={alternativeSpeciesTestData}
-                handleAdd={handleAddAlternativeSpecies}
-            /> */}
-
-            <SnackbarOnSuccess open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
+            <SnackbarOnSuccess open={showSnackbar} onClose={handleCloseSnackbar} text={"Added successfully!"} />
 
         </div >
     );

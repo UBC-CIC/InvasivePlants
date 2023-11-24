@@ -12,7 +12,7 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
         geographic_coordinate: ""
     };
 
-    const [showOpen, setShowOpen] = useState(false);
+    const [showSnackbar, setShowSnackbar] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [showWarning, setShowWarning] = useState(false);
     const [regionData, setRegionData] = useState(initialRegionData);
@@ -58,13 +58,13 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
     };
 
     const handleAddRegion = () => {
-        setShowOpen(true);
+        setShowSnackbar(true);
         handleAdd(regionData);
         handleCancel();
     };
 
     const handleCloseSnackbar = () => {
-        setShowOpen(false)
+        setShowSnackbar(false)
     }
 
     const handleCancel = () => {
@@ -149,7 +149,7 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                 </DialogActions>
             </Dialog >
 
-            <SnackbarOnSuccess open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
+            <SnackbarOnSuccess open={showSnackbar} onClose={handleCloseSnackbar} text={"Added successfully!"} />
 
         </div>
     );

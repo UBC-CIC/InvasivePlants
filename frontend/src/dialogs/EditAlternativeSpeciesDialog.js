@@ -80,7 +80,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         console.log("img to delete: ", deleteImg)
         setShowWarning(false)
 
-        // remove the image from the display
+        // remove the image from the database
         if (deleteImg) {
             axios
                 .delete(`${API_ENDPOINT}plantsImages/${deleteImg.image_id}`)
@@ -94,6 +94,16 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                     handleSearchInputChange("image_links", updatedImages.map((image) => image.image_url));
                     handleSearchInputChange("s3_keys", updatedImages.map((image) => image.s3_key));
                     console.log("images deleted successfully", response.data);
+
+                    // TODO: Delete the image from the S3 bucket
+                    // axios
+                    //     .delete(`https://d123pl6gvdlen1.cloudfront.net/${deleteImg.s3_key}`)
+                    //     .then((response) => {
+                    //         console.log("image deleted from S3 bucket successfully", response.data);
+                    //     })
+                    //     .catch((err) => {
+                    //         console.error("Error deleting image from S3 bucket", err);
+                    //     });
                 })
                 .catch((error) => {
                     console.error("Error deleting image", error);
@@ -205,7 +215,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                     </Box>
 
                     <Box sx={{ width: '100%', textAlign: 'left' }}>
-                        {console.log("tempdata in images:", tempData)}
+                        {/* {console.log("tempdata in images:", tempData)} */}
                         {Array.isArray(tempData.images) &&
                             tempData.images.map((img, index) => (
                                 <div key={img.image_id} sx={{ width: '90%', marginBottom: "2rem", textAlign: "left" }}>
