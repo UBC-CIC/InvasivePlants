@@ -328,12 +328,16 @@ function InvasiveSpeciesPage() {
 
   const handlePreviousPage = () => {
     if (lastSpeciesIdHistory.size > 1) {
-      const updatedHistory = new Set([...lastSpeciesIdHistory]);
-      updatedHistory.delete([...updatedHistory].pop()); // remove last item from the Set
-      setLastSpeciesIdHistory(updatedHistory);
+      const updatedIdHistory = new Set([...lastSpeciesIdHistory]);
+      updatedIdHistory.delete([...updatedIdHistory].pop()); // remove last item from the Set
+      setLastSpeciesIdHistory(updatedIdHistory);
+
+      const updatedNameHistory = new Set([...lastSpeciesNameHistory]);
+      updatedNameHistory.delete([...updatedNameHistory].pop()); // remove last item from the Set
+      setLastSpeciesNameHistory(updatedNameHistory);
 
       // Retrieve the previous species ID 
-      const prevSpeciesId = [...updatedHistory][[...updatedHistory].length - 2];
+      const prevSpeciesId = [...updatedIdHistory][[...updatedIdHistory].length - 2];
       setCurrLastSpeciesId(prevSpeciesId);
       setPage(page - 1);
     }
