@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { InputAdornment, TablePagination, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
-import Theme from '../../admin_pages/Theme';
+import Theme from './Theme';
 
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';

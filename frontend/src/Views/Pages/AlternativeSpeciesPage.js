@@ -3,7 +3,7 @@ import {
   TablePagination, InputAdornment, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button,
   TextField, Typography, ThemeProvider
 } from "@mui/material";
-import Theme from '../../admin_pages/Theme';
+import Theme from './Theme';
 
 // components
 import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";

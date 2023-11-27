@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Autocomplete, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import AddRegionDialog from "../../dialogs/AddRegionDialog";
-import Theme from '../../admin_pages/Theme';
+import Theme from './Theme';
 
 // icons
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
