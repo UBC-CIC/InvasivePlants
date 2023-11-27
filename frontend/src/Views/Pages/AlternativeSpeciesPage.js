@@ -237,7 +237,6 @@ function AlternativeSpeciesPage() {
         .put(`${API_ENDPOINT}alternativeSpecies/${tempEditingData.species_id}`, formattedData)
         .then((response) => {
           console.log("alternative species updated successfully", response.data);
-          // handleGetAlternativeSpecies();
           setShouldReset(true);
           handleFinishEditingRow();
         })

@@ -58,7 +58,8 @@ function InvasiveSpeciesPage() {
 
   // request to GET invasive species in the database
   const handleGetInvasiveSpecies = () => {
-    console.log("previous last species id: ", currLastSpeciesId);
+    // console.log("previous last species id: ", currLastSpeciesId);
+    console.log("should reset?: ", shouldReset);
     // helper function that capitalizes scientific name
     const capitalizeScientificName = (str) => {
       const strSplitUnderscore = str.split("_");
@@ -74,11 +75,14 @@ function InvasiveSpeciesPage() {
       return formattedWords.join(" ");
     };
 
+    console.log("rows per page get", rowsPerPage);
+
     // request to GET invasive species
     axios
       .get(`${API_ENDPOINT}invasiveSpecies`, {
         params: {
-          last_species_id: shouldReset ? null : currLastSpeciesId // for pagination
+          last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
+          rows_per_page: rowsPerPage // default 20
         }
       })
       .then((response) => {
@@ -339,7 +343,7 @@ function InvasiveSpeciesPage() {
 
   // TODO: match the rows per option with the lambda function
   const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
-  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // Start with default rows per page
+  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // Start with default 20 rows per page
   const [page, setPage] = useState(0); // Start with page 0
   const [disabled, setDisabled] = useState(false);
   const [start, setStart] = useState(0);
@@ -356,6 +360,12 @@ function InvasiveSpeciesPage() {
   useEffect(() => {
     calculateStartAndEnd();
   }, [page, rowsPerPage, displayData]);
+
+  useEffect(() => {
+    console.log("rows per page changed!!: ", rowsPerPage);
+    setShouldReset(true);
+    handleGetInvasiveSpecies()
+  }, [rowsPerPage]);
 
   // updates page count
   const handleNextPage = () => {
