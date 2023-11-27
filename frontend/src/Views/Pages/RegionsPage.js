@@ -4,15 +4,17 @@ import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import AddRegionDialog from "../../dialogs/AddRegionDialog";
 import Theme from '../../admin_pages/Theme';
 
+// icons
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditRegionDialog from "../../dialogs/EditRegionsDialog";
 import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
+import EditRegionDialog from "../../dialogs/EditRegionsDialog";
 import LocationFilterComponent from '../../components/LocationFilterComponent';
-// import Pagination from '../../components/TablePaginationComponent';
 
 import axios from "axios";
 
@@ -34,23 +36,57 @@ function RegionsPage() {
     const [deleteId, setDeleteId] = useState(null);
     const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
 
+
+    const [currLastRegionId, setCurrLastRegionId] = useState(""); // current last region
+    const [lastRegionIdHistory, setLastRegionIdHistory] = useState(new Set()); // history of last region ids seen for each page
+    const [lastRegionNameHistory, setLastRegionNameHistory] = useState(new Set()); // history of last region full names seen for each page
+    const [shouldReset, setShouldReset] = useState(false);
+
     const handleGetRegions = () => {
+        console.log("shouldReset?", shouldReset)
+        console.log("region id:", currLastRegionId);
+
         axios
-            .get(`${API_ENDPOINT}region`)
+            .get(`${API_ENDPOINT}region`, {
+                params: {
+                    last_region_id: shouldReset ? null : currLastRegionId  // for pagination
+                }
+            })
             .then((response) => {
-                // console.log("Regions retrieved successfully", response.data);
+                console.log("Regions retrieved successfully", response.data);
+
+                if (shouldReset) {
+                    setLastRegionIdHistory(new Set())
+                    setLastRegionNameHistory(new Set())
+                    setShouldReset(false);
+                }
+
                 setDisplayData(response.data);
                 setData(response.data);
                 setSearchResults(response.data.map((item) => ({ label: item.region_fullname, value: item.region_fullname })));
+
+                // update lastSpeciesId with the species_id of the last row displayed in the table
+                if (response.data.length > 0) {
+                    const newLastRegionId = response.data[response.data.length - 1].region_id;
+                    const newLastRegionName = response.data[response.data.length - 1].region_fullname;
+
+                    setCurrLastRegionId(newLastRegionId);
+                    setLastRegionIdHistory(history => new Set([...history, newLastRegionId]));
+                    setLastRegionNameHistory(history => new Set([...history, newLastRegionName]));
+                }
             })
             .catch((error) => {
                 console.error("Error retrieving region", error);
             });
     };
-    useEffect(() => {
-        handleGetRegions();
-    }, []); 
 
+
+    useEffect(() => {
+        console.log("last species id: ", currLastRegionId)
+        console.log("history: ", lastRegionIdHistory, lastRegionNameHistory)
+    }, [currLastRegionId, lastRegionIdHistory, lastRegionNameHistory]);
+
+    // filters display data based on user search input
     useEffect(() => {
         const filteredData = data.filter((item) =>
             (searchInput === "" ||
@@ -108,7 +144,7 @@ function RegionsPage() {
                 .put(`${API_ENDPOINT}region/${formattedData.region_id}`, formattedData)
                 .then((response) => {
                     console.log("Region updated successfully", response.data);
-                    handleGetRegions();
+                    setShouldReset(true);
                     handleFinishEditingRow();
                 })
                 .catch((error) => {
@@ -116,6 +152,38 @@ function RegionsPage() {
                 });
         };
     };
+
+    // add region
+    const handleAddRegion = (newRegionData) => {
+
+        const formattedData = {
+            ...newRegionData,
+            region_fullname: capitalizeString(newRegionData.region_fullname),
+            region_code_name: newRegionData.region_code_name.toUpperCase(),
+            country_fullname: capitalizeString(newRegionData.country_fullname)
+        }
+
+        console.log("new region: ", formattedData)
+
+        // request to POST new regions to the database
+        axios
+            .post(API_ENDPOINT + "region", formattedData)
+            .then((response) => {
+                console.log("region added successfully", response.data);
+                setShouldReset(true);
+                setOpenAddRegionDialog(false);
+            })
+            .catch((error) => {
+                console.error("error adding region", error);
+            })
+    };
+
+    // execute handleGetRegions after shouldReset state update
+    useEffect(() => {
+        if (shouldReset) {
+            handleGetRegions();
+        }
+    }, [shouldReset]);
 
     // delete row with Confirmation before deletion
     const handleDeleteRow = (region_id) => {
@@ -130,21 +198,17 @@ function RegionsPage() {
             axios
                 .delete(`${API_ENDPOINT}region/${deleteId}`)
                 .then((response) => {
-                    handleGetRegions();
+                    setShouldReset(true);
+                    setOpenDeleteConfirmation(false);
                     console.log("region deleted successfully", response.data);
                 })
                 .catch((error) => {
                     console.error("Error deleting region", error);
                 })
-                .finally(() => {
-                    setOpenDeleteConfirmation(false);
-                });
         } else {
             setOpenDeleteConfirmation(false);
         }
     };
-
-
 
     // helper function when search input changes
     const handleSearchInputChange = (field, value) => {
@@ -197,31 +261,57 @@ function RegionsPage() {
         }
     };
 
-    // add region
-    const handleAddRegion = (newRegionData) => {
 
-        const formattedData = {
-            ...newRegionData,
-            region_fullname: capitalizeString(newRegionData.region_fullname),
-            region_code_name: newRegionData.region_code_name.toUpperCase(),
-            country_fullname: capitalizeString(newRegionData.country_fullname)
-        }
 
-        console.log("new region: ", formattedData)
+    // TODO: match the rows per option with the lambda function
+    const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
+    const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // start with default 20 rows per page
+    const [page, setPage] = useState(0); // Start with page 0
+    const [disabled, setDisabled] = useState(false); // disabled next button or not
 
-        // request to POST new regions to the database
-        axios
-            .post(API_ENDPOINT + "region", formattedData)
-            .then((response) => {
-                console.log("region added successfully", response.data);
-                handleGetRegions();
-                setOpenAddRegionDialog(false);
-            })
-            .catch((error) => {
-                console.error("error adding region", error);
-            });
+    const start = page * rowsPerPage + 1;
+    const end = Math.min((page + 1) * rowsPerPage, (page * rowsPerPage) + displayData.length); // min of rowsPerPage or displayed data length
+
+    // updates page count
+    const handleNextPage = () => {
+        setPage(page + 1); // Increment the page by 1 on "Next" button click
     };
 
+    // updates page count and history of species seen
+    const handlePreviousPage = () => {
+        if (lastRegionIdHistory.size > 1) {
+            const updatedIdHistory = new Set([...lastRegionIdHistory]);
+            updatedIdHistory.delete([...updatedIdHistory].pop());
+            setLastRegionIdHistory(updatedIdHistory);
+
+            const updatedNameHistory = new Set([...lastRegionNameHistory]);
+            updatedNameHistory.delete([...updatedNameHistory].pop());
+            setLastRegionNameHistory(updatedNameHistory);
+
+            // gets the previous species id
+            const prevSpeciesId = [...updatedIdHistory][[...updatedIdHistory].length - 2];
+            setCurrLastRegionId(prevSpeciesId);
+            setPage(page - 1);
+        }
+    };
+
+    // gets next/previous set of species on page change
+    useEffect(() => {
+        handleGetRegions(false);
+    }, [page]);
+
+
+    // disables the next button if there are no species left to query
+    useEffect(() => {
+    // console.log("displayDataCount: ", displayData.length);
+    // console.log("rows per page: ", rowsPerPage);
+
+        if (displayData.length === 0 || displayData.length < rowsPerPage) {
+            setDisabled(true);
+        } else {
+            setDisabled(false);
+        }
+    }, [displayData, rowsPerPage]);
 
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -285,6 +375,27 @@ function RegionsPage() {
                 </ThemeProvider>
             </div >
 
+            {/* pagination */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginLeft: "70%" }}>
+                {/* dropdown for selecting rows per page */}
+                <span style={{ marginRight: '10px' }}>Rows per page:</span>
+                <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>
+                    {rowsPerPageOptions.map((option) => (
+                        <option key={option} value={option}>
+                            {option}
+                        </option>
+                    ))}
+                </select>
+
+                {/* previous and next buttons for table */}
+                <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} species`}</span>
+                <IconButton onClick={handlePreviousPage} disabled={page === 0}>
+                    <NavigateBeforeIcon />
+                </IconButton>
+                <IconButton onClick={handleNextPage} disabled={disabled}>
+                    <NavigateNextIcon />
+                </IconButton>
+            </div>
 
             <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
                 <Table style={{ width: "100%", tableLayout: "fixed" }}>

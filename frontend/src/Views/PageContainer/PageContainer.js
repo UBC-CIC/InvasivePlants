@@ -20,7 +20,7 @@ import Dashboard from '../Pages/dashboard';
 import Error404 from '../Pages/error404';
 import InvasiveSpeciesPage from '../Pages/InvasiveSpeciesPage';
 import AlternativeSpeciesPage from '../Pages/AlternativeSpeciesPage';
-
+import { PaginationTest } from '../Pages/Pagination';
 import RegionPage from '../Pages/RegionsPage';
 import { PlantNet } from '../Pages/pl@ntNet';
 import DownloadWebscrap from '../Pages/downloadWebscrap';
@@ -113,6 +113,7 @@ function PageContainer(props) {
                 <Route path="/regions" element={<RegionPage />} />
 
                 <Route path="/test" element={<PlantNet />} />
+                <Route path="/pagination" element={<PaginationTest />} />
                 <Route path="/download" element={<DownloadWebscrap />} />
                 <Route path="*" element={<Error404 />} />
             </Routes>           
