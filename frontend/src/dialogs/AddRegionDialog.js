@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Snackbar, Box, Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import RegionsTestData from "../test_data/regionsTestData";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import SnackbarOnSuccess from "../components/SnackbarComponent";
 import CustomAlert from "../components/AlertComponent";
 import CustomWarning from "../components/WarningComponent";
@@ -10,10 +9,10 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
         region_fullname: "",
         region_code_name: "",
         country_fullname: "",
-        geographic_coordinates: []
+        geographic_coordinate: ""
     };
 
-    const [showOpen, setShowOpen] = useState(false);
+    const [showSnackbar, setShowSnackbar] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [showWarning, setShowWarning] = useState(false);
     const [regionData, setRegionData] = useState(initialRegionData);
@@ -26,10 +25,10 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
             if (value === "" || !isNaN(value) || (value[0] === '-' && !isNaN(value.slice(1))) || !isNaN(value.replace(".", ""))) {
                 setRegionData((prev) => ({
                     ...prev,
-                    geographic_coordinates: [
-                        field === "geographic_latitude" ? value : regionData.geographic_coordinates[0],
-                        field === "geographic_longitude" ? value : regionData.geographic_coordinates[1],
-                    ],
+                    geographic_coordinate: [
+                        field === "geographic_latitude" ? value : regionData.geographic_coordinate.split(', ')[0],
+                        field === "geographic_longitude" ? value : regionData.geographic_coordinate.split(', ')[1],
+                    ].join(', '), 
                 }));
                 setErrorMessage("");
             } else {
@@ -43,11 +42,11 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
         }
     };
 
-
+    // make sure has all required fields 
     const handleConfirmAddRegion = () => {
         const foundRegion = data.find((item) => item.region_fullname.toLowerCase() === regionData.region_fullname.toLowerCase());
 
-        if (regionData.region_fullname.trim() === "") {
+        if (regionData.region_fullname.trim() === "" || regionData.country_fullname.trim() === "" || regionData.region_code_name.trim() === "") {
             setShowAlert(true);
             return;
         }
@@ -59,13 +58,13 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
     };
 
     const handleAddRegion = () => {
-        setShowOpen(true);
+        setShowSnackbar(true);
         handleAdd(regionData);
         handleCancel();
     };
 
     const handleCloseSnackbar = () => {
-        setShowOpen(false)
+        setShowSnackbar(false)
     }
 
     const handleCancel = () => {
@@ -76,12 +75,10 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
         handleClose();
     };
 
-
-
     return (
         <div>
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}>
-                <CustomAlert text={"region"} onClose={() => setShowAlert(false)} />
+                <CustomAlert text={"region, region code, and country"} onClose={() => setShowAlert(false)} />
             </Dialog>
 
             <Dialog open={showWarning} onClose={() => setShowWarning(false)}>
@@ -100,38 +97,33 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                 <DialogContent>
                     <TextField
                         fullWidth
-                        label="Region"
+                        label="Region*"
                         value={regionData.region_fullname}
                         onChange={(e) => handleInputChange("region_fullname", e.target.value)}
                         sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}
                     />
+
                     <TextField
                         fullWidth
-                        label="Region Code"
+                        label="Region Code*"
                         value={regionData.region_code_name}
                         onChange={(e) => handleInputChange("region_code_name", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
-                    <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
-                        <InputLabel id="country-label">Country</InputLabel>
-                        <Select
-                            labelId="country-label"
-                            value={selectedCountry}
-                            onChange={(e) => handleInputChange("country_fullname", e.target.value)}
-                            label="Country"
-                        >
-                            {Array.from(new Set(RegionsTestData.map((data) => data.country_fullname))).map((country_fullname, index) => (
-                                <MenuItem key={index} value={country_fullname}>
-                                    {country_fullname}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+
+                    <TextField
+                        fullWidth
+                        label="Country*"
+                        value={regionData.country_fullname}
+                        onChange={(e) => handleInputChange("country_fullname", e.target.value)}
+                        sx={{ width: "100%", marginBottom: "1rem" }}
+                    />
+
                     <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                         <TextField
                             fullWidth
                             label="Latitude"
-                            value={regionData.geographic_coordinates[0]}
+                            value={regionData.geographic_coordinate.split(', ')[0]}
                             onChange={(e) => handleInputChange("geographic_latitude", e.target.value)}
                             sx={{ width: "100%", marginRight: "4px" }}
                         />
@@ -139,7 +131,7 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                         <TextField
                             fullWidth
                             label="Longitude"
-                            value={regionData.geographic_coordinates[1]}
+                            value={regionData.geographic_coordinate.split(', ')[1]}
                             onChange={(e) => handleInputChange("geographic_longitude", e.target.value)}
                             sx={{ width: "100%", marginLeft: "4px" }}
                         />
@@ -157,7 +149,7 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                 </DialogActions>
             </Dialog >
 
-            <SnackbarOnSuccess open={showOpen} onClose={handleCloseSnackbar} text={"Added successfully!"} />
+            <SnackbarOnSuccess open={showSnackbar} onClose={handleCloseSnackbar} text={"Added successfully!"} />
 
         </div>
     );

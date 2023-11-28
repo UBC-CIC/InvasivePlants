@@ -1,8 +1,6 @@
 const postgres = require("postgres");
 const AWS = require("aws-sdk");
 
-const PAGE_LIMIT = 20;
-
 // Gather AWS services
 const secretsManager = new AWS.SecretsManager();
 
@@ -57,17 +55,18 @@ exports.handler = async (event) => {
 		switch(pathData) {
 			case "GET /alternativeSpecies":
 				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_species_id) ? event.queryStringParameters.last_species_id : "00000000-0000-0000-0000-000000000000";
-				
+				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? parseInt(event.queryStringParameters.rows_per_page) : 20;
+
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
 					data = await sql`	SELECT * FROM alternative_species 
 										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and species_id > ${species_id_pagination}
 										ORDER BY species_id 
-										LIMIT ${PAGE_LIMIT};`;
+										LIMIT ${rows_per_page};`;
 				} else {
 					data = await sql`	SELECT * FROM alternative_species 
 										WHERE species_id > ${species_id_pagination}
 										ORDER BY species_id 
-										LIMIT ${PAGE_LIMIT};`;
+										LIMIT ${rows_per_page};`;
 				}
 				
 				for(let i in data){
@@ -81,13 +80,13 @@ exports.handler = async (event) => {
 					const bd = JSON.parse(event.body);
 					
 					// Check if required parameters are passed
-					if( bd.scientific_name ){
+					if (bd.scientific_name) {
 						
 						// Optional parameters
 						const common_name = (bd.common_name) ? bd.common_name : [];
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
-						
+
 						data = await sql`
 							INSERT INTO alternative_species (scientific_name, common_name, resource_links, species_description)
 							VALUES (${bd.scientific_name}, ${common_name}, ${resource_links}, ${species_description})
@@ -109,12 +108,12 @@ exports.handler = async (event) => {
 					const bd = event.pathParameters;
 					
 					// Check if required parameters are passed
-					if(bd.species_id){
+					if (bd.species_id) {
 						data = await sql`SELECT * FROM alternative_species WHERE species_id = ${bd.species_id};`;
-						
+
 						// Get list of images
 						data[0].images = await sql`SELECT * FROM images WHERE species_id = ${data[0].species_id};`;
-						
+
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
@@ -130,8 +129,8 @@ exports.handler = async (event) => {
 					const bd = JSON.parse(event.body);
 					
 					// Check if required parameters are passed
-					if( event.pathParameters.species_id && bd.scientific_name ){
-						
+					if (event.pathParameters.species_id && bd.scientific_name) {
+
 						// Optional parameters
 						const common_name = (bd.common_name) ? bd.common_name : [];
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
@@ -154,7 +153,7 @@ exports.handler = async (event) => {
 					}
 				} else {
 					response.statusCode = 400;
-					response.body = "Invalid value, body does not found" ;	
+					response.body = "Invalid value, body does not found";	
 				}
 				break;
 			case "DELETE /alternativeSpecies/{species_id}":
@@ -162,7 +161,7 @@ exports.handler = async (event) => {
 					const bd = event.pathParameters;
 					
 					// Check if required parameters are passed
-					if(bd.species_id){
+					if (bd.species_id) {
 						data = await sql`DELETE FROM alternative_species WHERE species_id = ${bd.species_id};`;
 						response.body = "Deleted an alternative species";
 					} else {

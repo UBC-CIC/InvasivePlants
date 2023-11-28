@@ -1,8 +1,6 @@
 const postgres = require("postgres");
 const AWS = require("aws-sdk");
 
-const PAGE_LIMIT = 20;
-
 // Gather AWS services
 const secretsManager = new AWS.SecretsManager();
 
@@ -57,25 +55,26 @@ exports.handler = async (event) => {
 		switch(pathData) {
 			case "GET /invasiveSpecies":
 				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_species_id) ? event.queryStringParameters.last_species_id : "00000000-0000-0000-0000-000000000000";
-				
+				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? parseInt(event.queryStringParameters.rows_per_page, 10) : 20;
+
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
 					data = await sql`	SELECT * FROM invasive_species 
 										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and species_id > ${species_id_pagination}
 										ORDER BY species_id 
-										LIMIT ${PAGE_LIMIT};`;
-				} else if(event.queryStringParameters != null && event.queryStringParameters.region_id){
+										LIMIT ${rows_per_page};`;
+				} else if (event.queryStringParameters != null && event.queryStringParameters.region_id) {
 					data = await sql`	SELECT * FROM invasive_species 
 										WHERE ${event.queryStringParameters.region_id} = ANY(region_id) and species_id > ${species_id_pagination}
 										ORDER BY species_id 
-										LIMIT ${PAGE_LIMIT};`;
-				} else if(event.queryStringParameters != null && event.queryStringParameters.all) {
+										LIMIT ${rows_per_page};`;
+				} else if (event.queryStringParameters != null && event.queryStringParameters.all) {
 					data = await sql`	SELECT * FROM invasive_species 
 										ORDER BY species_id;`;
-				}else {
+				} else {
 					data = await sql`	SELECT * FROM invasive_species 
 										WHERE species_id > ${species_id_pagination}
 										ORDER BY species_id 
-										LIMIT ${PAGE_LIMIT};`;
+										LIMIT ${rows_per_page};`;
 				}
 				for(let d in data){
 					// Get alternative species and images

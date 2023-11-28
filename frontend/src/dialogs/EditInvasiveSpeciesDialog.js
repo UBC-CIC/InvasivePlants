@@ -1,57 +1,74 @@
 import { useState, useEffect } from 'react';
 import {
-    Select, AlertTitle, MenuItem, FormControl, InputLabel, Tooltip, Box, alpha, Autocomplete, Alert
-    , Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography
+    Select, MenuItem, FormControl, InputLabel, Box, Autocomplete,
+    Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography
 } from '@mui/material';
-import AlternativeSpeciesTestData from "../test_data/alternativeSpeciesTestData";
 import SearchIcon from '@mui/icons-material/Search';
-import AddAlternativeSpeciesDialog from './AddAlternativeSpeciesDialog';
-import RegionsTestData from "../test_data/regionsTestData";
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
+import handleGetRegions from '../functions/RegionMap';
+import axios from "axios";
 
 const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
+    const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
+    const [showAlert, setShowAlert] = useState(false);
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
-    const [alternativeDialog, setOpenAddAlternativeDialog] = useState(false);
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
-    const [alternativeSpeciesTestData, setAlternativeSpeciesTestData] = useState(AlternativeSpeciesTestData);
+    const [alternativeSpeciesData, setAlternativeSpeciesData] = useState([]);
+    const [regionMap, setRegionsMap] = useState({});
+
+    const handleGetAlternativeSpecies = () => {
+        const capitalizeWordsSplitUnderscore = (str) => {
+            return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        };
+
+        const capitalizeWordsSplitSpace = (str) => {
+            return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        };
+
+        // get alternative
+        axios
+            .get(`${API_ENDPOINT}alternativeSpecies`)
+            .then((response) => {
+
+                // Capitalize each scientific_name 
+                const formattedData = response.data.map(item => {
+                    const capitalizedScientificNames = item.scientific_name.map(name => capitalizeWordsSplitUnderscore(name));
+                    const capitalizedCommonNames = item.common_name.map(name => capitalizeWordsSplitSpace(name));
+                    return {
+                        ...item,
+                        scientific_name: capitalizedScientificNames,
+                        common_name: capitalizedCommonNames
+                    };
+                });
+                console.log("alternative species data from invasive species: ", formattedData);
+                setAlternativeSpeciesData(formattedData);
+            })
+            .catch((error) => {
+                console.error("Error retrieving alternative species", error);
+            });
+    };
+    useEffect(() => {
+        handleGetAlternativeSpecies();
+    }, []);
+
+    useEffect(() => {
+        const fetchRegionData = async () => {
+            try {
+                const regionMap = await handleGetRegions();
+                setRegionsMap(regionMap);
+            } catch (error) {
+                console.error('Error fetching region map 1:', error);
+            }
+        };
+        fetchRegionData();
+    }, []);
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         setShowSaveConfirmation(false);
-        setOpenAddAlternativeDialog(false);
-    };
-
-    const handleAddAlternativeSpecies = (newAlternativeSpeciesData) => {
-        // Generate a unique AltSpeciesId for the new alternative species
-        const newAltSpeciesId = alternativeSpeciesTestData.length + 1;
-
-        // Create a new region object with the generated newAltSpeciesId
-        const newAlternativeSpecies = {
-            regionId: newAltSpeciesId,
-            ...newAlternativeSpeciesData,
-        };
-
-        setAlternativeSpeciesTestData([...alternativeSpeciesTestData, newAlternativeSpecies]);
-        setOpenAddAlternativeDialog(false);
-
-        // TODO: update the database with the new entry
-    }
-
-
-    const [showAlert, setShowAlert] = useState(false);
-    const handleConfirmAddAlternativeSpecies = () => {
-        console.log(typeof tempData.scientific_name)
-        console.log(tempData.scientific_name)
-
-        if (!tempData.scientific_name || tempData.scientific_name.length === 0) {
-            setShowAlert(true);
-            return false;
-        }
-        setShowSaveConfirmation(true);
-        return true
     };
 
     return (
@@ -80,16 +97,6 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                         } onChange={(e) => handleSearchInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
-                    {/* <TextField
-                        label="Common Name(s) (separate by commas)"
-                        value={
-                            Array.isArray(tempData.commonName)
-                                ? tempData.commonName.join(", ")
-                                : tempData.commonName
-                        }
-                        onChange={(e) => handleSearchInputChange("commonName", e.target.value)}
-                        sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
-                    /> */}
 
                     <TextField
                         label="Description"
@@ -104,7 +111,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                         <Autocomplete
                             multiple
                             id="alternative-species-autocomplete"
-                            options={alternativeSpeciesTestData}
+                            options={alternativeSpeciesData}
                             getOptionLabel={(option) =>
                                 `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
                             }
@@ -134,27 +141,13 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                             )}
                             sx={{ flex: 5, marginRight: '1rem', height: '100%', width: "100%" }}
                         />
-                        <Tooltip title="Alternative species not in list?" placement="top">
-                            <Button
-                                variant="contained"
-                                onClick={() => setOpenAddAlternativeDialog(true)}
-                                sx={{
-                                    flex: 1, fontSize: "0.8rem",
-                                    backgroundColor: alpha('#699cb8', 0.9),
-                                    '&:hover': {
-                                        backgroundColor: '#5e8da6',
-                                    },
-                                    width: "100%"
-                                }}
-                            >
-                                Add alternative
-                            </Button>
-                        </Tooltip>
                     </Box>
 
                     <TextField
                         label="Resource links (separate by commas)"
                         value={Array.isArray(tempData.resource_links) ? tempData.resource_links.join(", ") : tempData.resource_links}
+                        multiline
+                        rows={3}
                         onChange={(e) =>
                             handleSearchInputChange("resource_links", e.target.value.split(", "))
                         }
@@ -169,11 +162,13 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                             value={tempData.region_id}
                             onChange={(e) => handleSearchInputChange("region_code_name", e.target.value)}
                             label="Region (multiselect)"
-                            renderValue={(selected) => selected.join(", ")}
-                        >
-                            {RegionsTestData.map((item) => (
-                                <MenuItem key={item.region_code_name} value={item.region_code_name}>
-                                    {item.region_code_name}
+                            renderValue={(selected) => {
+                                const selectedNames = selected.map(id => regionMap[id]);
+                                return selectedNames.join(", ");
+                            }}                        >
+                            {Object.entries(regionMap).map(([region_id, region_code_name]) => (
+                                <MenuItem key={region_id} value={region_id}>
+                                    {region_code_name}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -184,9 +179,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>
                     <Button
                         onClick={() => {
-                            // handleConfirmAddAlternativeSpecies();
-                            handleSave(handleConfirmAddAlternativeSpecies());
-                            // setShowSaveConfirmation(true);
+                            handleSave(true);
                         }}
                     >Save</Button>
                 </DialogActions>
@@ -198,13 +191,6 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
             </Dialog>
 
             <SnackbarOnSuccess open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />
-
-            <AddAlternativeSpeciesDialog
-                open={alternativeDialog}
-                handleClose={handleClose}
-                data={alternativeSpeciesTestData}
-                handleAdd={handleAddAlternativeSpecies}
-            />
         </div >
     );
 };

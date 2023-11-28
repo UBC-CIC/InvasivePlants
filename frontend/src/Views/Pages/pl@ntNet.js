@@ -108,7 +108,21 @@ function PlantNet() {
 
         // dataPipelineForDB();
 
-        webscrapeWikipedia("hydrocharis_morsus-ranae");
+        // TESTING WEBSCRAPE
+        // webscrapeWikipedia("perovskia_atriplicifolia");
+        // webscrapeWikipedia("rose");
+        // webscrapeWikipedia("Hemerocallis_fulva");
+        // webscrapeWikipedia("clematis_x_jackmanii");
+        // webscrapeWikipedia("bamboo");
+
+        // const input = 'gypsophila_paniculata';
+
+        // const capitalizeWords = (str) => {
+        //     return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        // };
+
+        // const formattedString = capitalizeWords(input);
+        // console.log(formattedString); // Output: Gypsophila Paniculata
 
         // const fetchData = async () => {
         //     try {

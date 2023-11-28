@@ -3,6 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@mui/material/Button';
 
 class Error404 extends Component {
+
     /** Page Render Info **/
     page = {
         title: "404",

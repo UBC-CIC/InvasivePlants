@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Box, AlertTitle, TableCell, Alert, Snackbar, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
+import DeleteDialog from '../dialogs/ConfirmDeleteDialog';
+
+import axios from "axios";
 
 const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
@@ -15,23 +18,105 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         setShowSaveConfirmation(false);
     };
 
-    const handleImageUpload = (e) => {
+    // hanldes user uploaded image files
+    const handleImageUpload = async (e) => {
         const files = e.target.files;
+        let uploadResponse;
+
         if (files) {
-            let imageLinks = tempData.image_links ? [...tempData.image_links] : [];
-            for (let i = 0; i < files.length; i++) {
-                imageLinks.push(files[i].name);
+            let s3Keys = tempData.s3_keys ? [...tempData.s3_keys] : [];
+
+            try {
+                for (let i = 0; i < files.length; i++) {
+
+                    //GET request to getS3SignedURL endpoint
+                    const signedURLResponse = await fetch(
+                        `${API_ENDPOINT}/getS3SignedURL`
+                    );
+
+                    if (!signedURLResponse.ok) {
+                        continue;
+                    }
+
+                    const signedURLData = await signedURLResponse.json();
+                    console.log("signed url data: ", signedURLData)
+
+                    // Use the obtained signed URL to upload the image
+                    uploadResponse = await fetch(signedURLData.uploadURL, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': files[i].type
+                        },
+                        body: files[i]
+                    });
+
+                    console.log("upload response: ", uploadResponse)
+
+                    // Image uploaded successfully, add its s3 key to the list
+                    if (signedURLData.key) {
+                        s3Keys.push(signedURLData.key);
+                    }
+                }
+
+                // Update the state or handle the uploaded image s3 keys
+                handleSearchInputChange('s3_keys', s3Keys);
+
+            } catch (error) {
+                console.error('Error uploading images:', error);
             }
-            handleSearchInputChange("image_links", imageLinks);
         }
     };
 
-    const handleImageDelete = (index) => {
-        const updatedImageLinks = tempData.image_links.filter(
-            (image, i) => i !== index
-        );
-        handleSearchInputChange("image_links", updatedImageLinks);
+    const [showWarning, setShowWarning] = useState(false);
+    const [deleteImg, setDeleteImg] = useState(null);
+
+    const handleImageDelete = (img, index) => {
+        setShowWarning(true);
+        setDeleteImg(img);
     };
+
+
+    const handleConfirmDeleteImage = () => {
+        console.log("img to delete: ", deleteImg)
+        setShowWarning(false)
+
+        // remove the image from the database
+        if (deleteImg) {
+            axios
+                .delete(`${API_ENDPOINT}plantsImages/${deleteImg.image_id}`)
+                .then((response) => {
+                    // Filter out the deleted image from tempData.images
+                    const updatedImages = tempData.images.filter(
+                        (img) => img.image_id !== deleteImg.image_id
+                    );
+                    console.log("updatedImages: ", updatedImages);
+                    handleSearchInputChange("images", updatedImages);
+                    handleSearchInputChange("image_links", updatedImages.map((image) => image.image_url));
+                    handleSearchInputChange("s3_keys", updatedImages.map((image) => image.s3_key));
+                    console.log("images deleted successfully", response.data);
+
+                    // TODO: Delete the image from the S3 bucket
+                    // axios
+                    //     .delete(`https://d123pl6gvdlen1.cloudfront.net/${deleteImg.s3_key}`)
+                    //     .then((response) => {
+                    //         console.log("image deleted from S3 bucket successfully", response.data);
+                    //     })
+                    //     .catch((err) => {
+                    //         console.error("Error deleting image from S3 bucket", err);
+                    //     });
+                })
+                .catch((error) => {
+                    console.error("Error deleting image", error);
+                }).finally(() => {
+                    // Reset states
+                    setDeleteImg(null);
+                    setShowWarning(false);
+                });
+        } else {
+            setShowWarning(false);
+        }
+    }
+
 
     const [showAlert, setShowAlert] = useState(false);
     const handleConfirmAddAlternativeSpecies = () => {
@@ -96,41 +181,82 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         onChange={(e) =>
                             handleSearchInputChange("resource_links", e.target.value.split(", "))
                         }
-                        sx={{ width: "100%", marginBottom: "1rem" }}
+                        sx={{
+                            width: "100%", marginBottom: "1rem"
+                        }}
                     />
 
 
-                    <div sx={{ marginBottom: "2rem" }}>
-                        <Typography variant="body1" sx={{ marginBottom: "3px", justifyContent: "left" }}>
+                    <TextField
+                        multiline
+                        label="Image links (separate by commas)"
+                        // value={
+                        //     Array.isArray(tempData.image_links)
+                        //         ? tempData.image_links.join(", ")
+                        //         : tempData.image_links
+                        // }
+                        onChange={(e) => {
+                            handleSearchInputChange("image_links", e.target.value.split(", "))
+                        }
+                        }
+                        sx={{ width: "100%", marginBottom: "1rem" }}
+                    />
+
+                    <Box sx={{ width: '100%', textAlign: 'left', marginBottom: '2rem' }}>
+                        <Typography variant="body1" sx={{ width: '100%' }}>
                             Upload Images:
-                        </Typography>
+                        </Typography> 
                         <input
                             type="file"
                             multiple
                             onChange={handleImageUpload}
-                            sx={{ marginBottom: "2rem", textAlign: "left" }}
+                            sx={{ width: '100%' }}
                         />
-                    </div>
-                    <div sx={{ marginTop: "2rem" }}>
-                        {Array.isArray(tempData.image_links) &&
-                            tempData.image_links.map((imageName, index) => (
-                                <div key={index}>
-                                    <p>{imageName}</p>
-                                    {/* TODO: figure out actual path? */}
-                                    <img src={imageName} alt={`image-${index}`} />
-                                    <button onClick={() => handleImageDelete(index)}>Delete</button>
+                    </Box>
+
+                    <Box sx={{ width: '100%', textAlign: 'left' }}>
+                        {/* {console.log("tempdata in images:", tempData)} */}
+                        {Array.isArray(tempData.images) &&
+                            tempData.images.map((img, index) => (
+                                <div key={img.image_id} sx={{ width: '90%', marginBottom: "2rem", textAlign: "left" }}>
+                                    {/* Display image if image_url exists */}
+                                    {img.image_url && (
+                                        <img
+                                            src={img.image_url}
+                                            alt={`image-${index}`}
+                                            style={{ maxWidth: '60%', height: 'auto' }}
+                                        />
+                                    )}
+
+                                    {/* Display image from S3 bucket if s3_key exists */}
+                                    {img.s3_key && (
+                                        <div>
+                                            <img
+                                                src={`https://d123pl6gvdlen1.cloudfront.net/${img.s3_key}`}
+                                                alt={`image-${index}`}
+                                                style={{ maxWidth: '60%', height: 'auto' }}
+                                            />
+                                        </div>
+                                    )}
+
+
+                                    {/* Delete button for each image */}
+                                    <button onClick={() => handleImageDelete(img, index)}>Delete</button>
                                 </div>
                             ))}
-                    </div>
-
+                    </Box>
 
                 </DialogContent>
-
 
                 <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
                     <CustomAlert text={"scientific name"} onClose={() => setShowAlert(false)} />
                 </Dialog>
 
+                <DeleteDialog
+                    open={showWarning}
+                    handleClose={() => setShowWarning(false)}
+                    handleDelete={handleConfirmDeleteImage}
+                />
 
                 <DialogActions>
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>

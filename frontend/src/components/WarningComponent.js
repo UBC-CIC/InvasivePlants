@@ -20,7 +20,8 @@ const CustomWarning = ({ data, onClose, handleAdd }) => {
                         "&:hover": {
                             backgroundColor: "#dbc8a0"
                         }
-                    }} autoFocus>
+                    }}
+                    autoFocus>
                     Add
                 </Button>
             </Box>
