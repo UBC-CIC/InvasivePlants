@@ -384,7 +384,7 @@ function AlternativeSpeciesPage() {
   };
 
   // TODO: match the rows per option with the lambda function
-  const rowsPerPageOptions = [10, 20, 25]; // user selects number of species to display
+  const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // start with default 20 rows per page
   const [page, setPage] = useState(0); // Start with page 0
   const [disabled, setDisabled] = useState(false); // disabled next button or not
