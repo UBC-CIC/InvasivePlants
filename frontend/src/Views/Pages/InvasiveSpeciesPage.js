@@ -86,6 +86,16 @@ function InvasiveSpeciesPage() {
         }
       })
       .then((response) => {
+         // reset pagination details
+         if (shouldReset) {
+          setLastSpeciesIdHistory(new Set())
+          setLastSpeciesNameHistory(new Set())
+          setPage(0);
+          setStart(0);
+          setEnd(0);
+          setShouldReset(false);
+        }
+        
         const promises = response.data.flatMap(item =>
           item.region_id.map(regionId =>
             axios.get(`${API_ENDPOINT}region/${regionId}`)
@@ -103,15 +113,15 @@ function InvasiveSpeciesPage() {
 
             console.log("Invasive species retrieved successfully", formattedData);
 
-            // reset pagination details
-            if (shouldReset) {
-              setLastSpeciesIdHistory(new Set())
-              setLastSpeciesNameHistory(new Set())
-              setPage(0);
-              setStart(0);
-              setEnd(0);
-              setShouldReset(false);
-            }
+            // // reset pagination details
+            // if (shouldReset) {
+            //   setLastSpeciesIdHistory(new Set())
+            //   setLastSpeciesNameHistory(new Set())
+            //   setPage(0);
+            //   setStart(0);
+            //   setEnd(0);
+            //   setShouldReset(false);
+            // }
 
             setDisplayData(formattedData);
             setData(formattedData);
@@ -440,7 +450,7 @@ function InvasiveSpeciesPage() {
       </div>
 
       {/* pagination */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginLeft: "70%" }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "70%" }}>
         {/* Dropdown for selecting rows per page */}
         <span style={{ marginRight: '10px' }}>Rows per page:</span>
         <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>

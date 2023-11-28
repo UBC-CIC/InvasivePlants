@@ -437,7 +437,7 @@ function Login(props) {
                     <Grid container item justify={"space-evenly"} alignItems={"center"} /*style={{height: "60vh"}}*/>
                         <Grid xs item className={`typewriter ${classes.marginHorizontal}`}>
                             <center>
-                                <Typography variant="h2" style={{fontWeight:"bold"}}>Welcome to</Typography>
+                                <Typography variant="h2" style={{fontWeight:"bold", color: "white"}}>Invasive Plants</Typography>
                             </center>
                             
                             <p className={`${classes.textAlignCenter} ${(animateTitle) ?

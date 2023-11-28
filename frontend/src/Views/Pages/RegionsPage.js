@@ -376,7 +376,7 @@ function RegionsPage() {
             </div >
 
             {/* pagination */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginLeft: "70%" }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "70%" }}>
                 {/* dropdown for selecting rows per page */}
                 <span style={{ marginRight: '10px' }}>Rows per page:</span>
                 <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>

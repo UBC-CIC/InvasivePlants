@@ -62,17 +62,20 @@ exports.handler = async (event) => {
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
 					data = await sql`	SELECT * FROM invasive_species 
 										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and species_id > ${species_id_pagination}
-										ORDER BY scientific_name[1], species_id 
+										ORDER BY species_id 
 										LIMIT ${rows_per_page};`;
-				} if(event.queryStringParameters != null && event.queryStringParameters.region_id){
+				} else if (event.queryStringParameters != null && event.queryStringParameters.region_id) {
 					data = await sql`	SELECT * FROM invasive_species 
 										WHERE ${event.queryStringParameters.region_id} = ANY(region_id) and species_id > ${species_id_pagination}
-										ORDER BY scientific_name[1], species_id 
+										ORDER BY species_id 
 										LIMIT ${rows_per_page};`;
+				} else if (event.queryStringParameters != null && event.queryStringParameters.all) {
+					data = await sql`	SELECT * FROM invasive_species 
+										ORDER BY species_id;`;
 				} else {
 					data = await sql`	SELECT * FROM invasive_species 
 										WHERE species_id > ${species_id_pagination}
-										ORDER BY scientific_name[1], species_id 
+										ORDER BY species_id 
 										LIMIT ${rows_per_page};`;
 				}
 				for(let d in data){

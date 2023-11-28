@@ -66,14 +66,28 @@ function AlternativeSpeciesPage() {
       return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     };
 
+    console.log("got here: ", rowsPerPage);
+
     // request to GET all alternative species
     axios
       .get(`${API_ENDPOINT}alternativeSpecies`, {
         params: {
-          last_species_id: shouldReset ? null : currLastSpeciesId // for pagination
+          last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
+          rows_per_page: rowsPerPage // default 20
         }
       })
       .then((response) => {  
+        // reset pagination details
+        if (shouldReset) {
+          console.log("should reset: ", shouldReset);
+          setLastSpeciesIdHistory(new Set())
+          setLastSpeciesNameHistory(new Set())
+          setPage(0);
+          setStart(0);
+          setEnd(0);
+          setShouldReset(false);
+        }
+
         // formats data 
         const formattedData = response.data.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeScientificName(name, "_"));
@@ -91,15 +105,15 @@ function AlternativeSpeciesPage() {
         });
 
         console.log("get alternative species data:", formattedData);
-        // reset pagination details
-        if (shouldReset) {
-          setLastSpeciesIdHistory(new Set())
-          setLastSpeciesNameHistory(new Set())
-          setPage(0);
-          setStart(0);
-          setEnd(0);
-          setShouldReset(false);
-        }
+        // // reset pagination details
+        // if (shouldReset) {
+        //   setLastSpeciesIdHistory(new Set())
+        //   setLastSpeciesNameHistory(new Set())
+        //   setPage(0);
+        //   setStart(0);
+        //   setEnd(0);
+        //   setShouldReset(false);
+        // }
 
         // update states
         setDisplayData(formattedData);
@@ -132,7 +146,7 @@ function AlternativeSpeciesPage() {
 
   useEffect(() => {
     // console.log("last species id: ", currLastSpeciesId)
-    console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
+    // console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
   }, [currLastSpeciesId, lastSpeciesIdHistory, lastSpeciesNameHistory]);
 
 
@@ -379,7 +393,7 @@ function AlternativeSpeciesPage() {
   };
 
   // TODO: match the rows per option with the lambda function
-  const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
+  const rowsPerPageOptions = [10, 20, 25]; // user selects number of species to display
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // start with default 20 rows per page
   const [page, setPage] = useState(0); // Start with page 0
   const [disabled, setDisabled] = useState(false); // disabled next button or not
@@ -396,7 +410,13 @@ function AlternativeSpeciesPage() {
 
   useEffect(() => {
     calculateStartAndEnd();
-  }, [page, rowsPerPage, displayData]);
+  }, [rowsPerPage, page, displayData]);
+
+  useEffect(() => {
+    console.log("rows per page changed!!: ", rowsPerPage);
+    setShouldReset(true);
+    handleGetAlternativeSpecies()
+  }, [rowsPerPage]);
 
   // updates page count
   const handleNextPage = () => {
@@ -464,7 +484,7 @@ function AlternativeSpeciesPage() {
 
 
       {/* pagination */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginLeft: "70%" }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "70%" }}>
         {/* dropdown for selecting rows per page */}
         <span style={{ marginRight: '10px' }}>Rows per page:</span>
         <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>
