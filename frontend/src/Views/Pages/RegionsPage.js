@@ -365,6 +365,12 @@ function RegionsPage() {
                         )}
                     />
                 </Box>
+
+                <ThemeProvider theme={Theme}>
+                    <Button variant="contained" style={{ marginLeft: "20px", marginTop: "27px", width: "10%", height: "53px", alignItems: "center" }}>
+                        <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
+                    </Button>
+                </ThemeProvider>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>

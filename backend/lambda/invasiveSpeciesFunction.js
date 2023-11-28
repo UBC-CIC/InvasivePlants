@@ -1,8 +1,6 @@
 const postgres = require("postgres");
 const AWS = require("aws-sdk");
 
-// const PAGE_LIMIT = 20;
-
 // Gather AWS services
 const secretsManager = new AWS.SecretsManager();
 
@@ -57,7 +55,7 @@ exports.handler = async (event) => {
 		switch(pathData) {
 			case "GET /invasiveSpecies":
 				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_species_id) ? event.queryStringParameters.last_species_id : "00000000-0000-0000-0000-000000000000";
-				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
+				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? parseInt(event.queryStringParameters.rows_per_page, 10) : 20;
 
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
 					data = await sql`	SELECT * FROM invasive_species 

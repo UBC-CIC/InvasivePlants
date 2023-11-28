@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-  TablePagination, InputAdornment, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button,
+  InputAdornment, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button,
   TextField, Typography, ThemeProvider
 } from "@mui/material";
 import Theme from './Theme';
@@ -17,6 +17,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import SearchIcon from '@mui/icons-material/Search';
 
 import boldText from "./formatDescriptionHelper";
 import axios from "axios";
@@ -73,20 +74,10 @@ function AlternativeSpeciesPage() {
       .get(`${API_ENDPOINT}alternativeSpecies`, {
         params: {
           last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
-          rows_per_page: rowsPerPage // default 20
+          rows_per_page: rowsPerPage  // default 20
         }
       })
       .then((response) => {  
-        // reset pagination details
-        if (shouldReset) {
-          console.log("should reset: ", shouldReset);
-          setLastSpeciesIdHistory(new Set())
-          setLastSpeciesNameHistory(new Set())
-          setPage(0);
-          setStart(0);
-          setEnd(0);
-          setShouldReset(false);
-        }
 
         // formats data 
         const formattedData = response.data.map(item => {
@@ -104,8 +95,19 @@ function AlternativeSpeciesPage() {
           };
         });
 
-        console.log("get alternative species data:", formattedData);
-       
+        // console.log("get alternative species data:", formattedData);
+
+        // reset pagination details
+        if (shouldReset) {
+          console.log("should reset: ", shouldReset);
+          setLastSpeciesIdHistory(new Set())
+          setLastSpeciesNameHistory(new Set())
+          setPage(0);
+          setStart(0);
+          setEnd(0);
+          setShouldReset(false);
+        }
+
         // update states
         setDisplayData(formattedData);
         setData(formattedData);
@@ -137,7 +139,7 @@ function AlternativeSpeciesPage() {
 
   useEffect(() => {
     // console.log("last species id: ", currLastSpeciesId)
-    // console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
+    console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
   }, [currLastSpeciesId, lastSpeciesIdHistory, lastSpeciesNameHistory]);
 
 
@@ -267,7 +269,6 @@ function AlternativeSpeciesPage() {
         .delete(`${API_ENDPOINT}alternativeSpecies/${deleteId}`)
         .then((response) => {
           setShouldReset(true);
-          // handleGetAlternativeSpecies();
           console.log("alternative species deleted successfully", response.data);
         })
         .catch((error) => {
@@ -330,7 +331,6 @@ function AlternativeSpeciesPage() {
               console.log("images added successfully", response.data);
               // get updated alternative species
               setShouldReset(true);
-              // handleGetAlternativeSpecies();
               setOpenAddSpeciesDialog(false);
             })
             .catch((error) => {
@@ -346,6 +346,7 @@ function AlternativeSpeciesPage() {
   // execute handleGetAlternativeSpecies after shouldReset state update
   useEffect(() => {
     if (shouldReset) {
+
       handleGetAlternativeSpecies();
     }
   }, [shouldReset]);
@@ -403,10 +404,11 @@ function AlternativeSpeciesPage() {
     calculateStartAndEnd();
   }, [rowsPerPage, page, displayData]);
 
+
   useEffect(() => {
     console.log("rows per page changed!!: ", rowsPerPage);
     setShouldReset(true);
-    handleGetAlternativeSpecies()
+    // handleGetAlternativeSpecies()
   }, [rowsPerPage]);
 
   // updates page count
@@ -440,8 +442,8 @@ function AlternativeSpeciesPage() {
 
   // disables the next button if there are no species left to query
   useEffect(() => {
-    console.log("displayDataCount: ", displayData.length);
-    console.log("rows per page: ", rowsPerPage);
+    // console.log("displayDataCount: ", displayData.length);
+    // console.log("rows per page: ", rowsPerPage);
 
     if (displayData.length === 0 || displayData.length < rowsPerPage) {
       setDisabled(true);
@@ -454,7 +456,7 @@ function AlternativeSpeciesPage() {
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
 
       {/* search bars*/}
-      <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "90%" }}>
         <SearchComponent
           text={"Search alternative species (scientific or common name)"}
           handleSearch={handleSearch}
@@ -462,7 +464,15 @@ function AlternativeSpeciesPage() {
           searchTerm={searchBarInput}
           setSearchTerm={setSearchBarInput}
         />
+
+        <ThemeProvider theme={Theme}>
+          <Button variant="contained" style={{ marginLeft: "20px", marginTop: "12px", width: "10%", height: "53px", alignItems: "center" }}>
+            <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
+          </Button>
+        </ThemeProvider>
+
       </div>
+
 
       {/* button to add species */}
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>

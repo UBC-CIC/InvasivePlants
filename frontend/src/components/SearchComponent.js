@@ -1,4 +1,4 @@
-import { Autocomplete, Box, TextField } from '@mui/material';
+import { Autocomplete, Box, Button, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 const SearchComponent = ({ text, handleSearch, searchResults, searchTerm, setSearchTerm }) => {

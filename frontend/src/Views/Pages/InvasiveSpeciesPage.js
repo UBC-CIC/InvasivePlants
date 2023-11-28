@@ -19,6 +19,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import SearchIcon from '@mui/icons-material/Search';
 
 import boldText from "./formatDescriptionHelper";
 import axios from "axios";
@@ -66,6 +67,7 @@ function InvasiveSpeciesPage() {
   const handleGetInvasiveSpecies = () => {
     // console.log("previous last species id: ", currLastSpeciesId);
     console.log("should reset?: ", shouldReset);
+
     // helper function that capitalizes scientific name
     const capitalizeScientificName = (str) => {
       const strSplitUnderscore = str.split("_");
@@ -93,15 +95,7 @@ function InvasiveSpeciesPage() {
       })
       .then((response) => {
 
-         // reset pagination details
-         if (shouldReset) {
-          setLastSpeciesIdHistory(new Set())
-          setLastSpeciesNameHistory(new Set())
-          setPage(0);
-          setStart(0);
-          setEnd(0);
-          setShouldReset(false);
-        }
+
 
         const promises = response.data.flatMap(item =>
           item.region_id.map(regionId =>
@@ -119,6 +113,17 @@ function InvasiveSpeciesPage() {
             });
 
             console.log("Invasive species retrieved successfully", formattedData);
+
+            // reset pagination details
+            if (shouldReset) {
+              setLastSpeciesIdHistory(new Set())
+              setLastSpeciesNameHistory(new Set())
+              setPage(0);
+              setStart(0);
+              setEnd(0);
+              setShouldReset(false);
+              console.log("reset pagination details")
+            }
 
             setDisplayData(formattedData);
             setData(formattedData);
@@ -435,6 +440,12 @@ function InvasiveSpeciesPage() {
           searchTerm={searchInput}
           setSearchTerm={setSearchInput}
         />
+
+        <ThemeProvider theme={Theme}>
+          <Button variant="contained" style={{ marginLeft: "20px", marginTop: "27px", width: "10%", height: "53px", alignItems: "center" }}>
+            <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
+          </Button>
+        </ThemeProvider>
       </div>
 
       {/* button to add species */}
