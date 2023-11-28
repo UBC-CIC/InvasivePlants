@@ -61,7 +61,7 @@ exports.handler = async (event) => {
 				
 				data = await sql`	SELECT * FROM regions
 									WHERE region_id > ${species_id_pagination}
-									ORDER BY region_fullname, region_id 
+									ORDER BY region_id 
 									LIMIT ${PAGE_LIMIT};`;
 				response.body = JSON.stringify(data);
 				break;

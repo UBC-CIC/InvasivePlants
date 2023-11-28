@@ -61,12 +61,12 @@ exports.handler = async (event) => {
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
 					data = await sql`	SELECT * FROM alternative_species 
 										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and species_id > ${species_id_pagination}
-										ORDER BY scientific_name[1], species_id 
+										ORDER BY species_id 
 										LIMIT ${PAGE_LIMIT};`;
 				} else {
 					data = await sql`	SELECT * FROM alternative_species 
 										WHERE species_id > ${species_id_pagination}
-										ORDER BY scientific_name[1], species_id 
+										ORDER BY species_id 
 										LIMIT ${PAGE_LIMIT};`;
 				}
 				
