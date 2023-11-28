@@ -23,6 +23,7 @@ export class APIStack extends Stack {
     private readonly dbInstance: rds.DatabaseInstance;
     private readonly secretPath: string;
     private readonly rdsProxyEndpoint: string; 
+    public readonly stageARN_APIGW: string;
     constructor(scope: Construct, id: string, vpcStack: VpcStack, db: DBStack, functionalityStack: FunctionalityStack, props?: StackProps){
         super(scope, id, props);
 
@@ -58,6 +59,8 @@ export class APIStack extends Stack {
                 }
               },
         });
+
+        this.stageARN_APIGW = api.deploymentStage.stageArn;
 
         // Create a deafult CORS Policy
         api.root.addCorsPreflight({
@@ -112,7 +115,7 @@ export class APIStack extends Stack {
                 "secretsmanager:GetSecretValue",
               ],
               resources: [
-                `arn:aws:secretsmanager:${this.region}:${this.account}:secret:InvasivePlants/credentials/*`,
+                `arn:aws:secretsmanager:${this.region}:${this.account}:secret:*`,
               ],
             })
         );
@@ -337,7 +340,68 @@ export class APIStack extends Stack {
         // Change Logical ID to match the one decleared in YAML file of Open API
         const cfnLambda_getSignedURL = IL_getSignedURL.node.defaultChild as lambda.CfnFunction;
         cfnLambda_getSignedURL.overrideLogicalId("getSignedURL");
+
+        /**
+         * 
+         * Create Integration Lambda layer for aws-jwt-verify
+         */ 
+        const jwt = new lambda.LayerVersion(this, 'aws-jwt-verify', {
+          code: lambda.Code.fromAsset('./lambda/layers/aws-jwt-verify.zip'),
+          compatibleRuntimes: [lambda.Runtime.NODEJS_16_X],
+          description: 'Contains the aws-jwt-verify library for JS',
+        });
+
+        /**
+         * 
+         * Create Lambda for Admin Authorization endpoints
+         */
+        const authorizationFunction= new lambda.Function(this, 'admin-authorization-api-gateway', {
+          runtime: lambda.Runtime.NODEJS_16_X,    // Execution environment
+          code: lambda.Code.fromAsset('lambda'),  // Code loaded from "lambda" directory
+          handler: 'adminAuthorizerFunction.handler',         // Code handler
+          timeout: Duration.seconds(300),
+          vpc: vpcStack.vpc,
+          environment: {
+            SM_COGNITO_CREDENTIALS: functionalityStack.secret.secretName
+          },
+          functionName: "adminLambdaAuthorizer",
+          memorySize: 512,
+          layers: [jwt],
+          role: lambdaRole
+        });
+
+        // Add the permission to the Lambda function's policy to allow API Gateway access
+        authorizationFunction.grantInvoke(new iam.ServicePrincipal('apigateway.amazonaws.com'));
         
+        // Change Logical ID to match the one decleared in YAML file of Open API
+        const apiGW_authorizationFunction = authorizationFunction.node.defaultChild as lambda.CfnFunction;
+        apiGW_authorizationFunction.overrideLogicalId("adminLambdaAuthorizer");
+
+        /**
+         * 
+         * Create Lambda for User Authorization endpoints
+         */
+        const authorizationFunction_user = new lambda.Function(this, 'user-authorization-api-gateway', {
+          runtime: lambda.Runtime.NODEJS_16_X,    // Execution environment
+          code: lambda.Code.fromAsset('lambda'),  // Code loaded from "lambda" directory
+          handler: 'userAuthorizerFunction.handler',         // Code handler
+          timeout: Duration.seconds(300),
+          vpc: vpcStack.vpc,
+          environment: {
+            SM_COGNITO_CREDENTIALS: functionalityStack.secret.secretName
+          },
+          functionName: "userLambdaAuthorizer",
+          memorySize: 512,
+          layers: [jwt],
+          role: lambdaRole
+        });
+
+        // Add the permission to the Lambda function's policy to allow API Gateway access
+        authorizationFunction_user.grantInvoke(new iam.ServicePrincipal('apigateway.amazonaws.com'));
+        
+        // Change Logical ID to match the one decleared in YAML file of Open API
+        const apiGW_authorizationFunction_user = authorizationFunction_user.node.defaultChild as lambda.CfnFunction;
+        apiGW_authorizationFunction_user.overrideLogicalId("userLambdaAuthorizer");
     }
 }
 // Cogito is next

@@ -660,7 +660,9 @@ paths:
         "429":
           description: Too Many Requests
         "500":
-          description: Internal Server Error             
+          description: Internal Server Error  
+      security:
+        - userAuthorizer: []           
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambSaveList.Arn}/invocations"
@@ -683,6 +685,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      security:
+        - userAuthorizer: []    
       x-amazon-apigateway-request-validator: all
       x-amazon-apigateway-integration:
         uri:
@@ -719,7 +723,9 @@ paths:
         "429":
           description: Too Many Requests
         "500":
-          description: Internal Server Error             
+          description: Internal Server Error       
+      security:
+        - userAuthorizer: []    
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambSaveList.Arn}/invocations"
@@ -748,6 +754,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      security:
+        - userAuthorizer: []
       x-amazon-apigateway-request-validator: all
       x-amazon-apigateway-integration:
         uri:
@@ -783,6 +791,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      security:
+        - userAuthorizer: []    
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambSaveList.Arn}/invocations"
@@ -825,6 +835,27 @@ paths:
         httpMethod: "POST"
         type: "aws_proxy"
 components:
+  securitySchemes:
+    adminAuthorizer:
+      type: "apiKey"
+      name: "Authorization"   # The header name where the token is provided
+      in: "header"
+      x-amazon-apigateway-authtype: "custom"
+      x-amazon-apigateway-authorizer:
+        type: token
+        authorizerUri: 
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${adminLambdaAuthorizer.Arn}/invocations"
+        identitySource: method.request.header.Authorization
+    userAuthorizer:
+      type: "apiKey"
+      name: "Authorization"   # The header name where the token is provided
+      in: "header"
+      x-amazon-apigateway-authtype: "custom"
+      x-amazon-apigateway-authorizer:
+        type: token
+        authorizerUri: 
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${userLambdaAuthorizer.Arn}/invocations"
+        identitySource: method.request.header.Authorization
   responses:
     Success:
       description: Request success
