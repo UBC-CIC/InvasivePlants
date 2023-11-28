@@ -14,7 +14,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 import EditRegionDialog from "../../dialogs/EditRegionsDialog";
-import LocationFilterComponent from '../../components/LocationFilterComponent';
+// import LocationFilterComponent from '../../components/LocationFilterComponent';
 
 import axios from "axios";
 

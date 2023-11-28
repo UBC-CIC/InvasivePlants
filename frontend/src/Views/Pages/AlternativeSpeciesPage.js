@@ -346,7 +346,6 @@ function AlternativeSpeciesPage() {
   // execute handleGetAlternativeSpecies after shouldReset state update
   useEffect(() => {
     if (shouldReset) {
-
       handleGetAlternativeSpecies();
     }
   }, [shouldReset]);
