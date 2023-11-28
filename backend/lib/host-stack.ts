@@ -14,9 +14,10 @@ import * as cdk from 'aws-cdk-lib';
 // Other stack
 import { VpcStack } from './vpc-stack';
 import { FunctionalityStack } from './functionality-stack';
+import { APIStack } from './api-stack';
 
 export class HostStack extends Stack {
-    constructor(scope: Construct, id: string, vpcStack:VpcStack, functionalityStack:FunctionalityStack, props?: StackProps) {
+    constructor(scope: Construct, id: string, vpcStack:VpcStack, functionalityStack:FunctionalityStack, apiStack:APIStack, props?: StackProps) {
         super(scope, id, props);
 
         // Import a VPC stack
@@ -243,6 +244,12 @@ export class HostStack extends Stack {
         // Attach WAF to ALB
         const WAFALB = new wafv2.CfnWebACLAssociation(this,'Attach-WAF-ALB', {
             resourceArn: ALBFargateService.loadBalancer.loadBalancerArn,
+            webAclArn: WAFwebACL.attrArn,
+        });
+
+        // Attach WAF to API
+        const WAFAPI = new wafv2.CfnWebACLAssociation(this,'Attach-WAF-API', {
+            resourceArn: apiStack.stageARN_APIGW,
             webAclArn: WAFwebACL.attrArn,
         });
     }

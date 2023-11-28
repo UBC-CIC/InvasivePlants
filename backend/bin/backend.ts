@@ -26,7 +26,7 @@ const dbFlowStack = new DBFlowStack(app, 'DBFlowStack', vpcStack, dbStack);
 const api = new APIStack(app, 'APIStack', vpcStack, dbStack, functionality);
 
 // Create an instance of Host stack
-const hostStack = new HostStack(app, 'hostStack', vpcStack, functionality);
+const hostStack = new HostStack(app, 'hostStack', vpcStack, functionality, api);
 
 // aws cognito-idp sign-up --client-id 7factsbgi05qv66mgbk9cca827 --username visal.social@gmail.com --password 1234Abcd^ --region ca-central-1
 // aws cognito-idp admin-confirm-sign-up --user-pool-id ca-central-1_n7qsRCn5x --username visal.social@gmail.com --region ca-central-1

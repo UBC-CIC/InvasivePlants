@@ -56,14 +56,26 @@ exports.handler = async (event) => {
 		console.log("Event: ", event);
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
-			case "GET /region":
-				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_region_id) ? event.queryStringParameters.last_region_id : "00000000-0000-0000-0000-000000000000";
+			case "GET /alternativeSpecies":
+				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_species_id) ? event.queryStringParameters.last_species_id : "00000000-0000-0000-0000-000000000000";
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
 
-				data = await sql`	SELECT * FROM regions
-									WHERE region_id > ${species_id_pagination}
-									ORDER BY region_id 
-									LIMIT ${rows_per_page};`;
+				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
+					data = await sql`	SELECT * FROM alternative_species 
+										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and species_id > ${species_id_pagination}
+										ORDER BY species_id 
+										LIMIT ${rows_per_page};`;
+				} else {
+					data = await sql`	SELECT * FROM alternative_species 
+										WHERE species_id > ${species_id_pagination}
+										ORDER BY species_id 
+										LIMIT ${rows_per_page};`;
+				}
+				
+				for(let i in data){
+					// Get list of images
+					data[i].images = await sql`SELECT * FROM images WHERE species_id = ${data[i].species_id};`;
+				}
 				response.body = JSON.stringify(data);
 				break;
 			case "POST /region":

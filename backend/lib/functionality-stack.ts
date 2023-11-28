@@ -6,6 +6,7 @@ import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 
 export class FunctionalityStack extends cdk.Stack {
     public readonly secret: secretsmanager.ISecret;
@@ -22,8 +23,9 @@ export class FunctionalityStack extends cdk.Stack {
          * Using verification code
          * Inspiration from http://buraktas.com/create-cognito-user-pool-aws-cdk/
          */
+        const userPoolName = "invasivePlantsUserPool";
         const userpool = new cognito.UserPool(this, 'invasive-plants-pool', {
-            userPoolName: 'invasive-plants-pool',
+            userPoolName: userPoolName,
             signInAliases: {
                 email: true,
             },
@@ -53,7 +55,7 @@ export class FunctionalityStack extends cdk.Stack {
          * An entity that allows your application to interact with the AWS Cognito User Pool service
          */
         const appClient = userpool.addClient('invasive-plants-pool', {
-            userPoolClientName: 'invasive-plants-pool',
+            userPoolClientName: userPoolName,
             authFlows: {
             userPassword: true,
             },
