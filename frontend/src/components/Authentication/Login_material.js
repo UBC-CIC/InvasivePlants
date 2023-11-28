@@ -266,7 +266,7 @@ function Login(props) {
             setLoading(true);
             const { email, password } = formState;
             let user = await Auth.signIn(email, password);
-
+            console.log("user: ", user);
             if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
                 // a new password needs to be set if account is created through Amazon Cognito for the user
                 resetStates("newUserPassword")
