@@ -105,16 +105,7 @@ function AlternativeSpeciesPage() {
         });
 
         console.log("get alternative species data:", formattedData);
-        // // reset pagination details
-        // if (shouldReset) {
-        //   setLastSpeciesIdHistory(new Set())
-        //   setLastSpeciesNameHistory(new Set())
-        //   setPage(0);
-        //   setStart(0);
-        //   setEnd(0);
-        //   setShouldReset(false);
-        // }
-
+       
         // update states
         setDisplayData(formattedData);
         setData(formattedData);

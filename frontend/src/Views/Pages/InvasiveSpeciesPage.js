@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { InputAdornment, TablePagination, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
+import {
+  InputAdornment, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow,
+  Button, TextField, Typography, ThemeProvider
+} from "@mui/material";
 import Theme from './Theme';
 
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-
-import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialog";
+// components
 import LocationFilterComponent from '../../components/LocationFilterComponent';
 import SearchComponent from '../../components/SearchComponent';
+import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialog";
 import AddInvasiveSpeciesDialog from "../../dialogs/AddInvasiveSpeciesDialog";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import handleGetRegions from "../../functions/RegionMap"
+
+// icons
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
 import boldText from "./formatDescriptionHelper";
-import handleGetRegions from "../../functions/RegionMap"
 import axios from "axios";
 
 function InvasiveSpeciesPage() {
@@ -86,6 +92,7 @@ function InvasiveSpeciesPage() {
         }
       })
       .then((response) => {
+
          // reset pagination details
          if (shouldReset) {
           setLastSpeciesIdHistory(new Set())
@@ -95,7 +102,7 @@ function InvasiveSpeciesPage() {
           setEnd(0);
           setShouldReset(false);
         }
-        
+
         const promises = response.data.flatMap(item =>
           item.region_id.map(regionId =>
             axios.get(`${API_ENDPOINT}region/${regionId}`)
@@ -112,16 +119,6 @@ function InvasiveSpeciesPage() {
             });
 
             console.log("Invasive species retrieved successfully", formattedData);
-
-            // // reset pagination details
-            // if (shouldReset) {
-            //   setLastSpeciesIdHistory(new Set())
-            //   setLastSpeciesNameHistory(new Set())
-            //   setPage(0);
-            //   setStart(0);
-            //   setEnd(0);
-            //   setShouldReset(false);
-            // }
 
             setDisplayData(formattedData);
             setData(formattedData);
