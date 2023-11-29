@@ -57,11 +57,19 @@ exports.handler = async (event) => {
 			case "GET /region":
 				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_region_id) ? event.queryStringParameters.last_region_id : "00000000-0000-0000-0000-000000000000";
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
-
-				data = await sql`	SELECT * FROM regions
-									WHERE region_id > ${species_id_pagination}
-									ORDER BY region_id 
-									LIMIT ${rows_per_page};`;
+				
+				if(event.queryStringParameters != null && event.queryStringParameters.region_fullname){
+					const region_fullname = "%" + event.queryStringParameters.region_fullname + "%";
+					data = await sql`	SELECT * FROM regions
+										WHERE region_fullname ILIKE ${region_fullname} and region_id > ${species_id_pagination}
+										ORDER BY region_id 
+										LIMIT ${rows_per_page};`;
+				} else {
+					data = await sql`	SELECT * FROM regions
+										WHERE region_id > ${species_id_pagination}
+										ORDER BY region_id 
+										LIMIT ${rows_per_page};`;
+				}
 				response.body = JSON.stringify(data);
 				break;
 			case "POST /region":

@@ -263,6 +263,57 @@ export class APIStack extends Stack {
          * 
          * Create Integration Lambda for Images API Gateway endpoint
          */
+        // Create a new role
+        //Create a role for lambda to access the postgresql database
+        const lambdaRoleWithS3 = new iam.Role(this, "lambdaRoleWithS3", {
+          roleName: "lambdaRoleWithS3",
+          assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
+        });
+
+        // Grant access to EC2
+        lambdaRoleWithS3.addToPolicy(
+          new iam.PolicyStatement({
+            effect: iam.Effect.ALLOW,
+            actions: [
+              "ec2:CreateNetworkInterface",
+              "ec2:DescribeNetworkInterfaces",
+              "ec2:DeleteNetworkInterface",
+              "ec2:AssignPrivateIpAddresses",
+              "ec2:UnassignPrivateIpAddresses",
+            ],
+            resources: ["*"], // must be *
+          })
+        );
+
+        // Grant access to Secret Manager
+        lambdaRoleWithS3.addToPolicy(
+          new iam.PolicyStatement({
+            effect: iam.Effect.ALLOW,
+            actions: [
+              //Secrets Manager
+              "secretsmanager:GetSecretValue",
+            ],
+            resources: [
+              `arn:aws:secretsmanager:${this.region}:${this.account}:secret:*`,
+            ],
+          })
+        );
+
+        // Grant access to log
+        lambdaRoleWithS3.addToPolicy(
+          new iam.PolicyStatement({
+            effect: iam.Effect.ALLOW,
+            actions: [
+              //Logs
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+            ],
+            resources: ["arn:aws:logs:*:*:*"],
+          })
+        );
+        
+        // Create a lambda function
         const IL_images = new lambda.Function(this, 'IntegLambImages', {
           runtime: lambda.Runtime.NODEJS_16_X,    // Execution environment
           code: lambda.Code.fromAsset('lambda'),  // Code loaded from "lambda" directory
@@ -271,12 +322,13 @@ export class APIStack extends Stack {
           vpc: vpcStack.vpc,
           environment: {
             SM_DB_CREDENTIALS: db.secretPath,
-            RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint
+            RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint,
+            BUCKET_NAME: functionalityStack.bucketName
           },
           functionName: "IntegLambImages",
           memorySize: 512,
           layers: [postgres],
-          role: lambdaRole
+          role: lambdaRoleWithS3
         });
 
         // Add the permission to the Lambda function's policy to allow API Gateway access
@@ -285,6 +337,18 @@ export class APIStack extends Stack {
             action: 'lambda:InvokeFunction',
             sourceArn: `arn:aws:execute-api:${this.region}:${this.account}:${api.restApiId}/*/*/plantsImages*`
         });
+
+        // Add the policy to the Lambda function's policy to access S3 putObjectAcl
+        IL_images.addToRolePolicy(iam.PolicyStatement.fromJson({
+          Effect: "Allow",
+          Action: [
+            "s3:putObjectAcl", 
+            "s3:PutObject", 
+            "s3:GetObject",
+            "s3:DeleteObject"
+          ],
+          Resource: `arn:aws:s3:::${functionalityStack.bucketName}/*`
+        }));
         
         // Change Logical ID to match the one decleared in YAML file of Open API
         const cfnLambda_images = IL_images.node.defaultChild as lambda.CfnFunction;
@@ -293,6 +357,7 @@ export class APIStack extends Stack {
         /**
          * 
          * Create Integration Lambda for getSignedURL API Gateway endpoint
+         * TODO: To be deleted!!
          */
         const IL_getSignedURL = new lambda.Function(this, 'getSignedURL', {
           runtime: lambda.Runtime.NODEJS_16_X,    // Execution environment
@@ -320,7 +385,8 @@ export class APIStack extends Stack {
           Action: [
             "s3:putObjectAcl", 
             "s3:PutObject", 
-            "s3:GetObject"
+            "s3:GetObject",
+            "s3:DeleteObject"
           ],
           Resource: `arn:aws:s3:::${functionalityStack.bucketName}/*`
         }));
