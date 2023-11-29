@@ -12,6 +12,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 import EditRegionDialog from "../../dialogs/EditRegionsDialog";
 // import LocationFilterComponent from '../../components/LocationFilterComponent';
@@ -80,6 +81,32 @@ function RegionsPage() {
             });
     };
 
+    const handleGetRegionsAfterSearch = () => {
+        const formattedSearchInput = capitalizeString(searchInput);
+
+        axios
+            .get(`${API_ENDPOINT}region`, {
+                params: {
+                    region_fullname: formattedSearchInput,
+                    last_region_id: shouldReset ? null : currLastRegionId  // for pagination
+                }
+            })
+            .then((response) => {
+                console.log("Regions retrieved successfully", response.data);
+                setDisplayData(response.data);
+            })
+            .catch((error) => {
+                console.error("Error searching up region", error);
+            });
+    };
+
+
+    const handleReset = () => {
+        console.log("reset data");
+        setShouldReset(true);
+        setSearchInput("");
+        handleGetRegions();
+    }
 
     useEffect(() => {
         console.log("last species id: ", currLastRegionId)
@@ -369,6 +396,12 @@ function RegionsPage() {
                 <ThemeProvider theme={Theme}>
                     <Button variant="contained" style={{ marginLeft: "20px", marginTop: "27px", width: "10%", height: "53px", alignItems: "center" }}>
                         <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
+                    </Button>
+                </ThemeProvider>
+
+                <ThemeProvider theme={Theme}>
+                    <Button variant="contained" onClick={() => handleReset()} style={{ marginLeft: "10px", marginTop: "27px", height: "53px", alignItems: "center" }}>
+                        <RestartAltIcon />
                     </Button>
                 </ThemeProvider>
             </div>

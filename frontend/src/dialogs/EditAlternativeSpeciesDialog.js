@@ -24,6 +24,8 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         let uploadResponse;
 
         if (files) {
+
+            // TODO: image files instead
             let s3Keys = tempData.s3_keys ? [...tempData.s3_keys] : [];
 
             try {

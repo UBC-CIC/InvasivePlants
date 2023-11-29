@@ -76,6 +76,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     let uploadResponse;
 
     if (files) {
+      // image files instead
       let s3Keys = []
 
       try {

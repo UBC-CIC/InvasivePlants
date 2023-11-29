@@ -180,11 +180,12 @@ function Navbar(props) {
         </Menu>
     );
 
-    useEffect(() => {
+    useEffect(() => { // TODO: figure out get the jwtToken 
         async function retrieveUser() {
             try {
                 const returnedUser = await Auth.currentAuthenticatedUser();
                 setUser(returnedUser.attributes.email);
+                console.log("returned user: ", returnedUser); 
             } catch (e) {
                 console.log(e);
             }
