@@ -4,6 +4,7 @@ import {
   TextField, Typography, ThemeProvider
 } from "@mui/material";
 import Theme from './Theme';
+import { Auth } from "aws-amplify";
 
 // components
 import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";
@@ -44,6 +45,26 @@ function AlternativeSpeciesPage() {
   const [lastSpeciesNameHistory, setLastSpeciesNameHistory] = useState(new Set()); // history of last species names seen for each page
   const [shouldReset, setShouldReset] = useState(false); // reset above values
 
+  const [user, setUser] = useState("");
+
+  // gets current authorized user
+  const retrieveUser = async () => {
+    try {
+      const returnedUser = await Auth.currentAuthenticatedUser();
+      setUser(returnedUser);
+      console.log("current user: ", returnedUser);
+    } catch (e) {
+      console.log("error getting user: ", e);
+    }
+  }
+
+  // retriever user on load
+  useEffect(() => {
+    console.log("retrieved user!!1")
+    retrieveUser()
+  }, [])
+
+
   // helper function that capitalizes scientific name
   const capitalizeScientificName = (str) => {
     const strSplitUnderscore = str.split("_");
@@ -67,7 +88,7 @@ function AlternativeSpeciesPage() {
   // fetches alternative species data 
   const handleGetAlternativeSpecies = () => {
   // console.log("previous last species id: ", currLastSpeciesId);
-    console.log("got here: ", rowsPerPage);
+    // console.log("got here: ", rowsPerPage);
 
     // request to GET all alternative species
     axios
@@ -99,7 +120,7 @@ function AlternativeSpeciesPage() {
 
         // reset pagination details
         if (shouldReset) {
-          console.log("should reset: ", shouldReset);
+          // console.log("should reset: ", shouldReset);
           setLastSpeciesIdHistory(new Set())
           setLastSpeciesNameHistory(new Set())
           setPage(0);
@@ -139,12 +160,12 @@ function AlternativeSpeciesPage() {
   // GET invasive species in the database that matches user search
   const handleGetAlternativeSpeciesAfterSearch = () => {
     const formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
+    console.log("formatted search input: ", formattedSearchInput);
 
     axios
       .get(`${API_ENDPOINT}alternativeSpecies`, {
         params: {
           scientific_name: formattedSearchInput,
-          last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
         }
       })
       .then((response) => {
@@ -166,7 +187,6 @@ function AlternativeSpeciesPage() {
         });
 
         console.log("Alternative species retrieved successfully", formattedData);
-
         setDisplayData(formattedData);
       })
       .catch((error) => {
@@ -175,7 +195,7 @@ function AlternativeSpeciesPage() {
   };
 
   const handleReset = () => {
-    console.log("reset data");
+    // console.log("reset data");
     setShouldReset(true);
     setSearchInput("");
     handleGetAlternativeSpecies();
@@ -183,7 +203,7 @@ function AlternativeSpeciesPage() {
 
   useEffect(() => {
     // console.log("last species id: ", currLastSpeciesId)
-    console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
+    // console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
   }, [currLastSpeciesId, lastSpeciesIdHistory, lastSpeciesNameHistory]);
 
 
@@ -251,8 +271,8 @@ function AlternativeSpeciesPage() {
       const imageS3Keys = (formattedData.s3_keys && formattedData.s3_keys.length > 0) ?
         formattedData.s3_keys.map(key => ({ species_id: formattedData.species_id, s3_key: key })) : null;
 
-      console.log("to save s3 keys: ", imageS3Keys)
-      console.log("to save images: ", plantImages)
+      console.log("to save s3 keys: ", imageS3Keys);
+      console.log("to save images: ", plantImages);
 
       // add new image links only
       const imagesToAdd = (plantImages && plantImages.length > 0) ?
@@ -262,15 +282,22 @@ function AlternativeSpeciesPage() {
       const s3KeysToAdd = (imageS3Keys && imageS3Keys.length > 0) ?
         imageS3Keys.filter(key => !formattedData.images.some(existingImg => existingImg.s3_key === key.s3_key)) : null;
 
-      console.log("to add images (links): ", imagesToAdd)
-      console.log("to add images (keys): ", s3KeysToAdd)
+      console.log("to add images (links): ", imagesToAdd);
+      console.log("to add images (keys): ", s3KeysToAdd);
 
       // POST new images to the database
       function postImages(images) {
         if (images && images.length > 0) {
+          retrieveUser();
+          const jwtToken = user.signInUserSession.accessToken.jwtToken;
+
           images.forEach(img => {
             axios
-              .post(API_ENDPOINT + "plantsImages", img)
+              .post(API_ENDPOINT + "plantsImages", img, {
+                headers: {
+                  'Authorization': `${jwtToken}`
+                }
+              })
               .then(response => {
                 console.log("Images added successfully", response.data);
               })
@@ -284,9 +311,16 @@ function AlternativeSpeciesPage() {
       postImages(imagesToAdd);
       postImages(s3KeysToAdd);
 
+      retrieveUser();
+      const jwtToken = user.signInUserSession.accessToken.jwtToken;
+
       // update alternative species table
       axios
-        .put(`${API_ENDPOINT}alternativeSpecies/${tempEditingData.species_id}`, formattedData)
+        .put(`${API_ENDPOINT}alternativeSpecies/${tempEditingData.species_id}`, formattedData, {
+          headers: {
+            'Authorization': `${jwtToken}`
+          }
+        })
         .then((response) => {
           console.log("alternative species updated successfully", response.data);
           setShouldReset(true);
@@ -308,10 +342,16 @@ function AlternativeSpeciesPage() {
   // deletes species from the table
   const handleConfirmDelete = () => {
     console.log("alt species id to delete: ", deleteId);
+    retrieveUser();
+    const jwtToken = user.signInUserSession.accessToken.jwtToken
 
     if (deleteId) {
       axios
-        .delete(`${API_ENDPOINT}alternativeSpecies/${deleteId}`)
+        .delete(`${API_ENDPOINT}alternativeSpecies/${deleteId}`, {
+          headers: {
+            'Authorization': `${jwtToken}`
+          }
+        })
         .then((response) => {
           setShouldReset(true);
           console.log("alternative species deleted successfully", response.data);
@@ -340,9 +380,16 @@ function AlternativeSpeciesPage() {
 
     console.log("new alternative species: ", newSpeciesData);
 
+    retrieveUser();
+    const jwtToken = user.signInUserSession.accessToken.jwtToken
+
     // POST new alternative species to database
     axios
-      .post(API_ENDPOINT + "alternativeSpecies", newSpeciesData)
+      .post(API_ENDPOINT + "alternativeSpecies", newSpeciesData, {
+        headers: {
+          'Authorization': `${jwtToken}`
+        }
+      })
       .then((response) => {
         console.log("Alternative species added successfully", response);
 
@@ -365,13 +412,17 @@ function AlternativeSpeciesPage() {
         }
 
         const allPlantImages = plantsWithImgLinks.concat(plantsWithImgFiles);
-        console.log("merged plants: ", allPlantImages);
+        // console.log("merged plants: ", allPlantImages);
 
         // upload all plant images 
         allPlantImages.forEach((plantData) => {
           console.log("plant: ", plantData);
           axios
-            .post(API_ENDPOINT + "plantsImages", plantData)
+            .post(API_ENDPOINT + "plantsImages", plantData, {
+              headers: {
+                'Authorization': `${jwtToken}`
+              }
+            })
             .then((response) => {
               console.log("images added successfully", response.data);
               // get updated alternative species
@@ -399,7 +450,7 @@ function AlternativeSpeciesPage() {
 
   // helper function when search input changes
   const handleSearchInputChange = (field, value) => {
-    console.log("field: ", field, "value: ", value)
+    // console.log("field: ", field, "value: ", value)
     setTempEditingData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -452,7 +503,7 @@ function AlternativeSpeciesPage() {
 
 
   useEffect(() => {
-    console.log("rows per page changed!!: ", rowsPerPage);
+    // console.log("rows per page changed!!: ", rowsPerPage);
     setShouldReset(true);
     // handleGetAlternativeSpecies()
   }, [rowsPerPage]);

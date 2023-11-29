@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Autocomplete, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Box, TextField, Typography, ThemeProvider } from "@mui/material";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import AddRegionDialog from "../../dialogs/AddRegionDialog";
 import Theme from './Theme';
+import { Auth } from "aws-amplify";
 
 // icons
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -16,9 +17,10 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 import EditRegionDialog from "../../dialogs/EditRegionsDialog";
 // import LocationFilterComponent from '../../components/LocationFilterComponent';
-
 import axios from "axios";
+// import { UserContext } from '../../UserContext';
 
+// displays regions
 function RegionsPage() {
     const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
 
@@ -37,11 +39,26 @@ function RegionsPage() {
     const [deleteId, setDeleteId] = useState(null);
     const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
 
-
     const [currLastRegionId, setCurrLastRegionId] = useState(""); // current last region
     const [lastRegionIdHistory, setLastRegionIdHistory] = useState(new Set()); // history of last region ids seen for each page
     const [lastRegionNameHistory, setLastRegionNameHistory] = useState(new Set()); // history of last region full names seen for each page
     const [shouldReset, setShouldReset] = useState(false);
+    // const { user } = useContext(UserContext);
+
+    // console.log("this is the user: ", user);
+
+    const [user, setUser] = useState("");
+
+    // gets current authorized user
+    const retrieveUser = async () => {
+        try {
+            const returnedUser = await Auth.currentAuthenticatedUser();
+            setUser(returnedUser);
+            console.log("current user: ", returnedUser);
+        } catch (e) {
+            console.log("error getting user: ", e);
+        }
+    }
 
     const handleGetRegions = () => {
         console.log("shouldReset?", shouldReset)
@@ -55,6 +72,7 @@ function RegionsPage() {
             })
             .then((response) => {
                 console.log("Regions retrieved successfully", response.data);
+                // console.log("now in regions, this is the user: ", user);
 
                 if (shouldReset) {
                     setLastRegionIdHistory(new Set())
@@ -83,6 +101,7 @@ function RegionsPage() {
 
     const handleGetRegionsAfterSearch = () => {
         const formattedSearchInput = capitalizeString(searchInput);
+        console.log("search: ", formattedSearchInput)
 
         axios
             .get(`${API_ENDPOINT}region`, {
@@ -157,6 +176,8 @@ function RegionsPage() {
 
     // saves edited row
     const handleSave = (confirmed) => {
+        retrieveUser();
+        const jwtToken = user.signInUserSession.accessToken.jwtToken
 
         const formattedData = {
             ...tempData,
@@ -168,7 +189,13 @@ function RegionsPage() {
         if (confirmed) {
             console.log("saved region data: ", tempData);
             axios
-                .put(`${API_ENDPOINT}region/${formattedData.region_id}`, formattedData)
+                .put(`${API_ENDPOINT}region/${formattedData.region_id}`,
+                    formattedData,
+                    {
+                        headers: {
+                            'Authorization': `${jwtToken}`
+                        }
+                    })
                 .then((response) => {
                     console.log("Region updated successfully", response.data);
                     setShouldReset(true);
@@ -182,6 +209,10 @@ function RegionsPage() {
 
     // add region
     const handleAddRegion = (newRegionData) => {
+        retrieveUser();
+        const jwtToken = user.signInUserSession.accessToken.jwtToken
+
+        // console.log("jwtToken: ", jwtToken)
 
         const formattedData = {
             ...newRegionData,
@@ -194,7 +225,13 @@ function RegionsPage() {
 
         // request to POST new regions to the database
         axios
-            .post(API_ENDPOINT + "region", formattedData)
+            .post(API_ENDPOINT + "region",
+                formattedData,
+                {
+                    headers: {
+                        'Authorization': `${jwtToken}`
+                    }
+                })
             .then((response) => {
                 console.log("region added successfully", response.data);
                 setShouldReset(true);
@@ -220,10 +257,17 @@ function RegionsPage() {
 
     // Confirm delete
     const handleConfirmDelete = () => {
+        retrieveUser();
+        const jwtToken = user.signInUserSession.accessToken.jwtToken
+
         // console.log("region id to delete: ", deleteId);
         if (deleteId) {
             axios
-                .delete(`${API_ENDPOINT}region/${deleteId}`)
+                .delete(`${API_ENDPOINT}region/${deleteId}`, {
+                    headers: {
+                        'Authorization': `${jwtToken}`
+                    }
+                })
                 .then((response) => {
                     setShouldReset(true);
                     setOpenDeleteConfirmation(false);
@@ -373,7 +417,10 @@ function RegionsPage() {
                     <Autocomplete
                         options={searchResults}
                         getOptionLabel={(option) => option.label}
-                        onInputChange={(e, newInputValue) => handleSearch(newInputValue)}
+                        onInputChange={(e, newInputValue) => {
+                            setSearchInput(newInputValue)
+                            handleSearch(newInputValue)
+                        }}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -394,7 +441,7 @@ function RegionsPage() {
                 </Box>
 
                 <ThemeProvider theme={Theme}>
-                    <Button variant="contained" style={{ marginLeft: "20px", marginTop: "27px", width: "10%", height: "53px", alignItems: "center" }}>
+                    <Button variant="contained" onClick={() => handleGetRegionsAfterSearch()} style={{ marginLeft: "20px", marginTop: "27px", width: "10%", height: "53px", alignItems: "center" }}>
                         <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
                     </Button>
                 </ThemeProvider>

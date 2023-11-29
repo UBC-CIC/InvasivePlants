@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useTheme } from '@material-ui/core/styles';
 import { useNavigate } from 'react-router-dom';
@@ -21,6 +21,7 @@ import { updateLoginState } from "../../Actions/loginActions";
 import { updateMenuState } from "../../Actions/menuActions";
 import LogoutIcon from '@mui/icons-material/Logout';
 import { NavLink, useLocation } from 'react-router-dom';
+import { UserContext } from '../../UserContext';
 
 
 /* List of tabs for the header */
@@ -95,7 +96,7 @@ function Navbar(props) {
     const theme = useTheme();
     const navigate = useNavigate();
 
-
+    // const { currUser, setCurrUser } = useContext(UserContext);
     const [user, setUser] = useState("");
     const [loadingBackdrop, setLoadingBackdrop] = React.useState(false);
 
@@ -180,18 +181,20 @@ function Navbar(props) {
         </Menu>
     );
 
-    useEffect(() => { // TODO: figure out get the jwtToken 
+    useEffect(() => { 
         async function retrieveUser() {
             try {
                 const returnedUser = await Auth.currentAuthenticatedUser();
                 setUser(returnedUser.attributes.email);
-                console.log("returned user: ", returnedUser); 
+                // setCurrUser(returnedUser);
+                console.log("returned user: ", returnedUser);
             } catch (e) {
                 console.log(e);
             }
         }
         retrieveUser();
     }, [loginState])
+
 
     const handleSideMenu = () => {
         updateMenuState(!menuEnabled);

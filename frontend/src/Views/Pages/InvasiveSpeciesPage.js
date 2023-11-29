@@ -4,6 +4,7 @@ import {
   Button, TextField, Typography, ThemeProvider
 } from "@mui/material";
 import Theme from './Theme';
+import { Auth } from "aws-amplify";
 
 // components
 import LocationFilterComponent from '../../components/LocationFilterComponent';
@@ -50,6 +51,19 @@ function InvasiveSpeciesPage() {
   const [lastSpeciesNameHistory, setLastSpeciesNameHistory] = useState(new Set()); // history of lastSpeciesIds seen for each page
   const [shouldReset, setShouldReset] = useState(false); // reset above values
 
+  const [user, setUser] = useState("");
+
+  // gets current authorized user
+  const retrieveUser = async () => {
+    try {
+      const returnedUser = await Auth.currentAuthenticatedUser();
+      setUser(returnedUser);
+      console.log("current user: ", returnedUser);
+    } catch (e) {
+      console.log("error getting user: ", e);
+    }
+  }
+
   // GET regions once
   useEffect(() => {
     const fetchRegionData = async () => {
@@ -81,6 +95,7 @@ function InvasiveSpeciesPage() {
 
   // request to GET invasive species in the database
   const handleGetInvasiveSpecies = () => {
+
     console.log("should reset?: ", shouldReset);
     console.log("rows per page get", rowsPerPage);
 
@@ -152,12 +167,13 @@ function InvasiveSpeciesPage() {
   // GET invasive species in the database that matches user search
   const handleGetInvasiveSpeciesAfterSearch = () => {
     const formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
+    console.log("formatted search input: ", formattedSearchInput);
 
     axios
       .get(`${API_ENDPOINT}invasiveSpecies`, {
         params: {
           scientific_name: formattedSearchInput,
-          last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
+          // last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
         }
       })
       .then((response) => {
@@ -244,6 +260,9 @@ function InvasiveSpeciesPage() {
 
   // saves edited row
   const handleSave = (confirmed) => {
+    retrieveUser();
+    const jwtToken = user.signInUserSession.accessToken.jwtToken
+
     console.log("got here");
     const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
 
@@ -269,7 +288,13 @@ function InvasiveSpeciesPage() {
 
       // request to PUT updated invasive species to the database
       axios
-        .put(`${API_ENDPOINT}invasiveSpecies/${tempData.species_id}`, updatedTempDataWithoutRegionCode)
+        .put(`${API_ENDPOINT}invasiveSpecies/${tempData.species_id}`,
+          updatedTempDataWithoutRegionCode,
+          {
+            headers: {
+              'Authorization': `${jwtToken}`
+            }
+          })
         .then((response) => {
           console.log("invasive species updated successfully", response.data);
           setShouldReset(true);
@@ -291,10 +316,19 @@ function InvasiveSpeciesPage() {
   const handleConfirmDelete = () => {
     console.log("invasive species id to delete: ", deleteId);
 
+    retrieveUser();
+    const jwtToken = user.signInUserSession.accessToken.jwtToken
+    console.log("token: ", jwtToken)
+
     // request to DELETE species from the database
     if (deleteId) {
       axios
-        .delete(`${API_ENDPOINT}invasiveSpecies/${deleteId}`)
+        .delete(`${API_ENDPOINT}invasiveSpecies/${deleteId}`,
+          {
+            headers: {
+              'Authorization': `${jwtToken}`
+            }
+          })
         .then((response) => {
           setShouldReset(true);
           console.log("Species deleted successfully", response.data);
@@ -312,6 +346,9 @@ function InvasiveSpeciesPage() {
 
   // add species
   const handleAddSpecies = (newSpeciesData) => {
+    retrieveUser();
+    const jwtToken = user.signInUserSession.accessToken.jwtToken
+
     // format scientific names
     newSpeciesData = {
       ...newSpeciesData,
@@ -323,7 +360,12 @@ function InvasiveSpeciesPage() {
 
     // POST new species to database
     axios
-      .post(API_ENDPOINT + "invasiveSpecies", newSpeciesData)
+      .post(API_ENDPOINT + "invasiveSpecies", newSpeciesData,
+        {
+          headers: {
+            'Authorization': `${jwtToken}`
+          }
+        })
       .then((response) => {
         console.log("Invasive Species added successfully", response.data);
         setShouldReset(true);
