@@ -217,9 +217,8 @@ function Navbar(props) {
                     <Typography className={`${classes.title} ${classes.bold}`} variant="h6" component={"h1"} noWrap>
                         Invasive Plants Management System
                     </Typography>
-                    {/* <img className={classes.logo} style={{width: "270px", height: "30px"}} src={process.env.PUBLIC_URL + './Assets/Images/logo_inverse.png'} alt="..."/> */}
-                    <div className={classes.grow} />
-                    <div className={classes.sectionDesktop}>
+                    <div style={{ flex: 1 }} />
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         {pages.map((page) => (
                             /* Creates a URL path and button for each page */
                             <NavLink
@@ -240,6 +239,7 @@ function Navbar(props) {
                             </NavLink>
                         ))}
                     </div>
+                    <div style={{ flex: 1 }} />
                     <div className={classes.sectionMobile}>
 
                     </div>

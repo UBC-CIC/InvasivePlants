@@ -1006,6 +1006,18 @@ function InvasiveSpeciesPage() {
         </Table>
       </div >
 
+      {/* pagination */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "80%" }}>
+        {/* previous and next buttons for table */}
+        <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} species`}</span>
+        <IconButton onClick={handlePreviousPage} disabled={page === 0}>
+          <NavigateBeforeIcon />
+        </IconButton>
+        <IconButton onClick={handleNextPage} disabled={disabled}>
+          <NavigateNextIcon />
+        </IconButton>
+      </div>
+
       {/* Add species dialog */}
       <AddInvasiveSpeciesDialog
         open={openAddSpeciesDialog}
