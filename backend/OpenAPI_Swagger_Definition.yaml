@@ -66,6 +66,12 @@ paths:
           schema: 
             type: string
             format: uuid
+        - in: query
+          name: region_fullname
+          required: false
+          description: search parameter for region fullname
+          schema: 
+            type: string
       responses:
         "200": 
           description: Data Available
@@ -99,6 +105,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error    
+      security:
+          - adminAuthorizer: [] 
       x-amazon-apigateway-request-validator: all        
       x-amazon-apigateway-integration:
         uri:
@@ -165,6 +173,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      security:
+        - adminAuthorizer: [] 
       x-amazon-apigateway-request-validator: all
       x-amazon-apigateway-integration:
         uri:
@@ -207,6 +217,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      security:
+        - adminAuthorizer: [] 
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambRegion.Arn}/invocations"
@@ -588,6 +600,17 @@ paths:
         - Images
       summary: Add an image
       operationId: images_POST
+      parameters:
+        - in: query
+          name: contentType
+          required: false
+          schema: 
+            type: string
+        - in: query
+          name: filename
+          required: false
+          schema: 
+            type: string
       responses:
         "200": 
           description: Data Available
@@ -661,8 +684,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error  
-      security:
-        - userAuthorizer: []           
+      security:        
+        - userAuthorizer: [] 
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambSaveList.Arn}/invocations"
@@ -971,17 +994,18 @@ components:
       type: object
       required:
         - species_id
+        - load_s3_key
       properties:
         species_id:
           type: string
           format: uuid
           description: Unique identifier for the species.
-        s3_key:
-          type: string
-          description: The S3 key where the image is stored. Either s3_key or image_url is required.
+        load_s3_key:
+          type: boolean
+          description: Indication if the image is loaded into S3 bucket or loaded from a url. True - load into S3 bucket; False - load image using URL and must provide image_url.
         image_url:
           type: string
-          description: URL of the image. Either image_url or s3_key is required.
+          description: URL of the image.
         description:
           type: string
           description: Description of the image.
