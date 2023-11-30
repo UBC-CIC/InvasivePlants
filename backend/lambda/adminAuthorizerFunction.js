@@ -51,7 +51,7 @@ exports.handler = async (event) => {
         
         // Modify the response output
         const parts = event.methodArn.split('/');
-        const resource = parts.slice(0, 4).join('/') + '*';
+        const resource = parts.slice(0, 2).join('/') + '*';
         responseStruct["principalId"] = payload.sub;
         responseStruct["policyDocument"]["Statement"].push({
             "Action": "execute-api:Invoke",
