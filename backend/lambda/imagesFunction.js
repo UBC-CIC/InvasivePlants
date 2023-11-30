@@ -1,4 +1,5 @@
 const { initializeConnection } = require("./lib.js");
+const AWS = require("aws-sdk");
 
 // Setting up evironments
 let { SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT, AWS_REGION, BUCKET_NAME } = process.env;
