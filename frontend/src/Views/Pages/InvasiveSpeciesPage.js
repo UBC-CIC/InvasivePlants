@@ -105,13 +105,20 @@ function InvasiveSpeciesPage() {
         params: {
           last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
           rows_per_page: rowsPerPage // default 20
+        },
+        headers: {
+          'x-api-key': process.env.REACT_APP_X_API_KEY
         }
       })
       .then((response) => {
 
         const promises = response.data.flatMap(item =>
           item.region_id.map(regionId =>
-            axios.get(`${API_ENDPOINT}region/${regionId}`)
+            axios.get(`${API_ENDPOINT}region/${regionId}`, {
+              headers: {
+                'x-api-key': process.env.REACT_APP_X_API_KEY
+              }
+            })
           )
         );
 
@@ -174,12 +181,20 @@ function InvasiveSpeciesPage() {
         params: {
           scientific_name: formattedSearchInput,
           // last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
+        },
+        headers: {
+          'x-api-key': process.env.REACT_APP_X_API_KEY
         }
       })
       .then((response) => {
         const promises = response.data.flatMap(item =>
           item.region_id.map(regionId =>
-            axios.get(`${API_ENDPOINT}region/${regionId}`)
+            axios
+              .get(`${API_ENDPOINT}region/${regionId}`, {
+                headers: {
+                  'x-api-key': process.env.REACT_APP_X_API_KEY
+                }
+              })
           )
         );
 

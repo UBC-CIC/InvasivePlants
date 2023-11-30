@@ -96,6 +96,9 @@ function AlternativeSpeciesPage() {
         params: {
           last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
           rows_per_page: rowsPerPage  // default 20
+        },
+        headers: {
+          'x-api-key': process.env.REACT_APP_X_API_KEY
         }
       })
       .then((response) => {  
@@ -166,6 +169,9 @@ function AlternativeSpeciesPage() {
       .get(`${API_ENDPOINT}alternativeSpecies`, {
         params: {
           scientific_name: formattedSearchInput,
+        },
+        headers: {
+          'x-api-key': process.env.REACT_APP_X_API_KEY
         }
       })
       .then((response) => {

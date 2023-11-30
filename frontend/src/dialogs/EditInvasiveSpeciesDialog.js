@@ -11,6 +11,7 @@ import axios from "axios";
 
 const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
+
     const [showAlert, setShowAlert] = useState(false);
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
@@ -28,7 +29,11 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
 
         // get alternative
         axios
-            .get(`${API_ENDPOINT}alternativeSpecies`)
+            .get(`${API_ENDPOINT}alternativeSpecies`, {
+                headers: {
+                    'x-api-key': process.env.REACT_APP_X_API_KEY
+                }
+            })
             .then((response) => {
 
                 // Capitalize each scientific_name 

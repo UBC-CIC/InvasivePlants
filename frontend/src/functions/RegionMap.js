@@ -4,9 +4,14 @@ const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/
 
 // request to GET regions in the database
 const handleGetRegions = () => {
+
     return new Promise((resolve, reject) => {
         axios
-            .get(`${API_ENDPOINT}region`)
+            .get(`${API_ENDPOINT}region`, {
+                headers: {
+                    'x-api-key': process.env.REACT_APP_X_API_KEY
+                }
+            })
             .then((response) => {
                 const regionsData = response.data;
                 const regionIdToCodeName = {};

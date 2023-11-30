@@ -51,7 +51,11 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         };
         // get alternative species
         axios
-            .get(`${API_ENDPOINT}alternativeSpecies`)
+            .get(`${API_ENDPOINT}alternativeSpecies`, {
+                headers: {
+                    'x-api-key': process.env.REACT_APP_X_API_KEY
+                }
+            })
             .then((response) => {
 
                 // Capitalize each scientific_name 

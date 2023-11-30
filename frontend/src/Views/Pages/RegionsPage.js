@@ -68,6 +68,9 @@ function RegionsPage() {
             .get(`${API_ENDPOINT}region`, {
                 params: {
                     last_region_id: shouldReset ? null : currLastRegionId  // for pagination
+                },
+                headers: {
+                    'x-api-key': process.env.REACT_APP_X_API_KEY
                 }
             })
             .then((response) => {
@@ -87,7 +90,7 @@ function RegionsPage() {
                 // update lastSpeciesId with the species_id of the last row displayed in the table
                 if (response.data.length > 0) {
                     const newLastRegionId = response.data[response.data.length - 1].region_id;
-                    const newLastRegionName = response.data[response.data.length - 1].region_fullname;
+                    // const newLastRegionName = response.data[response.data.length - 1].region_fullname;
 
                     setCurrLastRegionId(newLastRegionId);
                     setLastRegionIdHistory(history => new Set([...history, newLastRegionId]));
@@ -108,6 +111,9 @@ function RegionsPage() {
                 params: {
                     region_fullname: formattedSearchInput,
                     last_region_id: shouldReset ? null : currLastRegionId  // for pagination
+                },
+                headers: {
+                    'x-api-key': process.env.REACT_APP_X_API_KEY
                 }
             })
             .then((response) => {
