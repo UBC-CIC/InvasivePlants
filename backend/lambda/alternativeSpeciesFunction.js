@@ -1,37 +1,9 @@
-const postgres = require("postgres");
-const AWS = require("aws-sdk");
-
-// Gather AWS services
-const secretsManager = new AWS.SecretsManager();
+const { initializeConnection } = require("./lib.js");
 
 // Setting up evironments
 let { SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT } = process.env;
 
 let sql; // Global variable to hold the database connection
-
-async function initializeConnection() {
-	// Retrieve the secret from AWS Secrets Manager
-	const secret = await secretsManager
-	.getSecretValue({ SecretId: SM_DB_CREDENTIALS })
-	.promise();
-
-	const credentials = JSON.parse(secret.SecretString);
-
-	const connectionConfig = {
-		host: RDS_PROXY_ENDPOINT, // using the proxy endpoint instead of db host
-		port: credentials.port,
-		username: credentials.username,
-		password: credentials.password,
-		database: credentials.dbname,
-		ssl: true,
-	};
-
-	// Create the PostgreSQL connection
-	sql = postgres(connectionConfig);
-
-	console.log("Database connection initialized");
-
-}
 
 exports.handler = async (event) => {
 	const response = {
@@ -46,7 +18,7 @@ exports.handler = async (event) => {
 
 	// Initialize the database connection if not already initialized
 	if (!sql) {
-		await initializeConnection(); 
+		sql = await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT); 
 	}
 	
 	let data;
