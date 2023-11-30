@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useTheme } from '@material-ui/core/styles';
 import { useNavigate } from 'react-router-dom';
@@ -21,6 +21,7 @@ import { updateLoginState } from "../../Actions/loginActions";
 import { updateMenuState } from "../../Actions/menuActions";
 import LogoutIcon from '@mui/icons-material/Logout';
 import { NavLink, useLocation } from 'react-router-dom';
+import { UserContext } from '../../UserContext';
 
 
 /* List of tabs for the header */
@@ -95,7 +96,7 @@ function Navbar(props) {
     const theme = useTheme();
     const navigate = useNavigate();
 
-
+    // const { currUser, setCurrUser } = useContext(UserContext);
     const [user, setUser] = useState("");
     const [loadingBackdrop, setLoadingBackdrop] = React.useState(false);
 
@@ -180,17 +181,20 @@ function Navbar(props) {
         </Menu>
     );
 
-    useEffect(() => {
+    useEffect(() => { 
         async function retrieveUser() {
             try {
                 const returnedUser = await Auth.currentAuthenticatedUser();
                 setUser(returnedUser.attributes.email);
+                // setCurrUser(returnedUser);
+                console.log("returned user: ", returnedUser);
             } catch (e) {
                 console.log(e);
             }
         }
         retrieveUser();
     }, [loginState])
+
 
     const handleSideMenu = () => {
         updateMenuState(!menuEnabled);
@@ -213,9 +217,8 @@ function Navbar(props) {
                     <Typography className={`${classes.title} ${classes.bold}`} variant="h6" component={"h1"} noWrap>
                         Invasive Plants Management System
                     </Typography>
-                    {/* <img className={classes.logo} style={{width: "270px", height: "30px"}} src={process.env.PUBLIC_URL + './Assets/Images/logo_inverse.png'} alt="..."/> */}
-                    <div className={classes.grow} />
-                    <div className={classes.sectionDesktop}>
+                    <div style={{ flex: 1 }} />
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         {pages.map((page) => (
                             /* Creates a URL path and button for each page */
                             <NavLink
@@ -236,6 +239,7 @@ function Navbar(props) {
                             </NavLink>
                         ))}
                     </div>
+                    <div style={{ flex: 1 }} />
                     <div className={classes.sectionMobile}>
 
                     </div>

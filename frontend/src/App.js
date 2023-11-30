@@ -8,6 +8,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { updateLoginState } from "./Actions/loginActions";
 import theme from "./themes";
+import { UserProvider } from './UserContext';
 
 function App(props) {
   const { loginState, updateLoginState } = props;
@@ -39,6 +40,7 @@ function App(props) {
     })
   }
   return (
+    // <UserProvider>
     <StylesProvider injectFirst>
       <ThemeProvider theme={theme}>
         <div style={{ width: "100vw", height: "100vh" }}>
@@ -72,6 +74,7 @@ function App(props) {
         </div>
       </ThemeProvider>
     </StylesProvider>
+    // </UserProvider>
   );
 }
 

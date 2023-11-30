@@ -3,6 +3,7 @@ import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTit
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 import DeleteDialog from '../dialogs/ConfirmDeleteDialog';
+import { Auth } from "aws-amplify";
 
 import axios from "axios";
 
@@ -10,6 +11,18 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
     const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
 
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
+    const [user, setUser] = useState("");
+
+    // gets current authorized user
+    const retrieveUser = async () => {
+        try {
+            const returnedUser = await Auth.currentAuthenticatedUser();
+            setUser(returnedUser);
+            console.log("current user: ", returnedUser);
+        } catch (e) {
+            console.log("error getting user: ", e);
+        }
+    }
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -24,6 +37,8 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         let uploadResponse;
 
         if (files) {
+
+            // TODO: image files instead
             let s3Keys = tempData.s3_keys ? [...tempData.s3_keys] : [];
 
             try {
@@ -82,8 +97,15 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
 
         // remove the image from the database
         if (deleteImg) {
+            retrieveUser();
+            const jwtToken = user.signInUserSession.accessToken.jwtToken;
+
             axios
-                .delete(`${API_ENDPOINT}plantsImages/${deleteImg.image_id}`)
+                .delete(`${API_ENDPOINT}plantsImages/${deleteImg.image_id}`, {
+                    headers: {
+                        'Authorization': `${jwtToken}`
+                    }
+                })
                 .then((response) => {
                     // Filter out the deleted image from tempData.images
                     const updatedImages = tempData.images.filter(

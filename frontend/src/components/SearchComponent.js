@@ -7,7 +7,10 @@ const SearchComponent = ({ text, handleSearch, searchResults, searchTerm, setSea
             <Autocomplete
                 options={searchResults}
                 getOptionLabel={(option) => Array.isArray(option.label) ? option.label.join(', ') : option.label}
-                onInputChange={(e, newInputValue) => handleSearch(newInputValue)}
+                onInputChange={(e, newInputValue) => {
+                    handleSearch(newInputValue)
+                    setSearchTerm(newInputValue)
+                }}
                 renderInput={(params) => (
                     <TextField
                         {...params}

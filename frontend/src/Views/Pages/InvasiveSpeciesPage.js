@@ -4,6 +4,7 @@ import {
   Button, TextField, Typography, ThemeProvider
 } from "@mui/material";
 import Theme from './Theme';
+import { Auth } from "aws-amplify";
 
 // components
 import LocationFilterComponent from '../../components/LocationFilterComponent';
@@ -20,6 +21,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SearchIcon from '@mui/icons-material/Search';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 import boldText from "./formatDescriptionHelper";
 import axios from "axios";
@@ -49,6 +51,19 @@ function InvasiveSpeciesPage() {
   const [lastSpeciesNameHistory, setLastSpeciesNameHistory] = useState(new Set()); // history of lastSpeciesIds seen for each page
   const [shouldReset, setShouldReset] = useState(false); // reset above values
 
+  const [user, setUser] = useState("");
+
+  // gets current authorized user
+  const retrieveUser = async () => {
+    try {
+      const returnedUser = await Auth.currentAuthenticatedUser();
+      setUser(returnedUser);
+      console.log("current user: ", returnedUser);
+    } catch (e) {
+      console.log("error getting user: ", e);
+    }
+  }
+
   // GET regions once
   useEffect(() => {
     const fetchRegionData = async () => {
@@ -63,26 +78,25 @@ function InvasiveSpeciesPage() {
     fetchRegionData();
   }, []);
 
+  // helper function that capitalizes scientific name
+  const capitalizeScientificName = (str) => {
+    const strSplitUnderscore = str.split("_");
+    const words = strSplitUnderscore.flatMap(word => word.split(" "));
+
+    const formattedWords = words.map((word, index) => {
+      if (index === 0) { // first "word"
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      }
+      return word.toLowerCase();
+    });
+
+    return formattedWords.join(" ");
+  };
+
   // request to GET invasive species in the database
   const handleGetInvasiveSpecies = () => {
-    // console.log("previous last species id: ", currLastSpeciesId);
+
     console.log("should reset?: ", shouldReset);
-
-    // helper function that capitalizes scientific name
-    const capitalizeScientificName = (str) => {
-      const strSplitUnderscore = str.split("_");
-      const words = strSplitUnderscore.flatMap(word => word.split(" "));
-
-      const formattedWords = words.map((word, index) => {
-        if (index === 0) { // first "word"
-          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-        }
-        return word.toLowerCase();
-      });
-
-      return formattedWords.join(" ");
-    };
-
     console.log("rows per page get", rowsPerPage);
 
     // request to GET invasive species
@@ -94,8 +108,6 @@ function InvasiveSpeciesPage() {
         }
       })
       .then((response) => {
-
-
 
         const promises = response.data.flatMap(item =>
           item.region_id.map(regionId =>
@@ -152,12 +164,59 @@ function InvasiveSpeciesPage() {
       });
   };
 
+  // GET invasive species in the database that matches user search
+  const handleGetInvasiveSpeciesAfterSearch = () => {
+    const formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
+    console.log("formatted search input: ", formattedSearchInput);
+
+    axios
+      .get(`${API_ENDPOINT}invasiveSpecies`, {
+        params: {
+          scientific_name: formattedSearchInput,
+          // last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
+        }
+      })
+      .then((response) => {
+        const promises = response.data.flatMap(item =>
+          item.region_id.map(regionId =>
+            axios.get(`${API_ENDPOINT}region/${regionId}`)
+          )
+        );
+
+        return Promise.all(promises)
+          .then(regionResponses => {
+            const formattedData = response.data.map((item, index) => {
+              return {
+                ...item,
+                scientific_name: item.scientific_name.map(name => capitalizeScientificName(name))
+              };
+            });
+
+            console.log("Invasive species retrieved successfully", formattedData);
+
+            setDisplayData(formattedData);
+            // setSearchBarResults(formattedData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
+          });
+      }).catch((error) => {
+        console.error("Error searching up invasive species", error);
+      });
+  };
+
+  const handleReset = () => {
+    console.log("reset data");
+    setShouldReset(true);
+    setSearchInput("");
+    handleGetInvasiveSpecies();
+    // window.location.reload();
+  }
+
   useEffect(() => {
     // console.log("last species id: ", currLastSpeciesId)
     console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
   }, [currLastSpeciesId, lastSpeciesIdHistory, lastSpeciesNameHistory]);
 
 
+  // filters data of current page that matches search input and region id
   useEffect(() => {
     const filteredData = data.filter((item) => {
       const matchesSearchInput = searchInput === "" || 
@@ -201,13 +260,18 @@ function InvasiveSpeciesPage() {
 
   // saves edited row
   const handleSave = (confirmed) => {
+    retrieveUser();
+    const jwtToken = user.signInUserSession.accessToken.jwtToken
+
     console.log("got here");
     const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
 
     if (confirmed) {
       const updatedTempData = {
         ...tempData,
-        scientific_name: typeof tempData.scientific_name === 'string' ? splitByCommaWithSpaces(tempData.scientific_name) : tempData.scientific_name,
+        scientific_name: typeof tempData.scientific_name === 'string' ?
+          splitByCommaWithSpaces(tempData.scientific_name).toLowerCase().replace(/\s+/g, '_') :
+          tempData.scientific_name.map(name => name.toLowerCase().replace(/\s+/g, '_'))
       };
 
       const { region_code_name, alternative_species, ...rest } = updatedTempData;
@@ -224,7 +288,13 @@ function InvasiveSpeciesPage() {
 
       // request to PUT updated invasive species to the database
       axios
-        .put(`${API_ENDPOINT}invasiveSpecies/${tempData.species_id}`, updatedTempDataWithoutRegionCode)
+        .put(`${API_ENDPOINT}invasiveSpecies/${tempData.species_id}`,
+          updatedTempDataWithoutRegionCode,
+          {
+            headers: {
+              'Authorization': `${jwtToken}`
+            }
+          })
         .then((response) => {
           console.log("invasive species updated successfully", response.data);
           setShouldReset(true);
@@ -246,10 +316,19 @@ function InvasiveSpeciesPage() {
   const handleConfirmDelete = () => {
     console.log("invasive species id to delete: ", deleteId);
 
+    retrieveUser();
+    const jwtToken = user.signInUserSession.accessToken.jwtToken
+    console.log("token: ", jwtToken)
+
     // request to DELETE species from the database
     if (deleteId) {
       axios
-        .delete(`${API_ENDPOINT}invasiveSpecies/${deleteId}`)
+        .delete(`${API_ENDPOINT}invasiveSpecies/${deleteId}`,
+          {
+            headers: {
+              'Authorization': `${jwtToken}`
+            }
+          })
         .then((response) => {
           setShouldReset(true);
           console.log("Species deleted successfully", response.data);
@@ -267,6 +346,9 @@ function InvasiveSpeciesPage() {
 
   // add species
   const handleAddSpecies = (newSpeciesData) => {
+    retrieveUser();
+    const jwtToken = user.signInUserSession.accessToken.jwtToken
+
     // format scientific names
     newSpeciesData = {
       ...newSpeciesData,
@@ -278,7 +360,12 @@ function InvasiveSpeciesPage() {
 
     // POST new species to database
     axios
-      .post(API_ENDPOINT + "invasiveSpecies", newSpeciesData)
+      .post(API_ENDPOINT + "invasiveSpecies", newSpeciesData,
+        {
+          headers: {
+            'Authorization': `${jwtToken}`
+          }
+        })
       .then((response) => {
         console.log("Invasive Species added successfully", response.data);
         setShouldReset(true);
@@ -442,8 +529,14 @@ function InvasiveSpeciesPage() {
         />
 
         <ThemeProvider theme={Theme}>
-          <Button variant="contained" style={{ marginLeft: "20px", marginTop: "27px", width: "10%", height: "53px", alignItems: "center" }}>
+          <Button variant="contained" onClick={() => handleGetInvasiveSpeciesAfterSearch()} style={{ marginLeft: "20px", marginTop: "27px", height: "53px", alignItems: "center" }}>
             <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
+          </Button>
+        </ThemeProvider>
+
+        <ThemeProvider theme={Theme}>
+          <Button variant="contained" onClick={() => handleReset()} style={{ marginLeft: "10px", marginTop: "27px", height: "53px", alignItems: "center" }}>
+            <RestartAltIcon />
           </Button>
         </ThemeProvider>
       </div>
@@ -458,7 +551,7 @@ function InvasiveSpeciesPage() {
       </div>
 
       {/* pagination */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "70%" }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "67%" }}>
         {/* Dropdown for selecting rows per page */}
         <span style={{ marginRight: '10px' }}>Rows per page:</span>
         <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>
@@ -912,6 +1005,18 @@ function InvasiveSpeciesPage() {
           </TableBody>
         </Table>
       </div >
+
+      {/* pagination */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "80%" }}>
+        {/* previous and next buttons for table */}
+        <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} species`}</span>
+        <IconButton onClick={handlePreviousPage} disabled={page === 0}>
+          <NavigateBeforeIcon />
+        </IconButton>
+        <IconButton onClick={handleNextPage} disabled={disabled}>
+          <NavigateNextIcon />
+        </IconButton>
+      </div>
 
       {/* Add species dialog */}
       <AddInvasiveSpeciesDialog

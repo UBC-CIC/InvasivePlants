@@ -67,6 +67,13 @@ paths:
             type: string
             format: uuid
         - in: query
+          name: rows_per_page
+          required: false
+          description: the number of user selected rows per page
+          schema: 
+            type: string
+            format: uuid
+        - in: query
           name: region_fullname
           required: false
           description: search parameter for region fullname

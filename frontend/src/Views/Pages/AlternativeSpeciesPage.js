@@ -4,6 +4,7 @@ import {
   TextField, Typography, ThemeProvider
 } from "@mui/material";
 import Theme from './Theme';
+import { Auth } from "aws-amplify";
 
 // components
 import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";
@@ -18,6 +19,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SearchIcon from '@mui/icons-material/Search';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 import boldText from "./formatDescriptionHelper";
 import axios from "axios";
@@ -31,7 +33,7 @@ function AlternativeSpeciesPage() {
   const [tempEditingData, setTempEditingData] = useState({}); // data of the species being edited
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false); // state of the editing an alternative species dialog
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false); // state of the adding a new alternative species dialog
-  const [searchBarInput, setSearchBarInput] = useState(""); // input of the species search bar
+  const [searchInput, setSearchInput] = useState(""); // input of the species search bar
   const [searchBarDropdownResults, setSearchBarDropdownResults] = useState(displayData.map((item) => ({ // dropdown options in the search bar
     label: item.scientific_name, value: item.scientific_name
   })));
@@ -43,31 +45,50 @@ function AlternativeSpeciesPage() {
   const [lastSpeciesNameHistory, setLastSpeciesNameHistory] = useState(new Set()); // history of last species names seen for each page
   const [shouldReset, setShouldReset] = useState(false); // reset above values
 
+  const [user, setUser] = useState("");
+
+  // gets current authorized user
+  const retrieveUser = async () => {
+    try {
+      const returnedUser = await Auth.currentAuthenticatedUser();
+      setUser(returnedUser);
+      console.log("current user: ", returnedUser);
+    } catch (e) {
+      console.log("error getting user: ", e);
+    }
+  }
+
+  // retriever user on load
+  useEffect(() => {
+    console.log("retrieved user!!1")
+    retrieveUser()
+  }, [])
+
+
+  // helper function that capitalizes scientific name
+  const capitalizeScientificName = (str) => {
+    const strSplitUnderscore = str.split("_");
+    const words = strSplitUnderscore.flatMap(word => word.split(" "));
+
+    const formattedWords = words.map((word, index) => {
+      if (index === 0) { // first "word"
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      }
+      return word.toLowerCase();
+    });
+
+    return formattedWords.join(" ");
+  };
+
+  // helper function that capitalizes each word
+  const capitalizeWordsSplitSpace = (str) => {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  };
+
   // fetches alternative species data 
   const handleGetAlternativeSpecies = () => {
-    // console.log("previous last species id: ", currLastSpeciesId);
-
-    // helper function that capitalizes scientific name
-    const capitalizeScientificName = (str) => {
-      const strSplitUnderscore = str.split("_");
-      const words = strSplitUnderscore.flatMap(word => word.split(" "));
-
-      const formattedWords = words.map((word, index) => {
-        if (index === 0) { // first "word"
-          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-        }
-        return word.toLowerCase();
-      });
-
-      return formattedWords.join(" ");
-    };
-
-    // helper function that capitalizes each word
-    const capitalizeWordsSplitSpace = (str) => {
-      return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-    };
-
-    console.log("got here: ", rowsPerPage);
+  // console.log("previous last species id: ", currLastSpeciesId);
+    // console.log("got here: ", rowsPerPage);
 
     // request to GET all alternative species
     axios
@@ -99,7 +120,7 @@ function AlternativeSpeciesPage() {
 
         // reset pagination details
         if (shouldReset) {
-          console.log("should reset: ", shouldReset);
+          // console.log("should reset: ", shouldReset);
           setLastSpeciesIdHistory(new Set())
           setLastSpeciesNameHistory(new Set())
           setPage(0);
@@ -136,10 +157,53 @@ function AlternativeSpeciesPage() {
       });
   };
 
+  // GET invasive species in the database that matches user search
+  const handleGetAlternativeSpeciesAfterSearch = () => {
+    const formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
+    console.log("formatted search input: ", formattedSearchInput);
+
+    axios
+      .get(`${API_ENDPOINT}alternativeSpecies`, {
+        params: {
+          scientific_name: formattedSearchInput,
+        }
+      })
+      .then((response) => {
+
+        // formats data 
+        const formattedData = response.data.map(item => {
+          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeScientificName(name, "_"));
+          const capitalizedCommonNames = item.common_name.map(name => capitalizeWordsSplitSpace(name));
+          const image_links = item.images.map(img => img.image_url);
+          const s3_keys = item.images.map(img => img.s3_key);
+
+          return {
+            ...item,
+            scientific_name: capitalizedScientificNames,
+            common_name: capitalizedCommonNames,
+            image_links: image_links,
+            s3_keys: s3_keys
+          };
+        });
+
+        console.log("Alternative species retrieved successfully", formattedData);
+        setDisplayData(formattedData);
+      })
+      .catch((error) => {
+        console.error("Error searching up alternative species", error);
+      });
+  };
+
+  const handleReset = () => {
+    // console.log("reset data");
+    setShouldReset(true);
+    setSearchInput("");
+    handleGetAlternativeSpecies();
+  }
 
   useEffect(() => {
     // console.log("last species id: ", currLastSpeciesId)
-    console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
+    // console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
   }, [currLastSpeciesId, lastSpeciesIdHistory, lastSpeciesNameHistory]);
 
 
@@ -147,17 +211,17 @@ function AlternativeSpeciesPage() {
   useEffect(() => {
     // user can search up species by scientific name or common name
     const filteredData = data.filter((item) =>
-    (searchBarInput === "" || (
+    (searchInput === "" || (
       item.scientific_name.some((name) =>
-        name.toLowerCase().includes(searchBarInput.toLowerCase())
+        name.toLowerCase().includes(searchInput.toLowerCase())
       ) ||
       item.common_name.some((name) =>
-        name.toLowerCase().includes(searchBarInput.toLowerCase())
+        name.toLowerCase().includes(searchInput.toLowerCase())
       )
     )))
 
     // update display data when user searches up a species
-    if (searchBarInput !== "") {
+    if (searchInput !== "") {
       setDisplayData(filteredData);
     }
 
@@ -168,7 +232,7 @@ function AlternativeSpeciesPage() {
     }));
 
     setSearchBarDropdownResults(results);
-  }, [searchBarInput, data]);
+  }, [searchInput, data]);
 
   // begin editing a species
   const startEdit = (species_id, rowData) => {
@@ -193,7 +257,8 @@ function AlternativeSpeciesPage() {
       const formattedData = {
         ...tempEditingData,
         scientific_name: typeof tempEditingData.scientific_name === 'string' ?
-          formatString(tempEditingData.scientific_name) : tempEditingData.scientific_name,
+          formatString(tempEditingData.scientific_name).toLowerCase().replace(/\s+/g, '_') :
+          tempEditingData.scientific_name.map(name => name.toLowerCase().replace(/\s+/g, '_')),
         common_name: typeof tempEditingData.common_name === 'string' ?
           formatString(tempEditingData.common_name) : tempEditingData.common_name,
       };
@@ -206,8 +271,8 @@ function AlternativeSpeciesPage() {
       const imageS3Keys = (formattedData.s3_keys && formattedData.s3_keys.length > 0) ?
         formattedData.s3_keys.map(key => ({ species_id: formattedData.species_id, s3_key: key })) : null;
 
-      console.log("to save s3 keys: ", imageS3Keys)
-      console.log("to save images: ", plantImages)
+      console.log("to save s3 keys: ", imageS3Keys);
+      console.log("to save images: ", plantImages);
 
       // add new image links only
       const imagesToAdd = (plantImages && plantImages.length > 0) ?
@@ -217,15 +282,22 @@ function AlternativeSpeciesPage() {
       const s3KeysToAdd = (imageS3Keys && imageS3Keys.length > 0) ?
         imageS3Keys.filter(key => !formattedData.images.some(existingImg => existingImg.s3_key === key.s3_key)) : null;
 
-      console.log("to add images (links): ", imagesToAdd)
-      console.log("to add images (keys): ", s3KeysToAdd)
+      console.log("to add images (links): ", imagesToAdd);
+      console.log("to add images (keys): ", s3KeysToAdd);
 
       // POST new images to the database
       function postImages(images) {
         if (images && images.length > 0) {
+          retrieveUser();
+          const jwtToken = user.signInUserSession.accessToken.jwtToken;
+
           images.forEach(img => {
             axios
-              .post(API_ENDPOINT + "plantsImages", img)
+              .post(API_ENDPOINT + "plantsImages", img, {
+                headers: {
+                  'Authorization': `${jwtToken}`
+                }
+              })
               .then(response => {
                 console.log("Images added successfully", response.data);
               })
@@ -239,9 +311,16 @@ function AlternativeSpeciesPage() {
       postImages(imagesToAdd);
       postImages(s3KeysToAdd);
 
+      retrieveUser();
+      const jwtToken = user.signInUserSession.accessToken.jwtToken;
+
       // update alternative species table
       axios
-        .put(`${API_ENDPOINT}alternativeSpecies/${tempEditingData.species_id}`, formattedData)
+        .put(`${API_ENDPOINT}alternativeSpecies/${tempEditingData.species_id}`, formattedData, {
+          headers: {
+            'Authorization': `${jwtToken}`
+          }
+        })
         .then((response) => {
           console.log("alternative species updated successfully", response.data);
           setShouldReset(true);
@@ -263,10 +342,16 @@ function AlternativeSpeciesPage() {
   // deletes species from the table
   const handleConfirmDelete = () => {
     console.log("alt species id to delete: ", deleteId);
+    retrieveUser();
+    const jwtToken = user.signInUserSession.accessToken.jwtToken
 
     if (deleteId) {
       axios
-        .delete(`${API_ENDPOINT}alternativeSpecies/${deleteId}`)
+        .delete(`${API_ENDPOINT}alternativeSpecies/${deleteId}`, {
+          headers: {
+            'Authorization': `${jwtToken}`
+          }
+        })
         .then((response) => {
           setShouldReset(true);
           console.log("alternative species deleted successfully", response.data);
@@ -295,9 +380,16 @@ function AlternativeSpeciesPage() {
 
     console.log("new alternative species: ", newSpeciesData);
 
+    retrieveUser();
+    const jwtToken = user.signInUserSession.accessToken.jwtToken
+
     // POST new alternative species to database
     axios
-      .post(API_ENDPOINT + "alternativeSpecies", newSpeciesData)
+      .post(API_ENDPOINT + "alternativeSpecies", newSpeciesData, {
+        headers: {
+          'Authorization': `${jwtToken}`
+        }
+      })
       .then((response) => {
         console.log("Alternative species added successfully", response);
 
@@ -320,18 +412,24 @@ function AlternativeSpeciesPage() {
         }
 
         const allPlantImages = plantsWithImgLinks.concat(plantsWithImgFiles);
-        console.log("merged plants: ", allPlantImages);
+        // console.log("merged plants: ", allPlantImages);
 
         // upload all plant images 
         allPlantImages.forEach((plantData) => {
           console.log("plant: ", plantData);
           axios
-            .post(API_ENDPOINT + "plantsImages", plantData)
+            .post(API_ENDPOINT + "plantsImages", plantData, {
+              headers: {
+                'Authorization': `${jwtToken}`
+              }
+            })
             .then((response) => {
               console.log("images added successfully", response.data);
               // get updated alternative species
               setShouldReset(true);
-              setOpenAddSpeciesDialog(false);
+              setOpenAddSpeciesDialog(false); 
+
+              // TOOD: s3 stuff here
             })
             .catch((error) => {
               console.error("Error adding image", error);
@@ -346,14 +444,13 @@ function AlternativeSpeciesPage() {
   // execute handleGetAlternativeSpecies after shouldReset state update
   useEffect(() => {
     if (shouldReset) {
-
       handleGetAlternativeSpecies();
     }
   }, [shouldReset]);
 
   // helper function when search input changes
   const handleSearchInputChange = (field, value) => {
-    console.log("field: ", field, "value: ", value)
+    // console.log("field: ", field, "value: ", value)
     setTempEditingData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -406,7 +503,7 @@ function AlternativeSpeciesPage() {
 
 
   useEffect(() => {
-    console.log("rows per page changed!!: ", rowsPerPage);
+    // console.log("rows per page changed!!: ", rowsPerPage);
     setShouldReset(true);
     // handleGetAlternativeSpecies()
   }, [rowsPerPage]);
@@ -461,13 +558,19 @@ function AlternativeSpeciesPage() {
           text={"Search alternative species (scientific or common name)"}
           handleSearch={handleSearch}
           searchResults={searchBarDropdownResults}
-          searchTerm={searchBarInput}
-          setSearchTerm={setSearchBarInput}
+          searchTerm={searchInput}
+          setSearchTerm={setSearchInput}
         />
 
         <ThemeProvider theme={Theme}>
-          <Button variant="contained" style={{ marginLeft: "20px", marginTop: "12px", width: "10%", height: "53px", alignItems: "center" }}>
+          <Button variant="contained" onClick={() => handleGetAlternativeSpeciesAfterSearch()} style={{ marginLeft: "20px", marginTop: "12px", width: "10%", height: "53px", alignItems: "center" }}>
             <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
+          </Button>
+        </ThemeProvider>
+
+        <ThemeProvider theme={Theme}>
+          <Button variant="contained" onClick={() => handleReset()} style={{ marginLeft: "10px", marginTop: "12px", height: "53px", alignItems: "center" }}>
+            <RestartAltIcon />
           </Button>
         </ThemeProvider>
 
@@ -485,7 +588,7 @@ function AlternativeSpeciesPage() {
 
 
       {/* pagination */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "70%" }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "67%" }}>
         {/* dropdown for selecting rows per page */}
         <span style={{ marginRight: '10px' }}>Rows per page:</span>
         <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>
@@ -837,6 +940,18 @@ function AlternativeSpeciesPage() {
         handleClose={() => setOpenDeleteConfirmation(false)}
         handleDelete={handleConfirmDelete}
       />
+
+      {/* pagination */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "80%" }}>
+        {/* previous and next buttons for table */}
+        <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} species`}</span>
+        <IconButton onClick={handlePreviousPage} disabled={page === 0}>
+          <NavigateBeforeIcon />
+        </IconButton>
+        <IconButton onClick={handleNextPage} disabled={disabled}>
+          <NavigateNextIcon />
+        </IconButton>
+      </div>
     </div >
   );
 }
