@@ -83,6 +83,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error
+      security:        
+        - ApiKeyAuth: []
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambRegion.Arn}/invocations"
@@ -287,6 +289,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      security:
+          - adminAuthorizer: [] 
       x-amazon-apigateway-request-validator: all
       x-amazon-apigateway-integration:
         uri:
@@ -354,6 +358,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      security:
+        - adminAuthorizer: [] 
       x-amazon-apigateway-request-validator: all
       x-amazon-apigateway-integration:
         uri:
@@ -397,6 +403,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      security:
+        - adminAuthorizer: [] 
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambInvasiveSpecies.Arn}/invocations"
@@ -457,6 +465,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      security:
+        - adminAuthorizer: [] 
       x-amazon-apigateway-request-validator: all
       x-amazon-apigateway-integration:
         uri:
@@ -522,6 +532,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      security:
+        - adminAuthorizer: [] 
       x-amazon-apigateway-request-validator: all
       x-amazon-apigateway-integration:
         uri:
@@ -565,6 +577,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      security:
+        - adminAuthorizer: [] 
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambAlternativeSpecies.Arn}/invocations"
@@ -622,6 +636,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error    
+      security:
+        - adminAuthorizer: [] 
       x-amazon-apigateway-request-validator: all        
       x-amazon-apigateway-integration:
         uri:
@@ -660,6 +676,8 @@ paths:
           description: Too Many Requests
         "500":
           description: Internal Server Error             
+      security:
+        - adminAuthorizer: [] 
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambImages.Arn}/invocations"
@@ -879,6 +897,10 @@ components:
         authorizerUri: 
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${userLambdaAuthorizer.Arn}/invocations"
         identitySource: method.request.header.Authorization
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
   responses:
     Success:
       description: Request success
