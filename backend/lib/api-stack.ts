@@ -47,20 +47,29 @@ export class APIStack extends Stack {
             deploy: true,
             cloudWatchRole: true,
             deployOptions: {
-                metricsEnabled: true,
-                loggingLevel: apigateway.MethodLoggingLevel.ERROR,
-                dataTraceEnabled: true,
-                stageName: 'prod',
-                methodOptions: {
-                  "/*/*": {
-                    throttlingRateLimit: 100,
-                    throttlingBurstLimit: 200
-                  }
+              metricsEnabled: true,
+              loggingLevel: apigateway.MethodLoggingLevel.ERROR,
+              dataTraceEnabled: true,
+              stageName: 'prod',
+              methodOptions: {
+                "/*/*": {
+                  throttlingRateLimit: 100,
+                  throttlingBurstLimit: 200
                 }
-              },
+              }
+            },
         });
 
         this.stageARN_APIGW = api.deploymentStage.stageArn;
+        
+        // Attach API Key to the api
+        const apiKey = api.addApiKey('APIKey');
+
+        // API Usage Plan
+        const APIPlan = api.addUsagePlan('API-Usage-Plan');
+
+        APIPlan.addApiStage({stage: api.deploymentStage});
+        APIPlan.addApiKey(apiKey);
 
         // Create a deafult CORS Policy
         api.root.addCorsPreflight({
