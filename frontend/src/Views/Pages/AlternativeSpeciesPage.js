@@ -42,7 +42,7 @@ function AlternativeSpeciesPage() {
 
   const [currLastSpeciesId, setCurrLastSpeciesId] = useState(""); // current last species
   const [lastSpeciesIdHistory, setLastSpeciesIdHistory] = useState(new Set("")); // history of last species ids seen for each page
-  const [lastSpeciesNameHistory, setLastSpeciesNameHistory] = useState(new Set()); // history of last species names seen for each page
+  // const [lastSpeciesNameHistory, setLastSpeciesNameHistory] = useState(new Set()); // history of last species names seen for each page
   const [shouldReset, setShouldReset] = useState(false); // reset above values
 
   const [user, setUser] = useState("");
@@ -122,7 +122,7 @@ function AlternativeSpeciesPage() {
         if (shouldReset) {
           // console.log("should reset: ", shouldReset);
           setLastSpeciesIdHistory(new Set())
-          setLastSpeciesNameHistory(new Set())
+          // setLastSpeciesNameHistory(new Set())
           setPage(0);
           setStart(0);
           setEnd(0);
@@ -137,19 +137,19 @@ function AlternativeSpeciesPage() {
         // update lastSpeciesId with the species_id of the last row displayed in the table
         if (formattedData.length > 0) {
           const newLastSpeciesId = formattedData[formattedData.length - 1].species_id;
-          const newLastSpeciesNames = formattedData[formattedData.length - 1].scientific_name;
+          // const newLastSpeciesNames = formattedData[formattedData.length - 1].scientific_name;
 
           setCurrLastSpeciesId(newLastSpeciesId);
           setLastSpeciesIdHistory(history => new Set([...history, newLastSpeciesId]));
-          setLastSpeciesNameHistory(history => {// TODO: could get rid of this later
-            const updatedNames = new Set([...history]);
-            newLastSpeciesNames.forEach(name => {
-              if (!updatedNames.has(name)) {
-                updatedNames.add(name);
-              }
-            });
-            return updatedNames;
-          });
+          // setLastSpeciesNameHistory(history => { 
+          //   const updatedNames = new Set([...history]);
+          //   newLastSpeciesNames.forEach(name => {
+          //     if (!updatedNames.has(name)) {
+          //       updatedNames.add(name);
+          //     }
+          //   });
+          //   return updatedNames;
+          // });
         }
       })
       .catch((error) => {
@@ -204,7 +204,9 @@ function AlternativeSpeciesPage() {
   useEffect(() => {
     // console.log("last species id: ", currLastSpeciesId)
     // console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
-  }, [currLastSpeciesId, lastSpeciesIdHistory, lastSpeciesNameHistory]);
+    // }, [currLastSpeciesId, lastSpeciesIdHistory, lastSpeciesNameHistory]);
+  }, [currLastSpeciesId, lastSpeciesIdHistory]);
+
 
 
   // filters display data based on user search input
@@ -481,7 +483,6 @@ function AlternativeSpeciesPage() {
     }
   };
 
-  // TODO: match the rows per option with the lambda function
   const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // start with default 20 rows per page
   const [page, setPage] = useState(0); // Start with page 0
@@ -520,9 +521,9 @@ function AlternativeSpeciesPage() {
       updatedIdHistory.delete([...updatedIdHistory].pop());
       setLastSpeciesIdHistory(updatedIdHistory);
 
-      const updatedNameHistory = new Set([...lastSpeciesNameHistory]);
-      updatedNameHistory.delete([...updatedNameHistory].pop());
-      setLastSpeciesNameHistory(updatedNameHistory);
+      // const updatedNameHistory = new Set([...lastSpeciesNameHistory]);
+      // updatedNameHistory.delete([...updatedNameHistory].pop());
+      // setLastSpeciesNameHistory(updatedNameHistory);
 
       // gets the previous species id
       const prevSpeciesId = [...updatedIdHistory][[...updatedIdHistory].length - 2];

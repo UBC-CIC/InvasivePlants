@@ -41,7 +41,7 @@ function RegionsPage() {
 
     const [currLastRegionId, setCurrLastRegionId] = useState(""); // current last region
     const [lastRegionIdHistory, setLastRegionIdHistory] = useState(new Set()); // history of last region ids seen for each page
-    const [lastRegionNameHistory, setLastRegionNameHistory] = useState(new Set()); // history of last region full names seen for each page
+    // const [lastRegionNameHistory, setLastRegionNameHistory] = useState(new Set()); // history of last region full names seen for each page
     const [shouldReset, setShouldReset] = useState(false);
     // const { user } = useContext(UserContext);
 
@@ -76,7 +76,7 @@ function RegionsPage() {
 
                 if (shouldReset) {
                     setLastRegionIdHistory(new Set())
-                    setLastRegionNameHistory(new Set())
+                    // setLastRegionNameHistory(new Set())
                     setShouldReset(false);
                 }
 
@@ -91,7 +91,7 @@ function RegionsPage() {
 
                     setCurrLastRegionId(newLastRegionId);
                     setLastRegionIdHistory(history => new Set([...history, newLastRegionId]));
-                    setLastRegionNameHistory(history => new Set([...history, newLastRegionName]));
+                    // setLastRegionNameHistory(history => new Set([...history, newLastRegionName]));
                 }
             })
             .catch((error) => {
@@ -129,8 +129,10 @@ function RegionsPage() {
 
     useEffect(() => {
         console.log("last species id: ", currLastRegionId)
-        console.log("history: ", lastRegionIdHistory, lastRegionNameHistory)
-    }, [currLastRegionId, lastRegionIdHistory, lastRegionNameHistory]);
+        // console.log("history: ", lastRegionIdHistory, lastRegionNameHistory)
+        // }, [currLastRegionId, lastRegionIdHistory, lastRegionNameHistory]);
+    }, [currLastRegionId, lastRegionIdHistory]);
+
 
     // filters display data based on user search input
     useEffect(() => {
@@ -332,9 +334,6 @@ function RegionsPage() {
         }
     };
 
-
-
-    // TODO: match the rows per option with the lambda function
     const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
     const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // start with default 20 rows per page
     const [page, setPage] = useState(0); // Start with page 0
@@ -355,9 +354,9 @@ function RegionsPage() {
             updatedIdHistory.delete([...updatedIdHistory].pop());
             setLastRegionIdHistory(updatedIdHistory);
 
-            const updatedNameHistory = new Set([...lastRegionNameHistory]);
-            updatedNameHistory.delete([...updatedNameHistory].pop());
-            setLastRegionNameHistory(updatedNameHistory);
+            // const updatedNameHistory = new Set([...lastRegionNameHistory]);
+            // updatedNameHistory.delete([...updatedNameHistory].pop());
+            // setLastRegionNameHistory(updatedNameHistory);
 
             // gets the previous species id
             const prevSpeciesId = [...updatedIdHistory][[...updatedIdHistory].length - 2];

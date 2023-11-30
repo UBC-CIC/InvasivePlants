@@ -65,7 +65,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                     };
                 });
                 console.log("alternative species data from invasive species: ", formattedData);
-                setAlternativeSpeciesData(formattedData);
+                setAlternativeSpeciesData(formattedData); // todo: get all alternative data
             })
             .catch((error) => {
                 console.error("Error retrieving alternative species", error);
@@ -170,6 +170,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                     />
 
                     <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: "1rem" }}>
+                        {/* TODO: get all alternative species or on search in dropdown */}
                         <Autocomplete
                             multiple
                             id="alternative-species-autocomplete"

@@ -48,7 +48,7 @@ function InvasiveSpeciesPage() {
 
   const [currLastSpeciesId, setCurrLastSpeciesId] = useState(""); // current last species
   const [lastSpeciesIdHistory, setLastSpeciesIdHistory] = useState(new Set("")); // history of lastSpeciesIds seen for each page
-  const [lastSpeciesNameHistory, setLastSpeciesNameHistory] = useState(new Set()); // history of lastSpeciesIds seen for each page
+  // const [lastSpeciesNameHistory, setLastSpeciesNameHistory] = useState(new Set()); // history of lastSpeciesIds seen for each page
   const [shouldReset, setShouldReset] = useState(false); // reset above values
 
   const [user, setUser] = useState("");
@@ -129,7 +129,7 @@ function InvasiveSpeciesPage() {
             // reset pagination details
             if (shouldReset) {
               setLastSpeciesIdHistory(new Set())
-              setLastSpeciesNameHistory(new Set())
+              // setLastSpeciesNameHistory(new Set())
               setPage(0);
               setStart(0);
               setEnd(0);
@@ -144,19 +144,19 @@ function InvasiveSpeciesPage() {
             // update lastSpeciesId with the species_id of the last row displayed in the table
             if (formattedData.length > 0) {
               const newLastSpeciesId = formattedData[formattedData.length - 1].species_id;
-              const newLastSpeciesNames = formattedData[formattedData.length - 1].scientific_name;
+              // const newLastSpeciesNames = formattedData[formattedData.length - 1].scientific_name;
 
               setCurrLastSpeciesId(newLastSpeciesId);
               setLastSpeciesIdHistory(history => new Set([...history, newLastSpeciesId]));
-              setLastSpeciesNameHistory(history => { // TODO: could get rid of this later
-                const updatedNames = new Set([...history]);
-                newLastSpeciesNames.forEach(name => {
-                  if (!updatedNames.has(name)) {
-                    updatedNames.add(name);
-                  }
-                });
-                return updatedNames;
-              });
+              // setLastSpeciesNameHistory(history => { 
+              //   const updatedNames = new Set([...history]);
+              //   newLastSpeciesNames.forEach(name => {
+              //     if (!updatedNames.has(name)) {
+              //       updatedNames.add(name);
+              //     }
+              //   });
+              //   return updatedNames;
+              // });
             }
           });
       }).catch((error) => {
@@ -212,8 +212,10 @@ function InvasiveSpeciesPage() {
 
   useEffect(() => {
     // console.log("last species id: ", currLastSpeciesId)
-    console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
-  }, [currLastSpeciesId, lastSpeciesIdHistory, lastSpeciesNameHistory]);
+    // console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
+    // }, [currLastSpeciesId, lastSpeciesIdHistory, lastSpeciesNameHistory]);
+  }, [currLastSpeciesId, lastSpeciesIdHistory]);
+
 
 
   // filters data of current page that matches search input and region id
@@ -438,9 +440,6 @@ function InvasiveSpeciesPage() {
     }
   }
 
-
-
-  // TODO: match the rows per option with the lambda function
   const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // Start with default 20 rows per page
   const [page, setPage] = useState(0); // Start with page 0
@@ -478,9 +477,9 @@ function InvasiveSpeciesPage() {
       updatedIdHistory.delete([...updatedIdHistory].pop()); // remove last item from the Set
       setLastSpeciesIdHistory(updatedIdHistory);
 
-      const updatedNameHistory = new Set([...lastSpeciesNameHistory]);
-      updatedNameHistory.delete([...updatedNameHistory].pop()); // remove last item from the Set
-      setLastSpeciesNameHistory(updatedNameHistory);
+      // const updatedNameHistory = new Set([...lastSpeciesNameHistory]);
+      // updatedNameHistory.delete([...updatedNameHistory].pop()); // remove last item from the Set
+      // setLastSpeciesNameHistory(updatedNameHistory);
 
       // gets the previous species id
       const prevSpeciesId = [...updatedIdHistory][[...updatedIdHistory].length - 2];

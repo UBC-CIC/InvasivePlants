@@ -37,8 +37,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         let uploadResponse;
 
         if (files) {
-
-            // TODO: image files instead
             let s3Keys = tempData.s3_keys ? [...tempData.s3_keys] : [];
 
             try {
@@ -116,16 +114,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                     handleSearchInputChange("image_links", updatedImages.map((image) => image.image_url));
                     handleSearchInputChange("s3_keys", updatedImages.map((image) => image.s3_key));
                     console.log("images deleted successfully", response.data);
-
-                    // TODO: Delete the image from the S3 bucket
-                    // axios
-                    //     .delete(`https://d123pl6gvdlen1.cloudfront.net/${deleteImg.s3_key}`)
-                    //     .then((response) => {
-                    //         console.log("image deleted from S3 bucket successfully", response.data);
-                    //     })
-                    //     .catch((err) => {
-                    //         console.error("Error deleting image from S3 bucket", err);
-                    //     });
                 })
                 .catch((error) => {
                     console.error("Error deleting image", error);
