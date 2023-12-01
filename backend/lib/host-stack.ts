@@ -15,9 +15,10 @@ import * as cdk from 'aws-cdk-lib';
 import { VpcStack } from './vpc-stack';
 import { FunctionalityStack } from './functionality-stack';
 import { APIStack } from './api-stack';
+import { EcrStack } from './ecr-stack';
 
 export class HostStack extends Stack {
-    constructor(scope: Construct, id: string, vpcStack:VpcStack, functionalityStack:FunctionalityStack, apiStack:APIStack, props?: StackProps) {
+    constructor(scope: Construct, id: string, vpcStack:VpcStack, functionalityStack:FunctionalityStack, apiStack:APIStack, ecrStack: EcrStack, props?: StackProps) {
         super(scope, id, props);
 
         // Import a VPC stack
@@ -178,6 +179,7 @@ export class HostStack extends Stack {
             memoryMiB: "2048",
             runtimePlatform: {
                 operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
+                cpuArchitecture: ecs.CpuArchitecture.X86_64
             },
             family: "IntegralsTaskDefinition",
             executionRole: taskRoleECS, 
@@ -187,12 +189,7 @@ export class HostStack extends Stack {
         // Create Container to run ECR image
         // Get the latest image of 'repo'
         const containerDefinition = ecsTask.addContainer("taskContainer", {
-            image: ecs.ContainerImage.fromAsset(
-                path.join(__dirname, "..", ".."),
-                {
-                  file: path.join("Dockerfile"),
-                }
-            ),
+            image: ecs.ContainerImage.fromEcrRepository(ecrStack.repo, "latest"),
             containerName: "executionContainer",
             secrets: {
                 "REACT_APP_USERPOOL_ID": ecs.Secret.fromSecretsManager(secret, "REACT_APP_USERPOOL_ID"),
