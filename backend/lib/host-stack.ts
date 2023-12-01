@@ -19,7 +19,31 @@ import { FunctionalityStack } from './functionality-stack';
 import { APIStack } from './api-stack';
 import { EcrStack } from './ecr-stack';
 
+interface AwsRegions2PrefixListID {
+    [key: string]: string;
+}
+
 export class HostStack extends Stack {
+    // Array of regions and it prefixListId
+    // Collected by https://aws.amazon.com/blogs/networking-and-content-delivery/limit-access-to-your-origins-using-the-aws-managed-prefix-list-for-amazon-cloudfront/
+    private readonly awsRegions2PrefixListID: AwsRegions2PrefixListID = {
+        'ap-northeast-1': 'pl-58a04531',
+        'ap-northeast-2': 'pl-22a6434b',
+        'ap-south-1': 'pl-9aa247f3',
+        'ap-southeast-1': 'pl-31a34658',
+        'ap-southeast-2': 'pl-b8a742d1',
+        'ca-central-1': 'pl-38a64351',
+        'eu-central-1': 'pl-a3a144ca',
+        'eu-north-1': 'pl-fab65393',
+        'eu-west-1': 'pl-4fa04526',
+        'eu-west-2': 'pl-93a247fa',
+        'eu-west-3': 'pl-75b1541c',
+        'sa-east-1': 'pl-5da64334',
+        'us-east-1': 'pl-3b927c52',
+        'us-east-2': 'pl-b6a144df',
+        'us-west-1': 'pl-4ea04527',
+        'us-west-2': 'pl-82a045eb',
+    };
     constructor(scope: Construct, id: string, vpcStack:VpcStack, functionalityStack:FunctionalityStack, apiStack:APIStack, ecrStack: EcrStack, props?: StackProps) {
         super(scope, id, props);
 
@@ -145,11 +169,29 @@ export class HostStack extends Stack {
         //     ec2.Port.tcp(443), 
         //     'Allow traffic from all IPv4');
 
-        // Set ALBSecurityGroup inbound to any IPv4 at HTTP (80)
+        // // Set ALBSecurityGroup inbound to any IPv4 at HTTP (80)
+        // ALBSecurityGroup.addIngressRule(
+        //     ec2.Peer.anyIpv4(),
+        //     ec2.Port.tcp(80), 
+        //     'Allow traffic from all IPv4');
+
+        // Read parameter from user 
+        const prefixListIdParam = new CfnParameter(this, "prefixListID", {
+            type: 'String',
+            description: 'Custome prefix list ID for region that are not in the list',
+            default: this.awsRegions2PrefixListID['ca-central-1']
+        });
+
+        // Get prefixListId of CloudFront
+        // Tried to get prefix ID based on the current region
+        // cdk deploy ECSHost --profile Sedation_Dev_1 --parameters ECSHost:prefixListID=pl-82a045eb
+        let CFPrefixListId = this.awsRegions2PrefixListID[Stack.of(this).region] ? this.awsRegions2PrefixListID[Stack.of(this).region] : prefixListIdParam.valueAsString;
+
+        // Set ALBSecurityGroup inbound to CloudFront
         ALBSecurityGroup.addIngressRule(
-            ec2.Peer.anyIpv4(),
+            ec2.Peer.prefixList(CFPrefixListId), 
             ec2.Port.tcp(80), 
-            'Allow traffic from all IPv4');
+            'Allow traffic only from CloudFront');
 
         // Create a ALB for ECS Cluster Service
         const ALB = new aws_elasticloadbalancingv2.ApplicationLoadBalancer(this, 'ALB-Fargate-Service', {
@@ -216,16 +258,7 @@ export class HostStack extends Stack {
                 logRetention: RetentionDays.ONE_YEAR,
             }),
         });
-
-        // Certificate to attach to ALB for HTTPS
-        // Read parameter from user 
-        // aws iam upload-server-certificate --server-certificate-name Self-Signed-SSL-Certificate --certificate-body file://public.pem --private-key file://private.pem --profile Sedation_Dev_1
-        const CERTIFICATE_ARN = new CfnParameter(this, "certificateARN", {
-            type: 'String',
-            description: 'ARN of the SSL certificate',
-            default: `arn:aws:iam::${process.env.CDK_DEFAULT_ACCOUNT}:server-certificate/Self-Signed-SSL-Certificate` // TODO might need to change to this.account
-        });
-
+        
         // Run Application Load Balancer in Fargate as an ECS Service
         // ALB in public subnet, ECS Service in private subnet
         const ALBFargateService = new ecspatterns.ApplicationLoadBalancedFargateService(this, "Host-With-LoadBalancer-Dashboard", {
@@ -241,9 +274,7 @@ export class HostStack extends Stack {
             },
             openListener: false,
             // ALB Configuration
-            loadBalancer: ALB,
-            // certificate: aws_certificatemanager.Certificate.fromCertificateArn(this, 'https-certificate', CERTIFICATE_ARN.valueAsString),
-            // listenerPort: 443,
+            loadBalancer: ALB
         });
 
         // Attach WAF to ALB
