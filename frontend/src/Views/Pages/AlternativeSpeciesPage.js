@@ -7,14 +7,13 @@ import Theme from './Theme';
 import { Auth } from "aws-amplify";
 
 // components
-import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";
 import SearchComponent from '../../components/SearchComponent';
+import PaginationComponent from '../../components/PaginationComponent';
+import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import AddAlternativeSpeciesDialog from "../../dialogs/AddAlternativeSpeciesDialog";
 
 // icons
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -22,7 +21,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 import axios from "axios";
-import { boldText } from '../../functions/helperFunctions';
+import { boldText, capitalizeFirstWord, capitalizeEachWord, formatString } from '../../functions/helperFunctions';
 
 function AlternativeSpeciesPage() {
   const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
@@ -74,12 +73,15 @@ function AlternativeSpeciesPage() {
         params: {
           last_species_id: lastSpeciesId,
           rows_per_page: rowsPerPage
+        },
+        headers: {
+          'x-api-key': process.env.REACT_APP_X_API_KEY
         }
       });
 
       const formattedData = response.data.flatMap(item => {
         return item.scientific_name.map(name => {
-          const capitalizedScientificName = capitalizeScientificName(name);
+          const capitalizedScientificName = capitalizeFirstWord(name);
           return {
             ...item,
             scientific_name: capitalizedScientificName
@@ -104,30 +106,6 @@ function AlternativeSpeciesPage() {
     fetchAllAlternativeSpecies();
   };
 
-
-  // helper function that capitalizes scientific name
-  const capitalizeScientificName = (str) => {
-    const strSplitUnderscore = str.split("_");
-    const words = strSplitUnderscore.flatMap(word => word.split(" "));
-
-    const formattedWords = words.map((word, index) => {
-      if (index === 0) { // first "word"
-        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-      }
-      return word.toLowerCase();
-    });
-
-    return formattedWords.join(" ");
-  };
-
-  // helper function that capitalizes each word
-  const capitalizeWordsSplitSpace = (str) => {
-    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-  };
-
-  // helper function that formats a string by spliting it based on commas and spacces
-  const formatString = (str) => str.split(/,\s*|\s*,\s*/);
-
   const alternativeSpeciesNames = allAlternativeSpecies.map(species => ({
     label: species.scientific_name,
     value: species.scientific_name
@@ -150,8 +128,8 @@ function AlternativeSpeciesPage() {
 
         // formats data 
         const formattedData = response.data.map(item => {
-          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeScientificName(name, "_"));
-          const capitalizedCommonNames = item.common_name.map(name => capitalizeWordsSplitSpace(name));
+          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
+          const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
           const image_links = item.images.map(img => img.image_url);
           const s3_keys = item.images.map(img => img.s3_key);
 
@@ -211,8 +189,8 @@ function AlternativeSpeciesPage() {
 
         // formats data 
         const formattedData = response.data.map(item => {
-          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeScientificName(name, "_"));
-          const capitalizedCommonNames = item.common_name.map(name => capitalizeWordsSplitSpace(name));
+          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
+          const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
           const image_links = item.images.map(img => img.image_url);
           const s3_keys = item.images.map(img => img.s3_key);
 
@@ -555,9 +533,6 @@ function AlternativeSpeciesPage() {
 
   // disables the next button if there are no species left to query
   useEffect(() => {
-    // console.log("displayDataCount: ", displayData.length);
-    // console.log("rows per page: ", rowsPerPage);
-
     if (displayData.length === 0 || displayData.length < rowsPerPage) {
       setDisabled(true);
     } else {
@@ -573,7 +548,6 @@ function AlternativeSpeciesPage() {
         <SearchComponent
           text={"Search alternative species (scientific or common name)"}
           handleSearch={handleSearch}
-          // searchResults={searchBarDropdownResults}
           searchResults={alternativeSpeciesNames}
           searchTerm={searchInput}
           setSearchTerm={setSearchInput}
@@ -604,9 +578,8 @@ function AlternativeSpeciesPage() {
       </div>
 
 
-      {/* pagination */}
+      {/* dropdown for selecting rows per page */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "67%" }}>
-        {/* dropdown for selecting rows per page */}
         <span style={{ marginRight: '10px' }}>Rows per page:</span>
         <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>
           {rowsPerPageOptions.map((option) => (
@@ -616,14 +589,15 @@ function AlternativeSpeciesPage() {
           ))}
         </select>
 
-        {/* previous and next buttons for table */}
-        <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} of ${speciesCount} species`}</span>
-        <IconButton onClick={handlePreviousPage} disabled={page === 0}>
-          <NavigateBeforeIcon />
-        </IconButton>
-        <IconButton onClick={handleNextPage} disabled={disabled}>
-          <NavigateNextIcon />
-        </IconButton>
+        <PaginationComponent
+          start={start}
+          end={end}
+          count={speciesCount}
+          page={page}
+          handlePreviousPage={handlePreviousPage}
+          handleNextPage={handleNextPage}
+          disabled={disabled}
+        />
       </div>
 
       {/* table */}
@@ -937,16 +911,16 @@ function AlternativeSpeciesPage() {
         </Table>
       </div >
 
-      {/* pagination */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "80%" }}>
-        {/* previous and next buttons for table */}
-        <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} of ${speciesCount} species`}</span>
-        <IconButton onClick={handlePreviousPage} disabled={page === 0}>
-          <NavigateBeforeIcon />
-        </IconButton>
-        <IconButton onClick={handleNextPage} disabled={disabled}>
-          <NavigateNextIcon />
-        </IconButton>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "78%" }}>
+        <PaginationComponent
+          start={start}
+          end={end}
+          count={speciesCount}
+          page={page}
+          handlePreviousPage={handlePreviousPage}
+          handleNextPage={handleNextPage}
+          disabled={disabled}
+        />
       </div>
 
       <AddAlternativeSpeciesDialog
