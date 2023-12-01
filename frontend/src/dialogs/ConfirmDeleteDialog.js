@@ -1,5 +1,6 @@
 import { Alert, AlertTitle, Box, Dialog, Button } from "@mui/material";
 
+// dialog that asks for user confirmation prior to deletion
 const DeleteDialog = ({ open, handleClose, handleDelete }) => (
     <Dialog open={open} onClose={handleClose}>
         <Alert severity="warning">

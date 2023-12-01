@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, TextField, Grid, Paper, Typography, Container, Box, alpha } from '@mui/material';
 import adminCredentials from '../components/adminCredentials.json';
 
+// login page
 const LoginPage = ({ handleLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');

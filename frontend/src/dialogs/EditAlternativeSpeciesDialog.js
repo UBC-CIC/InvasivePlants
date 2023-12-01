@@ -7,6 +7,7 @@ import { Auth } from "aws-amplify";
 
 import axios from "axios";
 
+// dialog for editing an alternative species
 const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
 

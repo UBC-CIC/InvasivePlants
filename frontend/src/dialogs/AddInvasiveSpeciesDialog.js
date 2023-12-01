@@ -9,6 +9,7 @@ import CustomAlert from "../components/AlertComponent";
 import CustomWarning from '../components/WarningComponent';
 import handleGetRegions from "../functions/RegionMap";
 
+// dialog for adding an invasive species
 const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternativeSpeciesData }) => {
     const initialSpeciesData = {
         scientific_name: [],

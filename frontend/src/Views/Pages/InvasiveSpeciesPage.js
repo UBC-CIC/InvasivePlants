@@ -224,7 +224,6 @@ function InvasiveSpeciesPage() {
 
             setDisplayData(formattedData);
             setData(formattedData);
-            // setSearchBarResults(formattedData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
 
             // update lastSpeciesId with the species_id of the last row displayed in the table
             if (formattedData.length > 0) {
@@ -730,17 +729,7 @@ function InvasiveSpeciesPage() {
                           {/* alternative plants */}
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           <TextField
-                              // value={
-                              // Array.isArray(tempData.alternative_species)
-                              //   ? tempData.alternative_species.map((alternative) => {
-                              //     const foundOption = AlternativeSpeciesTestData.find(
-                              //       (option) => option.scientific_name === alternative
-                              //     );
-                              //     return foundOption ? foundOption.scientific_name : "";
-                              //   })
-                              //   : []
-                              // }
-                              onChange={(e) =>
+                            onChange={(e) =>
                                 handleSearchInputChange(
                                   "alternative_species",
                                   e.target.value.split(", ")
@@ -887,8 +876,7 @@ function InvasiveSpeciesPage() {
                       )}
                     </TableRow>
                   ))
-                : displayData
-                // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : displayData
                   .map((row) => (
                     <TableRow key={row.species_id}>
                       {/* editing the row */}
@@ -921,16 +909,6 @@ function InvasiveSpeciesPage() {
                           {/* alternative plants */}
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
-                              // value={
-                              //   Array.isArray(tempData.alternative_species)
-                              //     ? tempData.alternative_species.map((alternative) => {
-                              //       const foundOption = AlternativeSpeciesTestData.find(
-                              //         (option) => option.scientific_name === alternative
-                              //       );
-                              //       return foundOption ? foundOption.scientific_name : "";
-                              //     })
-                              //     : []
-                              // }
                               onChange={(e) =>
                                 handleSearchInputChange(
                                   "alternative_species",

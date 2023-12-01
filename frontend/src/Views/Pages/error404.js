@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Button from '@mui/material/Button';
 
+// error page when page doesn't exist
 class Error404 extends Component {
 
     /** Page Render Info **/

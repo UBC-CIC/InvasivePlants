@@ -401,9 +401,6 @@ function RegionsPage() {
 
     // disables the next button if there are no species left to query
     useEffect(() => {
-    // console.log("displayDataCount: ", displayData.length);
-    // console.log("rows per page: ", rowsPerPage);
-
         if (displayData.length === 0 || displayData.length < rowsPerPage) {
             setDisabled(true);
         } else {

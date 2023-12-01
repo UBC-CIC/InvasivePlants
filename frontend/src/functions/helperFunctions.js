@@ -1,3 +1,5 @@
+/***************** HELPER FUNCTIONS *****************/
+
 // bolds text between two asterisks (ex. **BOLDED**)
 export function boldText(text) {
     const regex = /\*\*(.*?)\*\*/g;

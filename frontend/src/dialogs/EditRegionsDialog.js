@@ -3,6 +3,7 @@ import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTit
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 
+// dialog for editing a region
 const EditRegionDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 

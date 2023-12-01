@@ -8,6 +8,7 @@ import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 import handleGetRegions from '../functions/RegionMap';
 
+// dialog for editing an invasive species
 const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave, alternativeSpeciesData }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
