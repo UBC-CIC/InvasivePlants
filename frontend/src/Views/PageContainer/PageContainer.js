@@ -1,8 +1,13 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Route, Routes, useNavigate, Navigate } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import { connect } from "react-redux";
+import { updateMenuState } from "../../Actions/menuActions";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+
+// icons
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
@@ -10,17 +15,12 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import HomeIcon from '@material-ui/icons/Home';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import { makeStyles } from '@material-ui/core/styles';
-import Navbar from "../../components/Navbar/Navbar";
-import { connect } from "react-redux";
-import { updateMenuState } from "../../Actions/menuActions";
 
 /** Import Pages **/
-import Dashboard from '../Pages/dashboard';
+import Navbar from "../../components/Navbar/Navbar";
 import Error404 from '../Pages/error404';
 import InvasiveSpeciesPage from '../Pages/InvasiveSpeciesPage';
 import AlternativeSpeciesPage from '../Pages/AlternativeSpeciesPage';
-// import { PaginationTest } from '../Pages/Pagination';
 import RegionPage from '../Pages/RegionsPage';
 import { PlantNet } from '../Pages/pl@ntNet';
 import DownloadWebscrap from '../Pages/downloadWebscrap';
@@ -67,7 +67,6 @@ function PageContainer(props) {
         updateMenuState(false);
     }
 
-
     {/* Example side menu is provided below */ }
     const list = () => (
         <div
@@ -107,13 +106,11 @@ function PageContainer(props) {
             <Routes>
                 <Route path="/" element={<Navigate to="/invasive species" />} />
                 <Route path="/login" element={<Navigate to="/invasive species" />} />
-                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/invasive species" element={<InvasiveSpeciesPage />} />
                 <Route path="/alternative species" element={<AlternativeSpeciesPage />} />
                 <Route path="/regions" element={<RegionPage />} />
 
                 <Route path="/test" element={<PlantNet />} />
-                {/* <Route path="/pagination" element={<PaginationTest />} /> */}
                 <Route path="/download" element={<DownloadWebscrap />} />
                 <Route path="*" element={<Error404 />} />
             </Routes>           

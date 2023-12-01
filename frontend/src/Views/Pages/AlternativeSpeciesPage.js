@@ -21,31 +21,32 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SearchIcon from '@mui/icons-material/Search';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
-import boldText from "./formatDescriptionHelper";
 import axios from "axios";
+import { boldText } from '../../functions/helperFunctions';
 
 function AlternativeSpeciesPage() {
   const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
 
+  const [allAlternativeSpecies, setAllAlternativeSpecies] = useState([]); // array of all alternative species
+  const [speciesCount, setSpeciesCount] = useState(0); // number of alternative species
   const [data, setData] = useState([]); // original data
   const [displayData, setDisplayData] = useState([]); // data displayed in the table
-  const [editingId, setEditingId] = useState(null); // species_id of the row being edited
+  const [editingSpeciesId, setEditingSpeciesId] = useState(null); // species_id of the row being edited
   const [tempEditingData, setTempEditingData] = useState({}); // data of the species being edited
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false); // state of the editing an alternative species dialog
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false); // state of the adding a new alternative species dialog
   const [searchInput, setSearchInput] = useState(""); // input of the species search bar
-  const [searchBarDropdownResults, setSearchBarDropdownResults] = useState(displayData.map((item) => ({ // dropdown options in the search bar
-    label: item.scientific_name, value: item.scientific_name
+  const [searchBarDropdownResults, setSearchBarDropdownResults] = useState(displayData.map((species) => ({ // TODO: get rid of??? dropdown options in the search bar
+    label: species.scientific_name, value: species.scientific_name
   })));
   const [deleteId, setDeleteId] = useState(null); // species_id of the row being deleted
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
 
   const [currLastSpeciesId, setCurrLastSpeciesId] = useState(""); // current last species
   const [lastSpeciesIdHistory, setLastSpeciesIdHistory] = useState(new Set("")); // history of last species ids seen for each page
-  // const [lastSpeciesNameHistory, setLastSpeciesNameHistory] = useState(new Set()); // history of last species names seen for each page
   const [shouldReset, setShouldReset] = useState(false); // reset above values
 
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(""); // authorized admin user
 
   // gets current authorized user
   const retrieveUser = async () => {
@@ -58,11 +59,50 @@ function AlternativeSpeciesPage() {
     }
   }
 
-  // retriever user on load
+  // retriever user on and alternative species on load
   useEffect(() => {
-    console.log("retrieved user!!1")
+    console.log("retrieved user!!! + loading all species")
     retrieveUser()
+    loadSpeciesNamesInBackground()
+    console.log("finished loading species")
   }, [])
+
+  // gets all alternative species in the database
+  const fetchAllAlternativeSpecies = async (lastSpeciesId = null) => {
+    try {
+      const response = await axios.get(`${API_ENDPOINT}alternativeSpecies`, {
+        params: {
+          last_species_id: lastSpeciesId,
+          rows_per_page: rowsPerPage
+        }
+      });
+
+      const formattedData = response.data.flatMap(item => {
+        return item.scientific_name.map(name => {
+          const capitalizedScientificName = capitalizeScientificName(name);
+          return {
+            ...item,
+            scientific_name: capitalizedScientificName
+          };
+        });
+      });
+
+      setAllAlternativeSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
+      setSpeciesCount(prevCount => prevCount + response.data.length)
+
+      // recursively gets species if more exists
+      if (response.data.length === rowsPerPage) {
+        const newLastSpeciesId = response.data[response.data.length - 1].species_id;
+        await fetchAllAlternativeSpecies(newLastSpeciesId);
+      }
+    } catch (error) {
+      console.error("Error retrieving invasive species", error);
+    }
+  };
+
+  const loadSpeciesNamesInBackground = () => {
+    fetchAllAlternativeSpecies();
+  };
 
 
   // helper function that capitalizes scientific name
@@ -85,11 +125,16 @@ function AlternativeSpeciesPage() {
     return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
   };
 
+  // helper function that formats a string by spliting it based on commas and spacces
+  const formatString = (str) => str.split(/,\s*|\s*,\s*/);
+
+  const alternativeSpeciesNames = allAlternativeSpecies.map(species => ({
+    label: species.scientific_name,
+    value: species.scientific_name
+  }));
+
   // fetches alternative species data 
   const handleGetAlternativeSpecies = () => {
-  // console.log("previous last species id: ", currLastSpeciesId);
-    // console.log("got here: ", rowsPerPage);
-
     // request to GET all alternative species
     axios
       .get(`${API_ENDPOINT}alternativeSpecies`, {
@@ -119,13 +164,11 @@ function AlternativeSpeciesPage() {
           };
         });
 
-        // console.log("get alternative species data:", formattedData);
+        console.log("retrieved alternative species data:", formattedData);
 
         // reset pagination details
         if (shouldReset) {
-          // console.log("should reset: ", shouldReset);
           setLastSpeciesIdHistory(new Set())
-          // setLastSpeciesNameHistory(new Set())
           setPage(0);
           setStart(0);
           setEnd(0);
@@ -140,19 +183,9 @@ function AlternativeSpeciesPage() {
         // update lastSpeciesId with the species_id of the last row displayed in the table
         if (formattedData.length > 0) {
           const newLastSpeciesId = formattedData[formattedData.length - 1].species_id;
-          // const newLastSpeciesNames = formattedData[formattedData.length - 1].scientific_name;
 
           setCurrLastSpeciesId(newLastSpeciesId);
           setLastSpeciesIdHistory(history => new Set([...history, newLastSpeciesId]));
-          // setLastSpeciesNameHistory(history => { 
-          //   const updatedNames = new Set([...history]);
-          //   newLastSpeciesNames.forEach(name => {
-          //     if (!updatedNames.has(name)) {
-          //       updatedNames.add(name);
-          //     }
-          //   });
-          //   return updatedNames;
-          // });
         }
       })
       .catch((error) => {
@@ -201,19 +234,12 @@ function AlternativeSpeciesPage() {
   };
 
   const handleReset = () => {
-    // console.log("reset data");
+    console.log("reset clicked");
     setShouldReset(true);
     setSearchInput("");
-    handleGetAlternativeSpecies();
+    setAllAlternativeSpecies([]);
+    loadSpeciesNamesInBackground();
   }
-
-  useEffect(() => {
-    // console.log("last species id: ", currLastSpeciesId)
-    // console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
-    // }, [currLastSpeciesId, lastSpeciesIdHistory, lastSpeciesNameHistory]);
-  }, [currLastSpeciesId, lastSpeciesIdHistory]);
-
-
 
   // filters display data based on user search input
   useEffect(() => {
@@ -244,7 +270,7 @@ function AlternativeSpeciesPage() {
 
   // begin editing a species
   const startEdit = (species_id, rowData) => {
-    setEditingId(species_id);
+    setEditingSpeciesId(species_id);
     setTempEditingData(rowData);
     setOpenEditSpeciesDialog(true);
   };
@@ -252,14 +278,11 @@ function AlternativeSpeciesPage() {
   // helper function after finishing editing a species and saving 
   const handleFinishEditingRow = () => {
     setOpenEditSpeciesDialog(false);
-    setEditingId(null);
+    setEditingSpeciesId(null);
   };
 
   // updates changes to the database on save
   const handleSave = (confirmed) => {
-    // helper function that formats a string by spliting it based on commas and spacces
-    const formatString = (str) => str.split(/,\s*|\s*,\s*/);
-
     if (confirmed) {
       // make sure that fields are proper data structure
       const formattedData = {
@@ -293,12 +316,15 @@ function AlternativeSpeciesPage() {
       console.log("to add images (links): ", imagesToAdd);
       console.log("to add images (keys): ", s3KeysToAdd);
 
+      retrieveUser();
+      const jwtToken = user.signInUserSession.accessToken.jwtToken;
+
+      postImages(imagesToAdd);
+      postImages(s3KeysToAdd);
+
       // POST new images to the database
       function postImages(images) {
         if (images && images.length > 0) {
-          retrieveUser();
-          const jwtToken = user.signInUserSession.accessToken.jwtToken;
-
           images.forEach(img => {
             axios
               .post(API_ENDPOINT + "plantsImages", img, {
@@ -316,12 +342,6 @@ function AlternativeSpeciesPage() {
         }
       }
 
-      postImages(imagesToAdd);
-      postImages(s3KeysToAdd);
-
-      retrieveUser();
-      const jwtToken = user.signInUserSession.accessToken.jwtToken;
-
       // update alternative species table
       axios
         .put(`${API_ENDPOINT}alternativeSpecies/${tempEditingData.species_id}`, formattedData, {
@@ -337,8 +357,7 @@ function AlternativeSpeciesPage() {
         .catch((error) => {
           console.error("Error updating species", error);
         });
-
-  };
+    };
   };
 
   // opens confirmation dialog before deletion
@@ -375,7 +394,6 @@ function AlternativeSpeciesPage() {
     }
   };
 
-
   // add new alternative species
   const handleAddSpecies = (newSpeciesData) => {
     // format scientific names
@@ -386,7 +404,7 @@ function AlternativeSpeciesPage() {
       )
     }
 
-    console.log("new alternative species: ", newSpeciesData);
+    console.log("adding a new alternative species: ", newSpeciesData);
 
     retrieveUser();
     const jwtToken = user.signInUserSession.accessToken.jwtToken
@@ -420,7 +438,7 @@ function AlternativeSpeciesPage() {
         }
 
         const allPlantImages = plantsWithImgLinks.concat(plantsWithImgFiles);
-        // console.log("merged plants: ", allPlantImages);
+        console.log("merged plants: ", allPlantImages);
 
         // upload all plant images 
         allPlantImages.forEach((plantData) => {
@@ -432,12 +450,10 @@ function AlternativeSpeciesPage() {
               }
             })
             .then((response) => {
-              console.log("images added successfully", response.data);
+              console.log("all images added successfully", response.data);
               // get updated alternative species
               setShouldReset(true);
               setOpenAddSpeciesDialog(false); 
-
-              // TOOD: s3 stuff here
             })
             .catch((error) => {
               console.error("Error adding image", error);
@@ -464,8 +480,6 @@ function AlternativeSpeciesPage() {
 
   // sets species that match search
   const handleSearch = (searchInput) => {
-    // console.log(typeof searchInput);
-    // console.log("search input: ", searchInput);
 
     // display original data when no search option chosen
     if (searchInput === "") {
@@ -512,7 +526,6 @@ function AlternativeSpeciesPage() {
   useEffect(() => {
     // console.log("rows per page changed!!: ", rowsPerPage);
     setShouldReset(true);
-    // handleGetAlternativeSpecies()
   }, [rowsPerPage]);
 
   // updates page count
@@ -526,10 +539,6 @@ function AlternativeSpeciesPage() {
       const updatedIdHistory = new Set([...lastSpeciesIdHistory]);
       updatedIdHistory.delete([...updatedIdHistory].pop());
       setLastSpeciesIdHistory(updatedIdHistory);
-
-      // const updatedNameHistory = new Set([...lastSpeciesNameHistory]);
-      // updatedNameHistory.delete([...updatedNameHistory].pop());
-      // setLastSpeciesNameHistory(updatedNameHistory);
 
       // gets the previous species id
       const prevSpeciesId = [...updatedIdHistory][[...updatedIdHistory].length - 2];
@@ -564,7 +573,8 @@ function AlternativeSpeciesPage() {
         <SearchComponent
           text={"Search alternative species (scientific or common name)"}
           handleSearch={handleSearch}
-          searchResults={searchBarDropdownResults}
+          // searchResults={searchBarDropdownResults}
+          searchResults={alternativeSpeciesNames}
           searchTerm={searchInput}
           setSearchTerm={setSearchInput}
         />
@@ -607,7 +617,7 @@ function AlternativeSpeciesPage() {
         </select>
 
         {/* previous and next buttons for table */}
-        <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} species`}</span>
+        <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} of ${speciesCount} species`}</span>
         <IconButton onClick={handlePreviousPage} disabled={page === 0}>
           <NavigateBeforeIcon />
         </IconButton>
@@ -667,7 +677,7 @@ function AlternativeSpeciesPage() {
                 .map((row) => (
                   <TableRow key={row.species_id}>
                     {/* editing the row */}              
-                    {editingId === row.species_id ? (
+                    {editingSpeciesId === row.species_id ? (
                       <>
                         {/* scientific name */}
                         <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
@@ -927,6 +937,18 @@ function AlternativeSpeciesPage() {
         </Table>
       </div >
 
+      {/* pagination */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "80%" }}>
+        {/* previous and next buttons for table */}
+        <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} of ${speciesCount} species`}</span>
+        <IconButton onClick={handlePreviousPage} disabled={page === 0}>
+          <NavigateBeforeIcon />
+        </IconButton>
+        <IconButton onClick={handleNextPage} disabled={disabled}>
+          <NavigateNextIcon />
+        </IconButton>
+      </div>
+
       <AddAlternativeSpeciesDialog
         open={openAddSpeciesDialog}
         handleClose={() => setOpenAddSpeciesDialog(false)}
@@ -948,17 +970,7 @@ function AlternativeSpeciesPage() {
         handleDelete={handleConfirmDelete}
       />
 
-      {/* pagination */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "80%" }}>
-        {/* previous and next buttons for table */}
-        <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} species`}</span>
-        <IconButton onClick={handlePreviousPage} disabled={page === 0}>
-          <NavigateBeforeIcon />
-        </IconButton>
-        <IconButton onClick={handleNextPage} disabled={disabled}>
-          <NavigateNextIcon />
-        </IconButton>
-      </div>
+
     </div >
   );
 }

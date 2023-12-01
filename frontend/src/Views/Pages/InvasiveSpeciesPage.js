@@ -23,16 +23,19 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SearchIcon from '@mui/icons-material/Search';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
-import boldText from "./formatDescriptionHelper";
 import axios from "axios";
+import { boldText } from '../../functions/helperFunctions';
+
 
 function InvasiveSpeciesPage() {
   const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
 
+  const [allInvasiveSpecies, setAllInvasiveSpecies] = useState([]); // all invasive species in database
+  const [speciesCount, setSpeciesCount] = useState(0); // number of invasive species
   const [data, setData] = useState([]);
   const [displayData, setDisplayData] = useState([]);
   const [editingSpeciesId, setEditingSpeciesId] = useState(null);
-  const [tempData, setTempData] = useState({});
+  const [tempEditingData, setTempEditingData] = useState({});
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false);
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -48,10 +51,10 @@ function InvasiveSpeciesPage() {
 
   const [currLastSpeciesId, setCurrLastSpeciesId] = useState(""); // current last species
   const [lastSpeciesIdHistory, setLastSpeciesIdHistory] = useState(new Set("")); // history of lastSpeciesIds seen for each page
-  // const [lastSpeciesNameHistory, setLastSpeciesNameHistory] = useState(new Set()); // history of lastSpeciesIds seen for each page
   const [shouldReset, setShouldReset] = useState(false); // reset above values
 
   const [user, setUser] = useState("");
+
 
   // gets current authorized user
   const retrieveUser = async () => {
@@ -77,6 +80,57 @@ function InvasiveSpeciesPage() {
     };
     fetchRegionData();
   }, []);
+
+  // retriever user on and alternative species on load
+  useEffect(() => {
+    console.log("retrieved user!!! + loading all species")
+    retrieveUser()
+    loadSpeciesNamesInBackground()
+    console.log("finished loading species")
+  }, [])
+
+  // gets all alternative species in the database
+  const fetchAllInvasiveSpecies = async (lastSpeciesId = null) => {
+    try {
+      const response = await axios.get(`${API_ENDPOINT}invasiveSpecies`, {
+        params: {
+          last_species_id: lastSpeciesId,
+          rows_per_page: rowsPerPage
+        }
+      });
+
+      const formattedData = response.data.flatMap(item => {
+        return item.scientific_name.map(name => {
+          const capitalizedScientificName = capitalizeScientificName(name);
+          return {
+            ...item,
+            scientific_name: capitalizedScientificName
+          };
+        });
+      });
+
+      setAllInvasiveSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
+      setSpeciesCount(prevCount => prevCount + response.data.length)
+
+      // recursively gets species if more exists
+      if (response.data.length === rowsPerPage) {
+        const newLastSpeciesId = response.data[response.data.length - 1].species_id;
+        await fetchAllInvasiveSpecies(newLastSpeciesId);
+      }
+    } catch (error) {
+      console.error("Error retrieving invasive species", error);
+    }
+  };
+
+  const loadSpeciesNamesInBackground = () => {
+    fetchAllInvasiveSpecies();
+  };
+
+
+  const invasiveSpeciesNames = allInvasiveSpecies.map(species => ({
+    label: species.scientific_name,
+    value: species.scientific_name
+  }));
 
   // helper function that capitalizes scientific name
   const capitalizeScientificName = (str) => {
@@ -151,19 +205,9 @@ function InvasiveSpeciesPage() {
             // update lastSpeciesId with the species_id of the last row displayed in the table
             if (formattedData.length > 0) {
               const newLastSpeciesId = formattedData[formattedData.length - 1].species_id;
-              // const newLastSpeciesNames = formattedData[formattedData.length - 1].scientific_name;
 
               setCurrLastSpeciesId(newLastSpeciesId);
               setLastSpeciesIdHistory(history => new Set([...history, newLastSpeciesId]));
-              // setLastSpeciesNameHistory(history => { 
-              //   const updatedNames = new Set([...history]);
-              //   newLastSpeciesNames.forEach(name => {
-              //     if (!updatedNames.has(name)) {
-              //       updatedNames.add(name);
-              //     }
-              //   });
-              //   return updatedNames;
-              // });
             }
           });
       }).catch((error) => {
@@ -173,14 +217,13 @@ function InvasiveSpeciesPage() {
 
   // GET invasive species in the database that matches user search
   const handleGetInvasiveSpeciesAfterSearch = () => {
-    const formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
+    const formattedSearchInput = searchInput.toLowerCase().replace(/ /g, '_'); 
     console.log("formatted search input: ", formattedSearchInput);
 
     axios
       .get(`${API_ENDPOINT}invasiveSpecies`, {
         params: {
           scientific_name: formattedSearchInput,
-          // last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
         },
         headers: {
           'x-api-key': process.env.REACT_APP_X_API_KEY
@@ -225,11 +268,11 @@ function InvasiveSpeciesPage() {
     // window.location.reload();
   }
 
-  useEffect(() => {
-    // console.log("last species id: ", currLastSpeciesId)
-    // console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
-    // }, [currLastSpeciesId, lastSpeciesIdHistory, lastSpeciesNameHistory]);
-  }, [currLastSpeciesId, lastSpeciesIdHistory]);
+  // useEffect(() => {
+  //   // console.log("last species id: ", currLastSpeciesId)
+  //   // console.log("history: ", lastSpeciesIdHistory, lastSpeciesNameHistory)
+  //   // }, [currLastSpeciesId, lastSpeciesIdHistory, lastSpeciesNameHistory]);
+  // }, [currLastSpeciesId, lastSpeciesIdHistory]);
 
 
 
@@ -265,7 +308,7 @@ function InvasiveSpeciesPage() {
   // edit species row
   const startEdit = (id, rowData) => {
     setEditingSpeciesId(id);
-    setTempData(rowData);
+    setTempEditingData(rowData);
     setOpenEditSpeciesDialog(true);
   };
 
@@ -284,13 +327,30 @@ function InvasiveSpeciesPage() {
     const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
 
     if (confirmed) {
-      const updatedTempData = {
-        ...tempData,
-        scientific_name: typeof tempData.scientific_name === 'string' ?
-          splitByCommaWithSpaces(tempData.scientific_name).toLowerCase().replace(/\s+/g, '_') :
-          tempData.scientific_name.map(name => name.toLowerCase().replace(/\s+/g, '_'))
+      // const updatedTempData = {
+      //   ...tempEditingData,
+      //   scientific_name: typeof tempEditingData.scientific_name === 'string' ?
+      //     splitByCommaWithSpaces(tempEditingData.scientific_name).toLowerCase().replace(/\s+/g, '_') :
+      //     tempEditingData.scientific_name.map(name => name.toLowerCase().replace(/\s+/g, '_'))
+      // };
+
+      let updatedTempData;
+      let names;
+      console.log("type: ", typeof tempEditingData.scientific_name);
+
+      if (typeof tempEditingData.scientific_name === 'string') {
+        names = splitByCommaWithSpaces(tempEditingData.scientific_name).map(name => name.trim().toLowerCase().replace(/\s+/g, '_'));
+      } else {
+        names = tempEditingData.scientific_name.map(name => name.trim().toLowerCase().replace(/\s+/g, '_')
+        );
+      }
+
+      updatedTempData = {
+        ...tempEditingData,
+        scientific_name: names
       };
 
+      console.log("updated temp data: ", updatedTempData)
       const { region_code_name, alternative_species, ...rest } = updatedTempData;
 
       // get just the ids of alt species
@@ -305,7 +365,7 @@ function InvasiveSpeciesPage() {
 
       // request to PUT updated invasive species to the database
       axios
-        .put(`${API_ENDPOINT}invasiveSpecies/${tempData.species_id}`,
+        .put(`${API_ENDPOINT}invasiveSpecies/${tempEditingData.species_id}`,
           updatedTempDataWithoutRegionCode,
           {
             headers: {
@@ -407,10 +467,10 @@ function InvasiveSpeciesPage() {
 
     if (field === "region_code_name") {
       const selectedRegionCodes = value.map((region_id) => regionMap[region_id]);
-      setTempData((prev) => ({ ...prev, region_id: value, region_code_name: selectedRegionCodes }));
+      setTempEditingData((prev) => ({ ...prev, region_id: value, region_code_name: selectedRegionCodes }));
     }
     else {
-      setTempData((prev) => ({ ...prev, [field]: value }));
+      setTempEditingData((prev) => ({ ...prev, [field]: value }));
     }
   };
 
@@ -492,10 +552,6 @@ function InvasiveSpeciesPage() {
       updatedIdHistory.delete([...updatedIdHistory].pop()); // remove last item from the Set
       setLastSpeciesIdHistory(updatedIdHistory);
 
-      // const updatedNameHistory = new Set([...lastSpeciesNameHistory]);
-      // updatedNameHistory.delete([...updatedNameHistory].pop()); // remove last item from the Set
-      // setLastSpeciesNameHistory(updatedNameHistory);
-
       // gets the previous species id
       const prevSpeciesId = [...updatedIdHistory][[...updatedIdHistory].length - 2];
       setCurrLastSpeciesId(prevSpeciesId);
@@ -537,7 +593,7 @@ function InvasiveSpeciesPage() {
         <SearchComponent
           text={"Search invasive species (scientific name)"}
           handleSearch={handleSearch}
-          searchResults={searchBarResults}
+          searchResults={invasiveSpeciesNames}
           searchTerm={searchInput}
           setSearchTerm={setSearchInput}
         />
@@ -576,8 +632,8 @@ function InvasiveSpeciesPage() {
           ))}
         </select>
 
-        {/* Previous and next buttons for table */}
-        <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} species`}</span>
+        {/* Previous and next buttons for table + species count*/}
+        <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} of ${speciesCount} species`}</span>
         <IconButton onClick={handlePreviousPage} disabled={page === 0}>
           <NavigateBeforeIcon />
         </IconButton>
@@ -643,9 +699,9 @@ function InvasiveSpeciesPage() {
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
                               value={
-                                Array.isArray(tempData.scientific_name)
-                                  ? tempData.scientific_name.join(", ")
-                                  : tempData.scientific_name
+                              Array.isArray(tempEditingData.scientific_name)
+                                ? tempEditingData.scientific_name.join(", ")
+                                : tempEditingData.scientific_name
                               }
                               onChange={(e) =>
                                 handleSearchInputChange("scientific_name", e.target.value)
@@ -657,7 +713,7 @@ function InvasiveSpeciesPage() {
                           {/* decsription */}
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
-                              value={boldText(tempData.species_description)}
+                            value={boldText(tempEditingData.species_description)}
                               onChange={(e) =>
                                 handleSearchInputChange("species_description", e.target.value)
                               }
@@ -690,9 +746,9 @@ function InvasiveSpeciesPage() {
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           <TextField
                             value={
-                              Array.isArray(tempData.resource_links)
-                                ? tempData.resource_links.join(", ")
-                                : tempData.resource_links
+                              Array.isArray(tempEditingData.resource_links)
+                                ? tempEditingData.resource_links.join(", ")
+                                : tempEditingData.resource_links
                             }
                             onChange={(e) =>
                               handleSearchInputChange(
@@ -703,8 +759,8 @@ function InvasiveSpeciesPage() {
                             InputProps={{
                               endAdornment: (
                                 <InputAdornment position="end">
-                                  {Array.isArray(tempData.resource_links) ? (
-                                    tempData.resource_links.map((link, index) => (
+                                  {Array.isArray(tempEditingData.resource_links) ? (
+                                    tempEditingData.resource_links.map((link, index) => (
                                       <span key={index}>
                                         <a
                                           href={link}
@@ -720,11 +776,11 @@ function InvasiveSpeciesPage() {
                                   ) : (
                                     <span>
                                       <a
-                                        href={tempData.resource_links}
+                                          href={tempEditingData.resource_links}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                       >
-                                        {tempData.resource_links}
+                                          {tempEditingData.resource_links}
                                       </a>
                                       <br />
                                       <br />
@@ -739,7 +795,7 @@ function InvasiveSpeciesPage() {
                           {/* region */}
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
-                            value={tempData.region_id.map((id) => regionMap[id]).join(", ")}
+                            value={tempEditingData.region_id.map((id) => regionMap[id]).join(", ")}
                               onChange={(e) =>
                                 handleSearchInputChange(
                                   "region_code_name",
@@ -835,9 +891,9 @@ function InvasiveSpeciesPage() {
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
                               value={
-                                Array.isArray(tempData.scientific_name)
-                                  ? tempData.scientific_name.join(", ")
-                                  : tempData.scientific_name
+                                Array.isArray(tempEditingData.scientific_name)
+                                  ? tempEditingData.scientific_name.join(", ")
+                                  : tempEditingData.scientific_name
                               }
                               onChange={(e) =>
                                 handleSearchInputChange("scientific_name", e.target.value)
@@ -848,7 +904,7 @@ function InvasiveSpeciesPage() {
                           {/* decsription */}
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
-                              value={boldText(tempData.species_description)}
+                              value={boldText(tempEditingData.species_description)}
                               onChange={(e) =>
                                 handleSearchInputChange("species_description", e.target.value)
                               }
@@ -881,9 +937,9 @@ function InvasiveSpeciesPage() {
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
                               value={
-                                Array.isArray(tempData.resource_links)
-                                  ? tempData.resource_links.join(", ")
-                                  : tempData.resource_links
+                                Array.isArray(tempEditingData.resource_links)
+                                  ? tempEditingData.resource_links.join(", ")
+                                  : tempEditingData.resource_links
                               }
                               onChange={(e) =>
                                 handleSearchInputChange(
@@ -894,8 +950,8 @@ function InvasiveSpeciesPage() {
                               InputProps={{
                                 endAdornment: (
                                   <InputAdornment position="end">
-                                    {Array.isArray(tempData.resource_links) ? (
-                                      tempData.resource_links.map((link, index) => (
+                                    {Array.isArray(tempEditingData.resource_links) ? (
+                                      tempEditingData.resource_links.map((link, index) => (
                                         <span key={index}>
                                           <a
                                             href={link}
@@ -911,11 +967,11 @@ function InvasiveSpeciesPage() {
                                     ) : (
                                       <span>
                                         <a
-                                          href={tempData.resource_links}
+                                            href={tempEditingData.resource_links}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                         >
-                                          {tempData.resource_links}
+                                            {tempEditingData.resource_links}
                                         </a>
                                         <br />
                                         <br />
@@ -930,7 +986,7 @@ function InvasiveSpeciesPage() {
                           {/* region */}
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
-                              value={tempData.region_id.map((id) => regionMap[id]).join(", ")}
+                              value={tempEditingData.region_id.map((id) => regionMap[id]).join(", ")}
                               onChange={(e) =>
                                 handleSearchInputChange(
                                   "region_code_name",
@@ -1023,7 +1079,8 @@ function InvasiveSpeciesPage() {
       {/* pagination */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "80%" }}>
         {/* previous and next buttons for table */}
-        <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} species`}</span>
+        {/* Previous and next buttons for table + species count*/}
+        <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} of ${speciesCount} species`}</span>
         <IconButton onClick={handlePreviousPage} disabled={page === 0}>
           <NavigateBeforeIcon />
         </IconButton>
@@ -1042,7 +1099,7 @@ function InvasiveSpeciesPage() {
 
       <EditInvasiveSpeciesDialog
         open={openEditSpeciesDialog}
-        tempData={tempData}
+        tempData={tempEditingData}
         handleSearchInputChange={handleSearchInputChange}
         handleFinishEditingRow={handleFinishEditingRow}
         handleSave={handleSave}

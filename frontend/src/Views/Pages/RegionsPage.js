@@ -18,7 +18,6 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import EditRegionDialog from "../../dialogs/EditRegionsDialog";
 // import LocationFilterComponent from '../../components/LocationFilterComponent';
 import axios from "axios";
-// import { UserContext } from '../../UserContext';
 
 // displays regions
 function RegionsPage() {
@@ -41,11 +40,7 @@ function RegionsPage() {
 
     const [currLastRegionId, setCurrLastRegionId] = useState(""); // current last region
     const [lastRegionIdHistory, setLastRegionIdHistory] = useState(new Set()); // history of last region ids seen for each page
-    // const [lastRegionNameHistory, setLastRegionNameHistory] = useState(new Set()); // history of last region full names seen for each page
     const [shouldReset, setShouldReset] = useState(false);
-    // const { user } = useContext(UserContext);
-
-    // console.log("this is the user: ", user);
 
     const [user, setUser] = useState("");
 
@@ -75,11 +70,9 @@ function RegionsPage() {
             })
             .then((response) => {
                 console.log("Regions retrieved successfully", response.data);
-                // console.log("now in regions, this is the user: ", user);
 
                 if (shouldReset) {
                     setLastRegionIdHistory(new Set())
-                    // setLastRegionNameHistory(new Set())
                     setShouldReset(false);
                 }
 
@@ -90,11 +83,9 @@ function RegionsPage() {
                 // update lastSpeciesId with the species_id of the last row displayed in the table
                 if (response.data.length > 0) {
                     const newLastRegionId = response.data[response.data.length - 1].region_id;
-                    // const newLastRegionName = response.data[response.data.length - 1].region_fullname;
 
                     setCurrLastRegionId(newLastRegionId);
                     setLastRegionIdHistory(history => new Set([...history, newLastRegionId]));
-                    // setLastRegionNameHistory(history => new Set([...history, newLastRegionName]));
                 }
             })
             .catch((error) => {
@@ -110,7 +101,6 @@ function RegionsPage() {
             .get(`${API_ENDPOINT}region`, {
                 params: {
                     region_fullname: formattedSearchInput,
-                    last_region_id: shouldReset ? null : currLastRegionId  // for pagination
                 },
                 headers: {
                     'x-api-key': process.env.REACT_APP_X_API_KEY
@@ -133,11 +123,11 @@ function RegionsPage() {
         handleGetRegions();
     }
 
-    useEffect(() => {
-        console.log("last species id: ", currLastRegionId)
-        // console.log("history: ", lastRegionIdHistory, lastRegionNameHistory)
-        // }, [currLastRegionId, lastRegionIdHistory, lastRegionNameHistory]);
-    }, [currLastRegionId, lastRegionIdHistory]);
+    // useEffect(() => {
+    //     console.log("last species id: ", currLastRegionId)
+    //     // console.log("history: ", lastRegionIdHistory, lastRegionNameHistory)
+    //     // }, [currLastRegionId, lastRegionIdHistory, lastRegionNameHistory]);
+    // }, [currLastRegionId, lastRegionIdHistory]);
 
 
     // filters display data based on user search input
@@ -219,8 +209,6 @@ function RegionsPage() {
     const handleAddRegion = (newRegionData) => {
         retrieveUser();
         const jwtToken = user.signInUserSession.accessToken.jwtToken
-
-        // console.log("jwtToken: ", jwtToken)
 
         const formattedData = {
             ...newRegionData,
@@ -359,10 +347,6 @@ function RegionsPage() {
             const updatedIdHistory = new Set([...lastRegionIdHistory]);
             updatedIdHistory.delete([...updatedIdHistory].pop());
             setLastRegionIdHistory(updatedIdHistory);
-
-            // const updatedNameHistory = new Set([...lastRegionNameHistory]);
-            // updatedNameHistory.delete([...updatedNameHistory].pop());
-            // setLastRegionNameHistory(updatedNameHistory);
 
             // gets the previous species id
             const prevSpeciesId = [...updatedIdHistory][[...updatedIdHistory].length - 2];
