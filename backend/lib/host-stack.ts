@@ -10,6 +10,8 @@ import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import * as path from "path";
 import * as cdk from 'aws-cdk-lib';
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 
 // Other stack
 import { VpcStack } from './vpc-stack';
@@ -137,10 +139,16 @@ export class HostStack extends Stack {
             'Allow traffic only to Fargate Service security group'
         );
 
-        // Set ALBSecurityGroup inbound to any IPv4 at HTTPS (443)
+        // // Set ALBSecurityGroup inbound to any IPv4 at HTTPS (443)
+        // ALBSecurityGroup.addIngressRule(
+        //     ec2.Peer.anyIpv4(),
+        //     ec2.Port.tcp(443), 
+        //     'Allow traffic from all IPv4');
+
+        // Set ALBSecurityGroup inbound to any IPv4 at HTTP (80)
         ALBSecurityGroup.addIngressRule(
             ec2.Peer.anyIpv4(),
-            ec2.Port.tcp(443), 
+            ec2.Port.tcp(80), 
             'Allow traffic from all IPv4');
 
         // Create a ALB for ECS Cluster Service
@@ -234,8 +242,8 @@ export class HostStack extends Stack {
             openListener: false,
             // ALB Configuration
             loadBalancer: ALB,
-            certificate: aws_certificatemanager.Certificate.fromCertificateArn(this, 'https-certificate', CERTIFICATE_ARN.valueAsString),
-            listenerPort: 443,
+            // certificate: aws_certificatemanager.Certificate.fromCertificateArn(this, 'https-certificate', CERTIFICATE_ARN.valueAsString),
+            // listenerPort: 443,
         });
 
         // Attach WAF to ALB
@@ -249,5 +257,36 @@ export class HostStack extends Stack {
             resourceArn: apiStack.stageARN_APIGW,
             webAclArn: WAFwebACL.attrArn,
         });
+
+        /**
+         * 
+         * Add Cloudfront on ALB
+         */
+        // Create ALB as CloudFront Origin
+        const origin_ALB = new origins.LoadBalancerV2Origin(ALBFargateService.loadBalancer, {
+            protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY
+        });
+
+        // Create a CloudFront distribution with ALB as origin
+        const CFDistribution = new cloudfront.Distribution(this, 'InvasivePlants-CloudFront-Distribution', {
+            defaultBehavior: {
+                origin: origin_ALB,
+            },
+            comment: "CloudFront distribution for ALB as origin",
+            enableLogging: true
+            // webAclId: WAFInstance.attrArn,
+        });
+
+        // Add behaviour for /smartAuth to forward all request to origin
+        // CFDistribution.addBehavior('/smartAuth*', origin_ALB, {
+        //     originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER
+        // });
+
+        // // Output Messages
+        new cdk.CfnOutput(this, 'Output-Message', {
+            value: `
+                CloudFront URL: ${CFDistribution.distributionDomainName}
+            `,
+        })
     }
 }
