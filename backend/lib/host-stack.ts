@@ -18,6 +18,7 @@ import { VpcStack } from './vpc-stack';
 import { FunctionalityStack } from './functionality-stack';
 import { APIStack } from './api-stack';
 import { EcrStack } from './ecr-stack';
+import { WAFStack } from './waf-stack';
 
 interface AwsRegions2PrefixListID {
     [key: string]: string;
@@ -44,23 +45,27 @@ export class HostStack extends Stack {
         'us-west-1': 'pl-4ea04527',
         'us-west-2': 'pl-82a045eb',
     };
-    constructor(scope: Construct, id: string, vpcStack:VpcStack, functionalityStack:FunctionalityStack, apiStack:APIStack, ecrStack: EcrStack, props?: StackProps) {
+    constructor( scope: Construct, id: string, vpcStack:VpcStack, functionalityStack:FunctionalityStack, apiStack:APIStack, ecrStack: EcrStack, wafStack: wafv2.CfnWebACL, props?: StackProps) {
+        // constructor(    scope: Construct, 
+        //     id: string,    
+        //     vpcStack:VpcStack, 
+        //     functionalityStack:FunctionalityStack, 
+        //     apiStack:APIStack, 
+        //     ecrStack: EcrStack,
+        //     wafStack: WAFStack, 
+        //     props?: StackProps) 
         super(scope, id, props);
 
         // Import a VPC stack
         // For a region, create upto 2 AZ with a public subset each.
         const vpc = vpcStack.vpc;
 
-        // Example of passing secret using command,
-        //      aws secretsmanager create-secret --name SedationSecrets --secret-string '{"REACT_APP_CLIENT_SECRET":"string", "REACT_APP_CLIENT_ID":"string"}' --profile <your-profile-name>
-        
         // Retrieve a secrete from Secret Manager
         // "Invasive_Plants_Cognito_Secrets" is consistent from functionality stack
         const secret = secretmanager.Secret.fromSecretNameV2(this, "ImportedSecrets", "Invasive_Plants_Cognito_Secrets");
 
-
         // Create WAFvs As web ACL
-        // This will attach with ALB later on
+        // This will attach to API Gateway
         const WAFwebACL = new wafv2.CfnWebACL(this, 'Invasive-Plants-WebACL', {
             defaultAction: {
                 allow: {}
@@ -163,18 +168,6 @@ export class HostStack extends Stack {
             'Allow traffic only to Fargate Service security group'
         );
 
-        // // Set ALBSecurityGroup inbound to any IPv4 at HTTPS (443)
-        // ALBSecurityGroup.addIngressRule(
-        //     ec2.Peer.anyIpv4(),
-        //     ec2.Port.tcp(443), 
-        //     'Allow traffic from all IPv4');
-
-        // // Set ALBSecurityGroup inbound to any IPv4 at HTTP (80)
-        // ALBSecurityGroup.addIngressRule(
-        //     ec2.Peer.anyIpv4(),
-        //     ec2.Port.tcp(80), 
-        //     'Allow traffic from all IPv4');
-
         // Read parameter from user 
         const prefixListIdParam = new CfnParameter(this, "prefixListID", {
             type: 'String',
@@ -258,7 +251,7 @@ export class HostStack extends Stack {
                 logRetention: RetentionDays.ONE_YEAR,
             }),
         });
-        
+
         // Run Application Load Balancer in Fargate as an ECS Service
         // ALB in public subnet, ECS Service in private subnet
         const ALBFargateService = new ecspatterns.ApplicationLoadBalancedFargateService(this, "Host-With-LoadBalancer-Dashboard", {
@@ -304,14 +297,9 @@ export class HostStack extends Stack {
                 origin: origin_ALB,
             },
             comment: "CloudFront distribution for ALB as origin",
-            enableLogging: true
-            // webAclId: WAFInstance.attrArn,
+            enableLogging: true,
+            webAclId: wafStack.attrArn
         });
-
-        // Add behaviour for /smartAuth to forward all request to origin
-        // CFDistribution.addBehavior('/smartAuth*', origin_ALB, {
-        //     originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER
-        // });
 
         // // Output Messages
         new cdk.CfnOutput(this, 'Output-Message', {
