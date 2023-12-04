@@ -408,6 +408,11 @@ function AlternativeSpeciesPage() {
               })
               .then(response => {
                 console.log("Images added successfully", response.data);
+                if (start > rowsPerPage) {
+                  handleGetAlternativeSpeciesAfterSave();
+                } else {
+                  setShouldReset(true);
+                }
               })
               .catch(error => {
                 console.error("Error adding images", error);
@@ -421,7 +426,6 @@ function AlternativeSpeciesPage() {
 
       retrieveUser();
       const jwtToken = user.signInUserSession.accessToken.jwtToken;
-
 
       // update alternative species table
       axios
