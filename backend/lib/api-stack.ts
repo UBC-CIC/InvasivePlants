@@ -397,7 +397,7 @@ export class APIStack extends Stack {
             "s3:GetObject",
             "s3:DeleteObject"
           ],
-          Resource: `arn:aws:s3:::${functionalityStack.bucketName}/*`
+          Resource: `arn:aws:s3:::${functionalityStack.bucketName}/userLoadedPhotos/*`
         }));
 
         // Add the policy to the Lambda function's policy to log data to CloudWatch
@@ -479,11 +479,3 @@ export class APIStack extends Stack {
         apiGW_authorizationFunction_user.overrideLogicalId("userLambdaAuthorizer");
     }
 }
-// Cogito is next
-// https://medium.com/@michael.leigh.stewart/securing-an-api-with-aws-cdk-api-gateway-and-cognito-cee9158a2ddb
-// https://www.youtube.com/watch?v=9crTLAT_4uY 
-
-// RDS
-// https://www.subaud.io/blog/build-a-private-rds-with-lambda-integration
-// https://www.freecodecamp.org/news/aws-lambda-rds/
-// https://github.com/schuettc/cdk-private-rds-with-lambda/blob/main/src/lambda.ts

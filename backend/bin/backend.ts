@@ -50,7 +50,3 @@ const ecrStack = new EcrStack(app, 'ECRStack');
 
 // Create an instance of Host stack
 const hostStack = new HostStack(app, 'hostStack', vpcStack, functionality, api, ecrStack, WAFInstance.WAFwebACL, stackDefaultSetup);
-
-// aws cognito-idp sign-up --client-id 7factsbgi05qv66mgbk9cca827 --username visal.social@gmail.com --password 1234Abcd^ --region ca-central-1
-// aws cognito-idp admin-confirm-sign-up --user-pool-id ca-central-1_n7qsRCn5x --username visal.social@gmail.com --region ca-central-1
-// aws cognito-idp initiate-auth --auth-flow USER_PASSWORD_AUTH --client-id 7factsbgi05qv66mgbk9cca827 --auth-parameters USERNAME=visal.social@gmail.com,PASSWORD=1234Abcd^ --region ca-central-1

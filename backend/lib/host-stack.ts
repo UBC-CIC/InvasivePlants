@@ -295,6 +295,7 @@ export class HostStack extends Stack {
         const CFDistribution = new cloudfront.Distribution(this, 'InvasivePlants-CloudFront-Distribution', {
             defaultBehavior: {
                 origin: origin_ALB,
+                originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER  // Forward all parameters in viewer request to origin
             },
             comment: "CloudFront distribution for ALB as origin",
             enableLogging: true,

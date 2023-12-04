@@ -99,7 +99,6 @@ export class FunctionalityStack extends cdk.Stack {
          * 
          * Create S3 buckets for plants data
          */
-        
         const s3bucket = new s3.Bucket(this, 'invasive-plants-bucket', {
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
             encryption: s3.BucketEncryption.S3_MANAGED,
@@ -127,26 +126,11 @@ export class FunctionalityStack extends cdk.Stack {
             comment: "CloudFront distribution for S3 as origin",
         });
 
-        // // Output Messages
+        // Output Messages
         new cdk.CfnOutput(this, 'Output-Message', {
             value: `
                 CloudFront URL: ${CFDistribution.distributionDomainName}
             `,
         })
-
-        // {
-		// 	"Sid": "AllowCloudFrontServicePrincipal",
-		// 	"Effect": "Allow",
-		// 	"Principal": {
-		// 		"Service": "cloudfront.amazonaws.com"
-		// 	},
-		// 	"Action": "s3:GetObject",
-		// 	"Resource": "arn:aws:s3:::invasive-plants-bucket/*",
-		// 	"Condition": {
-		// 		"StringEquals": {
-		// 			"AWS:SourceArn": "arn:aws:cloudfront::925092432586:distribution/E1AEHINADZDZIS"
-		// 		}
-		// 	}
-		// }
     }
 }
