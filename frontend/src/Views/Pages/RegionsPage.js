@@ -234,7 +234,7 @@ function RegionsPage() {
                     })
                 .then((response) => {
                     console.log("Region updated successfully", response.data);
-                    setShouldReset(true); // TODO
+                    setShouldReset(true); 
                     handleFinishEditingRow();
                 })
                 .catch((error) => {

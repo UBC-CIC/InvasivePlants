@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
@@ -24,6 +24,12 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         }
     }
 
+    // retriever user on load
+    useEffect(() => {
+        console.log("retrieved user!!!");
+        retrieveUser()
+    }, [])
+
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -45,39 +51,32 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         .get(`${API_ENDPOINT}/getS3SignedURL`, {
                             params: {
                                 contentType: files[i].type,
-                                filename: files[i].name
+                                // filename: files[i].name
                             },
                             headers: {
                                 'x-api-key': process.env.REACT_APP_X_API_KEY
                             }
                         });
 
-                    console.log("signed url response: ", signedURLResponse)
+                    // console.log("signed url response: ", signedURLResponse)
 
                     if (!signedURLResponse.data.uploadURL) {
                         continue;
                     }
 
                     const signedURLData = signedURLResponse.data;
-
                     console.log("signed url data: ", signedURLData)
 
                     // use the obtained signed URL to upload the image
-                    uploadResponse = await axios.put(signedURLData.uploadURL, files[i], {
-                        headers: {
-                            'Content-Type': files[i].type
-                        }
-                    });
-
+                    uploadResponse = await axios.put(signedURLData.uploadURL, files[i])
                     console.log("upload response: ", uploadResponse)
 
+                    console.log("s3keys: ", s3Keys);
                     // Image uploaded successfully, add its s3 key to the list
                     if (signedURLData.key) {
                         s3Keys.push(signedURLData.key);
                     }
                 }
-
-                console.log("s3keys: ", s3Keys)
 
                 // Update the state or handle the uploaded image s3 keys
                 handleSearchInputChange('s3_keys', s3Keys);

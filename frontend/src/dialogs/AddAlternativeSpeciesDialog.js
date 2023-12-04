@@ -85,8 +85,15 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
 
           // GET request to getS3SignedURL endpoint
           const signedS3URLResponse = await fetch(
-            `${API_ENDPOINT}/getS3SignedURL`  // TODO: add the parameters
-          );
+            `${API_ENDPOINT}/getS3SignedURL`, {
+            params: {
+              contentType: files[i].type,
+              filename: files[i].name
+            },
+            headers: {
+              'x-api-key': process.env.REACT_APP_X_API_KEY
+            }
+          });
 
           if (!signedS3URLResponse.ok) {
             continue;

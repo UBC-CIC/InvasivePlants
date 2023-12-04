@@ -413,9 +413,13 @@ function AlternativeSpeciesPage() {
             'Authorization': `${jwtToken}`
           }
         })
-        .then((response) => { // TODO
+        .then((response) => { 
           console.log("alternative species updated successfully", response.data);
-          handleGetAlternativeSpeciesAfterSave();
+          if (start > rowsPerPage) {
+            handleGetAlternativeSpeciesAfterSave();
+          } else {
+            setShouldReset(true);
+          }
           handleFinishEditingRow();
         })
         .catch((error) => {

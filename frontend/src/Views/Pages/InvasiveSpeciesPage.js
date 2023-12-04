@@ -462,7 +462,11 @@ function InvasiveSpeciesPage() {
           })
         .then((response) => {
           console.log("invasive species updated successfully", response.data);
-          handleGetInvasiveSpeciesAfterSave();
+          if (start > rowsPerPage) {
+            handleGetInvasiveSpeciesAfterSave();
+          } else {
+            setShouldReset(true);
+          }
           handleFinishEditingRow();
         })
         .catch((error) => {
