@@ -8,30 +8,24 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { updateLoginState } from "./Actions/loginActions";
 import theme from "./themes";
-import { UserProvider } from './UserContext';
 
 function App(props) {
   const { loginState, updateLoginState } = props;
   const [currentLoginState, updateCurrentLoginState] = useState(loginState);
 
   useEffect(() => {
-    // console.log("currentLoginState in useEffect:", currentLoginState);
     setAuthListener();
   }, []);
 
   useEffect(() => {
-    // console.log("Login state updated:", loginState);
     updateCurrentLoginState(loginState);
   }, [loginState]);
 
 
   async function setAuthListener() {
-    // console.log("Setting up auth listener");
     Hub.listen('auth', (data) => {
-      // console.log("Auth event:", data.payload.event);
       switch (data.payload.event) {
         case "signOut":
-          // console.log("User signed out");
           updateLoginState("signIn");
           break;
         default:
@@ -40,7 +34,6 @@ function App(props) {
     })
   }
   return (
-    // <UserProvider>
     <StylesProvider injectFirst>
       <ThemeProvider theme={theme}>
         <div style={{ width: "100vw", height: "100vh" }}>
@@ -74,7 +67,6 @@ function App(props) {
         </div>
       </ThemeProvider>
     </StylesProvider>
-    // </UserProvider>
   );
 }
 

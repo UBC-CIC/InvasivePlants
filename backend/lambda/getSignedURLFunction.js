@@ -22,12 +22,13 @@ const getUploadURL = async function(event) {
   if(event.queryStringParameters != null){
     key = (event.queryStringParameters.filename) ? event.queryStringParameters.filename : key;
     contentType = (event.queryStringParameters.contentType) ? event.queryStringParameters.contentType : contentType;
+    // TODO: get alternative species id??
   }
   
   // Get signed URL from S3
   const s3Params = {
     Bucket: BUCKET_NAME,
-    Key: key,
+    Key: key, // TODO
     Expires: URL_EXPIRATION_SECONDS,
     ContentType: contentType
   };

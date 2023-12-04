@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, AlertTitle, Box, Button } from '@mui/material';
 
+// warning alert when user tries to add something that already exists
 const CustomWarning = ({ data, onClose, handleAdd }) => {
     return (
         <Alert severity="warning">

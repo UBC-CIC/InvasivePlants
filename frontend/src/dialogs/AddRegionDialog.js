@@ -4,6 +4,7 @@ import SnackbarOnSuccess from "../components/SnackbarComponent";
 import CustomAlert from "../components/AlertComponent";
 import CustomWarning from "../components/WarningComponent";
 
+// dialog for adding a region
 const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialRegionData = {
         region_fullname: "",

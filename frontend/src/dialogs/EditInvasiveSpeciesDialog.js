@@ -7,50 +7,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 import handleGetRegions from '../functions/RegionMap';
-import axios from "axios";
 
-const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
-    const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
+// dialog for editing an invasive species
+const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave, alternativeSpeciesData }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
-    const [alternativeSpeciesData, setAlternativeSpeciesData] = useState([]);
     const [regionMap, setRegionsMap] = useState({});
-
-    const handleGetAlternativeSpecies = () => {
-        const capitalizeWordsSplitUnderscore = (str) => {
-            return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-        };
-
-        const capitalizeWordsSplitSpace = (str) => {
-            return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-        };
-
-        // get alternative
-        axios
-            .get(`${API_ENDPOINT}alternativeSpecies`)
-            .then((response) => {
-
-                // Capitalize each scientific_name 
-                const formattedData = response.data.map(item => {
-                    const capitalizedScientificNames = item.scientific_name.map(name => capitalizeWordsSplitUnderscore(name));
-                    const capitalizedCommonNames = item.common_name.map(name => capitalizeWordsSplitSpace(name));
-                    return {
-                        ...item,
-                        scientific_name: capitalizedScientificNames,
-                        common_name: capitalizedCommonNames
-                    };
-                });
-                console.log("alternative species data from invasive species: ", formattedData);
-                setAlternativeSpeciesData(formattedData);
-            })
-            .catch((error) => {
-                console.error("Error retrieving alternative species", error);
-            });
-    };
-    useEffect(() => {
-        handleGetAlternativeSpecies();
-    }, []);
 
     useEffect(() => {
         const fetchRegionData = async () => {
@@ -111,7 +74,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                         <Autocomplete
                             multiple
                             id="alternative-species-autocomplete"
-                            options={alternativeSpeciesData}
+                            options={alternativeSpeciesData} 
                             getOptionLabel={(option) =>
                                 `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
                             }

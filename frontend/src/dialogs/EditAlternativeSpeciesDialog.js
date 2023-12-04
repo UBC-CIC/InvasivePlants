@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 import DeleteDialog from '../dialogs/ConfirmDeleteDialog';
 import { Auth } from "aws-amplify";
-
 import axios from "axios";
 
+// dialog for editing an alternative species
 const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
     const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
 
@@ -18,11 +18,16 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         try {
             const returnedUser = await Auth.currentAuthenticatedUser();
             setUser(returnedUser);
-            console.log("current user: ", returnedUser);
         } catch (e) {
             console.log("error getting user: ", e);
         }
     }
+
+    // retriever user on load
+    useEffect(() => {
+        // console.log("retrieved user!!!");
+        retrieveUser()
+    }, [])
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -37,36 +42,35 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         let uploadResponse;
 
         if (files) {
-
-            // TODO: image files instead
             let s3Keys = tempData.s3_keys ? [...tempData.s3_keys] : [];
 
             try {
                 for (let i = 0; i < files.length; i++) {
 
-                    //GET request to getS3SignedURL endpoint
-                    const signedURLResponse = await fetch(
-                        `${API_ENDPOINT}/getS3SignedURL`
-                    );
+                    // GET request to getS3SignedURL endpoint
+                    const signedURLResponse = await axios
+                        .get(`${API_ENDPOINT}/getS3SignedURL`, {
+                            params: {
+                                contentType: files[i].type
+                            },
+                            headers: {
+                                'x-api-key': process.env.REACT_APP_X_API_KEY
+                            }
+                        });
 
-                    if (!signedURLResponse.ok) {
+
+                    if (!signedURLResponse.data.uploadURL) {
                         continue;
                     }
 
-                    const signedURLData = await signedURLResponse.json();
+                    const signedURLData = signedURLResponse.data;
                     console.log("signed url data: ", signedURLData)
 
-                    // Use the obtained signed URL to upload the image
-                    uploadResponse = await fetch(signedURLData.uploadURL, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': files[i].type
-                        },
-                        body: files[i]
-                    });
-
+                    // use the obtained signed URL to upload the image
+                    uploadResponse = await axios.put(signedURLData.uploadURL, files[i])
                     console.log("upload response: ", uploadResponse)
 
+                    console.log("s3keys: ", s3Keys);
                     // Image uploaded successfully, add its s3 key to the list
                     if (signedURLData.key) {
                         s3Keys.push(signedURLData.key);
@@ -116,16 +120,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                     handleSearchInputChange("image_links", updatedImages.map((image) => image.image_url));
                     handleSearchInputChange("s3_keys", updatedImages.map((image) => image.s3_key));
                     console.log("images deleted successfully", response.data);
-
-                    // TODO: Delete the image from the S3 bucket
-                    // axios
-                    //     .delete(`https://d123pl6gvdlen1.cloudfront.net/${deleteImg.s3_key}`)
-                    //     .then((response) => {
-                    //         console.log("image deleted from S3 bucket successfully", response.data);
-                    //     })
-                    //     .catch((err) => {
-                    //         console.error("Error deleting image from S3 bucket", err);
-                    //     });
                 })
                 .catch((error) => {
                     console.error("Error deleting image", error);
