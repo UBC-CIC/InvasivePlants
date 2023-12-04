@@ -35,15 +35,23 @@ function AlternativeSpeciesPage() {
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false); // state of the editing an alternative species dialog
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false); // state of the adding a new alternative species dialog
   const [searchInput, setSearchInput] = useState(""); // input of the species search bar
-  const [searchBarDropdownResults, setSearchBarDropdownResults] = useState(displayData.map((species) => ({ // TODO: get rid of??? dropdown options in the search bar
+  const [searchBarDropdownResults, setSearchBarDropdownResults] = useState(displayData.map((species) => ({ 
     label: species.scientific_name, value: species.scientific_name
   })));
   const [deleteId, setDeleteId] = useState(null); // species_id of the row being deleted
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
-
+  const [prevLastSpeciesId, setPrevLastSpeciesId] = useState(""); // prev last species
   const [currLastSpeciesId, setCurrLastSpeciesId] = useState(""); // current last species
   const [lastSpeciesIdHistory, setLastSpeciesIdHistory] = useState(new Set("")); // history of last species ids seen for each page
   const [shouldReset, setShouldReset] = useState(false); // reset above values
+  const [shouldSave, setShouldSave] = useState(false); // reset above values
+
+  const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
+  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // start with default 20 rows per page
+  const [page, setPage] = useState(0); // Start with page 0
+  const [disabled, setDisabled] = useState(false); // disabled next button or not
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(0);
 
   const [user, setUser] = useState(""); // authorized admin user
 
@@ -113,6 +121,8 @@ function AlternativeSpeciesPage() {
 
   // fetches alternative species data 
   const handleGetAlternativeSpecies = () => {
+    console.log("curr:", currLastSpeciesId, "prev:", prevLastSpeciesId, "history:", lastSpeciesIdHistory);
+
     // request to GET all alternative species
     axios
       .get(`${API_ENDPOINT}alternativeSpecies`, {
@@ -169,6 +179,75 @@ function AlternativeSpeciesPage() {
       .catch((error) => {
         console.error("Error getting alternative species", error);
       });
+  };
+
+  useEffect(() => {
+    if (shouldSave) {
+      // request to GET all alternative species
+      axios
+        .get(`${API_ENDPOINT}alternativeSpecies`, {
+          params: {
+            last_species_id: currLastSpeciesId ? currLastSpeciesId : null, // default first page
+            rows_per_page: rowsPerPage  // default 20
+          },
+          headers: {
+            'x-api-key': process.env.REACT_APP_X_API_KEY
+          }
+        })
+        .then((response) => {
+
+          // formats data 
+          const formattedData = response.data.map(item => {
+            const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
+            const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
+            const image_links = item.images.map(img => img.image_url);
+            const s3_keys = item.images.map(img => img.s3_key);
+
+            return {
+              ...item,
+              scientific_name: capitalizedScientificNames,
+              common_name: capitalizedCommonNames,
+              image_links: image_links,
+              s3_keys: s3_keys
+            };
+          });
+
+          console.log("retrieved alternative species data:", formattedData);
+
+          // update states
+          setDisplayData(formattedData);
+          // update lastSpeciesId with the species_id of the last row displayed in the table
+          if (formattedData.length > 0) {
+            const newLastSpeciesId = formattedData[formattedData.length - 1].species_id;
+
+            setCurrLastSpeciesId(newLastSpeciesId);
+            setLastSpeciesIdHistory(history => new Set([...history, newLastSpeciesId]));
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting alternative species", error);
+        })
+        .finally(() => {
+          setShouldSave(false);
+        });
+    }
+  }, [shouldSave]);
+
+  // fetches alternative species data 
+  const handleGetAlternativeSpeciesAfterSave = () => {
+    console.log("curr:", currLastSpeciesId, "history:", lastSpeciesIdHistory);
+
+    if (lastSpeciesIdHistory.size > 1) {
+      const updatedIdHistory = Array.from(lastSpeciesIdHistory);
+      updatedIdHistory.pop(); // Remove the last element
+
+      setLastSpeciesIdHistory(new Set(updatedIdHistory));
+
+      const prevSpeciesId = updatedIdHistory[updatedIdHistory.length - 1];
+      setCurrLastSpeciesId(prevSpeciesId);
+
+      setShouldSave(true)
+    }
   };
 
   // GET invasive species in the database that matches user search
@@ -294,16 +373,16 @@ function AlternativeSpeciesPage() {
       console.log("to add images (links): ", imagesToAdd);
       console.log("to add images (keys): ", s3KeysToAdd);
 
-      retrieveUser();
-      const jwtToken = user.signInUserSession.accessToken.jwtToken;
-
-      postImages(imagesToAdd);
-      postImages(s3KeysToAdd);
-
       // POST new images to the database
       function postImages(images) {
+        console.log("images: ", images)
+
+        retrieveUser();
+        const jwtToken = user.signInUserSession.accessToken.jwtToken;
+
         if (images && images.length > 0) {
           images.forEach(img => {
+            console.log("curr image:", img);
             axios
               .post(API_ENDPOINT + "plantsImages", img, {
                 headers: {
@@ -319,6 +398,13 @@ function AlternativeSpeciesPage() {
           });
         }
       }
+      postImages(imagesToAdd);
+      postImages(s3KeysToAdd);
+
+
+      retrieveUser();
+      const jwtToken = user.signInUserSession.accessToken.jwtToken;
+
 
       // update alternative species table
       axios
@@ -327,9 +413,9 @@ function AlternativeSpeciesPage() {
             'Authorization': `${jwtToken}`
           }
         })
-        .then((response) => {
+        .then((response) => { // TODO
           console.log("alternative species updated successfully", response.data);
-          setShouldReset(true);
+          handleGetAlternativeSpeciesAfterSave();
           handleFinishEditingRow();
         })
         .catch((error) => {
@@ -337,6 +423,7 @@ function AlternativeSpeciesPage() {
         });
     };
   };
+
 
   // opens confirmation dialog before deletion
   const handleDeleteRow = (species_id) => {
@@ -481,12 +568,6 @@ function AlternativeSpeciesPage() {
     }
   };
 
-  const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
-  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // start with default 20 rows per page
-  const [page, setPage] = useState(0); // Start with page 0
-  const [disabled, setDisabled] = useState(false); // disabled next button or not
-  const [start, setStart] = useState(0);
-  const [end, setEnd] = useState(0);
 
   // calculates start and end indices of the current displayed data in the entire data
   const calculateStartAndEnd = () => {

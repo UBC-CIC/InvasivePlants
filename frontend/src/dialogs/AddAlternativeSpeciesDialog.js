@@ -3,6 +3,7 @@ import { Typography, Box, Button, Dialog, DialogActions, DialogContent, DialogTi
 import SnackbarOnSuccess from "../components/SnackbarComponent";
 import CustomAlert from '../components/AlertComponent';
 import CustomWarning from '../components/WarningComponent';
+import axios from "axios";
 
 // dialog for adding an alternative species
 const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
@@ -82,9 +83,9 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
       try {
         for (let i = 0; i < files.length; i++) {
 
-          //GET request to getS3SignedURL endpoint
+          // GET request to getS3SignedURL endpoint
           const signedS3URLResponse = await fetch(
-            `${API_ENDPOINT}/getS3SignedURL`
+            `${API_ENDPOINT}/getS3SignedURL`  // TODO: add the parameters
           );
 
           if (!signedS3URLResponse.ok) {
@@ -106,7 +107,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
           console.log("upload response: ", uploadResponse)
 
           // add s3 key to the list of s3 keys
-          if (signedS3URLData.key) {
+          if (signedS3URLData.key) {                 
             s3Keys.push(signedS3URLData.key);
           }
 

@@ -52,6 +52,14 @@ function InvasiveSpeciesPage() {
   const [currLastSpeciesId, setCurrLastSpeciesId] = useState(""); // current last species
   const [lastSpeciesIdHistory, setLastSpeciesIdHistory] = useState(new Set("")); // history of lastSpeciesIds seen for each page
   const [shouldReset, setShouldReset] = useState(false); // reset above values
+  const [shouldSave, setShouldSave] = useState(false); // reset above values
+
+  const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
+  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // start with default 20 rows per page
+  const [page, setPage] = useState(0); // Start with page 0
+  const [disabled, setDisabled] = useState(false); // disabled next button or not
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(0);
 
   const [user, setUser] = useState("");
 
@@ -238,6 +246,80 @@ function InvasiveSpeciesPage() {
       });
   };
 
+
+  useEffect(() => {
+    if (shouldSave) {
+      // request to GET invasive species
+      axios
+        .get(`${API_ENDPOINT}invasiveSpecies`, {
+          params: {
+            last_species_id: currLastSpeciesId ? currLastSpeciesId : null, // default first page
+            rows_per_page: rowsPerPage // default 20
+          },
+          headers: {
+            'x-api-key': process.env.REACT_APP_X_API_KEY
+          }
+        })
+        .then((response) => {
+
+          // const promises = response.data.flatMap(item =>
+          //   item.region_id.map(regionId =>
+          //     axios.get(`${API_ENDPOINT}region/${regionId}`, {
+          //       headers: {
+          //         'x-api-key': process.env.REACT_APP_X_API_KEY
+          //       }
+          //     })
+          //   )
+          // );
+
+          // return Promise.all(promises)
+          //   .then(regionResponses => {
+          const formattedData = response.data.map((item, index) => {
+            return {
+              ...item,
+              scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name))
+            };
+          });
+
+          console.log("Invasive species retrieved successfully", formattedData);
+
+          // update states
+          setDisplayData(formattedData);
+          // update lastSpeciesId with the species_id of the last row displayed in the table
+          if (formattedData.length > 0) {
+            const newLastSpeciesId = formattedData[formattedData.length - 1].species_id;
+
+            setCurrLastSpeciesId(newLastSpeciesId);
+            setLastSpeciesIdHistory(history => new Set([...history, newLastSpeciesId]));
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting invasive species", error);
+        })
+        .finally(() => {
+          setShouldSave(false);
+        });
+      // });
+    }
+  }, [shouldSave]);
+
+  // fetches alternative species data 
+  const handleGetInvasiveSpeciesAfterSave = () => {
+    console.log("curr:", currLastSpeciesId, "history:", lastSpeciesIdHistory);
+
+    if (lastSpeciesIdHistory.size > 1) {
+      const updatedIdHistory = Array.from(lastSpeciesIdHistory);
+      updatedIdHistory.pop(); // Remove the last element
+
+      setLastSpeciesIdHistory(new Set(updatedIdHistory));
+
+      const prevSpeciesId = updatedIdHistory[updatedIdHistory.length - 1];
+      setCurrLastSpeciesId(prevSpeciesId);
+
+      setShouldSave(true)
+    }
+  };
+
   // GET invasive species in the database that matches user search
   const handleGetInvasiveSpeciesAfterSearch = () => {
     const formattedSearchInput = searchInput.toLowerCase().replace(/ /g, '_'); 
@@ -380,7 +462,7 @@ function InvasiveSpeciesPage() {
           })
         .then((response) => {
           console.log("invasive species updated successfully", response.data);
-          setShouldReset(true);
+          handleGetInvasiveSpeciesAfterSave();
           handleFinishEditingRow();
         })
         .catch((error) => {
@@ -519,13 +601,6 @@ function InvasiveSpeciesPage() {
       setDisplayData(results);
     }
   }
-
-  const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
-  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // Start with default 20 rows per page
-  const [page, setPage] = useState(0); // Start with page 0
-  const [disabled, setDisabled] = useState(false);
-  const [start, setStart] = useState(0);
-  const [end, setEnd] = useState(0);
 
   // calculates start and end indices of the current displayed data in the entire data
   const calculateStartAndEnd = () => {

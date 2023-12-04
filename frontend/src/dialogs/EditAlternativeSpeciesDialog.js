@@ -4,7 +4,6 @@ import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 import DeleteDialog from '../dialogs/ConfirmDeleteDialog';
 import { Auth } from "aws-amplify";
-
 import axios from "axios";
 
 // dialog for editing an alternative species
@@ -42,26 +41,32 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
 
             try {
                 for (let i = 0; i < files.length; i++) {
+                    const signedURLResponse = await axios
+                        .get(`${API_ENDPOINT}/getS3SignedURL`, {
+                            params: {
+                                contentType: files[i].type,
+                                filename: files[i].name
+                            },
+                            headers: {
+                                'x-api-key': process.env.REACT_APP_X_API_KEY
+                            }
+                        });
 
-                    //GET request to getS3SignedURL endpoint
-                    const signedURLResponse = await fetch(
-                        `${API_ENDPOINT}/getS3SignedURL`
-                    );
+                    console.log("signed url response: ", signedURLResponse)
 
-                    if (!signedURLResponse.ok) {
+                    if (!signedURLResponse.data.uploadURL) {
                         continue;
                     }
 
-                    const signedURLData = await signedURLResponse.json();
+                    const signedURLData = signedURLResponse.data;
+
                     console.log("signed url data: ", signedURLData)
 
-                    // Use the obtained signed URL to upload the image
-                    uploadResponse = await fetch(signedURLData.uploadURL, {
-                        method: 'PUT',
+                    // use the obtained signed URL to upload the image
+                    uploadResponse = await axios.put(signedURLData.uploadURL, files[i], {
                         headers: {
                             'Content-Type': files[i].type
-                        },
-                        body: files[i]
+                        }
                     });
 
                     console.log("upload response: ", uploadResponse)
@@ -71,6 +76,8 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         s3Keys.push(signedURLData.key);
                     }
                 }
+
+                console.log("s3keys: ", s3Keys)
 
                 // Update the state or handle the uploaded image s3 keys
                 handleSearchInputChange('s3_keys', s3Keys);
