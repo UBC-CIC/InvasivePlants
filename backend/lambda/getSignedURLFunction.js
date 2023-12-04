@@ -14,10 +14,11 @@ const s3 = new AWS.S3();
 const getUploadURL = async function(event) {
   // Generate default value for parameters
   const randomID = parseInt(Math.random() * 10000000);
-  let key = `${randomID}.jpg`;
+  let key = `userLoadedPhotos/${randomID}.jpg`;
   let contentType = 'image/jpeg';
   
   // Update changes of the default parameters
+  // TODO make sure key user provided is loaded to userLoadedPhotos folder.
   if(event.queryStringParameters != null){
     key = (event.queryStringParameters.filename) ? event.queryStringParameters.filename : key;
     contentType = (event.queryStringParameters.contentType) ? event.queryStringParameters.contentType : contentType;
