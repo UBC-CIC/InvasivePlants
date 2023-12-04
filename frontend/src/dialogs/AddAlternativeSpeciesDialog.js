@@ -84,38 +84,32 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
         for (let i = 0; i < files.length; i++) {
 
           // GET request to getS3SignedURL endpoint
-          const signedS3URLResponse = await fetch(
-            `${API_ENDPOINT}/getS3SignedURL`, {
-            params: {
-              contentType: files[i].type,
-              filename: files[i].name
+          const signedURLResponse = await axios
+            .get(`${API_ENDPOINT}/getS3SignedURL`, {
+              params: {
+                contentType: files[i].type
             },
             headers: {
               'x-api-key': process.env.REACT_APP_X_API_KEY
             }
           });
 
-          if (!signedS3URLResponse.ok) {
+
+          if (!signedURLResponse.data.uploadURL) {
             continue;
           }
 
-          const signedS3URLData = await signedS3URLResponse.json();
-          // console.log("signed url data: ", signedS3URLData)
+          const signedURLData = signedURLResponse.data;
+          console.log("signed url data: ", signedURLData)
 
-          // Use the obtained signed URL to upload the image
-          uploadResponse = await fetch(signedS3URLData.uploadURL, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': files[i].type
-            },
-            body: files[i]
-          });
-
+          // use the obtained signed URL to upload the image
+          uploadResponse = await axios.put(signedURLData.uploadURL, files[i])
           console.log("upload response: ", uploadResponse)
 
-          // add s3 key to the list of s3 keys
-          if (signedS3URLData.key) {                 
-            s3Keys.push(signedS3URLData.key);
+          console.log("s3keys: ", s3Keys);
+          // Image uploaded successfully, add its s3 key to the list
+          if (signedURLData.key) {
+            s3Keys.push(signedURLData.key);
           }
 
           handleInputChange('s3_keys', s3Keys);

@@ -23,7 +23,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 import axios from "axios";
-import { boldText, capitalizeFirstWord } from '../../functions/helperFunctions';
+import { boldText, formatString, capitalizeFirstWord } from '../../functions/helperFunctions';
 
 
 function InvasiveSpeciesPage() {
@@ -91,7 +91,7 @@ function InvasiveSpeciesPage() {
 
   // retriever user on and alternative species on load
   useEffect(() => {
-    console.log("retrieved user!!! + loading all species")
+    // console.log("retrieved user!!! + loading all species")
     retrieveUser()
     loadSpeciesInBackground()
     console.log("finished loading species")
@@ -422,20 +422,19 @@ function InvasiveSpeciesPage() {
     const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
 
     if (confirmed) {
-      let updatedTempData;
-      let names;
-      console.log("type: ", typeof tempEditingData.scientific_name);
-
+      // make sure that fields are proper data structure
+      let scientificNames;
       if (typeof tempEditingData.scientific_name === 'string') {
-        names = splitByCommaWithSpaces(tempEditingData.scientific_name).map(name => name.trim().toLowerCase().replace(/\s+/g, '_'));
-      } else {
-        names = tempEditingData.scientific_name.map(name => name.trim().toLowerCase().replace(/\s+/g, '_')
-        );
+        scientificNames = formatString(tempEditingData.scientific_name)
+          .map(name => name.toLowerCase().replace(/\s+/g, '_'));
+      } else if (Array.isArray(tempEditingData.scientific_name)) {
+        scientificNames = tempEditingData.scientific_name.map(name => name.toLowerCase().replace(/\s+/g, '_'));
       }
+      const formattedScientificNames = scientificNames || [];
 
-      updatedTempData = {
+      let updatedTempData = {
         ...tempEditingData,
-        scientific_name: names
+        scientific_name: formattedScientificNames
       };
 
       console.log("updated temp data: ", updatedTempData)

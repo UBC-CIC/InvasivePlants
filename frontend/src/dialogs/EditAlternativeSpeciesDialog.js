@@ -18,7 +18,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
         try {
             const returnedUser = await Auth.currentAuthenticatedUser();
             setUser(returnedUser);
-            console.log("current user: ", returnedUser);
         } catch (e) {
             console.log("error getting user: ", e);
         }
@@ -26,7 +25,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
 
     // retriever user on load
     useEffect(() => {
-        console.log("retrieved user!!!");
+        // console.log("retrieved user!!!");
         retrieveUser()
     }, [])
 
@@ -47,18 +46,18 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
 
             try {
                 for (let i = 0; i < files.length; i++) {
+
+                    // GET request to getS3SignedURL endpoint
                     const signedURLResponse = await axios
                         .get(`${API_ENDPOINT}/getS3SignedURL`, {
                             params: {
-                                contentType: files[i].type,
-                                // filename: files[i].name
+                                contentType: files[i].type
                             },
                             headers: {
                                 'x-api-key': process.env.REACT_APP_X_API_KEY
                             }
                         });
 
-                    // console.log("signed url response: ", signedURLResponse)
 
                     if (!signedURLResponse.data.uploadURL) {
                         continue;

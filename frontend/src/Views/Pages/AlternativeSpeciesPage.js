@@ -68,7 +68,7 @@ function AlternativeSpeciesPage() {
 
   // retriever user on and alternative species on load
   useEffect(() => {
-    console.log("retrieved user!!! + loading all species")
+    // console.log("retrieved user!!! + loading all species")
     retrieveUser()
     loadSpeciesNamesInBackground()
     console.log("finished loading species")
@@ -340,15 +340,32 @@ function AlternativeSpeciesPage() {
 
   // updates changes to the database on save
   const handleSave = (confirmed) => {
+    console.log("saved: temp editing data: ", tempEditingData);
+
     if (confirmed) {
       // make sure that fields are proper data structure
+      let scientificNames;
+      if (typeof tempEditingData.scientific_name === 'string') {
+        scientificNames = formatString(tempEditingData.scientific_name)
+          .map(name => name.toLowerCase().replace(/\s+/g, '_'));
+      } else if (Array.isArray(tempEditingData.scientific_name)) {
+        scientificNames = tempEditingData.scientific_name.map(name => name.toLowerCase().replace(/\s+/g, '_'));
+      }
+      const formattedScientificNames = scientificNames || [];
+
+      let commonNames;
+      if (typeof tempEditingData.commonNames === 'string') {
+        commonNames = formatString(tempEditingData.commonNames)
+          .map(name => name.toLowerCase().replace(/\s+/g, '_'));
+      } else if (Array.isArray(tempEditingData.commonNames)) {
+        commonNames = tempEditingData.commonNames.map(name => name.toLowerCase().replace(/\s+/g, '_'));
+      }
+      const formattedCommonNames = commonNames || [];
+
       const formattedData = {
         ...tempEditingData,
-        scientific_name: typeof tempEditingData.scientific_name === 'string' ?
-          formatString(tempEditingData.scientific_name).toLowerCase().replace(/\s+/g, '_') :
-          tempEditingData.scientific_name.map(name => name.toLowerCase().replace(/\s+/g, '_')),
-        common_name: typeof tempEditingData.common_name === 'string' ?
-          formatString(tempEditingData.common_name) : tempEditingData.common_name,
+        scientific_name: formattedScientificNames,
+        common_name: formattedCommonNames
       };
 
       // maps species_id to image_url if links exist and is not empty

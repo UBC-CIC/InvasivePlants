@@ -64,10 +64,10 @@ function RegionsPage() {
 
     // retriever user on and alternative species on load
     useEffect(() => {
-        console.log("retrieved user!!! + loading all regions")
+        // console.log("retrieved user!!! + loading all regions")
         retrieveUser()
         loadRegionsInBackground()
-        console.log("finished loading regions")
+        // console.log("finished loading regions")
     }, [])
 
     // gets all alternative species in the database
