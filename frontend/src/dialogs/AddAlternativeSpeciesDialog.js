@@ -7,7 +7,7 @@ import axios from "axios";
 
 // dialog for adding an alternative species
 const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
-  const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const initialSpeciesData = {
     scientific_name: [],
@@ -85,7 +85,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
 
           // GET request to getS3SignedURL endpoint
           const signedURLResponse = await axios
-            .get(`${API_ENDPOINT}/getS3SignedURL`, {
+            .get(`${API_BASE_URL}/getS3SignedURL`, {
               params: {
                 contentType: files[i].type
             },
@@ -108,6 +108,8 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
 
           console.log("s3keys: ", s3Keys);
           // Image uploaded successfully, add its s3 key to the list
+          
+          // TODO: make keys moe unique (can consider uuid, timestamp)
           if (signedURLData.key) {
             s3Keys.push(signedURLData.key);
           }

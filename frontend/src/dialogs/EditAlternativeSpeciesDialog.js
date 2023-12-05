@@ -8,7 +8,8 @@ import axios from "axios";
 
 // dialog for editing an alternative species
 const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
-    const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+    const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
     const [user, setUser] = useState("");
@@ -49,7 +50,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
 
                     // GET request to getS3SignedURL endpoint
                     const signedURLResponse = await axios
-                        .get(`${API_ENDPOINT}/getS3SignedURL`, {
+                        .get(`${API_BASE_URL}/getS3SignedURL`, {
                             params: {
                                 contentType: files[i].type
                             },
@@ -105,7 +106,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
             const jwtToken = user.signInUserSession.accessToken.jwtToken;
 
             axios
-                .delete(`${API_ENDPOINT}plantsImages/${deleteImg.image_id}`, {
+                .delete(`${API_BASE_URL}plantsImages/${deleteImg.image_id}`, {
                     headers: {
                         'Authorization': `${jwtToken}`
                     }
@@ -248,7 +249,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                                     {img.s3_key && (
                                         <div>
                                             <img
-                                                src={`https://d123pl6gvdlen1.cloudfront.net/${img.s3_key}`}
+                                                src={`${S3_BASE_URL}${img.s3_key}`}
                                                 alt={`image-${index}`}
                                                 style={{ maxWidth: '60%', height: 'auto' }}
                                             />
