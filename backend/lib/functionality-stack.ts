@@ -10,10 +10,8 @@ import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 
 export class FunctionalityStack extends cdk.Stack {
     public readonly secret: secretsmanager.ISecret;
-    public readonly userpoolId: string;
-    public readonly appClientId: string;
-    public readonly region: string;
     public readonly bucketName: string;
+    public readonly s3_Object_baseURL: string;
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
@@ -76,21 +74,33 @@ export class FunctionalityStack extends cdk.Stack {
 
         /**
          * 
+         * Create a random API key that will be use when creating an API key
+         * Inspired by ChatGPT
+         */
+        function generateRandomString(length: number):string {
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for (var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+
+        /**
+         * 
          * Store secrets to Secret Manager
          * User pool id, client id, and region the user pool deployed
          */
-        this.userpoolId = userpool.userPoolId;
-        this.appClientId = appClient.userPoolClientId;
-        this.region = this.region;
-
-        const secretsName = "Invasive_Plants_Cognito_Secrets"
+        const secretsName = "Invasive_Plants_Setup_Secrets"
         this.secret = new secretsmanager.Secret(this, secretsName, {
             secretName: secretsName,
             description: "Cognito Secrets for authentication",
             secretObjectValue: {
-                REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(this.userpoolId),
-                REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(this.appClientId),
-                REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region)
+                REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(userpool.userPoolId),
+                REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(appClient.userPoolClientId),
+                REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
+                REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(generateRandomString(32))
             },
             removalPolicy: cdk.RemovalPolicy.DESTROY
         });
@@ -125,6 +135,8 @@ export class FunctionalityStack extends cdk.Stack {
             },
             comment: "CloudFront distribution for S3 as origin",
         });
+        
+        this.s3_Object_baseURL = CFDistribution.distributionDomainName;
 
         // Output Messages
         new cdk.CfnOutput(this, 'Output-Message', {

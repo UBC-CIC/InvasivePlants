@@ -16,8 +16,7 @@ const stackDefaultSetup = {
     env: {
         account: process.env.CDK_DEFAULT_ACCOUNT,
         region: process.env.CDK_DEFAULT_REGION,
-    },
-    crossRegionReferences: true,
+    }
 };
 
 // Create WAF stack for cloudfront
@@ -49,4 +48,10 @@ const api = new APIStack(app, 'APIStack', vpcStack, dbStack, functionality, stac
 const ecrStack = new EcrStack(app, 'ECRStack');
 
 // Create an instance of Host stack
-const hostStack = new HostStack(app, 'hostStack', vpcStack, functionality, api, ecrStack, WAFInstance.WAFwebACL, stackDefaultSetup);
+const hostStack = new HostStack(app, 'hostStack', vpcStack, functionality, api, ecrStack, WAFInstance.WAFwebACL, {
+    env: {
+        account: process.env.CDK_DEFAULT_ACCOUNT,
+        region: process.env.CDK_DEFAULT_REGION,
+    },
+    crossRegionReferences: true,
+});

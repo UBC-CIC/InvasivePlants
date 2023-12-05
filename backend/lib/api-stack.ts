@@ -20,10 +20,8 @@ import { FunctionalityStack } from './functionality-stack';
 
 
 export class APIStack extends Stack {
-    private readonly dbInstance: rds.DatabaseInstance;
-    private readonly secretPath: string;
-    private readonly rdsProxyEndpoint: string; 
     public readonly stageARN_APIGW: string;
+    public readonly apiGW_basedURL: string;
     constructor(scope: Construct, id: string, vpcStack: VpcStack, db: DBStack, functionalityStack: FunctionalityStack, props?: StackProps){
         super(scope, id, props);
 
@@ -61,7 +59,10 @@ export class APIStack extends Stack {
         });
 
         this.stageARN_APIGW = api.deploymentStage.stageArn;
+        this.apiGW_basedURL = api.urlForPath();
         
+        // console.log("this.apiGW_endpoint: ", this.apiGW_basedURL);
+
         // Attach API Key to the api
         const apiKey = api.addApiKey('APIKey');
 

@@ -238,6 +238,11 @@ export class HostStack extends Stack {
                 "REACT_APP_USERPOOL_ID": ecs.Secret.fromSecretsManager(secret, "REACT_APP_USERPOOL_ID"),
                 "REACT_APP_USERPOOL_WEB_CLIENT_ID": ecs.Secret.fromSecretsManager(secret, "REACT_APP_USERPOOL_WEB_CLIENT_ID"),
                 "REACT_APP_REGION": ecs.Secret.fromSecretsManager(secret, "REACT_APP_REGION"),
+                "REACT_APP_X_API_KEY": ecs.Secret.fromSecretsManager(secret, "REACT_APP_X_API_KEY")
+            },
+            environment:{
+                "REACT_APP_API_BASE_URL": apiStack.apiGW_basedURL,
+                "REACT_APP_S3_BASE_URL": functionalityStack.s3_Object_baseURL
             },
             portMappings: [
                 {
