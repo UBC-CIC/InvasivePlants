@@ -70,7 +70,7 @@ function AlternativeSpeciesPage() {
   useEffect(() => {
     retrieveUser();
     fetchAllAlternativeSpecies();
-    console.log("finished loading species")
+    console.log("finished loading alternative species")
   }, [])
 
   // Fetches all alternative species (recursively) in the database
@@ -106,7 +106,7 @@ function AlternativeSpeciesPage() {
         await fetchAllAlternativeSpecies(newLastSpeciesId);
       }
     } catch (error) {
-      console.error("Error retrieving invasive species", error);
+      console.error("Error retrieving alternative species", error);
     }
   };
 
@@ -240,7 +240,7 @@ function AlternativeSpeciesPage() {
   }, [shouldSave]);
 
 
-  // fetches the alternative species that matches user search
+  // Fetches the alternative species that matches user search
   const handleGetAlternativeSpeciesAfterSearch = () => {
     const formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
     console.log("formatted search input: ", formattedSearchInput);

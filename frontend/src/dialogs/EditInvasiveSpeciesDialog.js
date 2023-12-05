@@ -21,7 +21,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                 const regionMap = await handleGetRegions();
                 setRegionsMap(regionMap);
             } catch (error) {
-                console.error('Error fetching region map 1:', error);
+                console.error('Error fetching region map from edit invasive species dialog:', error);
             }
         };
         fetchRegionData();

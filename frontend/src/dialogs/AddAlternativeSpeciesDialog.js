@@ -80,18 +80,23 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
 
       try {
         for (let i = 0; i < files.length; i++) {
+          // modified from https://raz-levy.medium.com/how-to-upload-files-to-aws-s3-from-the-client-side-using-react-js-and-node-js-660252e61e0
+          const timestamp = new Date().getTime();
+          const file = e.target.files[i];
+          const filename = file.name.split('.')[0].replace(/[&\/\\#,+()$~%'":*?<>{}]/g, '').toLowerCase() + `_${timestamp}`;
+          const fileExtension = file.name.split('.').pop();
 
           // GET request to getS3SignedURL endpoint
           const signedURLResponse = await axios
             .get(`${API_BASE_URL}/getS3SignedURL`, {
               params: {
                 contentType: files[i].type,
-                filename: files[i].name + Date.now() // Date make the key unique
-            },
-            headers: {
-              'x-api-key': process.env.REACT_APP_X_API_KEY
-            }
-          });
+                filename: `${filename}.${fileExtension}`
+              },
+              headers: {
+                'x-api-key': process.env.REACT_APP_X_API_KEY
+              }
+            });
 
 
           if (!signedURLResponse.data.uploadURL) {
@@ -108,9 +113,8 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
           if (signedURLData.key) {
             s3Keys.push(signedURLData.key);
           }
-
-          handleInputChange('s3_keys', s3Keys);
         }
+        handleInputChange('s3_keys', s3Keys);
       } catch (error) {
         console.error('Error uploading images:', error);
       }
