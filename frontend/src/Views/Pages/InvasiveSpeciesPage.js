@@ -20,7 +20,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SearchIcon from '@mui/icons-material/Search';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 import axios from "axios";
 import { boldText, formatString, capitalizeFirstWord } from '../../functions/helperFunctions';
@@ -672,12 +671,6 @@ function InvasiveSpeciesPage() {
             <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
           </Button>
         </ThemeProvider>
-
-        {/* <ThemeProvider theme={Theme}>
-          <Button variant="contained" onClick={() => handleReset()} style={{ marginLeft: "10px", marginTop: "27px", height: "53px", alignItems: "center" }}>
-            <RestartAltIcon />
-          </Button>
-        </ThemeProvider> */}
       </div>
 
       {/* button to add species */}

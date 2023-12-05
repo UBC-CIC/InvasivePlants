@@ -19,7 +19,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 import {  capitalizeEachWord } from '../../functions/helperFunctions';
 import axios from "axios";
@@ -469,12 +468,6 @@ function RegionsPage() {
                         <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
                     </Button>
                 </ThemeProvider>
-
-                {/* <ThemeProvider theme={Theme}>
-                    <Button variant="contained" onClick={() => handleReset()} style={{ marginLeft: "10px", marginTop: "27px", height: "53px", alignItems: "center" }}>
-                        <RestartAltIcon />
-                    </Button>
-                </ThemeProvider> */}
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
