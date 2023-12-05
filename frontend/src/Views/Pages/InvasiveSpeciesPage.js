@@ -410,18 +410,17 @@ function InvasiveSpeciesPage() {
 
     if (confirmed) {
       // make sure that fields are proper data structure
-      let scientificNames;
+      let scientificNames = [];
       if (typeof tempEditingData.scientific_name === 'string') {
         scientificNames = formatString(tempEditingData.scientific_name)
           .map(name => name.toLowerCase().replace(/\s+/g, '_'));
       } else if (Array.isArray(tempEditingData.scientific_name)) {
         scientificNames = tempEditingData.scientific_name.map(name => name.toLowerCase().replace(/\s+/g, '_'));
       }
-      const formattedScientificNames = scientificNames || [];
 
       let updatedTempData = {
         ...tempEditingData,
-        scientific_name: formattedScientificNames
+        scientific_name: scientificNames
       };
 
       console.log("updated temp data: ", updatedTempData)
@@ -539,8 +538,8 @@ function InvasiveSpeciesPage() {
     }
   }, [shouldReset]);
 
-  // updates temp data when search input changes
-  const handleSearchInputChange = (field, value) => {
+  // Updates temporary row data when field inputs change
+  const handleInputChange = (field, value) => {
     console.log("value: ", value);
 
     if (field === "region_code_name") {
@@ -775,7 +774,7 @@ function InvasiveSpeciesPage() {
                                 : tempEditingData.scientific_name
                               }
                               onChange={(e) =>
-                                handleSearchInputChange("scientific_name", e.target.value)
+                                handleInputChange("scientific_name", e.target.value)
                               }
                             />
                           </TableCell>
@@ -786,7 +785,7 @@ function InvasiveSpeciesPage() {
                             <TextField
                             value={boldText(tempEditingData.species_description)}
                               onChange={(e) =>
-                                handleSearchInputChange("species_description", e.target.value)
+                                handleInputChange("species_description", e.target.value)
                               }
                             />
                           </TableCell>
@@ -795,7 +794,7 @@ function InvasiveSpeciesPage() {
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                           <TextField
                             onChange={(e) =>
-                                handleSearchInputChange(
+                              handleInputChange(
                                   "alternative_species",
                                   e.target.value.split(", ")
                                 )
@@ -812,7 +811,7 @@ function InvasiveSpeciesPage() {
                                 : tempEditingData.resource_links
                             }
                             onChange={(e) =>
-                              handleSearchInputChange(
+                              handleInputChange(
                                 "resource_links",
                                 e.target.value.split(", ")
                               )
@@ -858,7 +857,7 @@ function InvasiveSpeciesPage() {
                             <TextField
                             value={tempEditingData.region_id.map((id) => regionMap[id]).join(", ")}
                               onChange={(e) =>
-                                handleSearchInputChange(
+                                handleInputChange(
                                   "region_code_name",
                                   e.target.value.split(", ")
                                 )
@@ -956,7 +955,7 @@ function InvasiveSpeciesPage() {
                                   : tempEditingData.scientific_name
                               }
                               onChange={(e) =>
-                                handleSearchInputChange("scientific_name", e.target.value)
+                                handleInputChange("scientific_name", e.target.value)
                               }
                             />
                           </TableCell>
@@ -966,7 +965,7 @@ function InvasiveSpeciesPage() {
                             <TextField
                               value={boldText(tempEditingData.species_description)}
                               onChange={(e) =>
-                                handleSearchInputChange("species_description", e.target.value)
+                                handleInputChange("species_description", e.target.value)
                               }
                             />
                           </TableCell>
@@ -975,7 +974,7 @@ function InvasiveSpeciesPage() {
                           <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                             <TextField
                               onChange={(e) =>
-                                handleSearchInputChange(
+                                handleInputChange(
                                   "alternative_species",
                                   e.target.value.split(", ")
                                 )
@@ -992,7 +991,7 @@ function InvasiveSpeciesPage() {
                                   : tempEditingData.resource_links
                               }
                               onChange={(e) =>
-                                handleSearchInputChange(
+                                handleInputChange(
                                   "resource_links",
                                   e.target.value.split(", ")
                                 )
@@ -1038,7 +1037,7 @@ function InvasiveSpeciesPage() {
                             <TextField
                               value={tempEditingData.region_id.map((id) => regionMap[id]).join(", ")}
                               onChange={(e) =>
-                                handleSearchInputChange(
+                                handleInputChange(
                                   "region_code_name",
                                   e.target.value.split(", ")
                                 )
@@ -1149,7 +1148,7 @@ function InvasiveSpeciesPage() {
       <EditInvasiveSpeciesDialog
         open={openEditSpeciesDialog}
         tempData={tempEditingData}
-        handleSearchInputChange={handleSearchInputChange}
+        handleInputChange={handleInputChange}
         handleFinishEditingRow={handleFinishEditingRow}
         handleSave={handleSave}
         alternativeSpeciesData={allAlternativeSpecies}

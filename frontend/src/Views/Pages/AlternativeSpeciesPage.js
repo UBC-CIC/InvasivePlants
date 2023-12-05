@@ -345,29 +345,29 @@ function AlternativeSpeciesPage() {
 
     if (confirmed) {
       // make sure that fields are proper data structure
-      let scientificNames;
+      let scientificNames = [];
       if (typeof tempEditingData.scientific_name === 'string') {
         scientificNames = formatString(tempEditingData.scientific_name)
           .map(name => name.toLowerCase().replace(/\s+/g, '_'));
       } else if (Array.isArray(tempEditingData.scientific_name)) {
         scientificNames = tempEditingData.scientific_name.map(name => name.toLowerCase().replace(/\s+/g, '_'));
       }
-      const formattedScientificNames = scientificNames || [];
 
-      let commonNames;
-      if (typeof tempEditingData.commonNames === 'string') {
-        commonNames = formatString(tempEditingData.commonNames)
+      let commonNames = [];
+      if (typeof tempEditingData.common_name === 'string') {
+        commonNames = formatString(tempEditingData.common_name)
           .map(name => name.toLowerCase().replace(/\s+/g, '_'));
-      } else if (Array.isArray(tempEditingData.commonNames)) {
-        commonNames = tempEditingData.commonNames.map(name => name.toLowerCase().replace(/\s+/g, '_'));
+      } else if (Array.isArray(tempEditingData.common_name)) {
+        commonNames = tempEditingData.common_name.map(name => name.toLowerCase().replace(/\s+/g, '_'));
       }
-      const formattedCommonNames = commonNames || [];
 
       const formattedData = {
         ...tempEditingData,
-        scientific_name: formattedScientificNames,
-        common_name: formattedCommonNames
+        scientific_name: scientificNames,
+        common_name: commonNames
       };
+
+      console.log("formatted data", formattedData);
 
       // maps species_id to image_url if links exist and is not empty
       const plantImages = (formattedData.image_links && formattedData.image_links.length > 0) ?
@@ -451,13 +451,14 @@ function AlternativeSpeciesPage() {
   };
 
 
-  // opens confirmation dialog before deletion
+  // Opens confirmation dialog before deletion
   const handleDeleteRow = (species_id) => {
     setDeleteId(species_id);
     setOpenDeleteConfirmation(true);
   };
 
-  // deletes species from the table
+  // Deletes species from the table
+  // TODO: delete images in s3 bucket too
   const handleConfirmDelete = () => {
     console.log("alt species id to delete: ", deleteId);
     retrieveUser();
@@ -485,9 +486,8 @@ function AlternativeSpeciesPage() {
     }
   };
 
-  // add new alternative species
+  // Add new alternative species
   const handleAddSpecies = (newSpeciesData) => {
-    // format scientific names
     newSpeciesData = {
       ...newSpeciesData,
       scientific_name: newSpeciesData.scientific_name.map(name =>
@@ -500,7 +500,7 @@ function AlternativeSpeciesPage() {
     retrieveUser();
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
-    // POST new alternative species to database
+    // Request to POST new alternative species to database
     axios
       .post(API_BASE_URL + "alternativeSpecies", newSpeciesData, {
         headers: {
@@ -510,7 +510,7 @@ function AlternativeSpeciesPage() {
       .then((response) => {
         console.log("Alternative species added successfully", response);
 
-        // maps species id to plant data with image links
+        // Maps species id to plant data with image links
         let plantsWithImgLinks = [];
         if (newSpeciesData.image_links && newSpeciesData.image_links.length > 0) {
           plantsWithImgLinks = newSpeciesData.image_links.map((image_link) => ({
@@ -519,7 +519,7 @@ function AlternativeSpeciesPage() {
           }));
         }
 
-        // maps species id to plant data with image files
+        // Maps species id to plant data with image files
         let plantsWithImgFiles = [];
         if (newSpeciesData.s3_keys && newSpeciesData.s3_keys.length > 0) {
           plantsWithImgFiles = newSpeciesData.s3_keys.map((key) => ({
@@ -531,7 +531,7 @@ function AlternativeSpeciesPage() {
         const allPlantImages = plantsWithImgLinks.concat(plantsWithImgFiles);
         console.log("merged plants: ", allPlantImages);
 
-        // upload all plant images 
+        // Uploads all plant images 
         allPlantImages.forEach((plantData) => {
           console.log("plant: ", plantData);
           axios
@@ -542,7 +542,6 @@ function AlternativeSpeciesPage() {
             })
             .then((response) => {
               console.log("all images added successfully", response.data);
-              // get updated alternative species
               setShouldReset(true);
               setOpenAddSpeciesDialog(false); 
             })
@@ -556,16 +555,15 @@ function AlternativeSpeciesPage() {
       });
   };
 
-  // execute handleGetAlternativeSpecies after shouldReset state update
+  // Call to handleGetAlternativeSpecies if shouldReset state is True
   useEffect(() => {
     if (shouldReset) {
       handleGetAlternativeSpecies();
     }
   }, [shouldReset]);
 
-  // helper function when search input changes
-  const handleSearchInputChange = (field, value) => {
-    // console.log("field: ", field, "value: ", value)
+  // Updates row data when its fields change
+  const handleInputChange = (field, value) => {
     setTempEditingData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -769,7 +767,7 @@ function AlternativeSpeciesPage() {
                                 : tempEditingData.scientific_name
                             }
                             onChange={(e) =>
-                              handleSearchInputChange("scientific_name", e.target.value)
+                              handleInputChange("scientific_name", e.target.value)
                             }
                           />
                         </TableCell>                    
@@ -783,7 +781,7 @@ function AlternativeSpeciesPage() {
                                 : tempEditingData.common_name
                             }
                             onChange={(e) =>
-                              handleSearchInputChange("common_name", e.target.value)
+                              handleInputChange("common_name", e.target.value)
                             }
                           />
                         </TableCell>
@@ -793,7 +791,7 @@ function AlternativeSpeciesPage() {
                           <TextField
                             value={boldText(tempEditingData.species_description)}
                             onChange={(e) =>
-                              handleSearchInputChange("species_description", e.target.value)
+                              handleInputChange("species_description", e.target.value)
                             }
                           />
                         </TableCell>
@@ -807,7 +805,7 @@ function AlternativeSpeciesPage() {
                                 : tempEditingData.resource_links
                             }
                             onChange={(e) =>
-                              handleSearchInputChange(
+                              handleInputChange(
                                 "resource_links",
                                 e.target.value.split(", ")
                               )
@@ -862,7 +860,7 @@ function AlternativeSpeciesPage() {
                                 : tempEditingData.image_links
                             }
                             onChange={(e) =>
-                              handleSearchInputChange(
+                              handleInputChange(
                                 "image_links",
                                 e.target.value.split(", ")
                               )
@@ -969,7 +967,7 @@ function AlternativeSpeciesPage() {
                                   {row.s3_keys && row.s3_keys[index] && (
                                     <span>
                                       <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
-                                        View Image
+                                        {row.s3_keys[index]}
                                       </a>
                                       <br />
                                     </span>
@@ -986,7 +984,7 @@ function AlternativeSpeciesPage() {
                                   {row.s3_keys && row.s3_keys.map((key, index) => (
                                     <span key={index}>
                                       <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
-                                        View Image
+                                        {row.s3_keys[index]}
                                       </a>
                                       <br />
                                     </span>
@@ -1040,7 +1038,7 @@ function AlternativeSpeciesPage() {
       <EditAlternativeSpeciesDialog
         open={openEditSpeciesDialog}
         tempData={tempEditingData}
-        handleSearchInputChange={handleSearchInputChange}
+        handleInputChange={handleInputChange}
         handleFinishEditingRow={handleFinishEditingRow}
         handleSave={handleSave}
       />

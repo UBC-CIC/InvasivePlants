@@ -315,8 +315,8 @@ function RegionsPage() {
         }
     };
 
-    // helper function when search input changes
-    const handleSearchInputChange = (field, value) => {
+    // Updates temporary row data when field inputs change
+    const handleInputChange = (field, value) => {
 
         // only take in numbers and decimal or empty 
         const isValidInput = /^[+-]?\d*(\.\d*)?$/.test(value);
@@ -556,7 +556,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.region_fullname}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("region_fullname", e.target.value)
+                                                                handleInputChange("region_fullname", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -566,7 +566,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.region_code_name}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("region_code_name", e.target.value)
+                                                                handleInputChange("region_code_name", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -576,7 +576,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.country_fullname}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("country_fullname", e.target.value)
+                                                                handleInputChange("country_fullname", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -586,7 +586,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.geographic_coordinate}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("geographic_coordinate", e.target.value)
+                                                                handleInputChange("geographic_coordinate", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -646,7 +646,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.region_fullname}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("region_fullname", e.target.value)
+                                                                handleInputChange("region_fullname", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -656,7 +656,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.region_code_name}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("region_code_name", e.target.value)
+                                                                handleInputChange("region_code_name", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -666,7 +666,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.country_fullname}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("country_fullname", e.target.value)
+                                                                handleInputChange("country_fullname", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -676,7 +676,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.geographic_coordinate}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("geographic_coordinate", e.target.value)
+                                                                handleInputChange("geographic_coordinate", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -751,7 +751,7 @@ function RegionsPage() {
             <EditRegionDialog
                 open={openEditRegionDialog}
                 tempData={tempData}
-                handleSearchInputChange={handleSearchInputChange}
+                handleInputChange={handleInputChange}
                 handleFinishEditingRow={handleFinishEditingRow}
                 handleSave={handleSave}
             />

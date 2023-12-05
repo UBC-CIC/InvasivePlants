@@ -74,10 +74,8 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
   // handles uploading image files to s3 bucket
   const handleImageUpload = async (e) => {
     const files = e.target.files;
-    let uploadResponse;
 
     if (files) {
-      // image files instead
       let s3Keys = []
 
       try {
@@ -87,7 +85,8 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
           const signedURLResponse = await axios
             .get(`${API_BASE_URL}/getS3SignedURL`, {
               params: {
-                contentType: files[i].type
+                contentType: files[i].type,
+                filename: files[i].name + Date.now() // Date make the key unique
             },
             headers: {
               'x-api-key': process.env.REACT_APP_X_API_KEY
@@ -103,20 +102,15 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
           console.log("signed url data: ", signedURLData)
 
           // use the obtained signed URL to upload the image
-          uploadResponse = await axios.put(signedURLData.uploadURL, files[i])
-          console.log("upload response: ", uploadResponse)
+          await axios.put(signedURLData.uploadURL, files[i])
 
-          console.log("s3keys: ", s3Keys);
           // Image uploaded successfully, add its s3 key to the list
-          
-          // TODO: make keys moe unique (can consider uuid, timestamp)
           if (signedURLData.key) {
             s3Keys.push(signedURLData.key);
           }
 
           handleInputChange('s3_keys', s3Keys);
         }
-
       } catch (error) {
         console.error('Error uploading images:', error);
       }

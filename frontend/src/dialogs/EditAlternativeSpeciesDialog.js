@@ -7,7 +7,7 @@ import { Auth } from "aws-amplify";
 import axios from "axios";
 
 // dialog for editing an alternative species
-const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
+const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave }) => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
@@ -26,7 +26,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
 
     // retriever user on load
     useEffect(() => {
-        // console.log("retrieved user!!!");
         retrieveUser()
     }, [])
 
@@ -40,25 +39,23 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
     // hanldes user uploaded image files
     const handleImageUpload = async (e) => {
         const files = e.target.files;
-        let uploadResponse;
 
         if (files) {
             let s3Keys = tempData.s3_keys ? [...tempData.s3_keys] : [];
 
             try {
                 for (let i = 0; i < files.length; i++) {
-
                     // GET request to getS3SignedURL endpoint
                     const signedURLResponse = await axios
                         .get(`${API_BASE_URL}/getS3SignedURL`, {
                             params: {
-                                contentType: files[i].type
+                                contentType: files[i].type,
+                                filename: files[i].name + Date.now() // Date makes the key unique
                             },
                             headers: {
                                 'x-api-key': process.env.REACT_APP_X_API_KEY
                             }
                         });
-
 
                     if (!signedURLResponse.data.uploadURL) {
                         continue;
@@ -68,18 +65,15 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                     console.log("signed url data: ", signedURLData)
 
                     // use the obtained signed URL to upload the image
-                    uploadResponse = await axios.put(signedURLData.uploadURL, files[i])
-                    console.log("upload response: ", uploadResponse)
+                    await axios.put(signedURLData.uploadURL, files[i])
 
-                    console.log("s3keys: ", s3Keys);
                     // Image uploaded successfully, add its s3 key to the list
                     if (signedURLData.key) {
                         s3Keys.push(signedURLData.key);
                     }
                 }
 
-                // Update the state or handle the uploaded image s3 keys
-                handleSearchInputChange('s3_keys', s3Keys);
+                handleInputChange('s3_keys', s3Keys);
 
             } catch (error) {
                 console.error('Error uploading images:', error);
@@ -117,9 +111,9 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         (img) => img.image_id !== deleteImg.image_id
                     );
                     console.log("updatedImages: ", updatedImages);
-                    handleSearchInputChange("images", updatedImages);
-                    handleSearchInputChange("image_links", updatedImages.map((image) => image.image_url));
-                    handleSearchInputChange("s3_keys", updatedImages.map((image) => image.s3_key));
+                    handleInputChange("images", updatedImages);
+                    handleInputChange("image_links", updatedImages.map((image) => image.image_url));
+                    handleInputChange("s3_keys", updatedImages.map((image) => image.s3_key));
                     console.log("images deleted successfully", response.data);
                 })
                 .catch((error) => {
@@ -164,7 +158,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                     <TextField
                         label="Scientific Name(s) (separate by commas)"
                         value={Array.isArray(tempData.scientific_name) ? tempData.scientific_name.join(', ') : tempData.scientific_name}
-                        onChange={(e) => handleSearchInputChange("scientific_name", e.target.value)}
+                        onChange={(e) => handleInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
 
@@ -175,7 +169,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                                 ? tempData.common_name.join(", ")
                                 : tempData.common_name
                         }
-                        onChange={(e) => handleSearchInputChange("common_name", e.target.value)}
+                        onChange={(e) => handleInputChange("common_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
 
@@ -184,7 +178,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         multiline
                         rows={6}
                         value={tempData.species_description}
-                        onChange={(e) => handleSearchInputChange("species_description", e.target.value)}
+                        onChange={(e) => handleInputChange("species_description", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
@@ -196,7 +190,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                                 : tempData.resource_links
                         } 
                         onChange={(e) =>
-                            handleSearchInputChange("resource_links", e.target.value.split(", "))
+                            handleInputChange("resource_links", e.target.value.split(", "))
                         }
                         sx={{
                             width: "100%", marginBottom: "1rem"
@@ -213,7 +207,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleSearchInputChange,
                         //         : tempData.image_links
                         // }
                         onChange={(e) => {
-                            handleSearchInputChange("image_links", e.target.value.split(", "))
+                            handleInputChange("image_links", e.target.value.split(", "))
                         }
                         }
                         sx={{ width: "100%", marginBottom: "1rem" }}
