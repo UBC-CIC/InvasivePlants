@@ -92,7 +92,7 @@ export class FunctionalityStack extends cdk.Stack {
          * Store secrets to Secret Manager
          * User pool id, client id, and region the user pool deployed
          */
-        const secretsName = "Invasive_Plants_Setup_Secrets"
+        const secretsName = "Invasive_Plants_Cognito_Secrets";   //"Invasive_Plants_Setup_Secrets";
         this.secret = new secretsmanager.Secret(this, secretsName, {
             secretName: secretsName,
             description: "Cognito Secrets for authentication",

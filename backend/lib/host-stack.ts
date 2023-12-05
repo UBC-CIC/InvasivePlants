@@ -12,6 +12,7 @@ import * as path from "path";
 import * as cdk from 'aws-cdk-lib';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 
 // Other stack
 import { VpcStack } from './vpc-stack';
@@ -62,7 +63,7 @@ export class HostStack extends Stack {
 
         // Retrieve a secrete from Secret Manager
         // "Invasive_Plants_Cognito_Secrets" is consistent from functionality stack
-        const secret = secretmanager.Secret.fromSecretNameV2(this, "ImportedSecrets", "Invasive_Plants_Cognito_Secrets");
+        const secret = secretmanager.Secret.fromSecretNameV2(this, "ImportedSecrets", functionalityStack.secret.secretName);
 
         // Create WAFvs As web ACL
         // This will attach to API Gateway
@@ -196,8 +197,11 @@ export class HostStack extends Stack {
             loadBalancerName: "FargateService-LoadBalancer",
             securityGroup: ALBSecurityGroup,
             deletionProtection: true,
-            dropInvalidHeaderFields: true
+            dropInvalidHeaderFields: true,
         });
+
+        // Create a log for ALB
+        ALB.logAccessLogs(s3.Bucket.fromBucketName(this,"ALBLogID", functionalityStack.bucketName));
 
         // Create ECS Cluster which use to run Task on ECS Farget instance
         const cluster = new ecs.Cluster(this, "fargateCluster", {
@@ -242,7 +246,7 @@ export class HostStack extends Stack {
             },
             environment:{
                 "REACT_APP_API_BASE_URL": apiStack.apiGW_basedURL,
-                "REACT_APP_S3_BASE_URL": functionalityStack.s3_Object_baseURL
+                "REACT_APP_S3_BASE_URL": `https://${functionalityStack.s3_Object_baseURL}/`
             },
             portMappings: [
                 {
