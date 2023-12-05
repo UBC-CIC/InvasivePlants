@@ -10,30 +10,62 @@ import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import * as path from "path";
 import * as cdk from 'aws-cdk-lib';
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 
 // Other stack
 import { VpcStack } from './vpc-stack';
 import { FunctionalityStack } from './functionality-stack';
 import { APIStack } from './api-stack';
+import { EcrStack } from './ecr-stack';
+import { WAFStack } from './waf-stack';
+
+interface AwsRegions2PrefixListID {
+    [key: string]: string;
+}
 
 export class HostStack extends Stack {
-    constructor(scope: Construct, id: string, vpcStack:VpcStack, functionalityStack:FunctionalityStack, apiStack:APIStack, props?: StackProps) {
+    // Array of regions and it prefixListId
+    // Collected by https://aws.amazon.com/blogs/networking-and-content-delivery/limit-access-to-your-origins-using-the-aws-managed-prefix-list-for-amazon-cloudfront/
+    private readonly awsRegions2PrefixListID: AwsRegions2PrefixListID = {
+        'ap-northeast-1': 'pl-58a04531',
+        'ap-northeast-2': 'pl-22a6434b',
+        'ap-south-1': 'pl-9aa247f3',
+        'ap-southeast-1': 'pl-31a34658',
+        'ap-southeast-2': 'pl-b8a742d1',
+        'ca-central-1': 'pl-38a64351',
+        'eu-central-1': 'pl-a3a144ca',
+        'eu-north-1': 'pl-fab65393',
+        'eu-west-1': 'pl-4fa04526',
+        'eu-west-2': 'pl-93a247fa',
+        'eu-west-3': 'pl-75b1541c',
+        'sa-east-1': 'pl-5da64334',
+        'us-east-1': 'pl-3b927c52',
+        'us-east-2': 'pl-b6a144df',
+        'us-west-1': 'pl-4ea04527',
+        'us-west-2': 'pl-82a045eb',
+    };
+    constructor( scope: Construct, id: string, vpcStack:VpcStack, functionalityStack:FunctionalityStack, apiStack:APIStack, ecrStack: EcrStack, wafStack: wafv2.CfnWebACL, props?: StackProps) {
+        // constructor(    scope: Construct, 
+        //     id: string,    
+        //     vpcStack:VpcStack, 
+        //     functionalityStack:FunctionalityStack, 
+        //     apiStack:APIStack, 
+        //     ecrStack: EcrStack,
+        //     wafStack: WAFStack, 
+        //     props?: StackProps) 
         super(scope, id, props);
 
         // Import a VPC stack
         // For a region, create upto 2 AZ with a public subset each.
         const vpc = vpcStack.vpc;
 
-        // Example of passing secret using command,
-        //      aws secretsmanager create-secret --name SedationSecrets --secret-string '{"REACT_APP_CLIENT_SECRET":"string", "REACT_APP_CLIENT_ID":"string"}' --profile <your-profile-name>
-        
         // Retrieve a secrete from Secret Manager
         // "Invasive_Plants_Cognito_Secrets" is consistent from functionality stack
         const secret = secretmanager.Secret.fromSecretNameV2(this, "ImportedSecrets", "Invasive_Plants_Cognito_Secrets");
 
-
         // Create WAFvs As web ACL
-        // This will attach with ALB later on
+        // This will attach to API Gateway
         const WAFwebACL = new wafv2.CfnWebACL(this, 'Invasive-Plants-WebACL', {
             defaultAction: {
                 allow: {}
@@ -136,11 +168,23 @@ export class HostStack extends Stack {
             'Allow traffic only to Fargate Service security group'
         );
 
-        // Set ALBSecurityGroup inbound to any IPv4 at HTTPS (443)
+        // Read parameter from user 
+        const prefixListIdParam = new CfnParameter(this, "prefixListID", {
+            type: 'String',
+            description: 'Custome prefix list ID for region that are not in the list',
+            default: this.awsRegions2PrefixListID['ca-central-1']
+        });
+
+        // Get prefixListId of CloudFront
+        // Tried to get prefix ID based on the current region
+        // cdk deploy ECSHost --profile Sedation_Dev_1 --parameters ECSHost:prefixListID=pl-82a045eb
+        let CFPrefixListId = this.awsRegions2PrefixListID[Stack.of(this).region] ? this.awsRegions2PrefixListID[Stack.of(this).region] : prefixListIdParam.valueAsString;
+
+        // Set ALBSecurityGroup inbound to CloudFront
         ALBSecurityGroup.addIngressRule(
-            ec2.Peer.anyIpv4(),
-            ec2.Port.tcp(443), 
-            'Allow traffic from all IPv4');
+            ec2.Peer.prefixList(CFPrefixListId), 
+            ec2.Port.tcp(80), 
+            'Allow traffic only from CloudFront');
 
         // Create a ALB for ECS Cluster Service
         const ALB = new aws_elasticloadbalancingv2.ApplicationLoadBalancer(this, 'ALB-Fargate-Service', {
@@ -178,6 +222,7 @@ export class HostStack extends Stack {
             memoryMiB: "2048",
             runtimePlatform: {
                 operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
+                cpuArchitecture: ecs.CpuArchitecture.X86_64
             },
             family: "IntegralsTaskDefinition",
             executionRole: taskRoleECS, 
@@ -187,17 +232,17 @@ export class HostStack extends Stack {
         // Create Container to run ECR image
         // Get the latest image of 'repo'
         const containerDefinition = ecsTask.addContainer("taskContainer", {
-            image: ecs.ContainerImage.fromAsset(
-                path.join(__dirname, "..", ".."),
-                {
-                  file: path.join("Dockerfile"),
-                }
-            ),
+            image: ecs.ContainerImage.fromEcrRepository(ecrStack.repo, "latest"),
             containerName: "executionContainer",
             secrets: {
                 "REACT_APP_USERPOOL_ID": ecs.Secret.fromSecretsManager(secret, "REACT_APP_USERPOOL_ID"),
                 "REACT_APP_USERPOOL_WEB_CLIENT_ID": ecs.Secret.fromSecretsManager(secret, "REACT_APP_USERPOOL_WEB_CLIENT_ID"),
                 "REACT_APP_REGION": ecs.Secret.fromSecretsManager(secret, "REACT_APP_REGION"),
+                "REACT_APP_X_API_KEY": ecs.Secret.fromSecretsManager(secret, "REACT_APP_X_API_KEY")
+            },
+            environment:{
+                "REACT_APP_API_BASE_URL": apiStack.apiGW_basedURL,
+                "REACT_APP_S3_BASE_URL": functionalityStack.s3_Object_baseURL
             },
             portMappings: [
                 {
@@ -210,15 +255,6 @@ export class HostStack extends Stack {
                 streamPrefix: "invasive-plants-container-log",
                 logRetention: RetentionDays.ONE_YEAR,
             }),
-        });
-
-        // Certificate to attach to ALB for HTTPS
-        // Read parameter from user 
-        // aws iam upload-server-certificate --server-certificate-name Self-Signed-SSL-Certificate --certificate-body file://public.pem --private-key file://private.pem --profile Sedation_Dev_1
-        const CERTIFICATE_ARN = new CfnParameter(this, "certificateARN", {
-            type: 'String',
-            description: 'ARN of the SSL certificate',
-            default: `arn:aws:iam::${process.env.CDK_DEFAULT_ACCOUNT}:server-certificate/Self-Signed-SSL-Certificate` // TODO might need to change to this.account
         });
 
         // Run Application Load Balancer in Fargate as an ECS Service
@@ -236,9 +272,7 @@ export class HostStack extends Stack {
             },
             openListener: false,
             // ALB Configuration
-            loadBalancer: ALB,
-            certificate: aws_certificatemanager.Certificate.fromCertificateArn(this, 'https-certificate', CERTIFICATE_ARN.valueAsString),
-            listenerPort: 443,
+            loadBalancer: ALB
         });
 
         // Attach WAF to ALB
@@ -252,5 +286,32 @@ export class HostStack extends Stack {
             resourceArn: apiStack.stageARN_APIGW,
             webAclArn: WAFwebACL.attrArn,
         });
+
+        /**
+         * 
+         * Add Cloudfront on ALB
+         */
+        // Create ALB as CloudFront Origin
+        const origin_ALB = new origins.LoadBalancerV2Origin(ALBFargateService.loadBalancer, {
+            protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY
+        });
+
+        // Create a CloudFront distribution with ALB as origin
+        const CFDistribution = new cloudfront.Distribution(this, 'InvasivePlants-CloudFront-Distribution', {
+            defaultBehavior: {
+                origin: origin_ALB,
+                originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER  // Forward all parameters in viewer request to origin
+            },
+            comment: "CloudFront distribution for ALB as origin",
+            enableLogging: true,
+            webAclId: wafStack.attrArn
+        });
+
+        // // Output Messages
+        new cdk.CfnOutput(this, 'Output-Message', {
+            value: `
+                CloudFront URL: ${CFDistribution.distributionDomainName}
+            `,
+        })
     }
 }

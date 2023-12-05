@@ -44,13 +44,14 @@ exports.handler = async (event) => {
     }
     const accessToken = event.authorizationToken;
     let payload;
+    
     try {
         // If the token is not valid, an error is thrown:
         payload = await jwtVerifier.verify(accessToken);
         
         // Modify the response output
         const parts = event.methodArn.split('/');
-        const resource = parts.slice(0, 4).join('/') + '*';
+        const resource = parts.slice(0, 2).join('/') + '*';
         responseStruct["principalId"] = payload.sub;
         responseStruct["policyDocument"]["Statement"].push({
             "Action": "execute-api:Invoke",
