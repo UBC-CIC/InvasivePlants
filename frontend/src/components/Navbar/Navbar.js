@@ -142,6 +142,16 @@ function Navbar(props) {
         </Menu>
     );
 
+    function formatUrl(inputString) {
+        let words = inputString.toLowerCase().split(' ');
+
+        if (words.length === 1) {
+            return words[0];
+        } else {
+            return words[0] + words.slice(1).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
+        }
+    }
+
     const mobileMenuId = 'primary-search-account-menu-mobile';
     const [activeMenu, setActiveMenu] = useState('');
     const renderMobileMenu = (
@@ -160,7 +170,7 @@ function Navbar(props) {
             {/* Page Navigation Menu */}
             {pages.map((page) => (
                 /* Creates a URL path and button for each page */
-                <NavLink to={"/" + page.toLowerCase()} activeStyle={{
+                <NavLink to={"/" + formatUrl(page)} activeStyle={{
                     color: `${theme.palette.secondary.main}`,
                     borderRadius: 5,
                 }} className={classes.inactiveLinkMobile} >
@@ -217,7 +227,7 @@ function Navbar(props) {
                         {pages.map((page) => (
                             /* Creates a URL path and button for each page */
                             <NavLink
-                                to={"/" + page.toLowerCase()}
+                                to={"/" + formatUrl(page)}
                                 className={`${classes.inactiveLink} ${currentPage === page.toLowerCase() ? classes.activeLink : ''}`}
                             >
                                 <Typography className={classes.title} variant="h6" component={"h1"}>
