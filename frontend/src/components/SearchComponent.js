@@ -1,6 +1,7 @@
 import { Autocomplete, Box, Button, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
+// handles user search
 const SearchComponent = ({ text, handleSearch, searchResults, searchTerm, setSearchTerm }) => {
     return (
         <Box style={{ flex: 3, marginLeft: "10px" }}>

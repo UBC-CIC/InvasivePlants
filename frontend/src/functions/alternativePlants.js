@@ -4,7 +4,6 @@ import {webscrapeWikipedia} from "./webscrapeWiki";
 
 const BC_ALTERNATIVE_PLANTS_URL = "https://bcinvasives.ca/play-your-part/plantwise/grow-me-instead/";
 
-
 // maps invasive plant to a list of non-invasive alternative plants (scientific name)
 const mapInvasiveToAlternativeBC = async () => {
     let alternative_plants_BC = {};

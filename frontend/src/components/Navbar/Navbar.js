@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useTheme } from '@material-ui/core/styles';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +6,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import MenuIcon from '@material-ui/icons/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Menu from '@material-ui/core/Menu';
@@ -21,8 +20,6 @@ import { updateLoginState } from "../../Actions/loginActions";
 import { updateMenuState } from "../../Actions/menuActions";
 import LogoutIcon from '@mui/icons-material/Logout';
 import { NavLink, useLocation } from 'react-router-dom';
-import { UserContext } from '../../UserContext';
-
 
 /* List of tabs for the header */
 const pages = ['Invasive Species', 'Alternative Species', 'Regions'];
@@ -96,10 +93,8 @@ function Navbar(props) {
     const theme = useTheme();
     const navigate = useNavigate();
 
-    // const { currUser, setCurrUser } = useContext(UserContext);
     const [user, setUser] = useState("");
     const [loadingBackdrop, setLoadingBackdrop] = React.useState(false);
-
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
