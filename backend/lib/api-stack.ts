@@ -8,10 +8,6 @@ import { Duration } from 'aws-cdk-lib';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import * as rds from 'aws-cdk-lib/aws-rds';
-import * as ec2 from "aws-cdk-lib/aws-ec2";
-import * as secretmanager from 'aws-cdk-lib/aws-secretsmanager';
-import * as logs from "aws-cdk-lib/aws-logs";
 
 // Stack import
 import { VpcStack } from './vpc-stack';
@@ -482,11 +478,3 @@ export class APIStack extends Stack {
         apiGW_authorizationFunction_user.overrideLogicalId("userLambdaAuthorizer");
     }
 }
-// Cogito is next
-// https://medium.com/@michael.leigh.stewart/securing-an-api-with-aws-cdk-api-gateway-and-cognito-cee9158a2ddb
-// https://www.youtube.com/watch?v=9crTLAT_4uY 
-
-// RDS
-// https://www.subaud.io/blog/build-a-private-rds-with-lambda-integration
-// https://www.freecodecamp.org/news/aws-lambda-rds/
-// https://github.com/schuettc/cdk-private-rds-with-lambda/blob/main/src/lambda.ts

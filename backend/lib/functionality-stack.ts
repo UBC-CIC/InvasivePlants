@@ -6,7 +6,6 @@ import * as cognito from 'aws-cdk-lib/aws-cognito';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
-import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 
 export class FunctionalityStack extends cdk.Stack {
     public readonly secret: secretsmanager.ISecret;
@@ -137,12 +136,5 @@ export class FunctionalityStack extends cdk.Stack {
         });
         
         this.s3_Object_baseURL = CFDistribution.distributionDomainName;
-
-        // Output Messages
-        new cdk.CfnOutput(this, 'Output-Message', {
-            value: `
-                CloudFront URL: ${CFDistribution.distributionDomainName}
-            `,
-        })
     }
 }
