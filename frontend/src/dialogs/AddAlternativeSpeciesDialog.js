@@ -74,25 +74,29 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
   // handles uploading image files to s3 bucket
   const handleImageUpload = async (e) => {
     const files = e.target.files;
-    let uploadResponse;
 
     if (files) {
-      // image files instead
       let s3Keys = []
 
       try {
         for (let i = 0; i < files.length; i++) {
+          // modified from https://raz-levy.medium.com/how-to-upload-files-to-aws-s3-from-the-client-side-using-react-js-and-node-js-660252e61e0
+          const timestamp = new Date().getTime();
+          const file = e.target.files[i];
+          const filename = file.name.split('.')[0].replace(/[&\/\\#,+()$~%'":*?<>{}]/g, '').toLowerCase() + `_${timestamp}`;
+          const fileExtension = file.name.split('.').pop();
 
           // GET request to getS3SignedURL endpoint
           const signedURLResponse = await axios
             .get(`${API_BASE_URL}/getS3SignedURL`, {
               params: {
-                contentType: files[i].type
-            },
-            headers: {
-              'x-api-key': process.env.REACT_APP_X_API_KEY
-            }
-          });
+                contentType: files[i].type,
+                filename: `${filename}.${fileExtension}`
+              },
+              headers: {
+                'x-api-key': process.env.REACT_APP_X_API_KEY
+              }
+            });
 
 
           if (!signedURLResponse.data.uploadURL) {
@@ -103,20 +107,14 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
           console.log("signed url data: ", signedURLData)
 
           // use the obtained signed URL to upload the image
-          uploadResponse = await axios.put(signedURLData.uploadURL, files[i])
-          console.log("upload response: ", uploadResponse)
+          await axios.put(signedURLData.uploadURL, files[i])
 
-          console.log("s3keys: ", s3Keys);
           // Image uploaded successfully, add its s3 key to the list
-          
-          // TODO: make keys moe unique (can consider uuid, timestamp)
           if (signedURLData.key) {
             s3Keys.push(signedURLData.key);
           }
-
-          handleInputChange('s3_keys', s3Keys);
         }
-
+        handleInputChange('s3_keys', s3Keys);
       } catch (error) {
         console.error('Error uploading images:', error);
       }

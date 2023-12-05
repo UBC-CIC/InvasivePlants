@@ -32,7 +32,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
                 const regions = await handleGetRegions();
                 setRegionsMap(regions);
             } catch (error) {
-                console.error('Error fetching region map 3:', error);
+                console.error('Error fetching region map from add invasive species dialog:', error);
             }
         };
         fetchRegionData();

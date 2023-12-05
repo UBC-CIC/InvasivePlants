@@ -19,7 +19,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 import {  capitalizeEachWord } from '../../functions/helperFunctions';
 import axios from "axios";
@@ -64,10 +63,8 @@ function RegionsPage() {
 
     // retriever user on and alternative species on load
     useEffect(() => {
-        // console.log("retrieved user!!! + loading all regions")
         retrieveUser()
         loadRegionsInBackground()
-        // console.log("finished loading regions")
     }, [])
 
     // gets all alternative species in the database
@@ -315,8 +312,8 @@ function RegionsPage() {
         }
     };
 
-    // helper function when search input changes
-    const handleSearchInputChange = (field, value) => {
+    // Updates temporary row data when field inputs change
+    const handleInputChange = (field, value) => {
 
         // only take in numbers and decimal or empty 
         const isValidInput = /^[+-]?\d*(\.\d*)?$/.test(value);
@@ -469,12 +466,6 @@ function RegionsPage() {
                         <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
                     </Button>
                 </ThemeProvider>
-
-                {/* <ThemeProvider theme={Theme}>
-                    <Button variant="contained" onClick={() => handleReset()} style={{ marginLeft: "10px", marginTop: "27px", height: "53px", alignItems: "center" }}>
-                        <RestartAltIcon />
-                    </Button>
-                </ThemeProvider> */}
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
@@ -556,7 +547,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.region_fullname}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("region_fullname", e.target.value)
+                                                                handleInputChange("region_fullname", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -566,7 +557,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.region_code_name}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("region_code_name", e.target.value)
+                                                                handleInputChange("region_code_name", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -576,7 +567,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.country_fullname}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("country_fullname", e.target.value)
+                                                                handleInputChange("country_fullname", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -586,7 +577,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.geographic_coordinate}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("geographic_coordinate", e.target.value)
+                                                                handleInputChange("geographic_coordinate", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -646,7 +637,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.region_fullname}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("region_fullname", e.target.value)
+                                                                handleInputChange("region_fullname", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -656,7 +647,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.region_code_name}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("region_code_name", e.target.value)
+                                                                handleInputChange("region_code_name", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -666,7 +657,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.country_fullname}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("country_fullname", e.target.value)
+                                                                handleInputChange("country_fullname", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -676,7 +667,7 @@ function RegionsPage() {
                                                         <TextField
                                                             value={tempData.geographic_coordinate}
                                                             onChange={(e) =>
-                                                                handleSearchInputChange("geographic_coordinate", e.target.value)
+                                                                handleInputChange("geographic_coordinate", e.target.value)
                                                             }
                                                         />
                                                     </TableCell>
@@ -751,7 +742,7 @@ function RegionsPage() {
             <EditRegionDialog
                 open={openEditRegionDialog}
                 tempData={tempData}
-                handleSearchInputChange={handleSearchInputChange}
+                handleInputChange={handleInputChange}
                 handleFinishEditingRow={handleFinishEditingRow}
                 handleSave={handleSave}
             />

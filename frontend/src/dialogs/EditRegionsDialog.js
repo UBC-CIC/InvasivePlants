@@ -4,7 +4,7 @@ import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 
 // dialog for editing a region
-const EditRegionDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave }) => {
+const EditRegionDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave }) => {
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
     const handleClose = (event, reason) => {
@@ -41,21 +41,21 @@ const EditRegionDialog = ({ open, tempData, handleSearchInputChange, handleFinis
                     <TextField
                         label="Region*"
                         value={tempData.region_fullname}
-                        onChange={(e) => handleSearchInputChange("region_fullname", e.target.value)}
+                        onChange={(e) => handleInputChange("region_fullname", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
 
                     <TextField
                         label="Region Code*"
                         value={tempData.region_code_name}
-                        onChange={(e) => handleSearchInputChange("region_code_name", e.target.value)}
+                        onChange={(e) => handleInputChange("region_code_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
 
                     <TextField
                         label="Country*"
                         value={tempData.country_fullname}
-                        onChange={(e) => handleSearchInputChange("country_fullname", e.target.value)}
+                        onChange={(e) => handleInputChange("country_fullname", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
@@ -66,14 +66,14 @@ const EditRegionDialog = ({ open, tempData, handleSearchInputChange, handleFinis
                                 fullWidth
                                 label="Latitude"
                                 value={tempData.geographic_coordinate.split(',')[0]}
-                                onChange={(e) => handleSearchInputChange("geographic_latitude", e.target.value)}
+                                onChange={(e) => handleInputChange("geographic_latitude", e.target.value)}
                                 sx={{ width: "100%", marginRight: "4px" }}
                             />
                             <TextField
                                 fullWidth
                                 label="Longitude"
                                 value={tempData.geographic_coordinate.split(',')[1]}
-                                onChange={(e) => handleSearchInputChange("geographic_longitude", e.target.value)}
+                                onChange={(e) => handleInputChange("geographic_longitude", e.target.value)}
                                 sx={{ width: "100%", marginLeft: "4px" }}
                             />
                         </Box>
@@ -82,13 +82,13 @@ const EditRegionDialog = ({ open, tempData, handleSearchInputChange, handleFinis
                             <TextField
                                 fullWidth
                                 label="Latitude"
-                                onChange={(e) => handleSearchInputChange("geographic_latitude", e.target.value)}
+                                    onChange={(e) => handleInputChange("geographic_latitude", e.target.value)}
                                 sx={{ width: "100%", marginRight: "4px" }}
                             />
                             <TextField
                                 fullWidth
                                 label="Longitude"
-                                onChange={(e) => handleSearchInputChange("geographic_longitude", e.target.value)}
+                                    onChange={(e) => handleInputChange("geographic_longitude", e.target.value)}
                                 sx={{ width: "100%", marginLeft: "4px" }}
                             />
                         </Box>

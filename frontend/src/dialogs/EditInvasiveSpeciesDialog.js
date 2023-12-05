@@ -9,7 +9,7 @@ import CustomAlert from '../components/AlertComponent';
 import handleGetRegions from '../functions/RegionMap';
 
 // dialog for editing an invasive species
-const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, handleFinishEditingRow, handleSave, alternativeSpeciesData }) => {
+const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave, alternativeSpeciesData }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
@@ -21,7 +21,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                 const regionMap = await handleGetRegions();
                 setRegionsMap(regionMap);
             } catch (error) {
-                console.error('Error fetching region map 1:', error);
+                console.error('Error fetching region map from edit invasive species dialog:', error);
             }
         };
         fetchRegionData();
@@ -57,7 +57,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                             Array.isArray(tempData.scientific_name)
                                 ? tempData.scientific_name.join(", ")
                                 : tempData.scientific_name
-                        } onChange={(e) => handleSearchInputChange("scientific_name", e.target.value)}
+                        } onChange={(e) => handleInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
 
@@ -66,7 +66,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                         multiline
                         rows={6}
                         value={tempData.species_description}
-                        onChange={(e) => handleSearchInputChange("species_description", e.target.value)}
+                        onChange={(e) => handleInputChange("species_description", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
@@ -84,7 +84,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                                     : []
                             }
                             onChange={(event, values) =>
-                                handleSearchInputChange("alternative_species", values)
+                                handleInputChange("alternative_species", values)
                             }
                             open={alternativeSpeciesAutocompleteOpen}
                             onFocus={() => setAlternativeAutocompleteOpen(true)}
@@ -112,7 +112,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                         multiline
                         rows={3}
                         onChange={(e) =>
-                            handleSearchInputChange("resource_links", e.target.value.split(", "))
+                            handleInputChange("resource_links", e.target.value.split(", "))
                         }
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
@@ -123,7 +123,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleSearchInputChange, ha
                             labelId="region-label"
                             multiple
                             value={tempData.region_id}
-                            onChange={(e) => handleSearchInputChange("region_code_name", e.target.value)}
+                            onChange={(e) => handleInputChange("region_code_name", e.target.value)}
                             label="Region (multiselect)"
                             renderValue={(selected) => {
                                 const selectedNames = selected.map(id => regionMap[id]);
