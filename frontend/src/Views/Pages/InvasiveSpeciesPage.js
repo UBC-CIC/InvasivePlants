@@ -27,7 +27,7 @@ import { boldText, formatString, capitalizeFirstWord } from '../../functions/hel
 
 
 function InvasiveSpeciesPage() {
-  const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const [allInvasiveSpecies, setAllInvasiveSpecies] = useState([]); // all invasive species in database
   const [allAlternativeSpecies, setAllAlternativeSpecies] = useState([]); // array of all alternative species
@@ -100,7 +100,7 @@ function InvasiveSpeciesPage() {
   // gets all alternative species in the database
   const fetchAllInvasiveSpecies = async (lastSpeciesId = null) => {
     try {
-      const response = await axios.get(`${API_ENDPOINT}invasiveSpecies`, {
+      const response = await axios.get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
           last_species_id: lastSpeciesId,
           rows_per_page: rowsPerPage
@@ -136,7 +136,7 @@ function InvasiveSpeciesPage() {
   // gets all alternative species in the database
   const fetchAllAlternativeSpecies = async (lastSpeciesId = null) => {
     try {
-      const response = await axios.get(`${API_ENDPOINT}alternativeSpecies`, {
+      const response = await axios.get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
           last_species_id: lastSpeciesId,
           rows_per_page: rowsPerPage
@@ -187,7 +187,7 @@ function InvasiveSpeciesPage() {
 
     // request to GET invasive species
     axios
-      .get(`${API_ENDPOINT}invasiveSpecies`, {
+      .get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
           last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
           rows_per_page: rowsPerPage // default 20
@@ -200,7 +200,7 @@ function InvasiveSpeciesPage() {
 
         const promises = response.data.flatMap(item =>
           item.region_id.map(regionId =>
-            axios.get(`${API_ENDPOINT}region/${regionId}`, {
+            axios.get(`${API_BASE_URL}region/${regionId}`, {
               headers: {
                 'x-api-key': process.env.REACT_APP_X_API_KEY
               }
@@ -251,7 +251,7 @@ function InvasiveSpeciesPage() {
     if (shouldSave) {
       // request to GET invasive species
       axios
-        .get(`${API_ENDPOINT}invasiveSpecies`, {
+        .get(`${API_BASE_URL}invasiveSpecies`, {
           params: {
             last_species_id: currLastSpeciesId ? currLastSpeciesId : null, // default first page
             rows_per_page: rowsPerPage // default 20
@@ -261,19 +261,6 @@ function InvasiveSpeciesPage() {
           }
         })
         .then((response) => {
-
-          // const promises = response.data.flatMap(item =>
-          //   item.region_id.map(regionId =>
-          //     axios.get(`${API_ENDPOINT}region/${regionId}`, {
-          //       headers: {
-          //         'x-api-key': process.env.REACT_APP_X_API_KEY
-          //       }
-          //     })
-          //   )
-          // );
-
-          // return Promise.all(promises)
-          //   .then(regionResponses => {
           const formattedData = response.data.map((item, index) => {
             return {
               ...item,
@@ -326,7 +313,7 @@ function InvasiveSpeciesPage() {
     console.log("formatted search input: ", formattedSearchInput);
 
     axios
-      .get(`${API_ENDPOINT}invasiveSpecies`, {
+      .get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
           scientific_name: formattedSearchInput,
         },
@@ -338,7 +325,7 @@ function InvasiveSpeciesPage() {
         const promises = response.data.flatMap(item =>
           item.region_id.map(regionId =>
             axios
-              .get(`${API_ENDPOINT}region/${regionId}`, {
+              .get(`${API_BASE_URL}region/${regionId}`, {
                 headers: {
                   'x-api-key': process.env.REACT_APP_X_API_KEY
                 }
@@ -452,7 +439,7 @@ function InvasiveSpeciesPage() {
 
       // request to PUT updated invasive species to the database
       axios
-        .put(`${API_ENDPOINT}invasiveSpecies/${tempEditingData.species_id}`,
+        .put(`${API_BASE_URL}invasiveSpecies/${tempEditingData.species_id}`,
           updatedTempDataWithoutRegionCode,
           {
             headers: {
@@ -491,7 +478,7 @@ function InvasiveSpeciesPage() {
     // request to DELETE species from the database
     if (deleteId) {
       axios
-        .delete(`${API_ENDPOINT}invasiveSpecies/${deleteId}`,
+        .delete(`${API_BASE_URL}invasiveSpecies/${deleteId}`,
           {
             headers: {
               'Authorization': `${jwtToken}`
@@ -528,7 +515,7 @@ function InvasiveSpeciesPage() {
 
     // POST new species to database
     axios
-      .post(API_ENDPOINT + "invasiveSpecies", newSpeciesData,
+      .post(API_BASE_URL + "invasiveSpecies", newSpeciesData,
         {
           headers: {
             'Authorization': `${jwtToken}`
@@ -682,16 +669,16 @@ function InvasiveSpeciesPage() {
         />
 
         <ThemeProvider theme={Theme}>
-          <Button variant="contained" onClick={() => handleGetInvasiveSpeciesAfterSearch()} style={{ marginLeft: "20px", marginTop: "27px", height: "53px", alignItems: "center" }}>
+          <Button variant="contained" onClick={() => handleGetInvasiveSpeciesAfterSearch()} style={{ marginLeft: "20px", marginTop: "27px", width: "10%", height: "53px", alignItems: "center" }}>
             <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
           </Button>
         </ThemeProvider>
 
-        <ThemeProvider theme={Theme}>
+        {/* <ThemeProvider theme={Theme}>
           <Button variant="contained" onClick={() => handleReset()} style={{ marginLeft: "10px", marginTop: "27px", height: "53px", alignItems: "center" }}>
             <RestartAltIcon />
           </Button>
-        </ThemeProvider>
+        </ThemeProvider> */}
       </div>
 
       {/* button to add species */}

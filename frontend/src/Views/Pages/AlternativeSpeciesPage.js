@@ -24,7 +24,8 @@ import axios from "axios";
 import { boldText, capitalizeFirstWord, capitalizeEachWord, formatString } from '../../functions/helperFunctions';
 
 function AlternativeSpeciesPage() {
-  const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
   const [allAlternativeSpecies, setAllAlternativeSpecies] = useState([]); // array of all alternative species
   const [speciesCount, setSpeciesCount] = useState(0); // number of alternative species
@@ -77,7 +78,7 @@ function AlternativeSpeciesPage() {
   // gets all alternative species in the database
   const fetchAllAlternativeSpecies = async (lastSpeciesId = null) => {
     try {
-      const response = await axios.get(`${API_ENDPOINT}alternativeSpecies`, {
+      const response = await axios.get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
           last_species_id: lastSpeciesId,
           rows_per_page: rowsPerPage
@@ -125,7 +126,7 @@ function AlternativeSpeciesPage() {
 
     // request to GET all alternative species
     axios
-      .get(`${API_ENDPOINT}alternativeSpecies`, {
+      .get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
           last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
           rows_per_page: rowsPerPage  // default 20
@@ -185,7 +186,7 @@ function AlternativeSpeciesPage() {
     if (shouldSave) {
       // request to GET all alternative species
       axios
-        .get(`${API_ENDPOINT}alternativeSpecies`, {
+        .get(`${API_BASE_URL}alternativeSpecies`, {
           params: {
             last_species_id: currLastSpeciesId ? currLastSpeciesId : null, // default first page
             rows_per_page: rowsPerPage  // default 20
@@ -256,7 +257,7 @@ function AlternativeSpeciesPage() {
     console.log("formatted search input: ", formattedSearchInput);
 
     axios
-      .get(`${API_ENDPOINT}alternativeSpecies`, {
+      .get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
           scientific_name: formattedSearchInput,
         },
@@ -401,7 +402,7 @@ function AlternativeSpeciesPage() {
           images.forEach(img => {
             console.log("curr image:", img);
             axios
-              .post(API_ENDPOINT + "plantsImages", img, {
+              .post(API_BASE_URL + "plantsImages", img, {
                 headers: {
                   'Authorization': `${jwtToken}`
                 }
@@ -429,7 +430,7 @@ function AlternativeSpeciesPage() {
 
       // update alternative species table
       axios
-        .put(`${API_ENDPOINT}alternativeSpecies/${tempEditingData.species_id}`, formattedData, {
+        .put(`${API_BASE_URL}alternativeSpecies/${tempEditingData.species_id}`, formattedData, {
           headers: {
             'Authorization': `${jwtToken}`
           }
@@ -464,7 +465,7 @@ function AlternativeSpeciesPage() {
 
     if (deleteId) {
       axios
-        .delete(`${API_ENDPOINT}alternativeSpecies/${deleteId}`, {
+        .delete(`${API_BASE_URL}alternativeSpecies/${deleteId}`, {
           headers: {
             'Authorization': `${jwtToken}`
           }
@@ -501,7 +502,7 @@ function AlternativeSpeciesPage() {
 
     // POST new alternative species to database
     axios
-      .post(API_ENDPOINT + "alternativeSpecies", newSpeciesData, {
+      .post(API_BASE_URL + "alternativeSpecies", newSpeciesData, {
         headers: {
           'Authorization': `${jwtToken}`
         }
@@ -534,7 +535,7 @@ function AlternativeSpeciesPage() {
         allPlantImages.forEach((plantData) => {
           console.log("plant: ", plantData);
           axios
-            .post(API_ENDPOINT + "plantsImages", plantData, {
+            .post(API_BASE_URL + "plantsImages", plantData, {
               headers: {
                 'Authorization': `${jwtToken}`
               }
@@ -665,11 +666,11 @@ function AlternativeSpeciesPage() {
           </Button>
         </ThemeProvider>
 
-        <ThemeProvider theme={Theme}>
+        {/* <ThemeProvider theme={Theme}>
           <Button variant="contained" onClick={() => handleReset()} style={{ marginLeft: "10px", marginTop: "12px", height: "53px", alignItems: "center" }}>
             <RestartAltIcon />
           </Button>
-        </ThemeProvider>
+        </ThemeProvider> */}
 
       </div>
 
@@ -967,7 +968,7 @@ function AlternativeSpeciesPage() {
 
                                   {row.s3_keys && row.s3_keys[index] && (
                                     <span>
-                                      <a href={`https://d123pl6gvdlen1.cloudfront.net/${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
+                                      <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
                                         View Image
                                       </a>
                                       <br />
@@ -984,7 +985,7 @@ function AlternativeSpeciesPage() {
                                 <br />
                                   {row.s3_keys && row.s3_keys.map((key, index) => (
                                     <span key={index}>
-                                      <a href={`https://d123pl6gvdlen1.cloudfront.net/${key}`} target="_blank" rel="noopener noreferrer">
+                                      <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
                                         View Image
                                       </a>
                                       <br />

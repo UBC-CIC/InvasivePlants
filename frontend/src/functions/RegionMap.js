@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 // request to GET regions in the database
 const handleGetRegions = () => {
     return new Promise((resolve, reject) => {
         axios
-            .get(`${API_ENDPOINT}region`, {
+            .get(`${API_BASE_URL}region`, {
                 headers: {
                     'x-api-key': process.env.REACT_APP_X_API_KEY
                 }

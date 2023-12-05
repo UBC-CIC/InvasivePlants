@@ -10,14 +10,11 @@ let { AWS_REGION, BUCKET_NAME } = process.env;
 AWS.config.update({ region: AWS_REGION });
 const URL_EXPIRATION_SECONDS = 300;
 const s3 = new AWS.S3();
-const { v4: uuidv4 } = require('uuid');
 
-// TODO: make keys moe unique (can consider uuid, timestamp)
 const getUploadURL = async function(event) {
   // Generate default value for parameters
   const randomID = parseInt(Math.random() * 10000000);
   let key = `userLoadedPhotos/${randomID}.jpg`;
-  // const key = `userLoadedPhotos/${uuidv4()}.jpg`;
 
   let contentType = 'image/jpeg';
   

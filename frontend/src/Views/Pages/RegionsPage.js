@@ -26,7 +26,7 @@ import axios from "axios";
 
 // displays regions
 function RegionsPage() {
-    const API_ENDPOINT = "https://jfz3gup42l.execute-api.ca-central-1.amazonaws.com/prod/";
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
     const [allRegions, setAllRegions] = useState([]); // array of all regions
     const [regionCount, setRegionCount] = useState(0); // number of regions
@@ -73,7 +73,7 @@ function RegionsPage() {
     // gets all alternative species in the database
     const fetchAllRegions = async (lastRegionId = null) => {
         try {
-            const response = await axios.get(`${API_ENDPOINT}region`, {
+            const response = await axios.get(`${API_BASE_URL}region`, {
                 params: {
                     last_region_id: lastRegionId,
                     rows_per_page: rowsPerPage
@@ -110,7 +110,7 @@ function RegionsPage() {
         console.log("region id:", currLastRegionId);
 
         axios
-            .get(`${API_ENDPOINT}region`, {
+            .get(`${API_BASE_URL}region`, {
                 params: {
                     last_region_id: shouldReset ? null : currLastRegionId  // for pagination
                 },
@@ -148,7 +148,7 @@ function RegionsPage() {
         console.log("search: ", formattedSearchInput)
 
         axios
-            .get(`${API_ENDPOINT}region`, {
+            .get(`${API_BASE_URL}region`, {
                 params: {
                     region_fullname: formattedSearchInput,
                 },
@@ -225,7 +225,7 @@ function RegionsPage() {
         if (confirmed) {
             console.log("saved region data: ", tempData);
             axios
-                .put(`${API_ENDPOINT}region/${formattedData.region_id}`,
+                .put(`${API_BASE_URL}region/${formattedData.region_id}`,
                     formattedData,
                     {
                         headers: {
@@ -259,7 +259,7 @@ function RegionsPage() {
 
         // request to POST new regions to the database
         axios
-            .post(API_ENDPOINT + "region",
+            .post(API_BASE_URL + "region",
                 formattedData,
                 {
                     headers: {
@@ -297,7 +297,7 @@ function RegionsPage() {
         // console.log("region id to delete: ", deleteId);
         if (deleteId) {
             axios
-                .delete(`${API_ENDPOINT}region/${deleteId}`, {
+                .delete(`${API_BASE_URL}region/${deleteId}`, {
                     headers: {
                         'Authorization': `${jwtToken}`
                     }
@@ -470,11 +470,11 @@ function RegionsPage() {
                     </Button>
                 </ThemeProvider>
 
-                <ThemeProvider theme={Theme}>
+                {/* <ThemeProvider theme={Theme}>
                     <Button variant="contained" onClick={() => handleReset()} style={{ marginLeft: "10px", marginTop: "27px", height: "53px", alignItems: "center" }}>
                         <RestartAltIcon />
                     </Button>
-                </ThemeProvider>
+                </ThemeProvider> */}
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
