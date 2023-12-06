@@ -567,7 +567,7 @@ function RegionsPage() {
                             (country !== ""
                                 ? displayData
                                 .filter((item) => item.country_fullname.toLowerCase() === country.toLowerCase())
-                                .sort((a, b) => a.region_fullname.localeCompare(b.region_fullname))
+                                // .sort((a, b) => a.region_fullname.localeCompare(b.region_fullname))
                                     .map((row) => (
                                         <TableRow key={row.region_code_name}>
                                             {/* editing the row and no country search*/}
@@ -657,7 +657,7 @@ function RegionsPage() {
                                         </TableRow>
                                     ))
                                 : displayData
-                                .sort((a, b) => a.region_fullname.localeCompare(b.region_fullname))
+                                // .sort((a, b) => a.region_fullname.localeCompare(b.region_fullname))
                                     .map((row) => (
                                         <TableRow key={row.region_id}>
                                             {/* editing the row and country */}

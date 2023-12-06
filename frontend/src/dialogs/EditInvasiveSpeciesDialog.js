@@ -30,9 +30,8 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
 
     // Ensures all required fields are present before adding invasive species
     const handleConfirmAddInvasiveSpecies = () => {
-        // if (!tempData.scientific_name || tempData.scientific_name.length === 0 || !tempData.region_id || tempData.region_id.length === 0) {
-
-        if (!tempData.scientific_name || tempData.scientific_name.length === 0) {
+        if (!tempData.scientific_name || tempData.scientific_name.length === 0 ||
+            !tempData.region_id || tempData.region_id.length === 0) {
             setShowAlert(true);
             return false;
         }
@@ -163,7 +162,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
 
 
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
-                <CustomAlert text={"scientific name"} onClose={() => setShowAlert(false)} />
+                <CustomAlert text={"scientific name AND region"} onClose={() => setShowAlert(false)} />
             </Dialog>
 
             <SnackbarOnSuccess open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />
