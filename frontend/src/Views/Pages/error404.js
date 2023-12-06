@@ -9,7 +9,7 @@ class Error404 extends Component {
     page = {
         title: "404",
         description: "Hmm, there is no page you are looking for.",
-        btn: "Go to dashboard",
+        btn: "Go to Invasive Species",
     };
     state = {};
     render() {
@@ -44,7 +44,7 @@ class Error404 extends Component {
             ),
             React.createElement(
                 Button,
-                { style: style.btn, href: "/invasive species", variant: "outlined" },
+                { style: style.btn, href: "/invasiveSpecies", variant: "outlined" },
                 this.page.btn
             )
         );

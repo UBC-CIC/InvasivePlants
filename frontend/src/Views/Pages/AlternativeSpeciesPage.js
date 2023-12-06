@@ -21,12 +21,14 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import axios from "axios";
 import { boldText, capitalizeFirstWord, capitalizeEachWord, formatString } from '../../functions/helperFunctions';
+import { prev } from "cheerio/lib/api/traversing";
 
 function AlternativeSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
   const [allAlternativeSpecies, setAllAlternativeSpecies] = useState([]); // array of all alternative species
+  const [allAlternativeSpeciesNames, setAllAlternativeSpeciesNames] = useState([]); // array of alternative species names
   const [speciesCount, setSpeciesCount] = useState(0); // number of alternative species
   const [data, setData] = useState([]); // original data
   const [displayData, setDisplayData] = useState([]); // data displayed in the table
@@ -107,11 +109,17 @@ function AlternativeSpeciesPage() {
     }
   };
 
-  // Gets the scientific name(s) of all alternative species in the database
-  const alternativeSpeciesNames = allAlternativeSpecies.map(species => ({
-    label: species.scientific_name,
-    value: species.scientific_name
-  }));
+  // Updates search bar dropdown when alternative species are added or deleted
+  useEffect(() => {
+    const updatedSpeciesNames = allAlternativeSpecies.map(species => ({
+      label: species.scientific_name,
+      value: species.scientific_name
+    }));
+
+    // console.log("updatedSpeciesNames: ", updatedSpeciesNames)
+    setAllAlternativeSpeciesNames(updatedSpeciesNames);
+  }, [allAlternativeSpecies]);
+
 
   // Fetches rowsPerPage number of alternative species (pagination)
   const handleGetAlternativeSpecies = () => {
@@ -127,7 +135,7 @@ function AlternativeSpeciesPage() {
       })
       .then((response) => {
         const formattedData = response.data.map(item => {
-          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
+          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
           const image_links = item.images.map(img => img.image_url);
           const s3_keys = item.images.map(img => img.s3_key);
@@ -293,7 +301,7 @@ function AlternativeSpeciesPage() {
     const jwtToken = user.signInUserSession.accessToken.jwtToken;
 
     if (confirmed) {
-      // Helper function that ensure names are of array data type
+      // Helper function that ensure scientific and common names are of array data type
       function formatNames(names) {
         let formattedNames = [];
         if (typeof names === 'string') {
@@ -393,7 +401,7 @@ function AlternativeSpeciesPage() {
   };
 
   // Deletes alternative species from the table
-  // TODO: delete images in s3 bucket too
+  // TODO: delete images in s3 bucket too (prob backend -- cascade on delete)
   const handleConfirmDelete = () => {
     console.log("alt species id to delete: ", deleteId);
     retrieveUser();
@@ -407,6 +415,8 @@ function AlternativeSpeciesPage() {
           }
         })
         .then((response) => {
+          setSpeciesCount(prevCount => prevCount - 1)
+          setAllAlternativeSpecies(prevSpecies => prevSpecies.filter(species => species.species_id !== deleteId));
           setShouldReset(true);
           console.log("alternative species deleted successfully", response.data);
         })
@@ -444,6 +454,20 @@ function AlternativeSpeciesPage() {
       })
       .then((response) => {
         console.log("Alternative species added successfully", response);
+
+        // Ensures that if a species has multiple scientific names, each are separately displayed      
+        const formattedData = response.data.flatMap(item => {
+          return item.scientific_name.map(name => {
+            const capitalizedScientificName = capitalizeFirstWord(name);
+            return {
+              ...item,
+              scientific_name: capitalizedScientificName
+            };
+          });
+        });
+
+        setAllAlternativeSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
+        setSpeciesCount(prevCount => prevCount + 1);
 
         // Maps species id to plant data with image links
         let plantsWithImgLinks = [];
@@ -491,7 +515,6 @@ function AlternativeSpeciesPage() {
   };
 
   // Call to handleGetAlternativeSpecies if shouldReset state is True
-  // TODO: add species name to dropdown, inc count of add, dec count of del
   useEffect(() => {
     if (shouldReset) {
       handleGetAlternativeSpecies();
@@ -570,7 +593,7 @@ function AlternativeSpeciesPage() {
         <SearchComponent
           text={"Search alternative species (scientific or common name)"}
           handleSearch={handleSearch}
-          searchResults={alternativeSpeciesNames}
+          searchResults={allAlternativeSpeciesNames}
           searchTerm={searchInput}
           setSearchTerm={setSearchInput}
         />
