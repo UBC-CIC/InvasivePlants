@@ -15,6 +15,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
     const [regionMap, setRegionsMap] = useState({});
 
+    // GET regions
     useEffect(() => {
         const fetchRegionData = async () => {
             try {

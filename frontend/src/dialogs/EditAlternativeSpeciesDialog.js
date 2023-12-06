@@ -36,6 +36,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
         setShowSaveConfirmation(false);
     };
 
+    // TODO: can create a reusable function for this
     // hanldes user uploaded image files
     const handleImageUpload = async (e) => {
         const files = e.target.files;
@@ -48,7 +49,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                     // modified from https://raz-levy.medium.com/how-to-upload-files-to-aws-s3-from-the-client-side-using-react-js-and-node-js-660252e61e0
                     const timestamp = new Date().getTime();
                     const file = e.target.files[i];
-                    const filename = file.name.split('.')[0].replace(/[&\/\\#,+()$~%'":*?<>{}]/g, '').toLowerCase() + `_${timestamp}`;
+                    const filename = file.name.split('.')[0].replace(/[&/\\#,+()$~%'":*?<>{}]/g, '').toLowerCase() + `_${timestamp}`;
                     const fileExtension = file.name.split('.').pop();
 
                     // GET request to getS3SignedURL endpoint
@@ -238,7 +239,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                                     {img.image_url && (
                                         <img
                                             src={img.image_url}
-                                            alt={`image-${index}`}
+                                            alt={`img.image_url${index}`}
                                             style={{ maxWidth: '60%', height: 'auto' }}
                                         />
                                     )}
@@ -248,7 +249,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                                         <div>
                                             <img
                                                 src={`${S3_BASE_URL}${img.s3_key}`}
-                                                alt={`image-${index}`}
+                                                alt={`img.s3_key${index}`}
                                                 style={{ maxWidth: '60%', height: 'auto' }}
                                             />
                                         </div>

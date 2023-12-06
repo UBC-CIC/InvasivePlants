@@ -106,8 +106,8 @@ function PageContainer(props) {
             <Routes>
                 <Route path="/" element={<Navigate to="/invasive species" />} />
                 <Route path="/login" element={<Navigate to="/invasive species" />} />
-                <Route path="/invasive species" element={<InvasiveSpeciesPage />} />
-                <Route path="/alternative species" element={<AlternativeSpeciesPage />} />
+                <Route path="/invasiveSpecies" element={<InvasiveSpeciesPage />} />
+                <Route path="/alternativeSpecies" element={<AlternativeSpeciesPage />} />
                 <Route path="/regions" element={<RegionPage />} />
 
                 <Route path="/test" element={<PlantNet />} />

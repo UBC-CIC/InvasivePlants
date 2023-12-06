@@ -71,6 +71,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     handleClose();
   };
 
+  // TODO: can create a reusable function for this
   // handles uploading image files to s3 bucket
   const handleImageUpload = async (e) => {
     const files = e.target.files;
@@ -83,7 +84,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
           // modified from https://raz-levy.medium.com/how-to-upload-files-to-aws-s3-from-the-client-side-using-react-js-and-node-js-660252e61e0
           const timestamp = new Date().getTime();
           const file = e.target.files[i];
-          const filename = file.name.split('.')[0].replace(/[&\/\\#,+()$~%'":*?<>{}]/g, '').toLowerCase() + `_${timestamp}`;
+          const filename = file.name.split('.')[0].replace(/[&/\\#,+()$~%'":*?<>{}]/g, '').toLowerCase() + `_${timestamp}`;
           const fileExtension = file.name.split('.').pop();
 
           // GET request to getS3SignedURL endpoint
