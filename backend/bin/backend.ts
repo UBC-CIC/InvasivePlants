@@ -45,7 +45,7 @@ const dbFlowStack = new DBFlowStack(app, 'DBFlowStack', vpcStack, dbStack, stack
 const api = new APIStack(app, 'APIStack', vpcStack, dbStack, functionality, stackDefaultSetup);
 
 // Create an instance of ECR stack
-const ecrStack = new EcrStack(app, 'ECRStack');
+const ecrStack = new EcrStack(app, 'ECRStack', stackDefaultSetup);
 
 // Create an instance of Host stack
 const hostStack = new HostStack(app, 'hostStack', vpcStack, functionality, api, ecrStack, WAFInstance.WAFwebACL, {
@@ -55,3 +55,20 @@ const hostStack = new HostStack(app, 'hostStack', vpcStack, functionality, api, 
     },
     crossRegionReferences: true,
 });
+
+/**
+ * 
+ * LOGICAL FLOW OF DEPLOYMENT
+ * 
+ * Create WAF for cloudfront -- Not sure if we need this
+ *  cdk deploy Create-WAFWebACL --profile <aws-profile-name>
+ * 
+ * Create ECR Repo
+ *  cdk deploy ECRStack --profile <aws-profile-name>
+ * 
+ * Upload Docker Image to ECR Repo
+ *  Follow ECR instruction.
+ * 
+ * Deploy everything else
+ *  cdk deploy -all --parameters hostStack:prefixListID=<your-region-preFixListId> --profile <aws-profile-name>
+ */

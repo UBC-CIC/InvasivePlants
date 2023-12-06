@@ -2,23 +2,21 @@ import { Stack, StackProps, aws_elasticloadbalancingv2, aws_certificatemanager, 
 import { Construct } from "constructs";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as ecs from "aws-cdk-lib/aws-ecs";
-import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as ecspatterns from 'aws-cdk-lib/aws-ecs-patterns';
 import * as secretmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
-import * as path from "path";
 import * as cdk from 'aws-cdk-lib';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 
 // Other stack
 import { VpcStack } from './vpc-stack';
 import { FunctionalityStack } from './functionality-stack';
 import { APIStack } from './api-stack';
 import { EcrStack } from './ecr-stack';
-import { WAFStack } from './waf-stack';
 
 interface AwsRegions2PrefixListID {
     [key: string]: string;
@@ -46,14 +44,6 @@ export class HostStack extends Stack {
         'us-west-2': 'pl-82a045eb',
     };
     constructor( scope: Construct, id: string, vpcStack:VpcStack, functionalityStack:FunctionalityStack, apiStack:APIStack, ecrStack: EcrStack, wafStack: wafv2.CfnWebACL, props?: StackProps) {
-        // constructor(    scope: Construct, 
-        //     id: string,    
-        //     vpcStack:VpcStack, 
-        //     functionalityStack:FunctionalityStack, 
-        //     apiStack:APIStack, 
-        //     ecrStack: EcrStack,
-        //     wafStack: WAFStack, 
-        //     props?: StackProps) 
         super(scope, id, props);
 
         // Import a VPC stack
@@ -62,7 +52,7 @@ export class HostStack extends Stack {
 
         // Retrieve a secrete from Secret Manager
         // "Invasive_Plants_Cognito_Secrets" is consistent from functionality stack
-        const secret = secretmanager.Secret.fromSecretNameV2(this, "ImportedSecrets", "Invasive_Plants_Cognito_Secrets");
+        const secret = secretmanager.Secret.fromSecretNameV2(this, "ImportedSecrets", functionalityStack.secret.secretName);
 
         // Create WAFvs As web ACL
         // This will attach to API Gateway
@@ -196,8 +186,11 @@ export class HostStack extends Stack {
             loadBalancerName: "FargateService-LoadBalancer",
             securityGroup: ALBSecurityGroup,
             deletionProtection: true,
-            dropInvalidHeaderFields: true
+            dropInvalidHeaderFields: true,
         });
+
+        // Create a log for ALB
+        ALB.logAccessLogs(s3.Bucket.fromBucketName(this,"ALBLogID", functionalityStack.bucketName));
 
         // Create ECS Cluster which use to run Task on ECS Farget instance
         const cluster = new ecs.Cluster(this, "fargateCluster", {
@@ -242,7 +235,7 @@ export class HostStack extends Stack {
             },
             environment:{
                 "REACT_APP_API_BASE_URL": apiStack.apiGW_basedURL,
-                "REACT_APP_S3_BASE_URL": functionalityStack.s3_Object_baseURL
+                "REACT_APP_S3_BASE_URL": `https://${functionalityStack.s3_Object_baseURL}/`
             },
             portMappings: [
                 {
@@ -307,10 +300,10 @@ export class HostStack extends Stack {
             webAclId: wafStack.attrArn
         });
 
-        // // Output Messages
+        // Output Messages
         new cdk.CfnOutput(this, 'Output-Message', {
             value: `
-                CloudFront URL: ${CFDistribution.distributionDomainName}
+                Hosted Website URL: ${CFDistribution.distributionDomainName}
             `,
         })
     }
