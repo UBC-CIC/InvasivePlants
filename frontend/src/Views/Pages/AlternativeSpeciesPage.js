@@ -21,7 +21,6 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import axios from "axios";
 import { boldText, capitalizeFirstWord, capitalizeEachWord, formatString } from '../../functions/helperFunctions';
-import { prev } from "cheerio/lib/api/traversing";
 
 function AlternativeSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -33,7 +32,7 @@ function AlternativeSpeciesPage() {
   const [data, setData] = useState([]); // original data
   const [displayData, setDisplayData] = useState([]); // data displayed in the table
   const [editingSpeciesId, setEditingSpeciesId] = useState(null); // species_id of the row being edited
-  const [tempEditingData, setTempEditingData] = useState({}); // data of the species being edited
+  const [tempEditingData, setTempEditingData] = useState({}); // temp data of the species being edited
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false); // state of the editing an alternative species dialog
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false); // state of the adding a new alternative species dialog
   const [searchInput, setSearchInput] = useState(""); // input of the species search bar
@@ -41,8 +40,8 @@ function AlternativeSpeciesPage() {
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
   const [currLastSpeciesId, setCurrLastSpeciesId] = useState(""); // current last species
   const [lastSpeciesIdHistory, setLastSpeciesIdHistory] = useState(new Set("")); // history of last species ids seen for each page
-  const [shouldReset, setShouldReset] = useState(false); // reset above values
-  const [shouldSave, setShouldSave] = useState(false); // reset above values
+  const [shouldReset, setShouldReset] = useState(false); // state of should reset 
+  const [shouldSave, setShouldSave] = useState(false); // state of should save 
 
   // Pagination states
   const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
@@ -116,7 +115,6 @@ function AlternativeSpeciesPage() {
       value: species.scientific_name
     }));
 
-    // console.log("updatedSpeciesNames: ", updatedSpeciesNames)
     setAllAlternativeSpeciesNames(updatedSpeciesNames);
   }, [allAlternativeSpecies]);
 
@@ -245,7 +243,6 @@ function AlternativeSpeciesPage() {
   // Fetches the alternative species that matches user search
   const handleGetAlternativeSpeciesAfterSearch = () => {
     const formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
-    console.log("formatted search input: ", formattedSearchInput);
 
     axios
       .get(`${API_BASE_URL}alternativeSpecies`, {
@@ -257,8 +254,6 @@ function AlternativeSpeciesPage() {
         }
       })
       .then((response) => {
-
-        // formats data 
         const formattedData = response.data.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
@@ -339,9 +334,6 @@ function AlternativeSpeciesPage() {
       // Add new s3 keys only
       const s3KeysToAdd = (imageS3Keys && imageS3Keys.length > 0) ?
         imageS3Keys.filter(key => !formattedData.images.some(existingImg => existingImg.s3_key === key.s3_key)) : null;
-
-      // console.log("to add images (links): ", imagesToAdd);
-      // console.log("to add images (keys): ", s3KeysToAdd);
 
       // POST new images to the database
       function postImages(images) {
