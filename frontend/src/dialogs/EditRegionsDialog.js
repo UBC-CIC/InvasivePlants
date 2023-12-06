@@ -5,6 +5,7 @@ import CustomAlert from '../components/AlertComponent';
 
 // dialog for editing a region
 const EditRegionDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave }) => {
+    const [showAlert, setShowAlert] = useState(false);
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
     const handleClose = (event, reason) => {
@@ -14,7 +15,6 @@ const EditRegionDialog = ({ open, tempData, handleInputChange, handleFinishEditi
         setShowSaveConfirmation(false);
     };
 
-    const [showAlert, setShowAlert] = useState(false);
     const handleConfirmRegion = () => {
         if (tempData.region_fullname.trim() === "" ||
             tempData.region_code_name.trim() === "" ||

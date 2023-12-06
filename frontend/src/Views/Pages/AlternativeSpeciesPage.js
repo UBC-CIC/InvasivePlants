@@ -393,7 +393,7 @@ function AlternativeSpeciesPage() {
   };
 
   // Deletes alternative species from the table
-  // TODO: delete images in s3 bucket too (prob backend -- cascade on delete)
+  // TODO: delete images in s3 bucket too when species is deleted (prob todo in backend -- cascade on delete)
   const handleConfirmDelete = () => {
     console.log("alt species id to delete: ", deleteId);
     retrieveUser();
@@ -641,7 +641,7 @@ function AlternativeSpeciesPage() {
                   Scientific Name
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "12%" }}>
+              <TableCell style={{ width: "10%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Common Name(s)
                 </Typography>
@@ -656,13 +656,11 @@ function AlternativeSpeciesPage() {
                   Resource Links
                 </Typography>
               </TableCell>
-
-              <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
+              <TableCell style={{ width: "10%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  Image Links
+                  Images
                 </Typography>
               </TableCell>
-
               <TableCell style={{ width: "5%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Actions
@@ -773,7 +771,7 @@ function AlternativeSpeciesPage() {
                         />
                       </TableCell>
 
-                      {/* image links */}
+                      {/* images */}
                       <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                         <TextField
                           value={
@@ -795,19 +793,23 @@ function AlternativeSpeciesPage() {
                                 {Array.isArray(tempEditingData.image_links) ? (
                                   tempEditingData.image_links.map((link, index) => (
                                     <span key={index}>
-                                      <a href={link} target="_blank" rel="noopener noreferrer">
-                                        {link}
-                                      </a>
+                                      <img
+                                        src={link}
+                                        alt={`${link}`}
+                                        style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                      />
                                       <br />
                                       <br />
                                     </span>
                                   ))
                                 ) : (
                                   <span>
-                                    <a href={tempEditingData.image_links} target="_blank" rel="noopener noreferrer">
-                                      {tempEditingData.image_links}
-                                    </a>
-                                    <br />
+                                      <img
+                                        src={tempEditingData.image_links}
+                                        style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                      />
+                                      <br />
+                                      <br />
                                     <br />
                                   </span>
                                 )}
@@ -834,6 +836,7 @@ function AlternativeSpeciesPage() {
                     </>
                   ) : (
                     <>
+                        {/* currently displayed table */}
                       {/* scientific names */}
                       <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
                         {Array.isArray(row.scientific_name)
@@ -881,17 +884,18 @@ function AlternativeSpeciesPage() {
                           {Array.isArray(row.image_links) ? (
                             row.image_links.map((link, index) => (
                               <span key={index}>
-                                <a href={link} target="_blank" rel="noopener noreferrer">
-                                  {link}
-                                </a>
-                                <br />
-
+                                <img
+                                  src={link}
+                                  alt={`${link}`}
+                                  style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                />
                                 {row.s3_keys && row.s3_keys[index] && (
                                   <span>
-                                    <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
-                                      {row.s3_keys[index]}
-                                    </a>
-                                    <br />
+                                    <img
+                                      src={`${S3_BASE_URL}${row.s3_keys[index]}`}
+                                      alt={`${row.s3_keys[index]}`}
+                                      style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                    />
                                   </span>
                                 )}
                                 <br />

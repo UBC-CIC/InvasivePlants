@@ -13,7 +13,7 @@ export function boldText(text) {
     });
 }
 
-// capitalizes the first letter and the rest to lowercase in a string (ex. Gypsophila paniculata)
+// capitalizes the first letter and the rest to lowercase in a string (ex. gypsophila_paniculata => Gypsophila paniculata)
 export function capitalizeFirstWord(str) {
     const strSplitUnderscore = str.split("_");
     const words = strSplitUnderscore.flatMap(word => word.split(" "));
@@ -28,9 +28,9 @@ export function capitalizeFirstWord(str) {
     return formattedWords.join(" ");
 }
 
-// capitalizes first letter of each word in a string (ex. Gypsophila Paniculata)
+// capitalizes first letter of each word in a string (ex. gypsophila_paniculata => Gypsophila Paniculata)
 export function capitalizeEachWord(str) {
-    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 
 // formats a string by spliting it based on commas and spacces

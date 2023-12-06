@@ -15,7 +15,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
     const [regionMap, setRegionsMap] = useState({});
 
-    // GET regions
+    // Fetches regions
     useEffect(() => {
         const fetchRegionData = async () => {
             try {
@@ -27,6 +27,18 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
         };
         fetchRegionData();
     }, []);
+
+    // Ensures all required fields are present before adding invasive species
+    const handleConfirmAddInvasiveSpecies = () => {
+        // if (!tempData.scientific_name || tempData.scientific_name.length === 0 || !tempData.region_id || tempData.region_id.length === 0) {
+
+        if (!tempData.scientific_name || tempData.scientific_name.length === 0) {
+            setShowAlert(true);
+            return false;
+        }
+        setShowSaveConfirmation(true);
+        return true
+    };
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -143,7 +155,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>
                     <Button
                         onClick={() => {
-                            handleSave(true);
+                            handleSave(handleConfirmAddInvasiveSpecies());
                         }}
                     >Save</Button>
                 </DialogActions>
