@@ -91,14 +91,14 @@ exports.handler = async (event) => {
 			case "PUT /region/{region_id}":
 				if(event.body != null && event.pathParameters != null){
 					const bd = JSON.parse(event.body);
-					
+
 					// Check if required parameters are passed
 					if( bd.region_code_name && 
 						bd.region_fullname && 
-						bd.country_fullname &&
-						bd.geographic_coordinate &&
-						event.pathParameters.region_id){
+						bd.country_fullname) {
 						
+						// Optional parameters
+						const geographic_coordinate = (bd.geographic_coordinate) ? bd.geographic_coordinate : "";
 						data = await sql`
 							UPDATE regions
 							SET region_code_name = ${bd.region_code_name}, 
@@ -108,7 +108,6 @@ exports.handler = async (event) => {
 							WHERE region_id = ${event.pathParameters.region_id}
 							RETURNING *;
 						`;
-						
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;

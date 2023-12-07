@@ -28,6 +28,7 @@ function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const [allInvasiveSpecies, setAllInvasiveSpecies] = useState([]); // all invasive species in database
+  const [allInvasiveSpeciesNames, setAllInvasiveSpeciesNames] = useState([]); // array of invasive species names
   const [allAlternativeSpecies, setAllAlternativeSpecies] = useState([]); // array of all alternative species
   const [speciesCount, setSpeciesCount] = useState(0); // number of invasive species
   const [data, setData] = useState([]); // original data
@@ -123,11 +124,17 @@ function InvasiveSpeciesPage() {
     }
   };
 
-  // Gets the scientific name(s) of all invasive species in the database
-  const invasiveSpeciesNames = allInvasiveSpecies.map(species => ({
-    label: species.scientific_name,
-    value: species.scientific_name
-  }));
+  // Updates search bar dropdown when alternative species are added or deleted
+  useEffect(() => {
+    const updatedSpeciesNames = allInvasiveSpecies.map(species => ({
+      label: species.scientific_name,
+      value: species.scientific_name
+    }));
+
+    // console.log("updatedSpeciesNames: ", updatedSpeciesNames)
+    setAllInvasiveSpeciesNames(updatedSpeciesNames);
+  }, [allInvasiveSpecies]);
+
 
   // Fetches all alternative species (recursively) in the database
   const fetchAllAlternativeSpecies = async (lastSpeciesId = null) => {
@@ -417,6 +424,8 @@ function InvasiveSpeciesPage() {
             }
           })
         .then((response) => {
+          setSpeciesCount(prevCount => prevCount - 1)
+          setAllInvasiveSpecies(prevSpecies => prevSpecies.filter(species => species.species_id !== deleteId));
           setShouldReset(true);
           console.log("Species deleted successfully", response.data);
         })
@@ -454,6 +463,20 @@ function InvasiveSpeciesPage() {
         })
       .then((response) => {
         console.log("Invasive Species added successfully", response.data);
+
+        // Ensures that if a species has multiple scientific names, each are separately displayed      
+        const formattedData = response.data.flatMap(item => {
+          return item.scientific_name.map(name => {
+            const capitalizedScientificName = capitalizeFirstWord(name);
+            return {
+              ...item,
+              scientific_name: capitalizedScientificName
+            };
+          });
+        });
+
+        setAllInvasiveSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
+        setSpeciesCount(prevCount => prevCount + 1);
         setShouldReset(true);
         setOpenAddSpeciesDialog(false);
       })
@@ -463,7 +486,6 @@ function InvasiveSpeciesPage() {
   };
 
   // Call to handleGetAlternativeSpecies if shouldReset state is True
-  // TODO: add species name to dropdown, inc count of add, dec count of del
   useEffect(() => {
     if (shouldReset) {
       handleGetInvasiveSpecies();
@@ -571,7 +593,7 @@ function InvasiveSpeciesPage() {
         <SearchComponent
           text={"Search invasive species (scientific name)"}
           handleSearch={handleSearch}
-          searchResults={invasiveSpeciesNames}
+          searchResults={allInvasiveSpeciesNames}
           searchTerm={searchInput}
           setSearchTerm={setSearchInput}
         />

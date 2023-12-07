@@ -13,6 +13,9 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
 
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
     const [user, setUser] = useState("");
+    const [deleteImg, setDeleteImg] = useState(null);
+    const [showWarning, setShowWarning] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
 
     // gets current authorized user
     const retrieveUser = async () => {
@@ -36,7 +39,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
         setShowSaveConfirmation(false);
     };
 
-    // TODO: can create a reusable function for this
+    // TODO: ow priority (refactor) can create a reusable function for this
     // hanldes user uploaded image files
     const handleImageUpload = async (e) => {
         const files = e.target.files;
@@ -86,20 +89,18 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
         }
     };
 
-    const [showWarning, setShowWarning] = useState(false);
-    const [deleteImg, setDeleteImg] = useState(null);
-
+    // Opens delete warning confirmation
     const handleImageDelete = (img, index) => {
         setShowWarning(true);
         setDeleteImg(img);
     };
 
 
+    // Deletes image from database
     const handleConfirmDeleteImage = () => {
         console.log("img to delete: ", deleteImg)
         setShowWarning(false)
 
-        // remove the image from the database
         if (deleteImg) {
             retrieveUser();
             const jwtToken = user.signInUserSession.accessToken.jwtToken;
@@ -124,7 +125,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                 .catch((error) => {
                     console.error("Error deleting image", error);
                 }).finally(() => {
-                    // Reset states
                     setDeleteImg(null);
                     setShowWarning(false);
                 });
@@ -133,8 +133,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
         }
     }
 
-
-    const [showAlert, setShowAlert] = useState(false);
+    // Ensures all required fields are present before adding alternative species
     const handleConfirmAddAlternativeSpecies = () => {
         if (!tempData.scientific_name || tempData.scientific_name.length === 0) {
             setShowAlert(true);

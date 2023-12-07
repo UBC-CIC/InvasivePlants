@@ -71,7 +71,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     handleClose();
   };
 
-  // TODO: can create a reusable function for this
+  // TODO: low priority (refactor) can create a reusable function for this
   // handles uploading image files to s3 bucket
   const handleImageUpload = async (e) => {
     const files = e.target.files;

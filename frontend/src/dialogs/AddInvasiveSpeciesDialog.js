@@ -47,7 +47,8 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
     };
 
     const handleConfirmAddSpecies = () => {
-        if (speciesData.scientific_name.length === 0 || speciesData.region_id.length === 0) {
+        if (!speciesData.scientific_name || speciesData.scientific_name.length === 0 ||
+            !speciesData.region_id || speciesData.region_id.length === 0) {
             setShowAlert(true);
             return;
         }
