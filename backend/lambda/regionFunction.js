@@ -23,26 +23,31 @@ exports.handler = async (event) => {
 	
 	let data;
 	try {
-		console.log("Event: ", event);
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
 			case "GET /region":
-				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_region_id) ? event.queryStringParameters.last_region_id : "00000000-0000-0000-0000-000000000000";
+				let curr_offset = (event.queryStringParameters != null && event.queryStringParameters.curr_offset) ? event.queryStringParameters.curr_offset : 0;
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
+				let nextOffset = parseInt(curr_offset) + parseInt(rows_per_page);
 				
 				if(event.queryStringParameters != null && event.queryStringParameters.region_fullname){
 					const region_fullname = "%" + event.queryStringParameters.region_fullname + "%";
 					data = await sql`	SELECT * FROM regions
-										WHERE region_fullname ILIKE ${region_fullname} and region_id > ${species_id_pagination}
-										ORDER BY region_id 
-										LIMIT ${rows_per_page};`;
+										WHERE region_fullname ILIKE ${region_fullname} 
+										ORDER BY region_fullname 
+										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {
 					data = await sql`	SELECT * FROM regions
-										WHERE region_id > ${species_id_pagination}
-										ORDER BY region_id 
-										LIMIT ${rows_per_page};`;
+										ORDER BY region_fullname
+										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				}
-				response.body = JSON.stringify(data);
+
+				let res = {
+					"nextOffset": nextOffset,
+					"regions": data
+				};
+
+				response.body = JSON.stringify(res);				
 				break;
 			case "POST /region":
 				if(event.body != null){
