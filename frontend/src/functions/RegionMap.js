@@ -12,7 +12,7 @@ const handleGetRegions = () => {
                 }
             })
             .then((response) => {
-                const regionsData = response.data;
+                const regionsData = response.data.regions;
                 const regionIdToCodeName = {};
 
                 // map region_id to region_code_name

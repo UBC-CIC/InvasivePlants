@@ -38,6 +38,7 @@ function AlternativeSpeciesPage() {
   const [searchInput, setSearchInput] = useState(""); // input of the species search bar
   const [deleteId, setDeleteId] = useState(null); // species_id of the row being deleted
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
+
   const [currOffset, setCurrOffset] = useState(0); // current index of the first species on a page
   const [shouldReset, setShouldReset] = useState(false); // state of should reset 
   const [shouldSave, setShouldSave] = useState(false); // state of should save 
@@ -72,7 +73,6 @@ function AlternativeSpeciesPage() {
 
   // Fetches all alternative species (recursively) in the database
   const fetchAllAlternativeSpecies = async (currOffset = null) => {
-    console.log("current offset: ", currOffset);
     try {
       const response = await axios.get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
@@ -121,8 +121,6 @@ function AlternativeSpeciesPage() {
 
   // Fetches rowsPerPage number of alternative species (pagination)
   const handleGetAlternativeSpecies = () => {
-    console.log("get: curr offset: ", currOffset);
-
     axios
       .get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
@@ -134,7 +132,6 @@ function AlternativeSpeciesPage() {
         }
       })
       .then((response) => {
-        console.log("get response: ", response);
         const formattedData = response.data.species.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
@@ -225,7 +222,6 @@ function AlternativeSpeciesPage() {
   const handleGetAlternativeSpeciesAfterSearch = () => {
     const formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
 
-    console.log("formattedSearchInput", formattedSearchInput);
     axios
       .get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
