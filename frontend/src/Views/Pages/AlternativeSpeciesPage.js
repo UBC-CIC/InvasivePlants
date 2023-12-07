@@ -38,8 +38,7 @@ function AlternativeSpeciesPage() {
   const [searchInput, setSearchInput] = useState(""); // input of the species search bar
   const [deleteId, setDeleteId] = useState(null); // species_id of the row being deleted
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
-  const [currLastSpeciesId, setCurrLastSpeciesId] = useState(""); // current last species
-  const [lastSpeciesIdHistory, setLastSpeciesIdHistory] = useState(new Set("")); // history of last species ids seen for each page
+  const [currOffset, setCurrOffset] = useState(0); // current index of the first species on a page
   const [shouldReset, setShouldReset] = useState(false); // state of should reset 
   const [shouldSave, setShouldSave] = useState(false); // state of should save 
 
@@ -72,11 +71,12 @@ function AlternativeSpeciesPage() {
   }
 
   // Fetches all alternative species (recursively) in the database
-  const fetchAllAlternativeSpecies = async (lastSpeciesId = null) => {
+  const fetchAllAlternativeSpecies = async (currOffset = null) => {
+    console.log("current offset: ", currOffset);
     try {
       const response = await axios.get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
-          last_species_id: lastSpeciesId,
+          curr_offset: currOffset,
           rows_per_page: rowsPerPage
         },
         headers: {
@@ -85,7 +85,7 @@ function AlternativeSpeciesPage() {
       });
 
       // Ensures that if a species has multiple scientific names, each are separately displayed      
-      const formattedData = response.data.flatMap(item => {
+      const formattedData = response.data.species.flatMap(item => {
         return item.scientific_name.map(name => {
           const capitalizedScientificName = capitalizeFirstWord(name);
           return {
@@ -96,12 +96,12 @@ function AlternativeSpeciesPage() {
       });
 
       setAllAlternativeSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
-      setSpeciesCount(prevCount => prevCount + response.data.length)
+      setSpeciesCount(prevCount => prevCount + response.data.species.length)
 
       // Recursively gets species
-      if (response.data.length === rowsPerPage) {
-        const newLastSpeciesId = response.data[response.data.length - 1].species_id;
-        await fetchAllAlternativeSpecies(newLastSpeciesId);
+      if (response.data.species.length === rowsPerPage) {
+        const nextOffset = response.data.nextOffset;
+        await fetchAllAlternativeSpecies(nextOffset);
       }
     } catch (error) {
       console.error("Error retrieving alternative species", error);
@@ -121,10 +121,12 @@ function AlternativeSpeciesPage() {
 
   // Fetches rowsPerPage number of alternative species (pagination)
   const handleGetAlternativeSpecies = () => {
+    console.log("get: curr offset: ", currOffset);
+
     axios
       .get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
-          last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
+          curr_offset: shouldReset ? null : currOffset,
           rows_per_page: rowsPerPage  // default 20
         },
         headers: {
@@ -132,7 +134,8 @@ function AlternativeSpeciesPage() {
         }
       })
       .then((response) => {
-        const formattedData = response.data.map(item => {
+        console.log("get response: ", response);
+        const formattedData = response.data.species.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
           const image_links = item.images.map(img => img.image_url);
@@ -152,7 +155,7 @@ function AlternativeSpeciesPage() {
         // Resets pagination details
         // This will clear the last species id history and display the first page
         if (shouldReset) {
-          setLastSpeciesIdHistory(new Set())
+          setCurrOffset(0);
           setPage(0);
           setStart(0);
           setEnd(0);
@@ -161,13 +164,7 @@ function AlternativeSpeciesPage() {
 
         setDisplayData(formattedData);
         setData(formattedData);
-
-        // Updates lastSpeciesId with the species_id of the current last row
-        if (formattedData.length > 0) {
-          const newLastSpeciesId = formattedData[formattedData.length - 1].species_id;
-          setCurrLastSpeciesId(newLastSpeciesId);
-          setLastSpeciesIdHistory(history => new Set([...history, newLastSpeciesId]));
-        }
+        setCurrOffset(response.data.nextOffset);
       })
       .catch((error) => {
         console.error("Error getting alternative species", error);
@@ -177,17 +174,8 @@ function AlternativeSpeciesPage() {
   // Maintains history of last species_id and currLastSpeciesId so that on GET, 
   // the current page is maintained instead of starting from page 1
   const handleGetAlternativeSpeciesAfterSave = () => {
-    if (lastSpeciesIdHistory.size > 1) {
-      const updatedIdHistory = Array.from(lastSpeciesIdHistory);
-      updatedIdHistory.pop();
-
-      setLastSpeciesIdHistory(new Set(updatedIdHistory));
-
-      const prevSpeciesId = updatedIdHistory[updatedIdHistory.length - 1];
-      setCurrLastSpeciesId(prevSpeciesId);
-
-      setShouldSave(true) // useEffect listens for this state to change and will GET alternative species when True
-    }
+    setCurrOffset(curr => curr - rowsPerPage);
+    setShouldSave(true) // useEffect listens for this state to change and will GET alternative species when True
   };
 
   // Request to GET alternative species (same page) after editing a row to see the updated data when shouldSave state changes
@@ -196,7 +184,7 @@ function AlternativeSpeciesPage() {
       axios
         .get(`${API_BASE_URL}alternativeSpecies`, {
           params: {
-            last_species_id: currLastSpeciesId ? currLastSpeciesId : null, // default first page
+            curr_offset: currOffset ? currOffset : null, // default first page
             rows_per_page: rowsPerPage  // default 20
           },
           headers: {
@@ -204,7 +192,7 @@ function AlternativeSpeciesPage() {
           }
         })
         .then((response) => {
-          const formattedData = response.data.map(item => {
+          const formattedData = response.data.species.map(item => {
             const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
             const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
             const image_links = item.images.map(img => img.image_url);
@@ -221,14 +209,7 @@ function AlternativeSpeciesPage() {
 
           console.log("retrieved alternative species data:", formattedData);
           setDisplayData(formattedData);
-
-          // Updates lastSpeciesId with the species_id of the last row of the page
-          if (formattedData.length > 0) {
-            const newLastSpeciesId = formattedData[formattedData.length - 1].species_id;
-
-            setCurrLastSpeciesId(newLastSpeciesId);
-            setLastSpeciesIdHistory(history => new Set([...history, newLastSpeciesId]));
-          }
+          setCurrOffset(response.data.nextOffset);
         })
         .catch((error) => {
           console.error("Error getting alternative species", error);
@@ -244,6 +225,7 @@ function AlternativeSpeciesPage() {
   const handleGetAlternativeSpeciesAfterSearch = () => {
     const formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
 
+    console.log("formattedSearchInput", formattedSearchInput);
     axios
       .get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
@@ -254,7 +236,7 @@ function AlternativeSpeciesPage() {
         }
       })
       .then((response) => {
-        const formattedData = response.data.map(item => {
+        const formattedData = response.data.species.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
           const image_links = item.images.map(img => img.image_url);
@@ -339,7 +321,6 @@ function AlternativeSpeciesPage() {
       function postImages(images) {
         if (images && images.length > 0) {
           images.forEach(img => {
-            console.log("curr image:", img);
             axios
               .post(API_BASE_URL + "plantsImages", img, {
                 headers: {
@@ -553,19 +534,10 @@ function AlternativeSpeciesPage() {
   const handleNextPage = () => {
     setPage(page + 1);
   };
-
   // Decrements page count by 1 and removes last id in seen species history 
   const handlePreviousPage = () => {
-    if (lastSpeciesIdHistory.size > 1) {
-      const updatedIdHistory = new Set([...lastSpeciesIdHistory]);
-      updatedIdHistory.delete([...updatedIdHistory].pop());
-      setLastSpeciesIdHistory(updatedIdHistory);
-
-      // Sets currLastSpeciesId to the previous species id
-      const prevSpeciesId = [...updatedIdHistory][[...updatedIdHistory].length - 2];
-      setCurrLastSpeciesId(prevSpeciesId);
-      setPage(page - 1);
-    }
+    setCurrOffset(curr => curr - rowsPerPage * 2);
+    setPage(page - 1);
   };
 
   // Disables the next button if there are no species left to query
