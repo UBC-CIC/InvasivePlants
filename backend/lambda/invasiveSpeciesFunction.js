@@ -59,6 +59,10 @@ exports.handler = async (event) => {
 					}
 				}
 
+				if (data.length < rows_per_page) {
+					nextOffset = curr_offset;
+				}
+
 				let res = {
 					"nextOffset": nextOffset,
 					"species": data

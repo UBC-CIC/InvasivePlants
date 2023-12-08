@@ -42,6 +42,10 @@ exports.handler = async (event) => {
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				}
 
+				if (data.length < rows_per_page) {
+					nextOffset = curr_offset;
+				}
+
 				let res = {
 					"nextOffset": nextOffset,
 					"regions": data

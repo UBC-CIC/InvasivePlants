@@ -46,6 +46,10 @@ exports.handler = async (event) => {
 					data[i].images = await sql`SELECT * FROM images WHERE species_id = ${data[i].species_id};`;
 				}
 
+				if (data.length < rows_per_page) {
+					nextOffset = curr_offset;
+				}
+
 				let res = {
 					"nextOffset": nextOffset,
 					"species": data
