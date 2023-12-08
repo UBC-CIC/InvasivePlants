@@ -172,6 +172,7 @@ function InvasiveSpeciesPage() {
 
   // Fetches rowsPerPage number of invasive species (pagination)
   const handleGetInvasiveSpecies = () => {
+    console.log("curr offset:", currOffset);
     axios
       .get(`${API_BASE_URL}invasiveSpecies`, {
         params: {

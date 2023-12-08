@@ -28,7 +28,6 @@ exports.handler = async (event) => {
 			case "GET /invasiveSpecies":
 				let curr_offset = (event.queryStringParameters != null && event.queryStringParameters.curr_offset) ? event.queryStringParameters.curr_offset : 0;
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
-				let nextOffset = parseInt(curr_offset) + parseInt(rows_per_page);
 
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
 					data = await sql`	SELECT * FROM invasive_species 
@@ -59,8 +58,15 @@ exports.handler = async (event) => {
 					}
 				}
 
+				let nextOffset = parseInt(curr_offset);
+
+				// If the number of rows returned is less than the number of rows requested, 
+				// nextOffset will be the current offset plus the number of rows returned.
+				// Otherwise, set nextOffset to the current offset plus the number of rows requested. 
 				if (data.length < rows_per_page) {
-					nextOffset = curr_offset;
+					nextOffset += data.length;
+				} else {
+					nextOffset += parseInt(rows_per_page);
 				}
 
 				let res = {
