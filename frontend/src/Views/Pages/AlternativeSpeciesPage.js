@@ -371,7 +371,6 @@ function AlternativeSpeciesPage() {
   };
 
   // Deletes alternative species from the table
-  // TODO: delete images in s3 bucket too when species is deleted (prob todo in backend -- cascade on delete)
   const handleConfirmDelete = () => {
     console.log("alt species id to delete: ", deleteId);
     retrieveUser();

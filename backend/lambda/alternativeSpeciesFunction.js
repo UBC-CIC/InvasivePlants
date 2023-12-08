@@ -36,7 +36,7 @@ exports.handler = async (event) => {
 
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
 					data = await sql`	SELECT * FROM alternative_species 
-										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)
+										WHERE ${event.queryStringParameters.scientific_name.toLowerCase()} = LOWER(scientific_name)
 										ORDER BY scientific_name[1], species_id 
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {

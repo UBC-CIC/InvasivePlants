@@ -18,8 +18,7 @@
   },
   {
     "scientific_name": [
-      "pilosella_aurantiaca",
-      "hieracium_aurantiacum"
+      "pilosella_aurantiaca"
     ],
     "resource_links": [
       "https://bcinvasives.ca/invasives/orange-hawkweed/"
@@ -30,8 +29,7 @@
   },
   {
     "scientific_name": [
-      "tripleurospermum_inodorum",
-      "tripleurospermum_perforatum"
+      "tripleurospermum_inodorum"
     ],
     "resource_links": [
       "https://bcinvasives.ca/invasives/scentless-chamomile/"
@@ -43,7 +41,7 @@
   {
     "scientific_name": [
       "tamarix_ramosissima",
-      "tamarix"
+      "tamarix_chinensis"
     ],
     "resource_links": [
       "https://bcinvasives.ca/invasives/tamarisk/"
@@ -60,8 +58,7 @@
   },
   {
     "scientific_name": [
-      "lamium_galeobdolon",
-      "lamiastrum_galeobdolon"
+      "lamium_galeobdolon"
     ],
     "resource_links": [
       "https://bcinvasives.ca/invasives/yellow-archangel/"
@@ -90,7 +87,7 @@
   {
     "scientific_name": [
       "lonicera_maackii",
-      "lonicera"
+      "lonicera_tatarica"
     ],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/invasive-honeysuckles-2/"
@@ -101,7 +98,7 @@
   },
   {
     "scientific_name": [
-      "miscanthus"
+      "miscanthus_sacchariflorus"
     ],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/miscanthus-2/"
