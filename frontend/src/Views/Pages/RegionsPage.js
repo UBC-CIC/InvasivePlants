@@ -190,6 +190,7 @@ function RegionsPage() {
     // Fetches the regions that matches user search
     const handleGetRegionsAfterSearch = () => {
         const formattedSearchInput = capitalizeEachWord(searchInput);
+        console.log("formatted search input: ", formattedSearchInput);
 
         axios
             .get(`${API_BASE_URL}region`, {

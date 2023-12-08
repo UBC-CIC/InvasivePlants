@@ -20,7 +20,12 @@ exports.handler = async (event) => {
 	if (!sql) {
 		sql = await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT); 
 	}
-	
+
+	// Function to format scientific names (capitalized and spaces replaced with "_")
+	const formatScientificName = (name) => {
+		return name.toLowerCase().replace(/\s+/g, '_');
+	};
+
 	let data;
 	try {
 		const pathData = event.httpMethod + " " + event.resource;
@@ -82,6 +87,10 @@ exports.handler = async (event) => {
 					
 					// Check if required parameters are passed
 					if (bd.scientific_name) {
+						// Ensure that scientific names are formatted correctly
+						const formattedScientificNames = Array.isArray(bd.scientific_name)
+							? bd.scientific_name.map(formatScientificName)
+							: [formatScientificName(bd.scientific_name)];
 						
 						// Optional parameters
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
@@ -91,7 +100,7 @@ exports.handler = async (event) => {
 
 						data = await sql`
 							INSERT INTO invasive_species (scientific_name, resource_links, species_description, region_id, alternative_species)
-							VALUES (${bd.scientific_name}, ${resource_links}, ${species_description}, ${region_id}, ${alternative_species})
+							VALUES (${formattedScientificNames}, ${resource_links}, ${species_description}, ${region_id}, ${alternative_species})
 							RETURNING *;
 						`;
 						
@@ -137,6 +146,10 @@ exports.handler = async (event) => {
 					
 					// Check if required parameters are passed
 					if (event.pathParameters.species_id && bd.scientific_name) {
+						// Ensure that scientific names are formatted correctly
+						const formattedScientificNames = Array.isArray(bd.scientific_name)
+							? bd.scientific_name.map(formatScientificName)
+							: [formatScientificName(bd.scientific_name)];
 
 						// Optional parameters
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
@@ -146,7 +159,7 @@ exports.handler = async (event) => {
 						
 						data = await sql`
 							UPDATE invasive_species
-							SET scientific_name = ${bd.scientific_name}, 
+							SET scientific_name = ${formattedScientificNames}, 
 								resource_links = ${resource_links}, 
 								species_description = ${species_description},
 								region_id = ${region_id},

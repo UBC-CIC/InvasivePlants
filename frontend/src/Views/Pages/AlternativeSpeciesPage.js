@@ -220,7 +220,8 @@ function AlternativeSpeciesPage() {
 
   // Fetches the alternative species that matches user search
   const handleGetAlternativeSpeciesAfterSearch = () => {
-    const formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
+    let formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
+    console.log("formatted search input: ", formattedSearchInput);
 
     axios
       .get(`${API_BASE_URL}alternativeSpecies`, {

@@ -267,7 +267,7 @@ function InvasiveSpeciesPage() {
 
   // Fetches the invasive species that matches user search
   const handleGetInvasiveSpeciesAfterSearch = () => {
-    const formattedSearchInput = searchInput.toLowerCase().replace(/ /g, '_'); 
+    let formattedSearchInput = searchInput.toLowerCase().replace(/ /g, '_');
     console.log("formatted search input: ", formattedSearchInput);
 
     axios
