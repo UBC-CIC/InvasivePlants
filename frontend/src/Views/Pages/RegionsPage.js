@@ -39,19 +39,19 @@ function RegionsPage() {
     const [openAddRegionDialog, setOpenAddRegionDialog] = useState(false); // state of the adding a new region dialog
     const [searchInput, setSearchInput] = useState(""); // input of the region search bar
     const [deleteId, setDeleteId] = useState(null); // region_id of the row being deleted
-    const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
-    const [currLastRegionId, setCurrLastRegionId] = useState(""); // current last region
-    const [lastRegionIdHistory, setLastRegionIdHistory] = useState(new Set()); // history of last region ids seen for each page
+    const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog
+
+    const [currOffset, setCurrOffset] = useState(0); // current index of the first region on a page
     const [shouldReset, setShouldReset] = useState(false); // state of should reset 
     const [shouldSave, setShouldSave] = useState(false); // state of should save 
 
     // Pagination states
-    const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
+    const rowsPerPageOptions = [10, 20, 50]; // user selects number of regions to display
     const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // start with default 20 rows per page
     const [page, setPage] = useState(0); // Start with page 0
     const [disableNextButton, setDisableNextButton] = useState(false); // disabled next button or not
-    const [start, setStart] = useState(0); // starting index of species
-    const [end, setEnd] = useState(0); // end index of species
+    const [start, setStart] = useState(0); // starting index of regions
+    const [end, setEnd] = useState(0); // end index of regions
 
     const [user, setUser] = useState("");
 
@@ -72,12 +72,13 @@ function RegionsPage() {
             console.log("error getting user: ", e);
         }
     }
+
     // Fetches all regions (recursively) in the database
-    const fetchAllRegions = async (lastRegionId = null) => {
+    const fetchAllRegions = async (currOffset = null) => {
         try {
             const response = await axios.get(`${API_BASE_URL}region`, {
                 params: {
-                    last_region_id: lastRegionId,
+                    curr_offset: currOffset,
                     rows_per_page: rowsPerPage
                 },
                 headers: {
@@ -85,13 +86,13 @@ function RegionsPage() {
                 }
             });
 
-            setAllRegions(prevRegions => [...prevRegions, ...response.data]);
-            setRegionCount(prevCount => prevCount + response.data.length)
+            setAllRegions(prevRegions => [...prevRegions, ...response.data.regions]);
+            setRegionCount(prevCount => prevCount + response.data.regions.length)
 
             // Recursively gets regions
-            if (response.data.length === rowsPerPage) {
-                const newLastRegionId = response.data[response.data.length - 1].region_id;
-                await fetchAllRegions(newLastRegionId);
+            if (response.data.regions.length === rowsPerPage) {
+                const nextOffset = response.data.nextOffset;
+                await fetchAllRegions(nextOffset);
             }
         } catch (error) {
             console.error("Error retrieving regions", error);
@@ -100,11 +101,9 @@ function RegionsPage() {
 
     // Updates search bar dropdown when regions are added or deleted
     useEffect(() => {
-        console.log("all regions: ", allRegions)
-
         const updatedRegionFullNames = allRegions.map(region => ({
-        label: region.region_fullname,
-        value: region.region_fullname
+            label: region.region_fullname,
+            value: region.region_fullname
         }));
 
         setAllRegionNames(updatedRegionFullNames);
@@ -113,38 +112,33 @@ function RegionsPage() {
 
     // Fetches rowsPerPage number of regions (pagination)
     const handleGetRegions = () => {
+        console.log("curr offset: ", currOffset);
         axios
             .get(`${API_BASE_URL}region`, {
                 params: {
-                    last_region_id: shouldReset ? null : currLastRegionId  // for pagination
+                    curr_offset: shouldReset ? null : currOffset,
+                    rows_per_page: rowsPerPage  // default 20
                 },
                 headers: {
                     'x-api-key': process.env.REACT_APP_X_API_KEY
                 }
             })
             .then((response) => {
-                console.log("Regions retrieved successfully", response.data);
+                console.log("Regions retrieved successfully", response.data.regions);
 
                 // Resets pagination details
                 // This will clear the last region id history and display the first page
                 if (shouldReset) {
-                    setLastRegionIdHistory(new Set())
+                    setCurrOffset(0);
                     setPage(0);
                     setStart(0);
                     setEnd(0);
                     setShouldReset(false);
                 }
 
-                setDisplayData(response.data);
-                setData(response.data);
-
-                // Updates lastRegionId with the region_id of the current last row
-                if (response.data.length > 0) {
-                    const newLastRegionId = response.data[response.data.length - 1].region_id;
-
-                    setCurrLastRegionId(newLastRegionId);
-                    setLastRegionIdHistory(history => new Set([...history, newLastRegionId]));
-                }
+                setDisplayData(response.data.regions);
+                setData(response.data.regions);
+                setCurrOffset(response.data.nextOffset);
             })
             .catch((error) => {
                 console.error("Error retrieving region", error);
@@ -154,17 +148,8 @@ function RegionsPage() {
     // Maintains history of last region_id and currLastRegionId so that on GET, 
     // the current page is maintained instead of starting from page 1
     const handleGetRegionsAfterSave = () => {
-        if (lastRegionIdHistory.size > 1) {
-            const updatedIdHistory = Array.from(lastRegionIdHistory);
-            updatedIdHistory.pop();
-
-            setLastRegionIdHistory(new Set(updatedIdHistory));
-
-            const prevRegionId = updatedIdHistory[updatedIdHistory.length - 1];
-            setCurrLastRegionId(prevRegionId);
-
-            setShouldSave(true) // useEffect listens for this state to change and will GET alternative species when True
-        }
+        setCurrOffset(curr => curr - rowsPerPage);
+        setShouldSave(true) // useEffect listens for this state to change and will GET regions when True
     };
 
     // Request to GET region (same page) after editing a row to see the updated data when shouldSave state changes
@@ -173,7 +158,7 @@ function RegionsPage() {
             axios
                 .get(`${API_BASE_URL}region`, {
                     params: {
-                        last_species_id: currLastRegionId ? currLastRegionId : null, // default first page
+                        curr_offset: currOffset ? currOffset : null, // default first page
                         rows_per_page: rowsPerPage  // default 20
                     },
                     headers: {
@@ -181,7 +166,7 @@ function RegionsPage() {
                     }
                 })
                 .then((response) => {
-                    const formattedData = response.data.map(item => {
+                    const formattedData = response.data.regions.map(item => {
                         return {
                             ...item,
                             region_fullname: capitalizeEachWord(item.region_fullname),
@@ -192,14 +177,7 @@ function RegionsPage() {
 
                     console.log("retrieved region data:", formattedData);
                     setDisplayData(formattedData);
-
-                    // Updates lastRegionId with the region_id of the last row of the page
-                    if (formattedData.length > 0) {
-                        const newLastSpeciesId = formattedData[formattedData.length - 1].species_id;
-
-                        setCurrLastRegionId(newLastSpeciesId);
-                        setLastRegionIdHistory(history => new Set([...history, newLastSpeciesId]));
-                    }
+                    setCurrOffset(response.data.nextOffset);
                 })
                 .catch((error) => {
                     console.error("Error getting regions", error);
@@ -224,22 +202,22 @@ function RegionsPage() {
                 }
             })
             .then((response) => {
-                console.log("Regions retrieved successfully", response.data);
-                setDisplayData(response.data);
+                console.log("Regions retrieved successfully", response.data.regions);
+                setDisplayData(response.data.regions);
             })
             .catch((error) => {
                 console.error("Error searching up region", error);
             });
     };
 
-    // Updates editing states when editing a species
+    // Updates editing states when editing a region
     const startEdit = (region_id, rowData) => {
         setEditingRegionId(region_id);
         setTempData(rowData);
         setOpenEditRegionDialog(true);
     };
 
-    // Updates states after editing a species and saving 
+    // Updates states after editing a region and saving 
     const handleFinishEditingRow = () => {
         setOpenEditRegionDialog(false);
         setEditingRegionId(null);
@@ -258,7 +236,6 @@ function RegionsPage() {
         }
 
         if (confirmed) {
-            console.log("saved region data: ", tempData);
             axios
                 .put(`${API_BASE_URL}region/${formattedData.region_id}`,
                     formattedData,
@@ -268,7 +245,7 @@ function RegionsPage() {
                         }
                     })
                 .then((response) => {
-                    console.log("Region updated successfully", response.data);
+                    console.log("Region updated successfully", response.data.regions);
                     if (start > rowsPerPage) {
                         handleGetRegionsAfterSave();
                     } else {
@@ -403,7 +380,7 @@ function RegionsPage() {
         }
     };
 
-    // Calculates start and end species indices of the current page of displayed data
+    // Calculates start and end regions indices of the current page of displayed data
     const calculateStartAndEnd = () => {
         const newStart = page * rowsPerPage + 1;
         const newEnd = Math.min((page + 1) * rowsPerPage, (page * rowsPerPage) + displayData.length);
@@ -422,7 +399,7 @@ function RegionsPage() {
         setShouldReset(true);
     }, [rowsPerPage]);
 
-    // Call to get next/previous rowsPerPage number of species on page change
+    // Call to get next/previous rowsPerPage number of regions on page change
     useEffect(() => {
         handleGetRegions();
     }, [page]);
@@ -434,20 +411,11 @@ function RegionsPage() {
 
     // Decrements page count by 1 and removes last id in seen regions history 
     const handlePreviousPage = () => {
-        if (lastRegionIdHistory.size > 1) {
-            const updatedIdHistory = new Set([...lastRegionIdHistory]);
-            updatedIdHistory.delete([...updatedIdHistory].pop());
-            setLastRegionIdHistory(updatedIdHistory);
-
-            // gets the previous species id
-            const prevSpeciesId = [...updatedIdHistory][[...updatedIdHistory].length - 2];
-            setCurrLastRegionId(prevSpeciesId);
-            setPage(page - 1);
-        }
+        setCurrOffset(curr => curr - rowsPerPage * 2);
+        setPage(page - 1);
     };
 
-
-    // Disables the next button if there are no species left to query
+    // Disables the next button if there are no regions left to query
     useEffect(() => {
         if (displayData.length === 0 || displayData.length < rowsPerPage) {
             setDisableNextButton(true);
@@ -485,7 +453,7 @@ function RegionsPage() {
                     />
                 </Box>
                 <SearchComponent
-                    text={"Search alternative species (scientific or common name)"}
+                    text={"Search regions"}
                     handleSearch={handleSearch}
                     searchResults={allRegionNames}
                     searchTerm={searchInput}

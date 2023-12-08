@@ -44,8 +44,7 @@ function InvasiveSpeciesPage() {
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
   const [regionId, setRegionId] = useState(""); // current region id
 
-  const [currLastSpeciesId, setCurrLastSpeciesId] = useState(""); // current last species
-  const [lastSpeciesIdHistory, setLastSpeciesIdHistory] = useState(new Set("")); // history of lastSpeciesIds seen for each page
+  const [currOffset, setCurrOffset] = useState(0); // current index of the first species on a page
   const [shouldReset, setShouldReset] = useState(false); // reset above values
   const [shouldSave, setShouldSave] = useState(false); // reset above values
 
@@ -89,11 +88,11 @@ function InvasiveSpeciesPage() {
   };
 
   // Fetches all invasive species (recursively) in the database
-  const fetchAllInvasiveSpecies = async (lastSpeciesId = null) => {
+  const fetchAllInvasiveSpecies = async (currOffset = null) => {
     try {
       const response = await axios.get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
-          last_species_id: lastSpeciesId,
+          curr_offset: currOffset,
           rows_per_page: rowsPerPage
         },
         headers: {
@@ -101,7 +100,7 @@ function InvasiveSpeciesPage() {
         }
       });
 
-      const formattedData = response.data.flatMap(item => {
+      const formattedData = response.data.species.flatMap(item => {
         return item.scientific_name.map(name => {
           const capitalizedScientificName = capitalizeFirstWord(name);
           return {
@@ -112,12 +111,12 @@ function InvasiveSpeciesPage() {
       });
 
       setAllInvasiveSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
-      setSpeciesCount(prevCount => prevCount + response.data.length)
+      setSpeciesCount(prevCount => prevCount + response.data.species.length)
 
       // Recursively gets species
-      if (response.data.length === rowsPerPage) {
-        const newLastSpeciesId = response.data[response.data.length - 1].species_id;
-        await fetchAllInvasiveSpecies(newLastSpeciesId);
+      if (response.data.species.length === rowsPerPage) {
+        const nextOffset = response.data.nextOffset;
+        await fetchAllInvasiveSpecies(nextOffset);
       }
     } catch (error) {
       console.error("Error retrieving invasive species", error);
@@ -131,17 +130,16 @@ function InvasiveSpeciesPage() {
       value: species.scientific_name
     }));
 
-    // console.log("updatedSpeciesNames: ", updatedSpeciesNames)
     setAllInvasiveSpeciesNames(updatedSpeciesNames);
   }, [allInvasiveSpecies]);
 
 
   // Fetches all alternative species (recursively) in the database
-  const fetchAllAlternativeSpecies = async (lastSpeciesId = null) => {
+  const fetchAllAlternativeSpecies = async (currOffset = null) => {
     try {
       const response = await axios.get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
-          last_species_id: lastSpeciesId,
+          curr_offset: currOffset,
           rows_per_page: rowsPerPage
         },
         headers: {
@@ -149,7 +147,7 @@ function InvasiveSpeciesPage() {
         }
       });
 
-      const formattedData = response.data.flatMap(item => {
+      const formattedData = response.data.species.flatMap(item => {
         return item.scientific_name.map(name => {
           const capitalizedScientificName = capitalizeFirstWord(name);
           return {
@@ -162,9 +160,9 @@ function InvasiveSpeciesPage() {
       setAllAlternativeSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
 
       // Recursively gets species
-      if (response.data.length === rowsPerPage) {
-        const newLastSpeciesId = response.data[response.data.length - 1].species_id;
-        await fetchAllAlternativeSpecies(newLastSpeciesId);
+      if (response.data.species.length === rowsPerPage) {
+        const nextOffset = response.data.nextOffset;
+        await fetchAllAlternativeSpecies(nextOffset);
       }
     } catch (error) {
       console.error("Error retrieving invasive species", error);
@@ -177,7 +175,7 @@ function InvasiveSpeciesPage() {
     axios
       .get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
-          last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
+          curr_offset: shouldReset ? null : currOffset,
           rows_per_page: rowsPerPage // default 20
         },
         headers: {
@@ -186,7 +184,7 @@ function InvasiveSpeciesPage() {
       })
       .then((response) => {
 
-        const promises = response.data.flatMap(item =>
+        const promises = response.data.species.flatMap(item =>
           item.region_id.map(regionId =>
             axios.get(`${API_BASE_URL}region/${regionId}`, {
               headers: {
@@ -198,7 +196,7 @@ function InvasiveSpeciesPage() {
 
         return Promise.all(promises)
           .then(regionResponses => {
-            const formattedData = response.data.map((item, index) => {
+            const formattedData = response.data.species.map((item, index) => {
               return {
                 ...item,
                 scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name))
@@ -210,24 +208,16 @@ function InvasiveSpeciesPage() {
             // Resets pagination details
             // This will clear the last species id history and display the first page
             if (shouldReset) {
-              setLastSpeciesIdHistory(new Set())
+              setCurrOffset(0);
               setPage(0);
               setStart(0);
               setEnd(0);
               setShouldReset(false);
-              console.log("reset pagination details")
             }
 
             setDisplayData(formattedData);
             setData(formattedData);
-
-            // Updates lastSpeciesId with the species_id of the current last row
-            if (formattedData.length > 0) {
-              const newLastSpeciesId = formattedData[formattedData.length - 1].species_id;
-
-              setCurrLastSpeciesId(newLastSpeciesId);
-              setLastSpeciesIdHistory(history => new Set([...history, newLastSpeciesId]));
-            }
+            setCurrOffset(response.data.nextOffset);
           });
       }).catch((error) => {
         console.error("Error retrieving invasive species", error);
@@ -237,17 +227,8 @@ function InvasiveSpeciesPage() {
   // Maintains history of last species_id and currLastSpeciesId so that on GET, 
   // the current page is maintained instead of starting from page 1
   const handleGetInvasiveSpeciesAfterSave = () => {
-    if (lastSpeciesIdHistory.size > 1) {
-      const updatedIdHistory = Array.from(lastSpeciesIdHistory);
-      updatedIdHistory.pop(); // Remove the last element
-
-      setLastSpeciesIdHistory(new Set(updatedIdHistory));
-
-      const prevSpeciesId = updatedIdHistory[updatedIdHistory.length - 1];
-      setCurrLastSpeciesId(prevSpeciesId);
-
-      setShouldSave(true)// useEffect listens for this state to change and will GET invasive species when True
-    }
+    setCurrOffset(curr => curr - rowsPerPage);
+    setShouldSave(true)// useEffect listens for this state to change and will GET invasive species when True
   };
 
   // Request to GET invasive species (same page) after editing a row to see the updated data when shouldSave state changes
@@ -256,7 +237,7 @@ function InvasiveSpeciesPage() {
       axios
         .get(`${API_BASE_URL}invasiveSpecies`, {
           params: {
-            last_species_id: currLastSpeciesId ? currLastSpeciesId : null, // default first page
+            curr_offset: currOffset ? currOffset : null, // default first page
             rows_per_page: rowsPerPage // default 20
           },
           headers: {
@@ -264,7 +245,7 @@ function InvasiveSpeciesPage() {
           }
         })
         .then((response) => {
-          const formattedData = response.data.map((item, index) => {
+          const formattedData = response.data.species.map((item, index) => {
             return {
               ...item,
               scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name))
@@ -273,14 +254,7 @@ function InvasiveSpeciesPage() {
 
           console.log("Invasive species retrieved successfully", formattedData);
           setDisplayData(formattedData);
-
-          // update lastSpeciesId with the species_id of the last row displayed in the table
-          if (formattedData.length > 0) {
-            const newLastSpeciesId = formattedData[formattedData.length - 1].species_id;
-
-            setCurrLastSpeciesId(newLastSpeciesId);
-            setLastSpeciesIdHistory(history => new Set([...history, newLastSpeciesId]));
-          }
+          setCurrOffset(response.data.nextOffset);
         })
         .catch((error) => {
           console.error("Error getting invasive species", error);
@@ -319,7 +293,7 @@ function InvasiveSpeciesPage() {
 
         return Promise.all(promises)
           .then(regionResponses => {
-            const formattedData = response.data.map((item, index) => {
+            const formattedData = response.datas.species.map((item, index) => {
               return {
                 ...item,
                 scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name))
@@ -556,16 +530,8 @@ function InvasiveSpeciesPage() {
 
   // Decrements page count by 1 and removes last id in seen species history 
   const handlePreviousPage = () => {
-    if (lastSpeciesIdHistory.size > 1) {
-      const updatedIdHistory = new Set([...lastSpeciesIdHistory]);
-      updatedIdHistory.delete([...updatedIdHistory].pop()); 
-      setLastSpeciesIdHistory(updatedIdHistory);
-
-      // gets the previous species id
-      const prevSpeciesId = [...updatedIdHistory][[...updatedIdHistory].length - 2];
-      setCurrLastSpeciesId(prevSpeciesId);
-      setPage(page - 1);
-    }
+    setCurrOffset(curr => curr - rowsPerPage * 2);
+    setPage(page - 1);
   };
 
   // Disables the next button if there are no species left to query
