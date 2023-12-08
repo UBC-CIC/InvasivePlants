@@ -112,7 +112,6 @@ function RegionsPage() {
 
     // Fetches rowsPerPage number of regions (pagination)
     const handleGetRegions = () => {
-        console.log("curr offset: ", currOffset);
         axios
             .get(`${API_BASE_URL}region`, {
                 params: {

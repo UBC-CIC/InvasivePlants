@@ -172,7 +172,6 @@ function InvasiveSpeciesPage() {
 
   // Fetches rowsPerPage number of invasive species (pagination)
   const handleGetInvasiveSpecies = () => {
-    console.log("curr offset:", currOffset);
     axios
       .get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
@@ -281,7 +280,8 @@ function InvasiveSpeciesPage() {
         }
       })
       .then((response) => {
-        const promises = response.data.flatMap(item =>
+        console.log("resp: ", response);
+        const promises = response.data.species.flatMap(item =>
           item.region_id.map(regionId =>
             axios
               .get(`${API_BASE_URL}region/${regionId}`, {
@@ -294,7 +294,7 @@ function InvasiveSpeciesPage() {
 
         return Promise.all(promises)
           .then(regionResponses => {
-            const formattedData = response.datas.species.map((item, index) => {
+            const formattedData = response.data.species.map((item, index) => {
               return {
                 ...item,
                 scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name))
@@ -331,7 +331,10 @@ function InvasiveSpeciesPage() {
       let scientificNames = [];
       if (typeof tempEditingData.scientific_name === 'string') {
         scientificNames = formatString(tempEditingData.scientific_name)
-          .map(name => name.toLowerCase().replace(/\s+/g, '_'));
+          .map(name => {
+            const formattedName = name.toLowerCase().replace(/\s+/g, '_');
+            return capitalizeFirstWord(formattedName);
+          });
       } else if (Array.isArray(tempEditingData.scientific_name)) {
         scientificNames = tempEditingData.scientific_name.map(name => name.toLowerCase().replace(/\s+/g, '_'));
       }
