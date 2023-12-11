@@ -648,373 +648,74 @@ function InvasiveSpeciesPage() {
 
           {/* table body: display species */}
           <TableBody>
-            {displayData &&
-              (regionId !== ""
-                ? displayData
-                .filter((item) => {
-                  item.region_id.some((id) => regionMap[id] === regionId)
-                })
-                .map((row) => (
-                    <TableRow key={row.species_id}>
-                      {/* editing the row */}
-                    {editingSpeciesId === row.species_id ? (
-                        <>
-                          {/* scientific name */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            <TextField
-                              value={
-                              Array.isArray(tempEditingData.scientific_name)
-                                ? tempEditingData.scientific_name.join(", ")
-                                : tempEditingData.scientific_name
-                              }
-                              onChange={(e) =>
-                                handleInputChange("scientific_name", e.target.value)
-                              }
-                            />
-                          </TableCell>
+            {(displayData && displayData.length > 0 ? displayData : [])
+              .map((row) => (
+                <TableRow key={row.species_id}>
+                  <>
+                    {/* scientific names */}
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                      {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
+                    </TableCell>
 
+                    {/* description */}
+                    <TableCell>{boldText(row.species_description)}</TableCell>
 
-                          {/* decsription */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            <TextField
-                            value={boldText(tempEditingData.species_description)}
-                              onChange={(e) =>
-                                handleInputChange("species_description", e.target.value)
-                              }
-                            />
-                          </TableCell>
+                    {/* alternative species */}
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                      {Array.isArray(row.alternative_species)
+                        ? row.alternative_species.map((item) => item.scientific_name).join(", ")
+                        : row.alternative_species}
+                    </TableCell>
 
-                          {/* alternative plants */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                          <TextField
-                            onChange={(e) =>
-                              handleInputChange(
-                                  "alternative_species",
-                                  e.target.value.split(", ")
-                                )
-                              }
-                            />
-                          </TableCell>
-
-                          {/* links */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                          <TextField
-                            value={
-                              Array.isArray(tempEditingData.resource_links)
-                                ? tempEditingData.resource_links.join(", ")
-                                : tempEditingData.resource_links
-                            }
-                            onChange={(e) =>
-                              handleInputChange(
-                                "resource_links",
-                                e.target.value.split(", ")
-                              )
-                            }
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                  {Array.isArray(tempEditingData.resource_links) ? (
-                                    tempEditingData.resource_links.map((link, index) => (
-                                      <span key={index}>
-                                        <a
-                                          href={link}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                        >
-                                          {link}
-                                        </a>
-                                        <br />
-                                        <br />
-                                      </span>
-                                    ))
-                                  ) : (
-                                    <span>
-                                      <a
-                                          href={tempEditingData.resource_links}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                      >
-                                          {tempEditingData.resource_links}
-                                      </a>
-                                      <br />
-                                      <br />
-                                    </span>
-                                  )}
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                          </TableCell>
-
-                          {/* region */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            <TextField
-                            value={tempEditingData.region_id.map((id) => regionMap[id]).join(", ")}
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "region_code_name",
-                                  e.target.value.split(", ")
-                                )
-                              }
-                            />
-                          </TableCell>
-
-                          {/* edit/delete */}
-                          <TableCell>
-                            <Tooltip title="Edit"
-                              onClick={() => startEdit(row.species_id, row)}>
-                              <IconButton>
-                                <EditIcon />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip
-                              title="Delete"
-                              onClick={() => handleDeleteRow(row.species_id, row)}>
-                              <IconButton>
-                                <DeleteIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                        </>
+                    {/* resource links */}
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                      {Array.isArray(row.resource_links) ? (
+                        row.resource_links.map((link, index) => (
+                          <span key={index}>
+                            <a href={link} target="_blank" rel="noopener noreferrer">
+                              {link}
+                            </a>
+                            <br />
+                            <br />
+                          </span>
+                        ))
                       ) : (
-                        <>
-                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                              {Array.isArray(row.scientific_name)
-                                ? row.scientific_name.join(", ")
-                                : row.scientific_name}
-                            </TableCell>
-                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }} >{boldText(row.species_description)}</TableCell>
-                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                              {Array.isArray(row.alternative_species)
-                                ? row.alternative_species.map((item) => item.scientific_name).join(", ")
-                                : row.alternative_species}
-                          </TableCell>
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            {Array.isArray(row.resource_links) ? (
-                              row.resource_links.map((link, index) => (
-                                <span key={index}>
-                                  <a href={link} target="_blank" rel="noopener noreferrer">
-                                    {link}
-                                  </a>
-                                  <br />
-                                  <br />
-                                </span>
-                              ))
-                            ) : (
-                              <span>
-                                <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
-                                  {row.resource_links}
-                                </a>
-                                <br />
-                                <br />
-                              </span>
-                            )}
-                          </TableCell>
-                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            {Array.isArray(row.region_id)
-                              ? row.region_id.map((id) => regionMap[id]).join(", ")
-                              : regionMap[row.region_id]}                        
-                          </TableCell>
-                          <TableCell>
-                            <Tooltip title="Edit"
-                                onClick={() => startEdit(row.species_id, row)}>
-                              <IconButton>
-                                <EditIcon />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip
-                              title="Delete"
-                                onClick={() => handleDeleteRow(row.species_id, row)}>
-                              <IconButton>
-                                <DeleteIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                        </>
+                        <span>
+                          <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
+                            {row.resource_links}
+                          </a>
+                          <br />
+                          <br />
+                        </span>
                       )}
-                    </TableRow>
-                  ))
-              : displayData
-                  .map((row) => (
-                    <TableRow key={row.species_id}>
-                      {/* editing the row */}
-                      {editingSpeciesId === row.species_id ? (
-                        <>
-                          {/* scientific name */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            <TextField
-                              value={
-                                Array.isArray(tempEditingData.scientific_name)
-                                  ? tempEditingData.scientific_name.join(", ")
-                                  : tempEditingData.scientific_name
-                              }
-                              onChange={(e) =>
-                                handleInputChange("scientific_name", e.target.value)
-                              }
-                            />
-                          </TableCell>
+                    </TableCell>
 
-                          {/* decsription */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            <TextField
-                              value={boldText(tempEditingData.species_description)}
-                              onChange={(e) =>
-                                handleInputChange("species_description", e.target.value)
-                              }
-                            />
-                          </TableCell>
+                    {/* regions */}
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                      {Array.isArray(row.region_id)
+                        ? row.region_id.map((id) => regionMap[id]).join(", ")
+                        : regionMap[row.region_id]}
+                    </TableCell>
 
-                          {/* alternative plants */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            <TextField
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "alternative_species",
-                                  e.target.value.split(", ")
-                                )
-                              }
-                            />
-                          </TableCell>
-
-                          {/* links */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            <TextField
-                              value={
-                                Array.isArray(tempEditingData.resource_links)
-                                  ? tempEditingData.resource_links.join(", ")
-                                  : tempEditingData.resource_links
-                              }
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "resource_links",
-                                  e.target.value.split(", ")
-                                )
-                              }
-                              InputProps={{
-                                endAdornment: (
-                                  <InputAdornment position="end">
-                                    {Array.isArray(tempEditingData.resource_links) ? (
-                                      tempEditingData.resource_links.map((link, index) => (
-                                        <span key={index}>
-                                          <a
-                                            href={link}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                          >
-                                            {link}
-                                          </a>
-                                          <br />
-                                          <br />
-                                        </span>
-                                      ))
-                                    ) : (
-                                      <span>
-                                        <a
-                                            href={tempEditingData.resource_links}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                        >
-                                            {tempEditingData.resource_links}
-                                        </a>
-                                        <br />
-                                        <br />
-                                      </span>
-                                    )}
-                                  </InputAdornment>
-                                ),
-                              }}
-                            />
-                          </TableCell>
-
-                          {/* region */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            <TextField
-                              value={tempEditingData.region_id.map((id) => regionMap[id]).join(", ")}
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "region_code_name",
-                                  e.target.value.split(", ")
-                                )
-                              }
-                            />
-                          </TableCell>
-
-                          {/* edit/delete */}
-                          <TableCell>
-                            <Tooltip title="Edit"
-                              onClick={() => startEdit(row.species_id, row)}>
-                              <IconButton>
-                                <EditIcon />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip
-                              title="Delete"
-                              onClick={() => handleDeleteRow(row.species_id, row)}>
-                              <IconButton>
-                                <DeleteIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                        </>
-                      ) : (
-                          <>
-                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                              {Array.isArray(row.scientific_name)
-                                ? row.scientific_name.join(", ")
-                                : row.scientific_name}
-                            </TableCell>
-                            <TableCell>{boldText(row.species_description)}</TableCell>
-                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                              {Array.isArray(row.alternative_species)
-                                ? row.alternative_species.map((item) => item.scientific_name).join(", ")
-                                : row.alternative_species}
-                          </TableCell>
-                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                              {Array.isArray(row.resource_links) ? (
-                                row.resource_links.map((link, index) => (
-                                  <span key={index}>
-                                    <a href={link} target="_blank" rel="noopener noreferrer">
-                                      {link}
-                                    </a>
-                                    <br />
-                                    <br />
-                                  </span>
-                                ))
-                              ) : (
-                                <span>
-                                  <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
-                                    {row.resource_links}
-                                  </a>
-                                  <br />
-                                  <br />
-                                </span>
-                              )}
-                            </TableCell>
-
-                            <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                              {Array.isArray(row.region_id)
-                                ? row.region_id.map((id) => regionMap[id]).join(", ")
-                                : regionMap[row.region_id]}
-                          </TableCell>
-                          <TableCell>
-                            <Tooltip title="Edit"
-                                onClick={() => startEdit(row.species_id, row)}>
-                              <IconButton>
-                                <EditIcon />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip
-                              title="Delete"
-                                onClick={() => handleDeleteRow(row.species_id, row)}>
-                              <IconButton>
-                                <DeleteIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                        </>
-                      )}
-                    </TableRow>
-                  )))}
+                    {/* actions: edit/delete */}
+                    <TableCell>
+                      <Tooltip title="Edit"
+                        onClick={() => startEdit(row.species_id, row)}>
+                        <IconButton>
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip
+                        title="Delete"
+                        onClick={() => handleDeleteRow(row.species_id, row)}>
+                        <IconButton>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div >

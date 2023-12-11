@@ -530,185 +530,32 @@ function RegionsPage() {
                     </TableHead>
 
                     <TableBody>
-                        {displayData && (country !== "" ? displayData
-                            .filter((item) => item.country_fullname.toLowerCase() === country.toLowerCase())
-                                    .map((row) => (
-                                        <TableRow key={row.region_code_name}>
-                                            {/* editing the row and no country search*/}
-                                            {editingRegionId === row.region_id ? (
-                                                <>
-                                                    {/* region full name */}
-                                                    <TableCell>
-                                                        <TextField
-                                                            value={tempData.region_fullname}
-                                                            onChange={(e) =>
-                                                                handleInputChange("region_fullname", e.target.value)
-                                                            }
-                                                        />
-                                                    </TableCell>
-
-                                                    {/* region code */}
-                                                    <TableCell>
-                                                        <TextField
-                                                            value={tempData.region_code_name}
-                                                            onChange={(e) =>
-                                                                handleInputChange("region_code_name", e.target.value)
-                                                            }
-                                                        />
-                                                    </TableCell>
-
-                                                    {/* country */}
-                                                    <TableCell>
-                                                        <TextField
-                                                            value={tempData.country_fullname}
-                                                            onChange={(e) =>
-                                                                handleInputChange("country_fullname", e.target.value)
-                                                            }
-                                                        />
-                                                    </TableCell>
-
-                                                    {/* coordinates */}
-                                                    <TableCell>
-                                                        <TextField
-                                                            value={tempData.geographic_coordinate}
-                                                            onChange={(e) =>
-                                                                handleInputChange("geographic_coordinate", e.target.value)
-                                                            }
-                                                        />
-                                                    </TableCell>
-
-                                                    {/* edit/delete */}
-                                                    <TableCell>
-                                                        <Tooltip title="Edit"
-                                                            onClick={() => startEdit(row.region_id, row)}>
-                                                            <IconButton>
-                                                                <EditIcon />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                        <Tooltip
-                                                            title="Delete"
-                                                            onClick={() => handleDeleteRow(row.region_id, row)}>
-                                                            <IconButton>
-                                                                <DeleteIcon />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </TableCell>
-                                                </>
-                                            ) : (
-                                                    // not editing row and no country search
-                                                <>
-                                                        <TableCell>{row.region_fullname}</TableCell>
-                                                        <TableCell> {row.region_code_name} </TableCell>
-                                                        <TableCell>{row.country_fullname}</TableCell>
-                                                        <TableCell>{row.geographic_coordinate}</TableCell>
-                                                    <TableCell>
-                                                        <Tooltip title="Edit"
-                                                                onClick={() => startEdit(row.region_id, row)}>
-                                                            <IconButton>
-                                                                <EditIcon />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                        <Tooltip
-                                                            title="Delete"
-                                                                onClick={() => handleDeleteRow(row.region_id, row)}>
-                                                            <IconButton>
-                                                                <DeleteIcon />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </TableCell>
-                                                </>
-                                            )}
-                                        </TableRow>
-                                    ))
-                            : displayData
-                                    .map((row) => (
-                                        <TableRow key={row.region_id}>
-                                            {/* editing the row and country */}
-                                            {editingRegionId === row.region_id ? (
-                                                <>
-                                                    {/* region full name */}
-                                                    <TableCell>
-                                                        <TextField
-                                                            value={tempData.region_fullname}
-                                                            onChange={(e) =>
-                                                                handleInputChange("region_fullname", e.target.value)
-                                                            }
-                                                        />
-                                                    </TableCell>
-
-                                                    {/* region code */}
-                                                    <TableCell>
-                                                        <TextField
-                                                            value={tempData.region_code_name}
-                                                            onChange={(e) =>
-                                                                handleInputChange("region_code_name", e.target.value)
-                                                            }
-                                                        />
-                                                    </TableCell>
-
-                                                    {/* country */}
-                                                    <TableCell>
-                                                        <TextField
-                                                            value={tempData.country_fullname}
-                                                            onChange={(e) =>
-                                                                handleInputChange("country_fullname", e.target.value)
-                                                            }
-                                                        />
-                                                    </TableCell>
-
-                                                    {/* coordinates */}
-                                                    <TableCell>
-                                                        <TextField
-                                                            value={tempData.geographic_coordinate}
-                                                            onChange={(e) =>
-                                                                handleInputChange("geographic_coordinate", e.target.value)
-                                                            }
-                                                        />
-                                                    </TableCell>
-
-                                                    {/* edit/delete */}
-                                                    <TableCell>
-                                                        <Tooltip title="Edit"
-                                                            onClick={() => startEdit(row.region_id, row)}>
-                                                            <IconButton>
-                                                                <EditIcon />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                        <Tooltip
-                                                            title="Delete"
-                                                            onClick={() => handleDeleteRow(row.region_id, row)}>
-                                                            <IconButton>
-                                                                <DeleteIcon />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </TableCell>
-                                                </>
-                                            ) : (
-                                                    //  not editing the row and no country
-                                                    <>
-                                                        <TableCell>{row.region_fullname}</TableCell>
-                                                        <TableCell> {row.region_code_name} </TableCell>
-                                                        <TableCell>{row.country_fullname}</TableCell>
-                                                        <TableCell>{row.geographic_coordinate}</TableCell>
-                                                    <TableCell>
-                                                        <Tooltip title="Edit"
-                                                                onClick={() => startEdit(row.region_id, row)}>
-                                                            <IconButton>
-                                                                <EditIcon />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                        <Tooltip
-                                                            title="Delete"
-                                                                onClick={() => handleDeleteRow(row.region_id, row)}>
-                                                            <IconButton>
-                                                                <DeleteIcon />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </TableCell>
-                                                </>
-                                            )}
-                                        </TableRow>
-                                    )))}
+                        {(displayData && displayData.length > 0 ? displayData : [])
+                            .map((row) => (
+                                <TableRow key={row.region_id}>
+                                    <>
+                                        <TableCell>{row.region_fullname}</TableCell>
+                                        <TableCell> {row.region_code_name} </TableCell>
+                                        <TableCell>{row.country_fullname}</TableCell>
+                                        <TableCell>{row.geographic_coordinate}</TableCell>
+                                        <TableCell>
+                                            <Tooltip title="Edit"
+                                                onClick={() => startEdit(row.region_id, row)}>
+                                                <IconButton>
+                                                    <EditIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip
+                                                title="Delete"
+                                                onClick={() => handleDeleteRow(row.region_id, row)}>
+                                                <IconButton>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </TableCell>
+                                    </>
+                                </TableRow>
+                            ))}
                     </TableBody>
                 </Table>
             </div>
