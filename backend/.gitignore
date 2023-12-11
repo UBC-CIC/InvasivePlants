@@ -9,3 +9,11 @@ node_modules
 .cdk.staging
 cdk.out
 
+### CDK-specific ignores ###
+*.swp
+cdk.context.json
+package-lock.json
+yarn.lock
+.cdk.staging
+cdk.out
+
