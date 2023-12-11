@@ -22,8 +22,8 @@ import Error404 from '../Pages/error404';
 import InvasiveSpeciesPage from '../Pages/InvasiveSpeciesPage';
 import AlternativeSpeciesPage from '../Pages/AlternativeSpeciesPage';
 import RegionPage from '../Pages/RegionsPage';
-import { PlantNet } from '../Pages/pl@ntNet';
-import DownloadWebscrap from '../Pages/downloadWebscrap';
+import { PlantNet } from '../Unused/pl@ntNet';
+import DownloadWebscrap from '../Unused/downloadWebscrap';
 
 const useStyles = makeStyles((theme) => ({
     root: {
