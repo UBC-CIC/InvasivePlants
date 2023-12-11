@@ -6,7 +6,7 @@ import DeleteDialog from '../dialogs/ConfirmDeleteDialog';
 import { Auth } from "aws-amplify";
 import axios from "axios";
 
-// dialog for editing an alternative species
+// Dialog for editing an alternative species
 const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave }) => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
@@ -17,7 +17,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
     const [showWarning, setShowWarning] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
 
-    // gets current authorized user
+    // Retrieves current authorized user
     const retrieveUser = async () => {
         try {
             const returnedUser = await Auth.currentAuthenticatedUser();
@@ -27,11 +27,12 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
         }
     }
 
-    // retriever user on load
+    // Retrieves user on load
     useEffect(() => {
         retrieveUser()
     }, [])
 
+    // Closes save confirmation on clickaway
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -39,8 +40,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
         setShowSaveConfirmation(false);
     };
 
-    // TODO: ow priority (refactor) can create a reusable function for this
-    // hanldes user uploaded image files
+    // Handles user uploaded image files
     const handleImageUpload = async (e) => {
         const files = e.target.files;
 
@@ -74,7 +74,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                     const signedURLData = signedURLResponse.data;
                     console.log("signed url data: ", signedURLData)
 
-                    // use the obtained signed URL to upload the image
+                    // Use the obtained signed URL to upload the image to S3 bucket
                     await axios.put(signedURLData.uploadURL, files[i])
 
                     // Image uploaded successfully, add its s3 key to the list
@@ -98,7 +98,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
 
     // Deletes image from database
     const handleConfirmDeleteImage = () => {
-        console.log("img to delete: ", deleteImg)
         setShowWarning(false)
 
         if (deleteImg) {
@@ -112,14 +111,15 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                     }
                 })
                 .then((response) => {
-                    // Filter out the deleted image from tempData.images
+                    // Filters out the deleted image from tempData.images
                     const updatedImages = tempData.images.filter(
                         (img) => img.image_id !== deleteImg.image_id
                     );
-                    console.log("updatedImages: ", updatedImages);
+
                     handleInputChange("images", updatedImages);
                     handleInputChange("image_links", updatedImages.map((image) => image.image_url));
                     handleInputChange("s3_keys", updatedImages.map((image) => image.s3_key));
+
                     console.log("images deleted successfully", response.data);
                 })
                 .catch((error) => {
@@ -133,8 +133,8 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
         }
     }
 
-    // Ensures all required fields are present before adding alternative species
-    const handleConfirmAddAlternativeSpecies = () => {
+    // Ensures all required fields are present before editing alternative species
+    const handleConfirmEditAlternativeSpecies = () => {
         if (!tempData.scientific_name || tempData.scientific_name.length === 0) {
             setShowAlert(true);
             return false;
@@ -146,9 +146,8 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
     return (
         <div>
             <Dialog open={open} onClose={handleFinishEditingRow} maxWidth="sm" fullWidth>
-                {/* scientific name as title */}
-                < DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#c8dbe6", height: "60px" }
-                }>
+                {/* scientific name as the dialog title */}
+                < DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#c8dbe6", height: "60px" }}>
                     <Typography
                         variant="h5"
                         component="div"
@@ -205,11 +204,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                     <TextField
                         multiline
                         label="Image links (separate by commas)"
-                        // value={
-                        //     Array.isArray(tempData.image_links)
-                        //         ? tempData.image_links.join(", ")
-                        //         : tempData.image_links
-                        // }
                         onChange={(e) => {
                             handleInputChange("image_links", e.target.value.split(", "))
                         }
@@ -230,7 +224,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                     </Box>
 
                     <Box sx={{ width: '100%', textAlign: 'left' }}>
-                        {/* {console.log("tempdata in images:", tempData)} */}
                         {Array.isArray(tempData.images) &&
                             tempData.images.map((img, index) => (
                                 <div key={img.image_id} sx={{ width: '90%', marginBottom: "2rem", textAlign: "left" }}>
@@ -254,7 +247,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                                         </div>
                                     )}
 
-
                                     {/* Delete button for each image */}
                                     <button onClick={() => handleImageDelete(img, index)}>Delete</button>
                                 </div>
@@ -277,10 +269,11 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>
                     <Button
                         onClick={() => {
-                            handleSave(handleConfirmAddAlternativeSpecies());
+                            handleSave(handleConfirmEditAlternativeSpecies());
                         }}
                     >Save</Button>
                 </DialogActions>
+
             </Dialog >
 
             <SnackbarOnSuccess open={showSaveConfirmation} onClose={handleClose} text={"Saved successfully!"} />

@@ -3,24 +3,24 @@ import cheerio from "cheerio";
 
 const MEDIAWIKI_API_ENDPOINT = "https://en.wikipedia.org/w/api.php";
 
-// webscraping function that gets overview, description, images, and wiki URL for a species from Wikipedia using the MediaWiki API
+// Webscraping function that gets overview, description, images, and wiki URL for a species from Wikipedia using the MediaWiki API
 const webscrapeWikipedia = async (scientificName) => {
 	try {
 		const params = {
 			action: "query", 
 			format: "json",
 			titles: scientificName,
-			prop: "extracts|images",
-			redirects: true,
+			prop: "extracts|images", // gets extracts and images
+			redirects: true, // allows for page redirects if the page title changed
 			exintro: true, // Return only content before the first section (overview)
 			explaintext: true, // extracts as plain text
-			imlimit: 15,
+			imlimit: 15, // set image limit to 15
 		};
 
 		const response = await axios.get(MEDIAWIKI_API_ENDPOINT, { params });
 		const pages = response.data.query.pages;
 
-		// handles redirected pages
+		// Handles redirected pages
 		let redirectedPageTitleName = scientificName;
 		if (response.data.query.redirects && response.data.query.redirects.length > 0) {
 			redirectedPageTitleName = response.data.query.redirects[0].to;
@@ -33,15 +33,15 @@ const webscrapeWikipedia = async (scientificName) => {
 		const pageId = Object.keys(pages)[0];
 		const page = pages[pageId];
 
-		// find the Description section
+		// Finds the Description section
 		const sections = await fetchSections(page.pageid);
 		const descriptionSection = sections.find(section => section.line === "Description");
 		const descriptionContent = descriptionSection ? await fetchSectionContent(page.pageid, descriptionSection.index) : null;
 
-		// get images
+		// Gets images
 		const imageInfo = (page.images && Array.isArray(page.images)) ? await fetchImageUrls(page.images, scientificName, redirectedPageTitleName) : [];
 
-		// gets overview, description, images, and the link of Wiki page
+		// Gets overview, description, images, and the link of Wiki page
 		const wikiInfo = {
 			speciesOverview: cleanUpString(page.extract),
 			speciesDescription: descriptionContent,
@@ -98,7 +98,7 @@ async function fetchSectionContent(pageId, sectionIndex) {
 }
 
 
-// gets 5 image URLs from Wikipedia using the MediaWiki API
+// Gets 5 image URLs from Wikipedia using the MediaWiki API
 async function fetchImageUrls(images, prevTitle, pageTitle) {
 	const imageUrls = [];
 	const matchNameRedirectedTitle = pageTitle.split(' ').map(word => encodeURIComponent(word.toLowerCase()));
@@ -136,7 +136,7 @@ async function fetchImageUrls(images, prevTitle, pageTitle) {
 }
 
 
-// helper function to clean up data
+// Helper function to clean up data
 const cleanUpString = (input) => {
 	if (typeof input !== "string") {
 		input = input.toString();

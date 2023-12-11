@@ -2,8 +2,6 @@ const initialState = {
     currentState: "signIn"
 };
 
-
-
 const loginReducer = (currentState = initialState, action) => {
     let newState = currentState;
     switch(action.type) {

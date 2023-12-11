@@ -3,11 +3,12 @@ import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTit
 import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 
-// dialog for editing a region
+// Dialog for editing a region
 const EditRegionDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
 
+    // Closes save confirmation on clickaway
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -15,7 +16,8 @@ const EditRegionDialog = ({ open, tempData, handleInputChange, handleFinishEditi
         setShowSaveConfirmation(false);
     };
 
-    const handleConfirmRegion = () => {
+    // Ensures all required fields are present before editing region
+    const handleConfirmEditRegion = () => {
         if (tempData.region_fullname.trim() === "" ||
             tempData.region_code_name.trim() === "" ||
             tempData.country_fullname.trim() === "") {
@@ -25,7 +27,6 @@ const EditRegionDialog = ({ open, tempData, handleInputChange, handleFinishEditi
         setShowSaveConfirmation(true);
         return true;
     };
-
 
     return (
         <div>
@@ -59,7 +60,7 @@ const EditRegionDialog = ({ open, tempData, handleInputChange, handleFinishEditi
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
-                    {/* conditional check if there are coordinates or not */}
+                    {/* conditional check if coordinates are null or not */}
                     {tempData.geographic_coordinate ? (
                         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                             <TextField
@@ -93,15 +94,15 @@ const EditRegionDialog = ({ open, tempData, handleInputChange, handleFinishEditi
                             />
                         </Box>
                     )}
-
                 </DialogContent>
 
                 <DialogActions >
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>
-                    <Button onClick={() => { handleSave(handleConfirmRegion()); }}>
+                    <Button onClick={() => { handleSave(handleConfirmEditRegion()); }}>
                         Save
                     </Button>
                 </DialogActions>
+
             </Dialog>
 
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >

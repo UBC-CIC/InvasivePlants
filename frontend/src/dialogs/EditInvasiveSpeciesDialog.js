@@ -8,7 +8,7 @@ import SnackbarOnSuccess from '../components/SnackbarComponent';
 import CustomAlert from '../components/AlertComponent';
 import handleGetRegions from '../functions/RegionMap';
 
-// dialog for editing an invasive species
+// Dialog for editing an invasive species
 const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave, alternativeSpeciesData }) => {
     const [showAlert, setShowAlert] = useState(false);
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
@@ -28,8 +28,8 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
         fetchRegionData();
     }, []);
 
-    // Ensures all required fields are present before adding invasive species
-    const handleConfirmAddInvasiveSpecies = () => {
+    // Ensures all required fields are present before editing invasive species
+    const handleConfirmEditInvasiveSpecies = () => {
         if (!tempData.scientific_name || tempData.scientific_name.length === 0 ||
             !tempData.region_id || tempData.region_id.length === 0) {
             setShowAlert(true);
@@ -39,6 +39,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
         return true
     };
 
+    // Closes save confirmation on clickaway
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -49,7 +50,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
     return (
         <div>
             <Dialog open={open} onClose={handleFinishEditingRow} maxWidth="sm" fullWidth>
-                {/* scientific name as title */}
+                {/* scientific name as the dialog title */}
                 < DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#c8dbe6", height: "60px" }
                 }>
                     <Typography
@@ -154,12 +155,11 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                     <Button onClick={handleFinishEditingRow}>Cancel</Button>
                     <Button
                         onClick={() => {
-                            handleSave(handleConfirmAddInvasiveSpecies());
+                            handleSave(handleConfirmEditInvasiveSpecies());
                         }}
                     >Save</Button>
                 </DialogActions>
             </Dialog >
-
 
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}   >
                 <CustomAlert text={"scientific name AND region"} onClose={() => setShowAlert(false)} />

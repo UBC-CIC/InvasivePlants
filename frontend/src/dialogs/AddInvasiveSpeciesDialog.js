@@ -9,7 +9,7 @@ import CustomAlert from "../components/AlertComponent";
 import CustomWarning from '../components/WarningComponent';
 import handleGetRegions from "../functions/RegionMap";
 
-// dialog for adding an invasive species
+// Dialog for adding an invasive species
 const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternativeSpeciesData }) => {
     const initialSpeciesData = {
         scientific_name: [],
@@ -25,7 +25,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
     const [speciesData, setSpeciesData] = useState(initialSpeciesData);
     const [regionMap, setRegionsMap] = useState({});
 
-    // GET regions
+    // Fetches regions
     useEffect(() => {
         const fetchRegionData = async () => {
             try {
@@ -46,6 +46,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
         }
     };
 
+    // Confirms all fields are present before adding, otherwise shows alerts
     const handleConfirmAddSpecies = () => {
         if (!speciesData.scientific_name || speciesData.scientific_name.length === 0 ||
             !speciesData.region_id || speciesData.region_id.length === 0) {
@@ -68,6 +69,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
         }
     };
 
+    // Call to add alternative species and ensure fields are properly formatted
     const handleAddSpecies = () => {
         setShowSnackbar(true);
         const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
@@ -77,7 +79,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
             speciesData.alternative_species :
             splitByCommaWithSpaces(speciesData.alternative_species);
 
-        const alternativeSpeciesIds = []; // Array to store species_id values
+        const alternativeSpeciesIds = []; 
 
         alternativeSpeciesArray.forEach(species => {
             alternativeSpeciesIds.push(species.species_id);
@@ -95,6 +97,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
         handleCancel();
     };
 
+    // Cancel addding an alternative species
     const handleCancel = () => {
         setShowWarning(false);
         setShowAlert(false);
@@ -105,6 +108,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
     const handleCloseSnackbar = () => {
         setShowSnackbar(false)
     }
+
     return (
         <div>
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}>
@@ -208,8 +212,8 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
 
                         </Select>
                     </FormControl>
-
                 </DialogContent>
+
                 <DialogActions>
                     <Button onClick={handleCancel}>Cancel</Button>
                     <Button onClick={handleConfirmAddSpecies}>Submit</Button>

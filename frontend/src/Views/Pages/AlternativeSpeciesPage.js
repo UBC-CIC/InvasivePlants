@@ -39,17 +39,16 @@ function AlternativeSpeciesPage() {
   const [deleteId, setDeleteId] = useState(null); // species_id of the row being deleted
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
 
-  const [currOffset, setCurrOffset] = useState(0); // current index of the first species on a page
-  const [shouldReset, setShouldReset] = useState(false); // state of should reset 
-  const [shouldSave, setShouldSave] = useState(false); // state of should save 
-
   // Pagination states
+  const [currOffset, setCurrOffset] = useState(0); // current index of the first species on a page
   const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // start with default 20 rows per page
   const [page, setPage] = useState(0); // Start with page 0
   const [disableNextButton, setDisableNextButton] = useState(false); // disabled next button or not
   const [start, setStart] = useState(0); // starting index of species
   const [end, setEnd] = useState(0); // end index of species
+  const [shouldReset, setShouldReset] = useState(false); // state of should reset 
+  const [shouldSave, setShouldSave] = useState(false); // state of should save 
 
   const [user, setUser] = useState(""); // authorized admin user
 

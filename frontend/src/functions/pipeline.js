@@ -32,13 +32,13 @@ const webscrapeInvasiveSpecies = async () => {
     return region;
 }
 
-// returns list of scientific names of invasive BC species
+// Returns list of scientific names of invasive BC species
 const getInvasiveSpeciesScientificNamesBC = async () => {
     let region = await webscrapeInvasiveSpecies();
     return await getInvasiveSpeciesScientificNames(region[0]);
 };
 
-// returns list of scientific names of invasive ON species
+// Returns list of scientific names of invasive ON species
 const getInvasiveSpeciesScientificNamesON = async () => {
     let region = await webscrapeInvasiveSpecies();
     let res = await getInvasiveSpeciesScientificNames(region[1]);
@@ -55,7 +55,7 @@ const getInvasiveSpeciesScientificNamesON = async () => {
     return res;
 };
 
-// helper function to get scientific names of invasive species
+// Helper function to get scientific names of invasive species
 const getInvasiveSpeciesScientificNames = async (region) => {
     const scientific_names = [];
 
@@ -70,7 +70,7 @@ const getInvasiveSpeciesScientificNames = async (region) => {
     return scientific_names;
 };
 
-// helper function to get list of alternative species
+// Helper function to get list of alternative species
 const getListOfAlternativeSpecies = (speciesDataXRegion)=>{
     const listAlternativeSpecies = new Set();
     speciesDataXRegion.forEach((region)=>{
@@ -85,7 +85,7 @@ const getListOfAlternativeSpecies = (speciesDataXRegion)=>{
     return Array.from(listAlternativeSpecies);
 }
 
-// checks if species is invasive given location
+// Checks if species is invasive given location
 const isInvasive = async (scientificName, location) => {
     scientificName = scientificName.toLowerCase().replace(/ /g, '_');
     console.log("isInvasive: ", scientificName);

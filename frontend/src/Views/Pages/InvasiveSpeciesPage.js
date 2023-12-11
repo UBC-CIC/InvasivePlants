@@ -44,16 +44,16 @@ function InvasiveSpeciesPage() {
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
   const [regionId, setRegionId] = useState(""); // current region id
 
+  // Pagination states
   const [currOffset, setCurrOffset] = useState(0); // current index of the first species on a page
-  const [shouldReset, setShouldReset] = useState(false); // reset above values
-  const [shouldSave, setShouldSave] = useState(false); // reset above values
-
   const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // start with default 20 rows per page
   const [page, setPage] = useState(0); // Start with page 0
   const [disabled, setDisabled] = useState(false); // disabled next button or not
   const [start, setStart] = useState(0); // starting index of species
   const [end, setEnd] = useState(0); // end index of species
+  const [shouldReset, setShouldReset] = useState(false); // reset above values
+  const [shouldSave, setShouldSave] = useState(false); // reset above values
 
   const [user, setUser] = useState(""); // authorized admin user
 

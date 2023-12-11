@@ -13,7 +13,7 @@ import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { green, red } from '@material-ui/core/colors';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import {Amplify, Auth} from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { updateLoginState } from "../../Actions/loginActions";

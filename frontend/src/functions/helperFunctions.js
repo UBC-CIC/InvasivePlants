@@ -1,6 +1,6 @@
 /***************** HELPER FUNCTIONS *****************/
 
-// bolds text between two asterisks (ex. **BOLDED**)
+// Bolds text between two asterisks (ex. **BOLDED**)
 export function boldText(text) {
     const regex = /\*\*(.*?)\*\*/g;
     const parts = text.split(regex);
@@ -13,7 +13,7 @@ export function boldText(text) {
     });
 }
 
-// capitalizes the first letter and the rest to lowercase in a string (ex. gypsophila_paniculata => Gypsophila paniculata)
+// Capitalizes the first letter and the rest to lowercase in a string (ex. gypsophila_paniculata => Gypsophila paniculata)
 export function capitalizeFirstWord(str) {
     const strSplitUnderscore = str.split("_");
     const words = strSplitUnderscore.flatMap(word => word.split(" "));
@@ -28,12 +28,12 @@ export function capitalizeFirstWord(str) {
     return formattedWords.join(" ");
 }
 
-// capitalizes first letter of each word in a string (ex. gypsophila_paniculata => Gypsophila Paniculata)
+// Capitalizes first letter of each word in a string (ex. gypsophila_paniculata => Gypsophila Paniculata)
 export function capitalizeEachWord(str) {
     return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 
-// formats a string by spliting it based on commas and spacces
+// Formats a string by spliting it based on commas and spacces
 export function formatString(str) {
     return str.split(/,\s*|\s*,\s*/)
 }

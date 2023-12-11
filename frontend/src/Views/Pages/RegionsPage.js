@@ -41,17 +41,16 @@ function RegionsPage() {
     const [deleteId, setDeleteId] = useState(null); // region_id of the row being deleted
     const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog
 
-    const [currOffset, setCurrOffset] = useState(0); // current index of the first region on a page
-    const [shouldReset, setShouldReset] = useState(false); // state of should reset 
-    const [shouldSave, setShouldSave] = useState(false); // state of should save 
-
     // Pagination states
+    const [currOffset, setCurrOffset] = useState(0); // current index of the first region on a page
     const rowsPerPageOptions = [10, 20, 50]; // user selects number of regions to display
     const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // start with default 20 rows per page
     const [page, setPage] = useState(0); // Start with page 0
     const [disableNextButton, setDisableNextButton] = useState(false); // disabled next button or not
     const [start, setStart] = useState(0); // starting index of regions
     const [end, setEnd] = useState(0); // end index of regions
+    const [shouldReset, setShouldReset] = useState(false); // state of should reset 
+    const [shouldSave, setShouldSave] = useState(false); // state of should save 
 
     const [user, setUser] = useState("");
 
@@ -531,11 +530,8 @@ function RegionsPage() {
                     </TableHead>
 
                     <TableBody>
-                        {displayData &&
-                            (country !== ""
-                                ? displayData
-                                .filter((item) => item.country_fullname.toLowerCase() === country.toLowerCase())
-                                // .sort((a, b) => a.region_fullname.localeCompare(b.region_fullname))
+                        {displayData && (country !== "" ? displayData
+                            .filter((item) => item.country_fullname.toLowerCase() === country.toLowerCase())
                                     .map((row) => (
                                         <TableRow key={row.region_code_name}>
                                             {/* editing the row and no country search*/}
@@ -624,8 +620,7 @@ function RegionsPage() {
                                             )}
                                         </TableRow>
                                     ))
-                                : displayData
-                                // .sort((a, b) => a.region_fullname.localeCompare(b.region_fullname))
+                            : displayData
                                     .map((row) => (
                                         <TableRow key={row.region_id}>
                                             {/* editing the row and country */}
@@ -690,8 +685,7 @@ function RegionsPage() {
                                                 </>
                                             ) : (
                                                     //  not editing the row and no country
-                                                <>
-
+                                                    <>
                                                         <TableCell>{row.region_fullname}</TableCell>
                                                         <TableCell> {row.region_code_name} </TableCell>
                                                         <TableCell>{row.country_fullname}</TableCell>

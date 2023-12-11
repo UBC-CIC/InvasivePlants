@@ -5,7 +5,7 @@ import CustomAlert from '../components/AlertComponent';
 import CustomWarning from '../components/WarningComponent';
 import axios from "axios";
 
-// dialog for adding an alternative species
+// Dialog for adding an alternative species
 const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -20,12 +20,12 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
   const [showWarning, setShowWarning] = useState(false);
   const [speciesData, setSpeciesData] = useState(initialSpeciesData);
 
-
   const handleInputChange = (field, value) => {
     console.log("input change: ", field, value)
     setSpeciesData((prev) => ({ ...prev, [field]: value }));
   };
 
+  // Confirms all fields are present before adding, otherwise shows alerts
   const handleConfirmAddAlternativeSpecies = () => {
     if (speciesData.scientific_name.length === 0) {
       setShowAlert(true);
@@ -46,7 +46,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     }
   };
 
-
+  // Call to add alternative species and ensure fields are properly formatted
   const handleAddAlternativeSpecies = () => {
     setShowSnackbar(true);
     const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
@@ -63,7 +63,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     handleCancel();
   };
 
-  // cancel add alternative species
+  // Cancel addding an alternative species
   const handleCancel = () => {
     setShowWarning(false);
     setShowAlert(false);
@@ -71,8 +71,11 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     handleClose();
   };
 
-  // TODO: low priority (refactor) can create a reusable function for this
-  // handles uploading image files to s3 bucket
+  const handleCloseSnackbar = () => {
+    setShowSnackbar(false)
+  }
+
+  // Handles uploading image files to s3 bucket
   const handleImageUpload = async (e) => {
     const files = e.target.files;
 
@@ -107,7 +110,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
           const signedURLData = signedURLResponse.data;
           console.log("signed url data: ", signedURLData)
 
-          // use the obtained signed URL to upload the image
+          // Use the obtained signed URL to upload the image to S3 bucket
           await axios.put(signedURLData.uploadURL, files[i])
 
           // Image uploaded successfully, add its s3 key to the list
@@ -121,10 +124,6 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
       }
     }
   };
-
-  const handleCloseSnackbar = () => {
-    setShowSnackbar(false)
-  }
 
   return (
     <div>

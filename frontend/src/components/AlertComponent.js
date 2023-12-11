@@ -1,6 +1,7 @@
 import React from 'react';
 import { Alert, AlertTitle, Box, Button } from '@mui/material';
 
+// Error alert when there exists missing fields
 const CustomAlert = ({ text, onClose }) => {
     return (
         <Alert severity="error">

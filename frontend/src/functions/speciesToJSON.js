@@ -3,6 +3,7 @@ import { isInvasive } from "./pipeline.js";
 import { getAlternativePlants } from "./alternativePlants.js";
 import RegionMap from "./RegionMap.js";
 
+// Returns species in proper json format
 const speciesDataToJSON = async (commonName, scientificName, speciesScore, userLocation) => {
     const isInvasiveRes = await isInvasive(scientificName, userLocation);
     let alternative_plants = null;

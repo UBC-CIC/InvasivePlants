@@ -3,7 +3,7 @@ import IconButton from '@material-ui/core/IconButton';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
-// previous and next buttons for pagination, displays current species (number) slice, and number of species
+// Previous and next buttons for pagination, displays current species (number) slice, and number of species
 const PaginationComponent = ({ start, end, count, page, handlePreviousPage, handleNextPage, disabled }) => {
     return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px' }}>

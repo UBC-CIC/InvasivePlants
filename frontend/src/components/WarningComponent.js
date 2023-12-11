@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, AlertTitle, Box, Button } from '@mui/material';
 
-// warning alert when user tries to add something that already exists
+// Warning alert when user tries to add a species/region with existing scientific name / region full name
 const CustomWarning = ({ data, onClose, handleAdd }) => {
     return (
         <Alert severity="warning">

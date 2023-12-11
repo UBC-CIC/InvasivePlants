@@ -4,7 +4,7 @@ import SnackbarOnSuccess from "../components/SnackbarComponent";
 import CustomAlert from "../components/AlertComponent";
 import CustomWarning from "../components/WarningComponent";
 
-// dialog for adding a region
+// Dialog for adding a region
 const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
     const initialRegionData = {
         region_fullname: "",
@@ -21,7 +21,7 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
     const [errorMessage, setErrorMessage] = useState("");
 
     const handleInputChange = (field, value) => {
-        // checks that coordinates are of valid format (numbers)
+        // Checks that coordinates are of valid format (numbers)
         if (field === "geographic_latitude" || field === "geographic_longitude") {
             if (value === "" || !isNaN(value) || (value[0] === '-' && !isNaN(value.slice(1))) || !isNaN(value.replace(".", ""))) {
                 setRegionData((prev) => ({
@@ -43,7 +43,7 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
         }
     };
 
-    // make sure has all required fields 
+    // Confirms all fields are present before adding, otherwise shows alerts    
     const handleConfirmAddRegion = () => {
         const foundRegion = data.find((item) => item.region_fullname.toLowerCase() === regionData.region_fullname.toLowerCase());
 
@@ -58,16 +58,14 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
         }
     };
 
+    // Call to add region
     const handleAddRegion = () => {
         setShowSnackbar(true);
         handleAdd(regionData);
         handleCancel();
     };
 
-    const handleCloseSnackbar = () => {
-        setShowSnackbar(false)
-    }
-
+    // Cancel addding a region
     const handleCancel = () => {
         setShowWarning(false);
         setShowAlert(false);
@@ -75,6 +73,11 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
         setSelectedCountry("");
         handleClose();
     };
+
+
+    const handleCloseSnackbar = () => {
+        setShowSnackbar(false)
+    }
 
     return (
         <div>
@@ -142,12 +145,13 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                             {errorMessage}
                         </Box>
                     )}
-
                 </DialogContent>
+
                 <DialogActions>
                     <Button onClick={handleCancel}>Cancel</Button>
                     <Button onClick={handleConfirmAddRegion}>Submit</Button>
                 </DialogActions>
+
             </Dialog >
 
             <SnackbarOnSuccess open={showSnackbar} onClose={handleCloseSnackbar} text={"Added successfully!"} />

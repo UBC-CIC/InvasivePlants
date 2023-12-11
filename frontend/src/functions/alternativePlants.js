@@ -4,7 +4,7 @@ import {webscrapeWikipedia} from "./webscrapeWiki";
 
 const BC_ALTERNATIVE_PLANTS_URL = "https://bcinvasives.ca/play-your-part/plantwise/grow-me-instead/";
 
-// maps invasive plant to a list of non-invasive alternative plants (scientific name)
+// Maps invasive plant to a list of non-invasive alternative plants (scientific name)
 const mapInvasiveToAlternativeBC = async () => {
     let alternative_plants_BC = {};
     try {
@@ -16,11 +16,11 @@ const mapInvasiveToAlternativeBC = async () => {
                 const link = $(ele).children('a').attr('href');
                 const linkedResponse = await axios.get(link);
                 const linkedData = cheerio.load(linkedResponse.data);
-                // gets the scientific name of invasive plant
+                // Gets the scientific name of invasive plant
                 let invasivePlantName = linkedData('.invasive-species.italic').text();
                 invasivePlantName = invasivePlantName.toLowerCase().replace(/\s+/g, '_').trim();
 
-                // gets the scientific name of alternative plants
+                // Gets the scientific name of alternative plants
                 const alternativesPromises = $(ele)
                     .nextUntil('h3', 'ul.gmi-guide-alternatives-list')
                     .find('li')
@@ -49,7 +49,7 @@ const mapInvasiveToAlternativeBC = async () => {
 };
 
 
-// maps Ontario invasive plant to a list of non-invasive alternative plants (all common name)
+// Maps Ontario invasive plant to a list of non-invasive alternative plants (all common name)
 const mapInvasiveToAlternativeON = async () => {
     let alternative_plants_ON = {};
     alternative_plants_ON["vinca_minor"] = ["geranium_maculatum"];
