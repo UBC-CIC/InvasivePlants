@@ -66,7 +66,6 @@ function RegionsPage() {
         try {
             const returnedUser = await Auth.currentAuthenticatedUser();
             setUser(returnedUser);
-            console.log("current user: ", returnedUser);
         } catch (e) {
             console.log("error getting user: ", e);
         }
@@ -122,8 +121,6 @@ function RegionsPage() {
                 }
             })
             .then((response) => {
-                console.log("Regions retrieved successfully", response.data.regions);
-
                 // Resets pagination details
                 // This will clear the last region id history and display the first page
                 if (shouldReset) {
@@ -173,7 +170,6 @@ function RegionsPage() {
                         };
                     });
 
-                    console.log("retrieved region data:", formattedData);
                     setDisplayData(formattedData);
                     setCurrOffset(response.data.nextOffset);
                 })
@@ -189,7 +185,6 @@ function RegionsPage() {
     // Fetches the regions that matches user search
     const handleGetRegionsAfterSearch = () => {
         const formattedSearchInput = capitalizeEachWord(searchInput);
-        console.log("formatted search input: ", formattedSearchInput);
 
         axios
             .get(`${API_BASE_URL}region`, {
@@ -201,7 +196,6 @@ function RegionsPage() {
                 }
             })
             .then((response) => {
-                console.log("Regions retrieved successfully", response.data.regions);
                 setDisplayData(response.data.regions);
             })
             .catch((error) => {
@@ -244,7 +238,6 @@ function RegionsPage() {
                         }
                     })
                 .then((response) => {
-                    console.log("Region updated successfully", response.data.regions);
                     if (start > rowsPerPage) {
                         handleGetRegionsAfterSave();
                     } else {
@@ -269,7 +262,6 @@ function RegionsPage() {
         retrieveUser();
         const jwtToken = user.signInUserSession.accessToken.jwtToken
 
-        console.log("region id to delete: ", deleteId);
         if (deleteId) {
             axios
                 .delete(`${API_BASE_URL}region/${deleteId}`, {
@@ -282,7 +274,6 @@ function RegionsPage() {
                     setAllRegions(prevRegions => prevRegions.filter(region => region.region_id !== deleteId));
                     setShouldReset(true);
                     setOpenDeleteConfirmation(false);
-                    console.log("region deleted successfully", response.data);
                 })
                 .catch((error) => {
                     console.error("Error deleting region", error);
@@ -304,8 +295,6 @@ function RegionsPage() {
             country_fullname: capitalizeEachWord(newRegionData.country_fullname)
         }
 
-        console.log("new region: ", formattedData)
-
         // Request to POST new regions to the database
         axios
             .post(API_BASE_URL + "region",
@@ -316,14 +305,12 @@ function RegionsPage() {
                     }
                 })
             .then((response) => {
-                console.log("region added successfully", response.data);
                 const updatedData = response.data.map(item => {
                     return {
                         ...item,
                         scientific_name: item.scientific_name
                     };
                 });
-                console.log("updated data", updatedData);
 
                 setAllRegions(prevRegions => [...prevRegions, ...updatedData]);
                 setRegionCount(prevCount => prevCount + 1);

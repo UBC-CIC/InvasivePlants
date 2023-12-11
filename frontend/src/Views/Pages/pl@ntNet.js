@@ -24,7 +24,6 @@ function PlantNet() {
 
         const formData = new FormData(formRef.current);
         const formDataPlantNet = new FormData();
-        let acceptedImage = 0;
 
         // Add all organ into one
         for (let i = 0; i <= numImages; i++) {
@@ -34,9 +33,6 @@ function PlantNet() {
             if (image && image.name) {
                 formDataPlantNet.append('organs', organ);
                 formDataPlantNet.append('images', image);
-
-                console.log("organs: ", organ, "images:", image);
-                acceptedImage++;
             }
         }
 
@@ -49,8 +45,6 @@ function PlantNet() {
             }
         })
             .then((response) => {
-                // Handle success, e.g., show a success message to the user.
-                console.log('File uploaded successfully: ', response.data);
                 setModelResultObj(response.data);
                 setModelResult(JSON.stringify(response.data, null, 2));
             })
@@ -65,12 +59,10 @@ function PlantNet() {
     }
 
     const handleLanguageSelection = (event) => {
-        console.log("language: ", event.target.value)
         setSelectedLanguage(event.target.value);
     }
 
     const handleLocationSelection = (event) => {
-        console.log("location: ", event.target.value)
         setSelectedLocation(event.target.value);
     }
 
@@ -88,7 +80,6 @@ function PlantNet() {
                 let info = await speciesDataToJSON(commonName, scientificName, score, selectedLocation);
                 speciesInfoArray.push(info);
                 count++;
-                console.log(speciesInfoArray.length);
             } else {
                 break;
             }

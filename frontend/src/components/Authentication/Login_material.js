@@ -179,8 +179,6 @@ function Login(props) {
 
     async function signUp() {
         try {
-            console.log("try signup");
-
             // check if both passwords match first before signing up
             checkMatchingPasswords();
 
@@ -224,8 +222,6 @@ function Login(props) {
     async function confirmSignUp() {
         // Verify Account with confirmation code after sign up page
         try {
-            console.log("try confirm signup");
-
             setNewVerification(false);
             const { email, authCode } = formState;
             setLoading(true);
@@ -264,7 +260,6 @@ function Login(props) {
             setLoading(true);
             const { email, password } = formState;
             let user = await Auth.signIn(email, password);
-            console.log("user: ", user);
             if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
                 // a new password needs to be set if account is created through Amazon Cognito for the user
                 resetStates("newUserPassword")

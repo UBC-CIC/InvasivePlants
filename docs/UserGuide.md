@@ -18,9 +18,9 @@ The Invasive Species page is the default page after login. This page displays a 
 
 - **Scientific Name(s)** - the scientific name(s) of the invasive species
 - **Description** - a description of the invasive species
-- **Alternative Species** - non-invasive species to plant instead
+- [**Alternative Species**](#alternative-species) - non-invasive species to plant instead
 - **Resource Links** - external resources
-- **Region(s)** - the region(s) where the species is/are invasive
+- [**Region(s)**](#regions)   - the region(s) where the species is/are invasive
 
 ![invasive species page](./images/invasive_species_page.png)
 
