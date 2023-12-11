@@ -71,7 +71,7 @@ exports.handler = async (event) => {
                     if(bd.image_id){
                     	const imageData = await sql`SELECT s3_key FROM images WHERE image_id = ${bd.image_id};`;
 
-                    	if(imageData[0] && imageData[0].s3_key !== null){
+                    	if(imageData[0] && imageData[0].s3_key !== null && imageData[0].s3_key !== ""){
                     		// Delete object on S3 bucket based on object key.
                     		var s3Params = {
 							  Bucket: BUCKET_NAME, 

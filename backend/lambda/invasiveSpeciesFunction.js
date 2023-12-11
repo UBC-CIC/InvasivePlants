@@ -29,7 +29,12 @@ exports.handler = async (event) => {
 				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_species_id) ? event.queryStringParameters.last_species_id : "00000000-0000-0000-0000-000000000000";
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
 
-				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
+				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name && event.queryStringParameters.region_id){
+					data = await sql`	SELECT * FROM invasive_species 
+										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and ${event.queryStringParameters.region_id} = ANY(region_id) and species_id > ${species_id_pagination}
+										ORDER BY species_id 
+										LIMIT ${rows_per_page};`;
+				} else if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
 					data = await sql`	SELECT * FROM invasive_species 
 										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and species_id > ${species_id_pagination}
 										ORDER BY species_id 
@@ -39,9 +44,6 @@ exports.handler = async (event) => {
 										WHERE ${event.queryStringParameters.region_id} = ANY(region_id) and species_id > ${species_id_pagination}
 										ORDER BY species_id 
 										LIMIT ${rows_per_page};`;
-				} else if (event.queryStringParameters != null && event.queryStringParameters.all) {
-					data = await sql`	SELECT * FROM invasive_species 
-										ORDER BY species_id;`;
 				} else {
 					data = await sql`	SELECT * FROM invasive_species 
 										WHERE species_id > ${species_id_pagination}

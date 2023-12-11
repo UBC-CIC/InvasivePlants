@@ -60,8 +60,8 @@ const hostStack = new HostStack(app, 'hostStack', vpcStack, functionality, api, 
  * 
  * LOGICAL FLOW OF DEPLOYMENT
  * 
- * Create WAF for cloudfront -- Not sure if we need this
- *  cdk deploy Create-WAFWebACL --profile <aws-profile-name>
+ * Initialization (only do it once)
+ * cdk bootstrap --profile VisalSSO
  * 
  * Create ECR Repo
  *  cdk deploy ECRStack --profile <aws-profile-name>
@@ -69,6 +69,9 @@ const hostStack = new HostStack(app, 'hostStack', vpcStack, functionality, api, 
  * Upload Docker Image to ECR Repo
  *  Follow ECR instruction.
  * 
+ * Deploy data username
+ * aws secretsmanager create-secret --name InvasivePlantsSecrets --secret-string "{\"DB_Username\":\"YOUR-DB-USERNAME\"}"  --profile <your-profile-name>
+ * 
  * Deploy everything else
- *  cdk deploy -all --parameters hostStack:prefixListID=<your-region-preFixListId> --profile <aws-profile-name>
+ *  cdk deploy --all --parameters hostStack:prefixListID=<your-region-preFixListId> --profile <aws-profile-name>
  */
