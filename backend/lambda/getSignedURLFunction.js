@@ -18,7 +18,7 @@ const getUploadURL = async function(event) {
   let contentType = 'image/jpeg';
   
   // Update changes of the default parameters
-  if(event.queryStringParameters != null){
+  if (event.queryStringParameters != null) {
     key = (event.queryStringParameters.filename) ? `userLoadedPhotos/${event.queryStringParameters.filename}` : key;
     contentType = (event.queryStringParameters.contentType) ? event.queryStringParameters.contentType : contentType;
   }

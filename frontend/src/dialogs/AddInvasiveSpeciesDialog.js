@@ -25,7 +25,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
     const [speciesData, setSpeciesData] = useState(initialSpeciesData);
     const [regionMap, setRegionsMap] = useState({});
 
-    // get regions
+    // GET regions
     useEffect(() => {
         const fetchRegionData = async () => {
             try {
@@ -47,7 +47,8 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
     };
 
     const handleConfirmAddSpecies = () => {
-        if (speciesData.scientific_name.length === 0 || speciesData.region_id.length === 0) {
+        if (!speciesData.scientific_name || speciesData.scientific_name.length === 0 ||
+            !speciesData.region_id || speciesData.region_id.length === 0) {
             setShowAlert(true);
             return;
         }
@@ -59,6 +60,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
                 )
                 : speciesData.scientific_name.includes(item.scientific_name.toLowerCase())
         );
+
         if (foundSpecies) {
             setShowWarning(true);
         } else {
@@ -68,15 +70,24 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
 
     const handleAddSpecies = () => {
         setShowSnackbar(true);
-
         const splitByCommaWithSpaces = (value) => value.split(/,\s*|\s*,\s*/);
+
+        // Get the ids of the alternative species to add
+        const alternativeSpeciesArray = Array.isArray(speciesData.alternative_species) ?
+            speciesData.alternative_species :
+            splitByCommaWithSpaces(speciesData.alternative_species);
+
+        const alternativeSpeciesIds = []; // Array to store species_id values
+
+        alternativeSpeciesArray.forEach(species => {
+            alternativeSpeciesIds.push(species.species_id);
+        });
 
         const modifiedSpeciesData = {
             ...speciesData,
             scientific_name: typeof speciesData.scientific_name === 'string' ? splitByCommaWithSpaces(speciesData.scientific_name) : [],
-            common_name: typeof speciesData.common_name === 'string' ? splitByCommaWithSpaces(speciesData.common_name) : [],
             resource_links: typeof speciesData.resource_links === 'string' ? splitByCommaWithSpaces(speciesData.resource_links) : [],
-            alternative_species: typeof speciesData.alternative_species === 'string' ? splitByCommaWithSpaces(speciesData.alternative_species) : [],
+            alternative_species: alternativeSpeciesIds,
             region_id: speciesData.region_id
         };
 

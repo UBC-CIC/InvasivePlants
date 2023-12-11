@@ -26,34 +26,39 @@ function AlternativeSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
-  const [user, setUser] = useState(""); // authorized admin user
-
   const [allAlternativeSpecies, setAllAlternativeSpecies] = useState([]); // array of all alternative species
+  const [allAlternativeSpeciesNames, setAllAlternativeSpeciesNames] = useState([]); // array of alternative species names
   const [speciesCount, setSpeciesCount] = useState(0); // number of alternative species
   const [data, setData] = useState([]); // original data
   const [displayData, setDisplayData] = useState([]); // data displayed in the table
   const [editingSpeciesId, setEditingSpeciesId] = useState(null); // species_id of the row being edited
-  const [tempEditingData, setTempEditingData] = useState({}); // data of the species being edited
+  const [tempEditingData, setTempEditingData] = useState({}); // temp data of the species being edited
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false); // state of the editing an alternative species dialog
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false); // state of the adding a new alternative species dialog
   const [searchInput, setSearchInput] = useState(""); // input of the species search bar
-  const [searchBarDropdownResults, setSearchBarDropdownResults] = useState(displayData.map((species) => ({ 
-    label: species.scientific_name, value: species.scientific_name
-  })));
   const [deleteId, setDeleteId] = useState(null); // species_id of the row being deleted
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
-  const [currLastSpeciesId, setCurrLastSpeciesId] = useState(""); // current last species
-  const [lastSpeciesIdHistory, setLastSpeciesIdHistory] = useState(new Set("")); // history of last species ids seen for each page
-  const [shouldReset, setShouldReset] = useState(false); // reset above values
-  const [shouldSave, setShouldSave] = useState(false); // reset above values
+
+  const [currOffset, setCurrOffset] = useState(0); // current index of the first species on a page
+  const [shouldReset, setShouldReset] = useState(false); // state of should reset 
+  const [shouldSave, setShouldSave] = useState(false); // state of should save 
 
   // Pagination states
   const rowsPerPageOptions = [10, 20, 50]; // user selects number of species to display
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[1]); // start with default 20 rows per page
   const [page, setPage] = useState(0); // Start with page 0
   const [disableNextButton, setDisableNextButton] = useState(false); // disabled next button or not
-  const [start, setStart] = useState(0);
-  const [end, setEnd] = useState(0);
+  const [start, setStart] = useState(0); // starting index of species
+  const [end, setEnd] = useState(0); // end index of species
+
+  const [user, setUser] = useState(""); // authorized admin user
+
+  // Retrieves user and alternative species on load
+  useEffect(() => {
+    retrieveUser();
+    fetchAllAlternativeSpecies();
+    console.log("finished loading alternative species")
+  }, [])
 
   // Gets current authorized user
   const retrieveUser = async () => {
@@ -66,19 +71,12 @@ function AlternativeSpeciesPage() {
     }
   }
 
-  // Retrieves user and alternative species on load
-  useEffect(() => {
-    retrieveUser();
-    fetchAllAlternativeSpecies();
-    console.log("finished loading alternative species")
-  }, [])
-
   // Fetches all alternative species (recursively) in the database
-  const fetchAllAlternativeSpecies = async (lastSpeciesId = null) => {
+  const fetchAllAlternativeSpecies = async (currOffset = null) => {
     try {
       const response = await axios.get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
-          last_species_id: lastSpeciesId,
+          curr_offset: currOffset,
           rows_per_page: rowsPerPage
         },
         headers: {
@@ -87,7 +85,7 @@ function AlternativeSpeciesPage() {
       });
 
       // Ensures that if a species has multiple scientific names, each are separately displayed      
-      const formattedData = response.data.flatMap(item => {
+      const formattedData = response.data.species.flatMap(item => {
         return item.scientific_name.map(name => {
           const capitalizedScientificName = capitalizeFirstWord(name);
           return {
@@ -98,39 +96,44 @@ function AlternativeSpeciesPage() {
       });
 
       setAllAlternativeSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
-      setSpeciesCount(prevCount => prevCount + response.data.length)
+      setSpeciesCount(prevCount => prevCount + response.data.species.length)
 
       // Recursively gets species
-      if (response.data.length === rowsPerPage) {
-        const newLastSpeciesId = response.data[response.data.length - 1].species_id;
-        await fetchAllAlternativeSpecies(newLastSpeciesId);
+      if (response.data.species.length === rowsPerPage) {
+        const nextOffset = response.data.nextOffset;
+        await fetchAllAlternativeSpecies(nextOffset);
       }
     } catch (error) {
       console.error("Error retrieving alternative species", error);
     }
   };
 
-  // Gets the scientific name(s) of all alternative species in the database
-  const alternativeSpeciesNames = allAlternativeSpecies.map(species => ({
-    label: species.scientific_name,
-    value: species.scientific_name
-  }));
+  // Updates search bar dropdown when alternative species are added or deleted
+  useEffect(() => {
+    const updatedSpeciesNames = allAlternativeSpecies.map(species => ({
+      label: species.scientific_name,
+      value: species.scientific_name
+    }));
+
+    setAllAlternativeSpeciesNames(updatedSpeciesNames);
+  }, [allAlternativeSpecies]);
+
 
   // Fetches rowsPerPage number of alternative species (pagination)
   const handleGetAlternativeSpecies = () => {
     axios
       .get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
-          last_species_id: shouldReset ? null : currLastSpeciesId, // default first page
+          curr_offset: shouldReset ? null : currOffset,
           rows_per_page: rowsPerPage  // default 20
         },
         headers: {
           'x-api-key': process.env.REACT_APP_X_API_KEY
         }
       })
-      .then((response) => {  
-        const formattedData = response.data.map(item => {
-          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
+      .then((response) => {
+        const formattedData = response.data.species.map(item => {
+          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
           const image_links = item.images.map(img => img.image_url);
           const s3_keys = item.images.map(img => img.s3_key);
@@ -149,7 +152,7 @@ function AlternativeSpeciesPage() {
         // Resets pagination details
         // This will clear the last species id history and display the first page
         if (shouldReset) {
-          setLastSpeciesIdHistory(new Set())
+          setCurrOffset(0);
           setPage(0);
           setStart(0);
           setEnd(0);
@@ -158,14 +161,7 @@ function AlternativeSpeciesPage() {
 
         setDisplayData(formattedData);
         setData(formattedData);
-        setSearchBarDropdownResults(formattedData.map((item) => ({ label: item.scientific_name, value: item.scientific_name })));
-
-        // Updates lastSpeciesId with the species_id of the current last row
-        if (formattedData.length > 0) {
-          const newLastSpeciesId = formattedData[formattedData.length - 1].species_id;
-          setCurrLastSpeciesId(newLastSpeciesId);
-          setLastSpeciesIdHistory(history => new Set([...history, newLastSpeciesId]));
-        }
+        setCurrOffset(response.data.nextOffset);
       })
       .catch((error) => {
         console.error("Error getting alternative species", error);
@@ -175,19 +171,8 @@ function AlternativeSpeciesPage() {
   // Maintains history of last species_id and currLastSpeciesId so that on GET, 
   // the current page is maintained instead of starting from page 1
   const handleGetAlternativeSpeciesAfterSave = () => {
-    console.log("curr:", currLastSpeciesId, "history:", lastSpeciesIdHistory);
-
-    if (lastSpeciesIdHistory.size > 1) {
-      const updatedIdHistory = Array.from(lastSpeciesIdHistory);
-      updatedIdHistory.pop();
-
-      setLastSpeciesIdHistory(new Set(updatedIdHistory));
-
-      const prevSpeciesId = updatedIdHistory[updatedIdHistory.length - 1];
-      setCurrLastSpeciesId(prevSpeciesId);
-
-      setShouldSave(true) // useEffect listens for this state to change and will GET alternative species when True
-    }
+    setCurrOffset(curr => curr - rowsPerPage);
+    setShouldSave(true) // useEffect listens for this state to change and will GET alternative species when True
   };
 
   // Request to GET alternative species (same page) after editing a row to see the updated data when shouldSave state changes
@@ -196,7 +181,7 @@ function AlternativeSpeciesPage() {
       axios
         .get(`${API_BASE_URL}alternativeSpecies`, {
           params: {
-            last_species_id: currLastSpeciesId ? currLastSpeciesId : null, // default first page
+            curr_offset: currOffset ? currOffset : null, // default first page
             rows_per_page: rowsPerPage  // default 20
           },
           headers: {
@@ -204,7 +189,7 @@ function AlternativeSpeciesPage() {
           }
         })
         .then((response) => {
-          const formattedData = response.data.map(item => {
+          const formattedData = response.data.species.map(item => {
             const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
             const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
             const image_links = item.images.map(img => img.image_url);
@@ -221,14 +206,7 @@ function AlternativeSpeciesPage() {
 
           console.log("retrieved alternative species data:", formattedData);
           setDisplayData(formattedData);
-
-          // Updates lastSpeciesId with the species_id of the last row of the page
-          if (formattedData.length > 0) {
-            const newLastSpeciesId = formattedData[formattedData.length - 1].species_id;
-
-            setCurrLastSpeciesId(newLastSpeciesId);
-            setLastSpeciesIdHistory(history => new Set([...history, newLastSpeciesId]));
-          }
+          setCurrOffset(response.data.nextOffset);
         })
         .catch((error) => {
           console.error("Error getting alternative species", error);
@@ -242,7 +220,7 @@ function AlternativeSpeciesPage() {
 
   // Fetches the alternative species that matches user search
   const handleGetAlternativeSpeciesAfterSearch = () => {
-    const formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
+    let formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
     console.log("formatted search input: ", formattedSearchInput);
 
     axios
@@ -255,9 +233,7 @@ function AlternativeSpeciesPage() {
         }
       })
       .then((response) => {
-
-        // formats data 
-        const formattedData = response.data.map(item => {
+        const formattedData = response.data.species.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
           const image_links = item.images.map(img => img.image_url);
@@ -280,7 +256,7 @@ function AlternativeSpeciesPage() {
       });
   };
 
-  // Updates states when editing a species
+  // Updates editing states when editing a species
   const startEdit = (species_id, rowData) => {
     setEditingSpeciesId(species_id);
     setTempEditingData(rowData);
@@ -295,9 +271,11 @@ function AlternativeSpeciesPage() {
 
   // Updates changes to the database on save
   const handleSave = (confirmed) => {
-    if (confirmed) {
+    retrieveUser();
+    const jwtToken = user.signInUserSession.accessToken.jwtToken;
 
-      // Helper function that ensure names are of array data type
+    if (confirmed) {
+      // Helper function that ensure scientific and common names are of array data type
       function formatNames(names) {
         let formattedNames = [];
         if (typeof names === 'string') {
@@ -336,19 +314,10 @@ function AlternativeSpeciesPage() {
       const s3KeysToAdd = (imageS3Keys && imageS3Keys.length > 0) ?
         imageS3Keys.filter(key => !formattedData.images.some(existingImg => existingImg.s3_key === key.s3_key)) : null;
 
-      // console.log("to add images (links): ", imagesToAdd);
-      // console.log("to add images (keys): ", s3KeysToAdd);
-
       // POST new images to the database
       function postImages(images) {
-        console.log("images: ", images)
-
-        retrieveUser();
-        const jwtToken = user.signInUserSession.accessToken.jwtToken;
-
         if (images && images.length > 0) {
           images.forEach(img => {
-            console.log("curr image:", img);
             axios
               .post(API_BASE_URL + "plantsImages", img, {
                 headers: {
@@ -373,9 +342,6 @@ function AlternativeSpeciesPage() {
       postImages(imagesToAdd);
       postImages(s3KeysToAdd);
 
-      retrieveUser();
-      const jwtToken = user.signInUserSession.accessToken.jwtToken;
-
       // Update alternative species table
       axios
         .put(`${API_BASE_URL}alternativeSpecies/${tempEditingData.species_id}`, formattedData, {
@@ -383,7 +349,7 @@ function AlternativeSpeciesPage() {
             'Authorization': `${jwtToken}`
           }
         })
-        .then((response) => { 
+        .then((response) => {
           console.log("alternative species updated successfully", response.data);
           if (start > rowsPerPage) {
             handleGetAlternativeSpeciesAfterSave();
@@ -404,8 +370,7 @@ function AlternativeSpeciesPage() {
     setOpenDeleteConfirmation(true);
   };
 
-  // Deletes species from the table
-  // TODO: delete images in s3 bucket too
+  // Deletes alternative species from the table
   const handleConfirmDelete = () => {
     console.log("alt species id to delete: ", deleteId);
     retrieveUser();
@@ -419,6 +384,8 @@ function AlternativeSpeciesPage() {
           }
         })
         .then((response) => {
+          setSpeciesCount(prevCount => prevCount - 1)
+          setAllAlternativeSpecies(prevSpecies => prevSpecies.filter(species => species.species_id !== deleteId));
           setShouldReset(true);
           console.log("alternative species deleted successfully", response.data);
         })
@@ -447,7 +414,7 @@ function AlternativeSpeciesPage() {
     retrieveUser();
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
-    // Request to POST new alternative species to database
+    // Request to POST new alternative species to the database
     axios
       .post(API_BASE_URL + "alternativeSpecies", newSpeciesData, {
         headers: {
@@ -456,6 +423,20 @@ function AlternativeSpeciesPage() {
       })
       .then((response) => {
         console.log("Alternative species added successfully", response);
+
+        // Ensures that if a species has multiple scientific names, each are separately displayed      
+        const formattedData = response.data.flatMap(item => {
+          return item.scientific_name.map(name => {
+            const capitalizedScientificName = capitalizeFirstWord(name);
+            return {
+              ...item,
+              scientific_name: capitalizedScientificName
+            };
+          });
+        });
+
+        setAllAlternativeSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
+        setSpeciesCount(prevCount => prevCount + 1);
 
         // Maps species id to plant data with image links
         let plantsWithImgLinks = [];
@@ -490,7 +471,7 @@ function AlternativeSpeciesPage() {
             .then((response) => {
               console.log("all images added successfully", response.data);
               setShouldReset(true);
-              setOpenAddSpeciesDialog(false); 
+              setOpenAddSpeciesDialog(false);
             })
             .catch((error) => {
               console.error("Error adding image", error);
@@ -509,7 +490,7 @@ function AlternativeSpeciesPage() {
     }
   }, [shouldReset]);
 
-  // Updates row data when its fields change
+  // Updates temporary row data when field inputs change
   const handleInputChange = (field, value) => {
     setTempEditingData((prev) => ({ ...prev, [field]: value }));
   };
@@ -540,30 +521,20 @@ function AlternativeSpeciesPage() {
     setShouldReset(true);
   }, [rowsPerPage]);
 
-  // Increments the page count by 1 
-  const handleNextPage = () => {
-    setPage(page + 1); 
-  };
-
-  // Decrements page count by 1 and removes last id in seen species history 
-  const handlePreviousPage = () => {
-    if (lastSpeciesIdHistory.size > 1) {
-      const updatedIdHistory = new Set([...lastSpeciesIdHistory]);
-      updatedIdHistory.delete([...updatedIdHistory].pop());
-      setLastSpeciesIdHistory(updatedIdHistory);
-
-      // Sets currLastSpeciesId to the previous species id
-      const prevSpeciesId = [...updatedIdHistory][[...updatedIdHistory].length - 2];
-      setCurrLastSpeciesId(prevSpeciesId);
-      setPage(page - 1);
-    }
-  };
-
   // Call to get next/previous rowsPerPage number of species on page change
   useEffect(() => {
     handleGetAlternativeSpecies();
   }, [page]);
 
+  // Increments the page count by 1 
+  const handleNextPage = () => {
+    setPage(page + 1);
+  };
+  // Decrements page count by 1 and removes last id in seen species history 
+  const handlePreviousPage = () => {
+    setCurrOffset(curr => curr - rowsPerPage * 2);
+    setPage(page - 1);
+  };
 
   // Disables the next button if there are no species left to query
   useEffect(() => {
@@ -582,7 +553,7 @@ function AlternativeSpeciesPage() {
         <SearchComponent
           text={"Search alternative species (scientific or common name)"}
           handleSearch={handleSearch}
-          searchResults={alternativeSpeciesNames}
+          searchResults={allAlternativeSpeciesNames}
           searchTerm={searchInput}
           setSearchTerm={setSearchInput}
         />
@@ -638,7 +609,7 @@ function AlternativeSpeciesPage() {
                   Scientific Name
                 </Typography>
               </TableCell>
-              <TableCell style={{ width: "12%" }}>
+              <TableCell style={{ width: "10%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Common Name(s)
                 </Typography>
@@ -653,13 +624,11 @@ function AlternativeSpeciesPage() {
                   Resource Links
                 </Typography>
               </TableCell>
-
-              <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
+              <TableCell style={{ width: "10%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  Image Links
+                  Images
                 </Typography>
               </TableCell>
-
               <TableCell style={{ width: "5%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   Actions
@@ -671,266 +640,272 @@ function AlternativeSpeciesPage() {
           {/* table body: display species */}
           <TableBody>
             {(displayData && displayData.length > 0 ? displayData : [])
-                .map((row) => (
-                  <TableRow key={row.species_id}>
-                    {/* editing the row */}              
-                    {editingSpeciesId === row.species_id ? (
-                      <>
-                        {/* scientific name */}
-                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                          <TextField
-                            value={
-                              Array.isArray(tempEditingData.scientific_name)
-                                ? tempEditingData.scientific_name.join(", ")
-                                : tempEditingData.scientific_name
-                            }
-                            onChange={(e) =>
-                              handleInputChange("scientific_name", e.target.value)
-                            }
-                          />
-                        </TableCell>                    
+              .map((row) => (
+                <TableRow key={row.species_id}>
+                  {/* editing the row */}
+                  {editingSpeciesId === row.species_id ? (
+                    <>
+                      {/* scientific name */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                        <TextField
+                          value={
+                            Array.isArray(tempEditingData.scientific_name)
+                              ? tempEditingData.scientific_name.join(", ")
+                              : tempEditingData.scientific_name
+                          }
+                          onChange={(e) =>
+                            handleInputChange("scientific_name", e.target.value)
+                          }
+                        />
+                      </TableCell>
 
-                        {/* common name */}
+                      {/* common name */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                        <TextField
+                          value={
+                            Array.isArray(tempEditingData.common_name)
+                              ? tempEditingData.common_name.join(", ")
+                              : tempEditingData.common_name
+                          }
+                          onChange={(e) =>
+                            handleInputChange("common_name", e.target.value)
+                          }
+                        />
+                      </TableCell>
+
+                      {/* decsription */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                        <TextField
+                          value={boldText(tempEditingData.species_description)}
+                          onChange={(e) =>
+                            handleInputChange("species_description", e.target.value)
+                          }
+                        />
+                      </TableCell>
+
+                      {/* resource links */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                        <TextField
+                          value={
+                            Array.isArray(tempEditingData.resource_links)
+                              ? tempEditingData.resource_links.join(", ")
+                              : tempEditingData.resource_links
+                          }
+                          onChange={(e) =>
+                            handleInputChange(
+                              "resource_links",
+                              e.target.value.split(", ")
+                            )
+                          }
+                          sx={{
+                            width: '100%',
+                            wordBreak: 'break-word'
+                          }}
+
+                          // allows resource links to be opened in a new tab with proper security settings
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                {Array.isArray(tempEditingData.resource_links) ? (
+                                  tempEditingData.resource_links.map((link, index) => (
+                                    <span key={index}>
+                                      <a
+                                        href={link}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        {link}
+                                      </a>
+                                      <br />
+                                      <br />
+                                    </span>
+                                  ))
+                                ) : (
+                                  <span>
+                                    <a
+                                      href={tempEditingData.resource_links}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      {tempEditingData.resource_links}
+                                    </a>
+                                    <br />
+                                    <br />
+                                  </span>
+                                )}
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </TableCell>
+
+                      {/* images */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                        <TextField
+                          value={
+                            Array.isArray(tempEditingData.image_links)
+                              ? tempEditingData.image_links.join(", ")
+                              : tempEditingData.image_links
+                          }
+                          onChange={(e) =>
+                            handleInputChange(
+                              "image_links",
+                              e.target.value.split(", ")
+                            )
+                          }
+
+                          // allows image links to be opened in a new tab with proper security settings
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                {Array.isArray(tempEditingData.image_links) ? (
+                                  tempEditingData.image_links.map((link, index) => (
+                                    <span key={index}>
+                                      <img
+                                        src={link}
+                                        alt={`${link}`}
+                                        style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                      />
+                                      <br />
+                                      <br />
+                                    </span>
+                                  ))
+                                ) : (
+                                  <span>
+                                      <img
+                                        src={tempEditingData.image_links}
+                                        style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                      />
+                                      <br />
+                                      <br />
+                                    <br />
+                                  </span>
+                                )}
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </TableCell>
+
+                      {/* edit/delete actions*/}
+                      <TableCell>
+                        <Tooltip title="Edit"
+                          onClick={() => startEdit(row.species_id, row)}>
+                          <IconButton><EditIcon /> </IconButton>
+                        </Tooltip>
+                        <Tooltip
+                          title="Delete"
+                          onClick={() => {
+                            handleDeleteRow(row.species_id, row)
+                          }}>
+                          <IconButton><DeleteIcon /> </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </>
+                  ) : (
+                    <>
+                        {/* currently displayed table */}
+                      {/* scientific names */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                        {Array.isArray(row.scientific_name)
+                          ? row.scientific_name.join(", ")
+                          : row.scientific_name}
+                      </TableCell>
+
+                        {/* common names */}
                         <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                          <TextField
-                            value={
-                              Array.isArray(tempEditingData.common_name)
-                                ? tempEditingData.common_name.join(", ")
-                                : tempEditingData.common_name
-                            }
-                            onChange={(e) =>
-                              handleInputChange("common_name", e.target.value)
-                            }
-                          />
+                          {Array.isArray(row.common_name)
+                            ? row.common_name.join(", ")
+                            : row.common_name}
                         </TableCell>
 
-                        {/* decsription */}
+                        {/* Description */}
                         <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                          <TextField
-                            value={boldText(tempEditingData.species_description)}
-                            onChange={(e) =>
-                              handleInputChange("species_description", e.target.value)
-                            }
-                          />
+                          {boldText(row.species_description)}
                         </TableCell>
 
                         {/* resource links */}
-                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>                        
-                          <TextField
-                            value={
-                              Array.isArray(tempEditingData.resource_links)
-                                ? tempEditingData.resource_links.join(", ")
-                                : tempEditingData.resource_links
-                            }
-                            onChange={(e) =>
-                              handleInputChange(
-                                "resource_links",
-                                e.target.value.split(", ")
-                              )
-                            }
-                            sx={{
-                              width: '100%',
-                              wordBreak: 'break-word'
-                            }}
-
-                            // allows resource links to be opened in a new tab with proper security settings
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                  {Array.isArray(tempEditingData.resource_links) ? (
-                                    tempEditingData.resource_links.map((link, index) => (
-                                      <span key={index}>
-                                        <a
-                                          href={link}
-                                          target="_blank"
-                                          rel="noopener noreferrer" 
-                                        >
-                                          {link}
-                                        </a>
-                                        <br />
-                                        <br />
-                                      </span>
-                                    ))
-                                  ) : (
-                                    <span>
-                                      <a
-                                          href={tempEditingData.resource_links}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                      >
-                                          {tempEditingData.resource_links}
-                                      </a>
-                                      <br />
-                                        <br />
-                                    </span>
-                                  )}
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                          {Array.isArray(row.resource_links) ? (
+                            row.resource_links.map((link, index) => (
+                              <span key={index}>
+                                <a href={link} target="_blank" rel="noopener noreferrer">
+                                  {link}
+                                </a>
+                                <br />
+                                <br />
+                              </span>
+                            ))
+                          ) : (
+                            <span>
+                              <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
+                                {row.resource_links}
+                              </a>
+                              <br />
+                              <br />
+                            </span>
+                          )}
                         </TableCell>
 
                         {/* image links */}
                         <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                          <TextField
-                            value={
-                              Array.isArray(tempEditingData.image_links)
-                                ? tempEditingData.image_links.join(", ")
-                                : tempEditingData.image_links
-                            }
-                            onChange={(e) =>
-                              handleInputChange(
-                                "image_links",
-                                e.target.value.split(", ")
-                              )
-                            }
-
-                            // allows image links to be opened in a new tab with proper security settings
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                  {Array.isArray(tempEditingData.image_links) ? (
-                                    tempEditingData.image_links.map((link, index) => (
-                                      <span key={index}>
-                                        <a href={link} target="_blank" rel="noopener noreferrer">
-                                          {link}
-                                        </a>
-                                        <br />
-                                        <br />
-                                      </span>
-                                    ))
-                                  ) : (
-                                    <span>
-                                        <a href={tempEditingData.image_links} target="_blank" rel="noopener noreferrer">
-                                          {tempEditingData.image_links}
-                                      </a>
-                                        <br />
-                                        <br />
-                                    </span>
-                                  )}
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        </TableCell>
-
-                        {/* edit/delete actions*/}
-                        <TableCell>
-                          <Tooltip title="Edit"
-                            onClick={() => startEdit(row.species_id, row)}>
-                            <IconButton><EditIcon /> </IconButton>
-                          </Tooltip>
-                          <Tooltip
-                            title="Delete"
-                            onClick={() => {
-                              handleDeleteRow(row.species_id, row)
-                            }}>
-                            <IconButton><DeleteIcon /> </IconButton>
-                          </Tooltip>
-                        </TableCell>
-                      </>
-                    ) : (
-                        <>
-                          {/* scientific names */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            {Array.isArray(row.scientific_name)
-                              ? row.scientific_name.join(", ")
-                              : row.scientific_name}
-                          </TableCell>
-
-                          {/* common names */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            {Array.isArray(row.common_name)
-                              ? row.common_name.join(", ")
-                              : row.common_name}
-                          </TableCell>
-
-                          {/* Description */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            {boldText(row.species_description)}
-                          </TableCell>
-
-                          {/* resource links */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            {Array.isArray(row.resource_links) ? (
-                              row.resource_links.map((link, index) => (
-                                <span key={index}>
-                                  <a href={link} target="_blank" rel="noopener noreferrer">
-                                    {link}
-                                  </a>
-                                  <br />
-                                  <br />
-                                </span>
-                              ))
-                            ) : (
-                              <span>
-                                <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
-                                  {row.resource_links}
-                                </a>
-                                <br />
+                          {Array.isArray(row.image_links) ? (
+                            row.image_links.map((link, index) => (
+                              <span key={index}>
+                                <img
+                                  src={link}
+                                  alt={`${link}`}
+                                  style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                />
+                                {row.s3_keys && row.s3_keys[index] && (
+                                  <span>
+                                    <img
+                                      src={`${S3_BASE_URL}${row.s3_keys[index]}`}
+                                      alt={`${row.s3_keys[index]}`}
+                                      style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                    />
+                                  </span>
+                                )}
                                 <br />
                               </span>
-                            )}
-                          </TableCell>
-
-                          {/* image links */}
-                          <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                            {Array.isArray(row.image_links) ? (
-                              row.image_links.map((link, index) => (
+                            ))
+                          ) : (
+                            <span>
+                              <a href={row.image_links} target="_blank" rel="noopener noreferrer">
+                                {row.image_links}
+                              </a>
+                              <br />
+                              {row.s3_keys && row.s3_keys.map((key, index) => (
                                 <span key={index}>
-                                  <a href={link} target="_blank" rel="noopener noreferrer">
-                                    {link}
+                                  <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
+                                    {row.s3_keys[index]}
                                   </a>
                                   <br />
-
-                                  {row.s3_keys && row.s3_keys[index] && (
-                                    <span>
-                                      <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
-                                        {row.s3_keys[index]}
-                                      </a>
-                                      <br />
-                                    </span>
-                                  )}
-                                  <br />
                                 </span>
-                              ))
-                            ) : (
-                              <span>
-                                <a href={row.image_links} target="_blank" rel="noopener noreferrer">
-                                  {row.image_links}
-                                </a>
-                                <br />
-                                  {row.s3_keys && row.s3_keys.map((key, index) => (
-                                    <span key={index}>
-                                      <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
-                                        {row.s3_keys[index]}
-                                      </a>
-                                      <br />
-                                    </span>
-                                  ))}
-                                <br />
-                              </span>
-                            )}
-                          </TableCell>
-
-                          {/* edit/delete actions */}
-                        <TableCell>
-                          <Tooltip title="Edit"
-                              onClick={() => startEdit(row.species_id, row)}>
-                              <IconButton><EditIcon /></IconButton>
-                          </Tooltip>
-                          <Tooltip
-                            title="Delete"
-                              onClick={() => {
-                                handleDeleteRow(row.species_id, row)
-                              }}>
-                              <IconButton><DeleteIcon /></IconButton>
-                          </Tooltip>
+                              ))}
+                              <br />
+                            </span>
+                          )}
                         </TableCell>
-                      </>
-                    )}
-                  </TableRow>
-                ))}
+
+                      {/* edit/delete actions */}
+                      <TableCell>
+                        <Tooltip title="Edit"
+                          onClick={() => startEdit(row.species_id, row)}>
+                          <IconButton><EditIcon /></IconButton>
+                        </Tooltip>
+                        <Tooltip
+                          title="Delete"
+                          onClick={() => {
+                            handleDeleteRow(row.species_id, row)
+                          }}>
+                          <IconButton><DeleteIcon /></IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </>
+                  )}
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div >

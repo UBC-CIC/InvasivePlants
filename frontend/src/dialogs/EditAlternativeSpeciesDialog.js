@@ -13,6 +13,9 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
 
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
     const [user, setUser] = useState("");
+    const [deleteImg, setDeleteImg] = useState(null);
+    const [showWarning, setShowWarning] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
 
     // gets current authorized user
     const retrieveUser = async () => {
@@ -36,6 +39,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
         setShowSaveConfirmation(false);
     };
 
+    // TODO: ow priority (refactor) can create a reusable function for this
     // hanldes user uploaded image files
     const handleImageUpload = async (e) => {
         const files = e.target.files;
@@ -48,7 +52,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                     // modified from https://raz-levy.medium.com/how-to-upload-files-to-aws-s3-from-the-client-side-using-react-js-and-node-js-660252e61e0
                     const timestamp = new Date().getTime();
                     const file = e.target.files[i];
-                    const filename = file.name.split('.')[0].replace(/[&\/\\#,+()$~%'":*?<>{}]/g, '').toLowerCase() + `_${timestamp}`;
+                    const filename = file.name.split('.')[0].replace(/[&/\\#,+()$~%'":*?<>{}]/g, '').toLowerCase() + `_${timestamp}`;
                     const fileExtension = file.name.split('.').pop();
 
                     // GET request to getS3SignedURL endpoint
@@ -85,20 +89,18 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
         }
     };
 
-    const [showWarning, setShowWarning] = useState(false);
-    const [deleteImg, setDeleteImg] = useState(null);
-
+    // Opens delete warning confirmation
     const handleImageDelete = (img, index) => {
         setShowWarning(true);
         setDeleteImg(img);
     };
 
 
+    // Deletes image from database
     const handleConfirmDeleteImage = () => {
         console.log("img to delete: ", deleteImg)
         setShowWarning(false)
 
-        // remove the image from the database
         if (deleteImg) {
             retrieveUser();
             const jwtToken = user.signInUserSession.accessToken.jwtToken;
@@ -123,7 +125,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                 .catch((error) => {
                     console.error("Error deleting image", error);
                 }).finally(() => {
-                    // Reset states
                     setDeleteImg(null);
                     setShowWarning(false);
                 });
@@ -132,8 +133,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
         }
     }
 
-
-    const [showAlert, setShowAlert] = useState(false);
+    // Ensures all required fields are present before adding alternative species
     const handleConfirmAddAlternativeSpecies = () => {
         if (!tempData.scientific_name || tempData.scientific_name.length === 0) {
             setShowAlert(true);
@@ -238,7 +238,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                                     {img.image_url && (
                                         <img
                                             src={img.image_url}
-                                            alt={`image-${index}`}
+                                            alt={`img.image_url${index}`}
                                             style={{ maxWidth: '60%', height: 'auto' }}
                                         />
                                     )}
@@ -248,7 +248,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                                         <div>
                                             <img
                                                 src={`${S3_BASE_URL}${img.s3_key}`}
-                                                alt={`image-${index}`}
+                                                alt={`img.s3_key${index}`}
                                                 style={{ maxWidth: '60%', height: 'auto' }}
                                             />
                                         </div>

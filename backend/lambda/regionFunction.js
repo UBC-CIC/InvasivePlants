@@ -23,35 +23,50 @@ exports.handler = async (event) => {
 	
 	let data;
 	try {
-		console.log("Event: ", event);
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
 			case "GET /region":
-				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_region_id) ? event.queryStringParameters.last_region_id : "00000000-0000-0000-0000-000000000000";
+				let curr_offset = (event.queryStringParameters != null && event.queryStringParameters.curr_offset) ? event.queryStringParameters.curr_offset : 0;
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
-				
-				if(event.queryStringParameters != null && event.queryStringParameters.region_fullname){
+
+				if (event.queryStringParameters != null && event.queryStringParameters.region_fullname) {
 					const region_fullname = "%" + event.queryStringParameters.region_fullname + "%";
 					data = await sql`	SELECT * FROM regions
-										WHERE region_fullname ILIKE ${region_fullname} and region_id > ${species_id_pagination}
-										ORDER BY region_id 
-										LIMIT ${rows_per_page};`;
+										WHERE region_fullname ILIKE ${region_fullname} 
+										ORDER BY region_fullname 
+										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {
 					data = await sql`	SELECT * FROM regions
-										WHERE region_id > ${species_id_pagination}
-										ORDER BY region_id 
-										LIMIT ${rows_per_page};`;
+										ORDER BY region_fullname
+										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				}
-				response.body = JSON.stringify(data);
+
+				let nextOffset = parseInt(curr_offset);
+
+				// If the number of rows returned is less than the number of rows requested, 
+				// nextOffset will be the current offset plus the number of rows returned.
+				// Otherwise, set nextOffset to the current offset plus the number of rows requested. 
+				if (data.length < rows_per_page) {
+					nextOffset += data.length;
+				} else {
+					nextOffset += parseInt(rows_per_page);
+				}
+
+				let res = {
+					"nextOffset": nextOffset,
+					"regions": data
+				};
+
+				response.body = JSON.stringify(res);				
 				break;
 			case "POST /region":
 				if(event.body != null){
 					const bd = JSON.parse(event.body);
 					
 					// Check if required parameters are passed
-					if( bd.region_code_name && 
-						bd.region_fullname && 
-						bd.country_fullname){
+					if (bd.region_code_name &&
+						bd.region_fullname &&
+						bd.country_fullname) {
 						
 						// Optional parameters
 						const geographic_coordinate = (bd.geographic_coordinate) ? bd.geographic_coordinate : "";
@@ -76,7 +91,7 @@ exports.handler = async (event) => {
 					const bd = event.pathParameters;
 					
 					// Check if required parameters are passed
-					if(bd.region_id){
+					if (bd.region_id) {
 						data = await sql`SELECT * FROM regions WHERE region_id = ${bd.region_id};`;
 						response.body = JSON.stringify(data);
 					} else {
@@ -91,14 +106,14 @@ exports.handler = async (event) => {
 			case "PUT /region/{region_id}":
 				if(event.body != null && event.pathParameters != null){
 					const bd = JSON.parse(event.body);
-					
+
 					// Check if required parameters are passed
-					if( bd.region_code_name && 
-						bd.region_fullname && 
-						bd.country_fullname &&
-						bd.geographic_coordinate &&
-						event.pathParameters.region_id){
-						
+					if (bd.region_code_name &&
+						bd.region_fullname &&
+						bd.country_fullname) {
+
+						// Optional parameters
+						const geographic_coordinate = (bd.geographic_coordinate) ? bd.geographic_coordinate : "";
 						data = await sql`
 							UPDATE regions
 							SET region_code_name = ${bd.region_code_name}, 
@@ -108,7 +123,6 @@ exports.handler = async (event) => {
 							WHERE region_id = ${event.pathParameters.region_id}
 							RETURNING *;
 						`;
-						
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
@@ -124,7 +138,7 @@ exports.handler = async (event) => {
 					const bd = event.pathParameters;
 					
 					// Check if required parameters are passed
-					if(bd.region_id){
+					if (bd.region_id) {
 						data = await sql`DELETE FROM regions WHERE region_id = ${bd.region_id};`;
 						response.body = "Deleted a region";
 					} else {

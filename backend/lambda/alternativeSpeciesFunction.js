@@ -21,31 +21,53 @@ exports.handler = async (event) => {
 		sql = await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT); 
 	}
 	
+	// Function to format scientific names (capitalized and spaces replaced with "_")
+	const formatScientificName = (name) => {
+		return name.toLowerCase().replace(/\s+/g, '_');
+	};
+
 	let data;
 	try {
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
 			case "GET /alternativeSpecies":
-				let species_id_pagination = (event.queryStringParameters != null && event.queryStringParameters.last_species_id) ? event.queryStringParameters.last_species_id : "00000000-0000-0000-0000-000000000000";
+				let curr_offset = (event.queryStringParameters != null && event.queryStringParameters.curr_offset) ? event.queryStringParameters.curr_offset : 0;
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
 
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
 					data = await sql`	SELECT * FROM alternative_species 
-										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and species_id > ${species_id_pagination}
-										ORDER BY species_id 
-										LIMIT ${rows_per_page};`;
+										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)
+										ORDER BY scientific_name[1], species_id 
+										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {
 					data = await sql`	SELECT * FROM alternative_species 
-										WHERE species_id > ${species_id_pagination}
-										ORDER BY species_id 
-										LIMIT ${rows_per_page};`;
+										ORDER BY scientific_name[1], species_id 
+										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				}
 				
 				for(let i in data){
 					// Get list of images
 					data[i].images = await sql`SELECT * FROM images WHERE species_id = ${data[i].species_id};`;
 				}
-				response.body = JSON.stringify(data);
+
+				let nextOffset = parseInt(curr_offset);
+
+				// If the number of rows returned is less than the number of rows requested, 
+				// nextOffset will be the current offset plus the number of rows returned.
+				// Otherwise, set nextOffset to the current offset plus the number of rows requested. 
+				if (data.length < rows_per_page) {
+					nextOffset += data.length;
+				} else {
+					nextOffset += parseInt(rows_per_page);
+				}
+
+				let res = {
+					"nextOffset": nextOffset,
+					"species": data
+				};
+
+				response.body = JSON.stringify(res);
+
 				break;
 			case "POST /alternativeSpecies":
 				if(event.body != null){
@@ -53,7 +75,11 @@ exports.handler = async (event) => {
 					
 					// Check if required parameters are passed
 					if (bd.scientific_name) {
-						
+						// Ensure that scientific names are formatted correctly
+						const formattedScientificNames = Array.isArray(bd.scientific_name)
+							? bd.scientific_name.map(formatScientificName)
+							: [formatScientificName(bd.scientific_name)];
+
 						// Optional parameters
 						const common_name = (bd.common_name) ? bd.common_name : [];
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
@@ -61,7 +87,7 @@ exports.handler = async (event) => {
 
 						data = await sql`
 							INSERT INTO alternative_species (scientific_name, common_name, resource_links, species_description)
-							VALUES (${bd.scientific_name}, ${common_name}, ${resource_links}, ${species_description})
+							VALUES (${formattedScientificNames}, ${common_name}, ${resource_links}, ${species_description})
 							RETURNING *;
 						`;
 						
@@ -102,6 +128,10 @@ exports.handler = async (event) => {
 					
 					// Check if required parameters are passed
 					if (event.pathParameters.species_id && bd.scientific_name) {
+						// Ensure that scientific names are formatted correctly
+						const formattedScientificNames = Array.isArray(bd.scientific_name)
+							? bd.scientific_name.map(formatScientificName)
+							: [formatScientificName(bd.scientific_name)];
 
 						// Optional parameters
 						const common_name = (bd.common_name) ? bd.common_name : [];
@@ -110,7 +140,7 @@ exports.handler = async (event) => {
 						
 						data = await sql`
 							UPDATE alternative_species
-							SET scientific_name = ${bd.scientific_name}, 
+							SET scientific_name = ${formattedScientificNames}, 
 								common_name = ${common_name},
 								resource_links = ${resource_links}, 
 								species_description = ${species_description}
