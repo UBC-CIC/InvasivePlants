@@ -72,7 +72,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                     }
 
                     const signedURLData = signedURLResponse.data;
-                    console.log("signed url data: ", signedURLData)
 
                     // Use the obtained signed URL to upload the image to S3 bucket
                     await axios.put(signedURLData.uploadURL, files[i])
@@ -119,8 +118,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                     handleInputChange("images", updatedImages);
                     handleInputChange("image_links", updatedImages.map((image) => image.image_url));
                     handleInputChange("s3_keys", updatedImages.map((image) => image.s3_key));
-
-                    console.log("images deleted successfully", response.data);
                 })
                 .catch((error) => {
                     console.error("Error deleting image", error);

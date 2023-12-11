@@ -18,9 +18,9 @@ The Invasive Species page is the default page after login. This page displays a 
 
 - **Scientific Name(s)** - the scientific name(s) of the invasive species
 - **Description** - a description of the invasive species
-- **Alternative Species** - non-invasive species to plant instead
+- [**Alternative Species**](#alternative-species) - non-invasive species to plant instead
 - **Resource Links** - external resources
-- **Region(s)** - the region(s) where the species is/are invasive
+- [**Region(s)**](#regions)   - the region(s) where the species is/are invasive
 
 ![invasive species page](./images/invasive_species_page.png)
 
@@ -29,7 +29,7 @@ At the top of the page, the administrator can filter the species by region and a
 
 The following image shows the result of searching up the species *Digitalis purpurea*. 
 
-![invasive species page search functionality](./images/invasive_species_search.jpeg)
+![invasive species page search functionality](./images/invasive_species_search.png)
 
 ### Adding a new species
 To add an invasive species, click on the *+ ADD INVASIVE SPECIES* button below the search filters. This will open up a dialog with fields to complete. The fields marked with an asterisk are mandatory, the rest are optional. 

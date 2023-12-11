@@ -191,8 +191,6 @@ function Navbar(props) {
             try {
                 const returnedUser = await Auth.currentAuthenticatedUser();
                 setUser(returnedUser.attributes.email);
-                // setCurrUser(returnedUser);
-                console.log("returned user: ", returnedUser);
             } catch (e) {
                 console.log(e);
             }
@@ -214,7 +212,6 @@ function Navbar(props) {
     const location = useLocation();
     const currentPath = decodeURIComponent(location.pathname);
     const currentPage = currentPath.substring(1);
-    // console.log("Current Page: ", currentPage);
 
     return (
         <Grid item xs={12} className={classes.appBar}>

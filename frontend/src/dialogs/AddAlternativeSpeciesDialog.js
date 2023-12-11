@@ -21,7 +21,6 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
   const [speciesData, setSpeciesData] = useState(initialSpeciesData);
 
   const handleInputChange = (field, value) => {
-    console.log("input change: ", field, value)
     setSpeciesData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -108,7 +107,6 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
           }
 
           const signedURLData = signedURLResponse.data;
-          console.log("signed url data: ", signedURLData)
 
           // Use the obtained signed URL to upload the image to S3 bucket
           await axios.put(signedURLData.uploadURL, files[i])

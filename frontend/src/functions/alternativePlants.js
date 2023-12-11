@@ -92,7 +92,6 @@ const mapInvasiveToAlternativeON = async () => {
     alternative_plants_ON["cabomba_caroliniana"] = ["ceratophyllum_demersum"];
     alternative_plants_ON["hydrilla_verticillata"] = ["vallisneria_americana"];
 
-    console.log("ON alternative plants: ", alternative_plants_ON);
     return alternative_plants_ON;
 };
 
@@ -105,15 +104,11 @@ const getAlternativePlants = async (scientificName, userLocation) => {
         map = await mapInvasiveToAlternativeON()
     }
 
-    console.log(userLocation, "map: ", map);
-
     scientificName = scientificName.toLowerCase().replace(/\s+/g, '_').trim();
 
     if (map.hasOwnProperty(scientificName)) {
-        console.log(scientificName, "in map!", userLocation)
         return map[scientificName]
     } else {
-        console.log("count not find", scientificName, "and its alternatives")
         return null;
     }
 }

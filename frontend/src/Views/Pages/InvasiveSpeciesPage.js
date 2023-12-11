@@ -63,7 +63,6 @@ function InvasiveSpeciesPage() {
     fetchRegionData();
     fetchAllInvasiveSpecies();
     fetchAllAlternativeSpecies();
-    console.log("finished loading invasive species")
   }, [])
 
   // Gets current authorized user
@@ -71,7 +70,6 @@ function InvasiveSpeciesPage() {
     try {
       const returnedUser = await Auth.currentAuthenticatedUser();
       setUser(returnedUser);
-      console.log("current user: ", returnedUser);
     } catch (e) {
       console.log("error getting user: ", e);
     }
@@ -203,8 +201,6 @@ function InvasiveSpeciesPage() {
               };
             });
 
-            console.log("Invasive species retrieved successfully", formattedData);
-
             // Resets pagination details
             // This will clear the last species id history and display the first page
             if (shouldReset) {
@@ -252,7 +248,6 @@ function InvasiveSpeciesPage() {
             };
           });
 
-          console.log("Invasive species retrieved successfully", formattedData);
           setDisplayData(formattedData);
           setCurrOffset(response.data.nextOffset);
         })
@@ -268,7 +263,6 @@ function InvasiveSpeciesPage() {
   // Fetches the invasive species that matches user search
   const handleGetInvasiveSpeciesAfterSearch = () => {
     let formattedSearchInput = searchInput.toLowerCase().replace(/ /g, '_');
-    console.log("formatted search input: ", formattedSearchInput);
 
     axios
       .get(`${API_BASE_URL}invasiveSpecies`, {
@@ -280,7 +274,6 @@ function InvasiveSpeciesPage() {
         }
       })
       .then((response) => {
-        console.log("resp: ", response);
         const promises = response.data.species.flatMap(item =>
           item.region_id.map(regionId =>
             axios
@@ -301,7 +294,6 @@ function InvasiveSpeciesPage() {
               };
             });
 
-            console.log("Invasive species retrieved successfully", formattedData);
             setDisplayData(formattedData);
           });
       }).catch((error) => {
@@ -344,7 +336,6 @@ function InvasiveSpeciesPage() {
         scientific_name: scientificNames
       };
 
-      console.log("updated temp data: ", updatedTempData)
       const { region_code_name, alternative_species, ...rest } = updatedTempData;
 
       // Get just the ids of alternative species
@@ -354,8 +345,6 @@ function InvasiveSpeciesPage() {
         ...rest,
         alternative_species: alternativeSpeciesIds,
       };
-
-      console.log("saved invasive species data: ", updatedTempDataWithoutRegionCode);
 
       // Update invasive species table
       axios
@@ -367,7 +356,6 @@ function InvasiveSpeciesPage() {
             }
           })
         .then((response) => {
-          console.log("invasive species updated successfully", response.data);
           if (start > rowsPerPage) {
             handleGetInvasiveSpeciesAfterSave();
           } else {
@@ -389,7 +377,6 @@ function InvasiveSpeciesPage() {
 
   // Deletes invasive species from the table
   const handleConfirmDelete = () => {
-    console.log("invasive species id to delete: ", deleteId);
     retrieveUser();
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
@@ -405,7 +392,6 @@ function InvasiveSpeciesPage() {
           setSpeciesCount(prevCount => prevCount - 1)
           setAllInvasiveSpecies(prevSpecies => prevSpecies.filter(species => species.species_id !== deleteId));
           setShouldReset(true);
-          console.log("Species deleted successfully", response.data);
         })
         .catch((error) => {
           console.error("Error deleting species", error);
@@ -426,7 +412,6 @@ function InvasiveSpeciesPage() {
         name.toLowerCase().replace(/\s+/g, '_')
       )
     }
-    console.log("new invasive species: ", newSpeciesData);
 
     retrieveUser();
     const jwtToken = user.signInUserSession.accessToken.jwtToken
@@ -440,8 +425,6 @@ function InvasiveSpeciesPage() {
           }
         })
       .then((response) => {
-        console.log("Invasive Species added successfully", response.data);
-
         // Ensures that if a species has multiple scientific names, each are separately displayed      
         const formattedData = response.data.flatMap(item => {
           return item.scientific_name.map(name => {
