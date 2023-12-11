@@ -1,0 +1,110 @@
+[
+  {
+    "scientific_name": [
+      "reynoutria_x_bohemica"
+    ],
+    "resource_links": [
+      "https://bcinvasives.ca/invasives/bohemian-knotweed/"
+    ],
+    "species_description": "Bohemian knotweed is a hybrid between Japanese (Reynoutria japonica) and Giant knotweed (Reynoutria sachalinensis) and resembles both species. Knotweeds were introduced to British Columbia for use in gardens and landscaping due to their rapid growth and attractive appearance. There are now four species established in BC: Bohemian, Giant, Himalayan, and Japanese knotweed.",
+    "alternative_species": [
+      "sambucus_racemosa_var._melanocarpa",
+      "maianthemum_racemosum_subsp._amplexicaule",
+      "aruncus_dioicus",
+      "cornus_stolonifera",
+      "amelanchier_alnifolia"
+    ],
+    "region_id": "BC"
+  },
+  {
+    "scientific_name": [
+      "pilosella_aurantiaca"
+    ],
+    "resource_links": [
+      "https://bcinvasives.ca/invasives/orange-hawkweed/"
+    ],
+    "species_description": "Orange hawkweed (Orange hawk bit, Fox-and-cubs) is a short flowering plant that can grow from 30–60 cm in height with bright orange-red flowers clustered on top. It can create dense mats that crowd out native plants. Hawkweeds spread quickly through above ground runners, horizontal roots, and seeds.",
+    "alternative_species": [],
+    "region_id": "BC"
+  },
+  {
+    "scientific_name": [
+      "tripleurospermum_inodorum"
+    ],
+    "resource_links": [
+      "https://bcinvasives.ca/invasives/scentless-chamomile/"
+    ],
+    "species_description": "Scentless chamomile (Scentless mayweed, Wild chamomile) is a plant of variable height with daisy-like flowers of white petals and yellow centres as well as thin, carrot like leaves. It can produce up to 1,000,000 seeds every year, and the seeds can survive in the soil for up to 15 years. It prefers moist soil conditions and can aggressively take over pastures, grasslands, and other agricultural areas.",
+    "alternative_species": [],
+    "region_id": "BC"
+  },
+  {
+    "scientific_name": [
+      "tamarix_ramosissima",
+      "tamarix_chinensis"
+    ],
+    "resource_links": [
+      "https://bcinvasives.ca/invasives/tamarisk/"
+    ],
+    "species_description": "Tamarisk (salt cedar) is a shrub-like tree with light green, scale-like leaves and light pink flowers. Its other known common name of ‘salt cedar’ comes from its ability to release salt from its leaves, which prevents the growth of any native vegetation within its range.",
+    "alternative_species": [
+      "spiraea_betulifolia_subsp._lucida",
+      "philadelphus_lewisii",
+      "physocarpus_capitatus",
+      "syringa_x_prestoniae",
+      "cotinus_coggygria"
+    ],
+    "region_id": "BC"
+  },
+  {
+    "scientific_name": [
+      "lamium_galeobdolon"
+    ],
+    "resource_links": [
+      "https://bcinvasives.ca/invasives/yellow-archangel/"
+    ],
+    "species_description": "Yellow archangel (Artillery plant, Aluminium plant, Yellow weasel-snout) is a perennial plant with small yellow flowers on the leaf axils, and opposite hairy, round-toothed leaves. This plant prefers shady sites such as forested areas and grows in a dense mat that smothers other native plants. It spreads by seed and plant fragments, and by animals and humans passing through the vegetation.",
+    "alternative_species": [
+      "epimedium_spp.",
+      "cornus_canadensis",
+      "hosta_spp._and_hybrids",
+      "oxalis_oregana",
+      "clinopodium_douglasii"
+    ],
+    "region_id": "BC"
+  },
+  {
+    "scientific_name": [
+      "nitellopsis_obtusa"
+    ],
+    "resource_links": [
+      "https://www.invadingspecies.com/invaders/aquatic-plants/starry-stonewort-2/"
+    ],
+    "species_description": "Impacts of Starry Stonewort\n\nStarry stonewort reduces biodiversity by forming dense mats (sometimes referred to as “pillows”) and competes aggressively with native plants.\nDense mats of starry stonewort can impede movement of fish, spawning activity, water flow, and recreational activities such as swimming, boating, and fishing.\nOnce introduced to a new area, starry stonewort can establish and spread very quickly.\n",
+    "alternative_species": [],
+    "region_id": "ON"
+  },
+  {
+    "scientific_name": [
+      "lonicera_maackii",
+      "lonicera_tatarica"
+    ],
+    "resource_links": [
+      "https://www.invadingspecies.com/invaders/plants/invasive-honeysuckles-2/"
+    ],
+    "species_description": "Impacts of Invasive Honeysuckles\n\nRapidly invade areas, out-competing native plant species by forming dense patches.\nAffect light and nutrient availability to neighboring plants.\nProduce toxic chemicals that prevent other plants from growing in that area.\nFruit does not offer migrating birds the nutrients needed for long flights compared to native plant species.\nAttract more pollinators causing native species to reduce the amount of seeds they produce.\n",
+    "alternative_species": [],
+    "region_id": "ON"
+  },
+  {
+    "scientific_name": [
+      "miscanthus_sacchariflorus"
+    ],
+    "resource_links": [
+      "https://www.invadingspecies.com/invaders/plants/miscanthus-2/"
+    ],
+    "species_description": "Impacts of Miscanthus\n\nFast growing species that form thick bunches, displacing native plant communities.\nDense, dry stands are highly flammable and create fire hazards.\nReduce light availability to other plants at the soil surface.\nSlowly decomposes on the ground, limiting the amount of nutrients returned to the soil.\n",
+    "alternative_species": [],
+    "region_id": "ON"
+  }
+]

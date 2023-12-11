@@ -1,0 +1,36 @@
+# Sensitive Files
+.aws
+.env
+.git
+.vscode
+*.pyc
+*__pycache__
+
+# Ignore deployment-specific files and directories
+.dockerignore
+docker-compose.yml
+
+# Large Files
+**/node_modules/
+**/amplify/
+
+# custom
+backend/*
+
+# Unneeded files
+*.md
+npm-debug.log
+.DS_Store
+cdk*
+
+# Ignore editor-specific files and directories
+.idea
+*.sublime-workspace
+*.sublime-project
+.vs
+
+# Ignore package management files
+venv/
+*.venv/
+pipenv/
+pipfile*

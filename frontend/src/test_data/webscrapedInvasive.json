@@ -1,0 +1,2302 @@
+[
+  {
+    "region_code_name": "BC",
+    "regionName": "British Columbia",
+    "demographic": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Canada_British_Columbia_Density_2016.png/900px-Canada_British_Columbia_Density_2016.png",
+    "invasiveSpeciesList": [
+      {
+        "commonName": "Baby’s breath",
+        "scientificName": "Gypsophila paniculata",
+        "links": [
+          "https://bcinvasives.ca/invasives/babys-breath/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Baby’s breath (Common gypsophila) is a slender, short bush with silvery, narrow leaves and lots of tiny, star shaped white flowers. It is an escaped ornamental plant that spreads primarily through seed, with each plant having the ability to spread over 10,000 seeds. When it invades grazing land, it reduces native grasses and forage for grazing animals and wildlife."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Baby’s breath (Common gypsophila) is an escaped ornamental plant native to Europe. It thrives in basic to neutral soils with full sun. Baby’s breath is frequently used in floral arrangements and if you have a bouquet including it, make sure not to dispose of it in the compost. \nWhen Baby’s breath invades grazing land, it reduces native grasses and forage for grazing animals and wildlife. When it develops seeds and matures, the plant breaks off at the ground and rolls long distances across the landscape with the ability to spread over 10,000 seeds per plant!"
+          },
+          {
+            "header": "How To Identify",
+            "description": "Baby’s breath is a slender, twiggy perennial plant. It can grow 0.4 to 1.2 m tall as a mound shaped bush. \nFlowers are very numerous on highly branched inflorescences. Each flower is tiny (6-8 mm), star-shaped with five petals, and is white to light pink. \nLeaves are opposite each other, silvery-green and narrow. They measure approximately 2.5-5.0 cm long and can be smooth or hairy. When Baby’s breath is in flower, the leaves are often not noticeable."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Bachelor’s buttons",
+        "scientificName": "Centaurea cyanus",
+        "links": [
+          "https://bcinvasives.ca/invasives/bachelors-button/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Bachelor’s button (Cornflower) is a flowering plant that can be 1 m in height, with multiple bell-shaped blue, purple or pink marginal flower arranged around the flower head. This invasive plant produces large amounts of seed and can easily invade dry meadows, fields, and grasslands."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Bachelor’s button (Cornflower) is a flowering plant introduced through horticulture and in “wildflower” mixes that is native to Europe. It is now classified as an endangered species in its native habitat. \nThis invasive plant produces large amounts of seed and can easily invade dry meadows, fields, and grasslands. This can reduce crop yields and crowd out forage or native vegetation."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Bachelor’s button plants can be 30 – 100 cm tall in maturity on an erect stem that is greyish-green and hairy. \nFlowers are blue, purple, pink or white, pompom-like and bell-shaped stemming from the top of the flower head. The flowers are dark around the edges, with a tattered fringe at the flower tips. \nIts leaves are lanceolate shaped, silvery-green but can be toothed or lobbed on the lower leaf margins. They can be 13 cm long."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Blueweed",
+        "scientificName": "Echium vulgare",
+        "links": [
+          "https://bcinvasives.ca/invasives/blueweed/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Blueweed (Viper’s bugloss) is a plant that is hairy and painful to touch with bright blue flowers. It is toxic to horses and cattle and reduces forage quality in rangelands and pastures, resulting in economic losses. Plants can drop up to 2800 rough seeds that can be further spread by clinging onto animals or humans."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Blueweed (Viper’s bugloss) is a hairy, painful to touch plant native to Europe, Western and Central Asia. Plants can drop up to 2800 rough seeds that can be further spread by clinging onto animals or humans. It can be found in dry, basic soils in grasslands, or alongside roads and railways. \nIt is toxic to horses and cattle and reduces forage quality in rangelands and pastures, resulting in economic losses. Blueweed is designated as a Regional Noxious Weed by the BC Weed Control Act, as well as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Blueweed grows 30-80 cm tall, has an upright, unbranched form with a hairy, painful to touch stem.  \nFlowers are blue, five lobed and funnel-shaped on the upper side of the short stems. \nLeaves are linear and long, forming a basal rosette in its first year. These leaves are present on the lower half of the plant when flower and are also very hairy."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Bohemian knotweed",
+        "scientificName": "Reynoutria x bohemica",
+        "links": [
+          "https://bcinvasives.ca/invasives/bohemian-knotweed/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Bohemian knotweed is a hybrid between Japanese (Reynoutria japonica) and Giant knotweed (Reynoutria sachalinensis) and resembles both species. Knotweeds were introduced to British Columbia for use in gardens and landscaping due to their rapid growth and attractive appearance. There are now four species established in BC: Bohemian, Giant, Himalayan, and Japanese knotweed."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Bohemian knotweed is a hybrid between Japanese (Reynoutria japonica) and Giant knotweed (Reynoutria sachalinensis) and resembles both species. Knotweeds were introduced to British Columbia for use in gardens and landscaping due to their rapid growth and attractive appearance. There are now four species established in BC: Bohemian (Reynoutria x bohemica), Giant (Reynoutria sachalinensis), Himalayan (Persicaria wallichii), and Japanese knotweed (Reynoutria japonica).  \nKnotweeds grow aggressively and are very hard to kill. They are widespread throughout the province, and are often found in riparian areas, derelict land, road and railway right of ways and gardens. They thrive in moist soil and full or partial sun. Knotweeds can spread by seed, root fragments, and stem fragments, making them very difficult to control. Knotweeds are designated as Provincial Noxious Weeds by the BC Weed Control Act and Regional Containment/Control by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Knotweed species can resemble bamboo canes, growing tall, straight and densely (at a rapid pace). They are generally 1-5 m in height and may persist through the winter as bare grey- or straw-coloured hollow stalks. Stems are green, sometimes with red speckles, and hollow. \nIn spring, knotweed has plumes of small white to green flowers growing in plume-like clusters from the stem. \nBohemian knotweed leaves are a blend of both parents- they are slightly longer than wide (about mid-way between parents for size) and are typically slightly heart-shaped at the base."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Bur chervil",
+        "scientificName": "Anthriscus caucalis",
+        "links": [
+          "https://bcinvasives.ca/invasives/bur-chervil/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Bur chervil (Bur parsley) is an herbaceous plant with fern-like leaves and small white flowers. It can be found in most growing conditions, particularly in moist areas such as ditches and fields. Bur chervil easily out-grows native vegetation. Each flower produces two bur-like seeds that have a pronounced peak and are covered in bristles that easily stick to humans and animals to spread."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Bur chervil (Bur parsley) is an herbaceous plant that is native to Europe and can be found in most growing conditions, particularly in moist or disturbed areas such as roadsides, meadows, or riparian areas. Bur chervil’s flowers produces two bur-like seeds that have a pronounced peak and are covered in bristles that easily stick to humans and animals to spread.   \nIt easily out-competes native vegetation forming monocultures and reducing natural biodiversity. Each Bur chervil is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Management species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Bur chervil is an herbaceous plant that is generally around 30 cm, but can range in height from 1-2 m tall while flowering. Stems are hollow and the stem nodes have a fringe of hairs. \nFlowers are small and white, in clusters of 3-7 atop 2 cm long stalks. The seeds are approximately 4 mm long with distinctly hooked prickles. \nLeaves are alternate arranged, triangular, and fern-like in appearance. Young leaves are generally hairy."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Butterfly bush",
+        "scientificName": "Buddleja davidii",
+        "links": [
+          "https://bcinvasives.ca/invasives/butterfly-bush/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Butterfly bush (Summer lilac, Orange eye) is a semi-evergreen shrub that grows up to 5 m tall with a long, showy spike of tiny, purple flowers. This attractive, fast-growing plant has escaped gardens and now rapidly spreads into disturbed, open areas and along coastal forest edges, roadsides, and especially on sunny stream edges and riverbanks where it replaces native plants. Butterflies are often attracted to its flowers."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Butterfly bush (Summer lilac, Orange eye) is a semi-evergreen shrub that grows to 5 m tall. This attractive, fast-growing plant has escaped gardens and now rapidly spreads into disturbed, open areas and along coastal forest edges, roadsides, and especially on sunny stream edges and riverbanks where it replaces native plants. Butterfly bush produces lots of seeds and a single flower bunch can produce over 40,000 seeds. Seeds are spread by wind and water and can still grow after being in the soil for many years. Butterflies are often attracted to its flowers."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Butterfly bush can grow up to 5 m tall with as a semi-evergreen shrub with arching branches. \nFlowers are a showy long, pointed, spike-shaped light purple to dark purple bunches of tiny individual flowers. Look closely to see the bright orange center of each tiny flower.  \nIt has green-silver leaves on stems that can be 25 cm long."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Canada thistle",
+        "scientificName": "Cirsium arvense",
+        "links": [
+          "https://bcinvasives.ca/invasives/canada-thistle/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Canada thistle (Creeping thistle, California thistle, Cursed thistle) is a shiny green, spiny herbaceous plant of variable height with purple flowers. Plants form thick infestations through creeping rhizomatous roots that crowd out forage grasses in pastures and rangelands, reducing crop yields and production. Canada thistle is commonly found growing on roadsides, cultivated fields, pastures, logged forests, riverbanks, and other disturbed areas where it also out-grows native species."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Canada thistle (Creeping thistle, California thistle, Cursed thistle) is a shiny green, spiny thistle native to Europe, Western Asia, and Northern Africa. It’s likely one of the first invasive species introduced to North America and received its name by early settlers blaming its emergence on French traders from Canada.  \nPlants form thick infestations through creeping rhizomatous roots that crowd out forage grasses in pastures and rangelands, reducing crop yields and production. Canada thistle is commonly found growing on roadsides, cultivated fields, pastures, logged forests, riverbanks, and other disturbed areas where it also out-grows native species. It’s even considered an injurious weed species within its native range. Canada thistle is designated as a Provincial Noxious Weed by the BC Weed Control Act."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Canada thistle is a shiny green, spiny plant that can grow from 0.3-2.0 m tall. It can be distinguished from other thistles by its smooth spine-less stem. \nFlowers are white to purple and grow in clusters of up to five pompom-like flowers on stem tips with a faint vanilla scent. Seeds look like a dandelion i.e., parachute-type seeds. Its flowers are typically smaller than other thistle species. \nIts leaves are a glossy green with sharp, spiny edges and has white hairs on the underside."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Cheatgrass",
+        "scientificName": "Bromus tectorum",
+        "links": [
+          "https://bcinvasives.ca/invasives/cheatgrass/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Cheatgrass (Downy brome, Drooping brome) is an annual grass introduced to North America in the late 1800’s with hairy leaves and drooping spikelets. It can be found alongside roads or disturbed areas, or in sagebrush ecosystems where it can form dense stands and outcompete native grasses. It can dramatically alter wildfire regimes, as well as injure livestock and animals' eyes and mouths by its sharp awns."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Cheatgrass (Downy brome, Drooping brome) is an annual grass introduced to North America in the late 1800’s from Europe, Southwest Asian, and Northern Africa. It can be found alongside roads or disturbed areas, or in sagebrush ecosystems where it can form dense stands and outcompete native grasses.  \nIt can dramatically alter wildfire regimes through its early season and annual lifecycle, as well as monoculture growing habit. It builds large, dense fire loads of dead grass at the peak of the North American summer. It can additionally injure livestock and animals’ eyes and mouths by its sharp awns."
+          },
+          {
+            "header": "How To Identify",
+            "description": ""
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Common bugloss",
+        "scientificName": "Anchusa officinalis",
+        "links": [
+          "https://bcinvasives.ca/invasives/common-bugloss/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Common bugloss (Alkanet) is a hairy, biennial plant of variable height with small, purple flowers. It invades disturbed, sunny areas such as roadsides, pastures, and hay fields, which reduces the yield of these crops. It spreads primarily through seed, but root fragments can propagate. Bugloss leaves include alkaloid compounds which are toxic if ingested by humans or livestock."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Common bugloss (Alkanet) is a hairy, fleshy, plant native to Europe, Western and central Asia. It invades disturbed, sunny areas such as roadsides, pastures, and hay fields, which reduces the yield of these crops. It spreads primarily through seed, but root fragments can propagate. Bugloss leaves include alkaloid compounds which are toxic if ingested by humans or livestock. Common bugloss is designated as a Regional Noxious Weed by the BC Weed Control Act."
+          },
+          {
+            "header": "How To Identify",
+            "description": "The Bugloss plant grows upright and 30-80 cm tall. Immature stems are coiled, like a fern fiddlehead, and gradually straighten out as each flower opens.  \nMature flowers are small and a bright purple blue colour with white centres. Fruits are nut-like and occur in groups of four. \nLeaves are long, pointed, and have a fuzzy texture."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Common burdock",
+        "scientificName": "Arctium minus",
+        "links": [
+          "https://bcinvasives.ca/invasives/burdock/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Common burdock (Lesser burdock, Louse-bur, Wild rhubarb) is a biennial plant that forms a basal rosette with large leaves it’s first year and a very tall flowering stem it’s second year. It’s known for its clinging burrs that attach and cling to wild and farm animals. This can cause health issues such as blindness to these animals and allows burdock to spread large distances from a single plant."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Common burdock (Lesser burdock, Louse-bur, Wild rhubarb) was introduced from Europe, either accidentally or intentionally as a food and medicinal crop. It can be found growing in farmlands, pastures roadsides and streambanks and each individual plant can produce up to 16,000 seeds. \nIt is known for its clinging burrs that attach and cling to wild and farm animals. This can cause health issues such as blindness to these animals and allows burdock to spread large distances from a single plant. These burrs are strong enough to trap birds and bats in them, leading to large ecological impacts. These burrs were the inspiration for the Velcro product. Its large leaves reduce light for other herbaceous plants, allowing it to outcompete them and grow in monocultures.  \nThere are two other burdock species present in British Columbia, Greater burdock (Arctium lappa) and Woolly burdock (Arctium tomentosum). Burdock is designated as a Regional Noxious Weed by the BC Weed Control Act."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Burdock grows to 2 m tall and is an upright plant with reddish stems. Most branching stems will have large burrs on them. \nPink to purple flowers bloom from July-Oct and have distinct spiny hooked leaves surrounding the flower. When flowers go to seed the burrs are round and bristly and are up to 22 mm wide. \nMature leaves are large, heart shaped, and have characteristically hairy undersides with toothed or wavy edges. Lower leaves can grow to 50 cm long."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Common comfrey",
+        "scientificName": "Symphytum officinale",
+        "links": [
+          "https://bcinvasives.ca/invasives/common-comfrey/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Common comfrey is a fuzzy, herbaceous, perennial plant with white or purple flowers that grows to a height of 1 m. It primarily reproduces vegetatively and is notoriously difficult to remove due to its tendency to sprout whole plants from small root fragments. Its large taproot allows it to bioaccumulate nutrients in the soil and outcompete native plants."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Common comfrey is an herbaceous, perennial plant that is native to western Asian and Europe. It was likely deliberately introduced as a medicinal crop. It can be found growing in shady, rich soils near riparian areas or in roadside ditches. It primarily reproduces vegetatively and is notoriously difficult to remove due to its tendency to sprout whole plants from small root fragments. Its large taproot allows it to bioaccumulate nutrients in the soil and outcompete native plants."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Common comfrey can grow quite large and range in height from 0.6-1 m with a bristly stem. \nFlowers are drooping and hang like bluebells. Flowers range in color from white to light purple (and may be striped) and appear in the summer months. \nIts leaves are 15-30 cm long, egg-shaped or oblong pointed and fuzzy."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Common periwinkle",
+        "scientificName": "Vinca minor",
+        "links": [
+          "https://bcinvasives.ca/invasives/common-periwinkle/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Common periwinkle (Lesser periwinkle, Dwarf periwinkle) is a shiny evergreen trailing plant with showy purple flowers. It was a common ornamental groundcover popular for its fast growth and dense coverage. However, it has since escaped captivity and spread rapidly through BC forest’s understories, choking out native plant species."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Common periwinkle (Lesser periwinkle, Dwarf periwinkle) was an ornamental groundcover popular for its fast growth and dense coverage that was deliberately introduced from Europe. However, it has since escaped captivity and spread rapidly through BC forest’s understories, choking out native plant species. Common periwinkle prefers shaded, moist conditions such as along water courses and in forested areas. It can reproduce through both seed and vegetatively.  This species is one of the “top six” invasive species still sold throughout BC – be sure not to purchase or trade this plant!"
+          },
+          {
+            "header": "How To Identify",
+            "description": "Common periwinkle is a trailing plant and forms thick mats on the ground. It does not twine or climb trees. \nFlowers are 20-30 mm wide, purple to white 5-petalled that are visible in late spring to early summer. Fruits are 3-5 cm long cylindrical pods. \nLeaves are 3-9 cm long, glossy, dark green, and egg-shaped growing on long evergreen stems."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Common St. John's wort",
+        "scientificName": "Hypericum perforatum",
+        "links": [
+          "https://bcinvasives.ca/invasives/st-johns-wort/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Common St. John’s-Wort is a perennial plant that with dark green, opposite leaves and bright yellow, 5 petalled, clustered flowers. It grows in dense patches which can crowd out natural plants and reduce the grasses that animals feed on. St. John’s wort spreads by lateral roots and can produce up to 100,000 seeds per plant."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Common St. John’s-Wort is a perennial invasive plant that was introduced as an ornamental and medicinal herb from its native range of Europe, Asia and North Africa. It grows in dense patches which can crowd out natural plants and reduce the grasses that animals feed on. Common St. John’s-Wort spreads by lateral roots and can produce up to 100,000 seeds per plant."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Common St. John’s wort grows from 0.3–1 m in height. \nIt has dark green, opposite leaves which show tiny transparent dots when held up to the light.  \nFlowers are bright yellow, with 5 petals each, and grow in clusters at the top of branches. It turns a rusty red colour after finishing flowering late in the summer and autumn."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Common tansy",
+        "scientificName": "Tanacetum vulgare",
+        "links": [
+          "https://bcinvasives.ca/invasives/common-tansy/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Common tansy (Bitter buttons, Cow bitter) is an herbaceous plant of variable height with fern-like leaves and yellow, flat-topped round flowers. It’s often found growing in sunny, disturbed areas such as roadsides or pastures where it can displace native vegetation. Infestations in rangeland can be toxic to livestock, and it’s reported that dairy cattle consuming the leaves often have unpleasant tasting milk."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Common tansy (Bitter buttons, Cow bitter, Golden buttons) is a herbaceous plant that was introduced to North America in the 1600s for medicinal purposes. It is native to Europe and Asia. It spreads via roots and seeds that can remain viable for up to 25 years.  \nTansy is often found growing in sunny, disturbed areas such as roadsides or pastures where it can displace native vegetation. Infestations in rangeland can be toxic to livestock, and it’s reported that dairy cattle consuming the leaves often have unpleasant tasting milk. Common tansy is designated as a Regional Noxious Weed by the BC Weed Control Act."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Common tansy plants range from 0.4–1.5 m tall and can grow in thick infestation. \nFlowers are bright yellow, flat-topped, round and grow in clusters. \nLeaves are dark green, and its leaves fern-like and divided with sharp edges. Each leaflet is serrated."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Cypress spurge",
+        "scientificName": "Euphorbia cyparissias",
+        "links": [
+          "https://bcinvasives.ca/invasives/cypress-spurge/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Cypress spurge (Graveyard weed) is a short herbaceous plant with numerous yellow cup like flowers on stalks. It was originally grown as an ornamental but has since escaped into the wild. It prefers sun and can be found growing in open, disturbed sites like meadows, pastures, and roadsides. This plant and its sap are extremely toxic to humans and animals. \r\n\r\nToxic to humans, livestock and wildlife when consumed, or when its sap contacts skin. The sap causes nausea, vomiting and diarrhea when eaten. It can cause blindness if it gets in people’s eyes and skin contact causes redness, swelling and blisters."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Cypress spurge (Graveyard weed) was introduced to North America from Europe as an ornamental plant but has since escaped. It prefers sun but tolerates shade as well. It can be found growing in open, disturbed sites like meadows, pastures, and roadsides. It grows quickly and aggressively, releasing chemicals from its roots which stop other plants growing near it. This helps it crowd out native species. Cypress surge is designated as a Management species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Cypress spurge is a perennial herb that can be 10–60 cm tall growing through creeping rhizomes.  \nFlowers are yellow to green and turn red at maturity. \nLeaves are 2.5–3 cm long, thin, waxy, and blue-green that spiral around the stem."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Daphne (Spurge-Laurel)",
+        "scientificName": "Daphne laureola",
+        "links": [
+          "https://bcinvasives.ca/invasives/daphne-spurge-laurel/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Daphne (Spurge-Laurel) is a rhododendron-like plant with shiny green leaves and light yellow-green flowers. It is an escaped horticultural plant that can rapidly take over a range of ecosystems. It is especially suited to take over forest understories where it can form dense monocultures and outcompete native vegetations. It’s sap is mildly toxic to humans and animals."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Daphne (Spurge-Laurel) was a popular ornamental in gardens at one time due to its glossy, rhododendron-like leaves and fragrant flowers. It was introduced from it’s native range of Europe, and a small portion of Northern Africa. It is tolerant of both sun and shade and rapidly takes over native vegetation by forming dense thickets in a range of ecosystems. It is especially suited to take over forest understories where it can form dense monocultures and outcompete native vegetations. It can spread through seed or vegetative shoots and its black berries are loved by birds. Daphne is designated as Management species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Daphne grows to 1.5 m in height in either a single stem, or a multi branching shrub. As it gets taller, only the topmost section of the plant has leaves. \nIn the spring, axial clusters of tiny, fragrant, light yellow-green flowers form between the leaves. It’s berries are black when mature.   \nIts leaves are dark green, glossy, oval-shaped and grow in a spiral pattern around the top of the stem."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Diffuse knapweed",
+        "scientificName": "Centaurea diffusa",
+        "links": [
+          "https://bcinvasives.ca/invasives/diffuse-knapweed/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Diffuse knapweed (White knapweed, Tumble knapweed) is a short flowering plant with white flowers, slender stems and leaves. It is often found growing in open areas and well-drained soils where they establish in grasslands, open forests, and along roadsides. They choke out desirable forage for livestock and wildlife and increase soil erosion. Seeds can be spread by wind, livestock, and people."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Diffuse knapweed (White knapweed, Tumble knapweed) is often found growing in open areas and well-drained soils where they establish in grasslands, open forests, and along roadsides – it is uncommon on cultivated land. It was likely unintentionally introduced to North America from Eastern Europe and the Mediterranean. They choke out desirable forage for livestock and wildlife and increase soil erosion. These plants can produce up to 18,000 seeds per year that can remain dormant in the soil for a long time. Seeds can be spread by wind, livestock, and people. Diffuse knapweed is designated as a Provincial Noxious Weed by the BC Weed Control Act."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Diffuse knapweed grows to 0.1-0.6 m as a slender, short flowering plant. \nThe flowers are white or sometimes purple, found in clusters or solitary at the end of branches with small, sharp, rigid spines on the bracts. Bracts are yellowish with a brownish margin, sometimes spotted, fringed on the sides, and terminating in a slender bristle or spine. Seeds are light brown to black in colour. \nIts leaves are hairy, greyish-green, and split on many branches growing from a single upright stem. It has larger, hairy leaves at the base of the plant that get smaller as they go up the stem."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "English holly",
+        "scientificName": "Ilex aquifolium",
+        "links": [
+          "https://bcinvasives.ca/invasives/english-holly/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "English holly (European holly, Common holly) is a plant with dark green, spiny evergreen leaves and shiny red berries that can grow as a large tree, shrub, or creeping vine. It’s an extremely adaptable invasive species capable of growing in shade or sun. Its berries are preferred by birds, allowing it to spread in unpredictable patterns."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "English holly (European holly, Common holly) is known for its shiny red berries and dark green, spiny evergreen leaves. It is commonly used landscape ornamental often used for holiday decorations and floral arrangements and intentionally introduced from its native range of Europe. English holly has become a serious invasive because of its adaptability to grow in shade or sun, and how easy its seeds are spread by birds. It will crowd out native species as well as monopolize groundwater."
+          },
+          {
+            "header": "How To Identify",
+            "description": "English holly can range from 7-10 m tall at maturity but is typically found at smaller heights of 1-3 m. It can also grow as creeping vines. \nFlowers are small, white and sweetly scented. Female trees produce bunches of red, yellow or orange berries in winter that are poisonous to people but not to birds.  \nLeaves are thick, glossy, dark green and wavy, and 1-3 in long, appearing alternately. They have sharp, stout spines along the edges, although leaves may be smooth on older branches."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "English ivy",
+        "scientificName": "Hedera helix",
+        "links": [
+          "https://bcinvasives.ca/invasives/english-ivy/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "English ivy (European ivy, Common ivy) is a creeping evergreen vine that can grow as dense groundcover or while climbing up trees. It was commonly planted to provide quick cover for walls and buildings, and as ground cover in commercial landscape. It spreads throughout rainforest understories where it suppresses native biodiversity."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "English ivy (European ivy, Common ivy) was commonly planted to provide quick cover for walls and buildings, and as ground cover in commercial landscapes. It was intentionally introduced from it’s native range of Europe. It has since spread throughout rainforest understories where it can grow as a dense mat that suppresses native plants or climbing up trees, reducing their lifespan and leaving them more susceptible to wind damage. English ivy grows rapidly and needs very little light or water once it has established, and even grows during the winter. It reproduces through seed and vegetatively and its berries are preferred and spread by birds. There is another ivy species present in British Columbia that is difficult to distinguish from English ivy, Atlantic ivy (Helix hibernica)."
+          },
+          {
+            "header": "How To Identify",
+            "description": "English ivy is an evergreen vine that will be found growing as dense groundcover or climbing up trees.  \nClusters of small white to yellow-green flowers bloom in late summer and early fall and are followed by clusters of black shiny fruit. \nLeaves are star-shaped with 3-5 points, waxy and leathery. Leaves on the fruiting stems will be egg-shaped without points or lobes. Both sets of leaves can range from 5-10 cm long and 6-12 cm wide and can be a range of different colors: dark green, silver-green, yellow, white."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Eurasian watermilfoil",
+        "scientificName": "Myriophyllum spicatum",
+        "links": [
+          "https://bcinvasives.ca/invasives/eurasian-watermilfoil/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Eurasian watermilfoil (Spiked watermilfoil) is an aquatic plant with long slender stems, and thin feathery leaves. It has likely been let loose from aquariums. It can quickly take over waterways, causing sluggish water that attracts mosquitos and reduces the recreational potential of the waterway such as swimming and boating."
+          },
+          {
+            "header": "Habitat",
+            "description": "Aquatic"
+          },
+          {
+            "header": "About",
+            "description": "Eurasian watermilfoil (Spiked watermilfoil) is an aquatic plant which has been let loose from aquariums from its native range in Europe. It prefers still or slow-moving water with silty or sandy bottoms. It spreads by roots, seeds, buds, and stem fragments. Eurasian watermilfoil can quickly take over waterways, causing sluggish water that attracts mosquitos and reduces the recreational potential of the waterway such as swimming and boating. Eurasian watermilfoil is designated as a Management Species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Eurasian watermilfoil is an aquatic plant with long, slender reddish-brown stems. \nFlowers are small, red or yellow, and stick out from the water 5-10 cm. Fruits are small capsules. \nIts leaves are very thin, feathery and green-black. They grow in numerous small leaflets in whorls of four off the stem."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "European waterlily",
+        "scientificName": "Nymphaea alba",
+        "links": [
+          "https://bcinvasives.ca/invasives/european-waterlily/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "European waterlily (European white waterlily) is an aquatic plant with floating glossy green ‘lily pads’ on the water’s surface and large white flowers. It can be found in slow-moving water such as in lakes and ponds. This plant creates a swimming and recreational hazard by overtaking aquatic environments and choking out native species."
+          },
+          {
+            "header": "Habitat",
+            "description": "Aquatic"
+          },
+          {
+            "header": "About",
+            "description": "European waterlily (European white waterlily) is an aquatic plant that can be found floating on the surface in slow-moving water such as lakes and ponds. It is native to Europe and Asia. What you cannot see is the masses of rhizomes attaching the lily to the bottom of the water body. This plant creates a swimming and recreational hazard by overtaking aquatic environments. This species also chokes out native species and has even been attributed to drownings. European waterlily has the capability to ruin some of our native aquatic habitats!"
+          },
+          {
+            "header": "How To Identify",
+            "description": "European waterlily is an aesthetically pleasing plant found floating on slow-moving water sources with ‘lily pads.’ These are connected to the bottom of the water body by masses of rhizomes. \nIts flowers are large white (occasionally pink) with yellow centers that close at night. \nThese leaves are up to 25 cm across, glossy, dark green, and round."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Field scabious",
+        "scientificName": "Knautia arvensis",
+        "links": [
+          "https://bcinvasives.ca/invasives/field-scabious/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Field scabious is a short perennial plant with large violet to pink clover-like flowers. It can found growing along roadside or in pastures. It crowds out forage and pasture plants, reducing food availability for grazing animals. A single plant can produce up to 2,000 seeds, which makes this plant difficult to remove once established."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Field scabious crowds out forage and pasture plants, reducing food availability for grazing animals. It grows along disturbed roadsides throughout the province. It is an escaped ornamental popular for its pretty flower and ability to attract butterflies from its native range of Europe and Asia. A single plant can produce up to 2,000 seeds, which makes this plant difficult to remove once established. Field scabious is designated as a Regional Noxious Weed by the BC Weed Control Act, as well as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Field scabious is a short perennial plant with hairy, upright stems and a well-formed taproot. \nIts flowers are large, violet to pink, clover-like and grow on long leafless stalks. \nIts leaves grow in rosettes which are hairy, coarsely toothed, feather-shaped and variable lobed."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Flowering rush",
+        "scientificName": "Butomus umbellatus",
+        "links": [
+          "https://bcinvasives.ca/invasives/flowering-rush/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Flowering rush (Grass rush) is an aquatic perennial with green, grass-like foliage and pink almond-scented flowers. It can be difficult to identify as it resembles several native species but will quickly crowds out other plants. It can be found in freshwater marshes, lakes or streams and reproduces primarily through its rhizomes."
+          },
+          {
+            "header": "Habitat",
+            "description": "Aquatic"
+          },
+          {
+            "header": "About",
+            "description": "Flowering rush (Grass rush) is an aquatic perennial with green, grass-like foliage and pink almond-scented flowers. It is native to Europe and Asia. It can be difficult to identify as it resembles several native species, but quickly crowds out other plants. It impedes the use of shallow waters for recreation, irrigation & industrial activities, and alters natural ecosystems. Flowering rush is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Provincial EDRR species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Flowering rush typically grows in shallow waters but can survive in water as deep as 6 m. Stems range from 1-1.5 m tall and sprout from the crown of the plant. It has thick roots with bulbous nodes. \nFlowers in pink umbrella shaped clusters on delicate, 5-10 cm long flower stalks.  \nIts leaves are ribbon like and flexible and have a distinctive triangular cross-section."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Foxglove",
+        "scientificName": "Digitalis purpurea",
+        "links": [
+          "https://bcinvasives.ca/invasives/foxglove/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Foxglove (Purple foxglove) is a tall flowering plant mimicking a column of bell-shaped flowers. It's an extremely abundant exotic species that has naturalized throughout the province, leading many to believe this plant is a BC native! Found growing along roadsides, waste areas, and forests, a single foxglove specimen can produce 5,000 seeds each season. Every part of this plant (including the seeds) is extremely poisonous."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Foxglove (Purple foxglove) is an extremely abundant exotic species native that Europe that has naturalized throughout the province, leading many to believe this plant is a British Columbia native! Found growing along roadsides, waste areas, and forests, a single foxglove specimen can produce 5,000 seeds each season. Every part of this plant (including the seeds) is extremely poisonous. In fact, the compound digitalis, used in heart medication, was originally sourced from the foxglove plant because of the effects it has on the cardiac system when ingested."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Foxgloves is a tall flowering plant with long, sturdy stems and a column of flowers. It can range from 0.5–1.5 m in height. \nIts stem is covered in a column of purple, tubular, bell-shaped flowers. Inside the flowers are many speckles that pollinators use as a signal to land. \nAt the base of the plant is a rosette of hairy dark green leaves. Its leaves are hairy, and dark green and start as a basal rosette."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Fragrant waterlily",
+        "scientificName": "Nymphaea odorata",
+        "links": [
+          "https://bcinvasives.ca/invasives/fragrant-waterlily/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Fragrant waterlily (American white waterlily, Beaver root) is an aquatic perennial plant with round glossy green leaves that float on the water’s surface. This popular, fragrant aquatic perennial is still sold in garden and pond centers throughout the province despite its potential to invade and destroy our sensitive aquatic ecosystems."
+          },
+          {
+            "header": "Habitat",
+            "description": "Aquatic"
+          },
+          {
+            "header": "About",
+            "description": "Fragrant waterlily (American white waterlily, Beaver root) is a popular, fragrant aquatic perennial that is native to Eastern North America. This aquatic plant is sold in garden and pond centers throughout the province and prized by gardeners for its classic “lily pad” look and large white or pink flowers. However, it has escaped from cultivation and established in some waterways in BC, its thick roots choking out native aquatic species, causing a risk to swimmers, impeding recreation, and restricting the movement of animals. It has the potential to spread and severely impact these sensitive aquatic ecosystems. Additionally, this species is extremely hardy and can overwinter in many regions of BC – do not be tempted to use this plant in your water gardens, no matter where you live in BC."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Fragrant waterlily is an aquatic perennial plant with ‘lily pads’ that float on the water’s surface. \nFlowers are very showy, in white or pink, and fragrant. \nThese leaves are round and glossy green and are connected to the underwater rhizomes by long, slender stems."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Garlic mustard",
+        "scientificName": "Alliaria petiolata",
+        "links": [
+          "https://bcinvasives.ca/invasives/garlic-mustard/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Garlic mustard is a biennial plant with triangular, toothed leaves and small white flowers. In can be found growing in disturbed ecosystems, or in forest understories as it is a shade-tolerant plant. It reproduces by seed only and is unpalatable for herbivore grazers."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Garlic mustard is a biennial plant – in the first year, plants appear as a rosette of green leaves close to the ground; these rosettes remain green through the winter and develop into mature flowering plants the following spring. It is believed it was intentionally introduced to North America from Europe as a medicinal and food plant. It can be found growing in disturbed ecosystems, or in forest understories as it is a shade-tolerant plant. It reproduces by seed only and is unpalatable for herbivore grazers. It grows from a long white taproot that smells like horseradish. Garlic mustard is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Provincial Containment species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Garlic mustard is biennial plant that can grow from 30–100 cm (rarely to 130 cm) tall.  \nFlowers are small and white with 4 petals arranged in a cross-like shape. The fruit is a pod containing 2 rows of shiny black seeds. \nThe leaves are stalked, triangular to heart-shaped, 10–15 cm long and 5–9 cm wide, with a coarsely toothed margin (like a saw’s edge)."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Giant hogweed",
+        "scientificName": "Heracleum mantegazzianum",
+        "links": [
+          "https://bcinvasives.ca/invasives/giant-hogweed/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Giant hogweed (Giant cow parsnip, Cartwheel flower) is an extremely toxic invasive plant that is unusually large with deeply incised and sharp toothed leaves. Its sap will cause burns, blisters and scars when touched by bare skin. It can be found in moist disturbed soils, or riparian areas such as streams. It can grow very quickly and dominate ravines and stream banks posing serious negative risks to human health and ecology."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Giant hogweed (Giant cow parsnip, Cartwheel flower) is an extremely toxic invasive plant with sap that will cause burns, blisters and scars when touched by bare skin. It is native to Europe and Asia and was likely introduced as an ornamental garden plant that has since escaped. It can be found in moist disturbed soils, or riparian areas such as streams. It can grow very quickly and dominate ravines and stream banks posing serious negative risks to human health and ecology. Each plant can produce 50–100,000 winged seeds that can float for up to three days. Giant hogweed is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Provincial Containment species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Giant hogweed is easily differentiated from other species due to its unusually large size, growing up to 5 m tall. Stems are hairy, green with purple blotches, 5-10 cm in diameter.  \nMultiple umbrella-shaped clusters of white to light pink flowers can be up to 80 cm across on a single stem.  Green oval fruits are about 4-10 mm in diameter and 6-8 mm wide. Seeds form in June and July turning dry and brown when ripe. \nLeaves are dark green, coarsely toothed, deeply incised leaves. Leaves are alternate. The lower leaves are up to 3 m long and 1.7 m wide and coarsely toothed. Upper leaves on the flowering stem become smaller. The upper leaf surface is smooth, but the underside is covered in bristles"
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Giant knotweed",
+        "scientificName": "Reynoutria sachalinensis",
+        "links": [
+          "https://bcinvasives.ca/invasives/giant-knotweed/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Giant knotweed is the largest of the knotweed species found in BC, with leaves that can be 16-20 cm wide and 30 cm in length. Knotweeds are frequently found in riparian areas, derelict land, road and railway right of ways and gardens. They thrive in moist soil and full or partial sun. Knotweeds can spread by seed, root fragments, and stem fragments, making them very difficult to control."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Knotweeds were introduced to British Columbia for use in gardens and landscaping due to their rapid growth and attractive appearance. Giant knotweed is native to Asia and Russia. There are now four species established in BC: Bohemian (Reynoutria x bohemica), Giant (Reynoutria sachalinensis), Himalayan (Persicaria wallichii), and Japanese knotweed (Reynoutria japonica). Knotweeds grow aggressively and are very hard to kill. Giant knotweed is the largest of the species, with leaves about twice the size as those found on the other species. They are widespread throughout the province, and are often found in riparian areas, derelict land, road and railway right of ways and gardens. They thrive in moist soil and full or partial sun. Knotweeds can spread by seed, root fragments, and stem fragments, making them very difficult to control. Giant knotweed is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Giant knotweed has bamboo-like hollow green stems, sometimes with reddish-brown speckles up to 5 m in height. Stems may persist through the winter as bare, grey- or straw-coloured hollow stalks.\nGiant knotweeds have attractive plumes of small, white to green flowers in the spring.\nLeaves are predominantly heart- to triangular-shaped, 16-20 cm wide, 30 cm in length."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Goldmoss stonecrop",
+        "scientificName": "Sedum acre",
+        "links": [
+          "https://bcinvasives.ca/invasives/goldmoss-stonecrop/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Goldmoss stonecrop (Biting stonecrop) is a rapidly growing succulent that was popular for rock and xeriscape gardens and is also occasionally used as a green roof species for its ability to withstand extreme temperatures and drought. However, this species is quite aggressively growing and overtakes other plants, rapidly spreading by both seed and vegetatively. A single leaf can root and turn into a whole new plant."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Goldmoss stonecrop (Biting stonecrop) is a rapidly growing succulent native to Europe that was popular for rock and xeriscape gardens and is also occasionally used as a green roof species for its ability to withstand extreme temperatures and drought. It flowers from July to September with masses of small yellow flowers, forming a mounding, golden “carpet”-like appearance. However, this species is quite aggressively growing and overtakes other plants, rapidly spreading by both seed and vegetatively. A single leaf can root and turn into a whole new plant."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Goldmoss stonecrop is a twiggy, spreading and low-growing succulent-like plant with green fleshy stems that can resemble a green or yellow mounding carpet from afar. \nFlowers are small and green to yellow with 5 petals each.  \nIt has numerous fleshy, triangular to needle-like leaves."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Gorse",
+        "scientificName": "Ulex europaeus",
+        "links": [
+          "https://bcinvasives.ca/invasives/gorse/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Gorse (Furze, Whin) is a spiny, perennial evergreen shrub. A mature plant can disperse up to 18,000 seeds per plant, and their seeds are easily distributed by human, environmental, and animal transport. Gorse poses a fire hazard due to its volatile oils. It is considered a noxious weed throughout the province."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Gorse (Furze, Whin) thrives in sunny clearings with dry, infertile soil such as sandy or rocky areas, roadsides, and fields. It was introduced to North America as an ornamental and hedge plant, from it’s native range of the British Isles and Western Europe. A single plant can live up to 45 years. A mature plant can disperse up to 18,000 seeds per plant, and their seeds are easily distributed by human, environmental, and animal transport. Gorse poses a fire hazard due to its volatile oils. Gorse is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Management species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Gorse is a spiny, perennial evergreen shrub with a single upright, green, branching stem that can grow to 1-3 m tall. \nIt has fragrant, yellow pea-like flowers. Seedpods are black and hairy.  \nThe leaves are green and modified into spines, but young gorse can have normal leaves that are trifoliate, resembling clover."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Hairy cat's-ear",
+        "scientificName": "Hypochaeris radicata",
+        "links": [
+          "https://bcinvasives.ca/invasives/hairy-cats-ear/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Hairy cat’s-ear (Common cat’s ear, False dandelion) is a short, yellow flowered perennial herbaceous plant that invades pastures, meadows, roadsides, riverbanks, lawns, and disturbed sites. This plant can grow in a wide range of conditions, but thrives the most in sunny, open areas. It displaces native plants and is a nuisance weed on lawns."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Hairy cat’s-ear (Common cat’s ear, False dandelion) is a perennial plant native to Europe that invades pastures, meadows, roadsides, riverbanks, lawns, and disturbed sites. This plant can grow in a wide range of conditions, but thrives the most in sunny, open areas. It displaces native plants and is a nuisance weed on lawns. Its sometimes also known as ‘False dandelion’ because of its similarity in flowers, as well as it’s seedhead."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Hairy cat’s-ear is a short, yellow flowered perennial herbaceous plant with upright stems that contain a milky juice when broken.  \nIt has 2.5-3 cm long dandelion-like, yellow flowers that grow at the end of upright stems. \nIts leaves are rough, hairy and lobed, coming from a basal rosette and central taproot."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Himalayan balsam (Policeman's helmet)",
+        "scientificName": "Impatiens glandulifera",
+        "links": [
+          "https://bcinvasives.ca/invasives/himalayan-balsam/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Himalayan balsam (Policeman’s helmet, Ornamental jewelweed) is a short herbaceous plant with hooded white, pink or purple flowers. This plant will take over areas with moist soils, including stream and riverbanks. It has seed pods that when ripe, can explode or shoot seeds up to 7 m from the plant."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Himalayan balsam (Policeman’s helmet, Ornamental jewelweed, Kiss-me-on-the-mountain) is a plant can take over areas with moist soils, including stream and riverbanks. It is native to the Himlayas in Northern India and is now considered an invasive species in North America, Europe, and New Zealand. It produces a lot of plant nectar which can attract bees and other pollinating insects to Himalayan balsam instead of other naturally occurring plants. This plant has seed pods that when ripe, can explode or shoot seeds up to 7 m from the plant. Himalayan balsam is designated as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Himalayan balsam grows from 0.6-2 m tall and has purplish hollow stems with many branches.  \nFlowers range in colour from white, pink, and purple. The flowers are hooded in shape which gives it the appearance of traditional English police helmets. Its seeds are large, black and 3-5 mm long. \nLeaves are large, sharply toothed and lance shaped. They can grow in whorls of 3 around the stem."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Himalayan blackberry",
+        "scientificName": "Rubus armeniacus",
+        "links": [
+          "https://bcinvasives.ca/invasives/himalayan-blackberry/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Himalayan blackberry (Armenian blackberry) is a large, thorny plant that grows from thick canes with small white flowers and producing large, shiny blackberries. It easily invades disturbed sites, pastures, roadsides, streambanks, and forest edges where it can create dense thorny thickets and crowd out low-growing vegetation. These thickets can produce 7,000–13,000 seeds per square metre."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Himalayan blackberry (Armenian blackberry) is valued by humans for its delicious berries and was introduced from its native range of Armenia and Northern Iran. However, it easily invades disturbed sites, pastures, roadsides, streambanks, and forest edges. This plant crowds out low-growing vegetation and can create thickets so dense it limits the movement of large animals. Thickets can produce 7,000-13,000 seeds per m2. Himalayan blackberry also spreads by roots and stem fragments, as well as by birds and animals that eat the berries and disperse them. There is another invasive blackberry species present in British Columbia that is part of the same species complex and difficult to distinguish, Rubus bifrons. Himalayan blackberry is designated as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Himalayan blackberry can grow up to 5 m tall, with canes up to 12 m long that root wherever they touch the ground.  \nFlowers are small, white to pinkish with 5 petals each. Berries grow to 2 cm long and are round, black, shiny and hairless. \nLeaves are large, rounded and generally grouped in fives on first-year canes, and threes on second-year canes."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Himalayan knotweed",
+        "scientificName": "Persicaria wallichii",
+        "links": [
+          "https://bcinvasives.ca/invasives/himalayan-knotweed/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Note: Both BC Priority Invasive Species List and iNaturalist have scientific name of Persicaria wallichii. Noxious weed list uses Polygonum polystachyum. \r\n\r\n \r\n\r\nKnotweeds were introduced to British Columbia for use in gardens and landscaping due to their rapid growth and attractive appearance There are now four species established in BC: Bohemian, Giant, Himalayan, and Japanese knotweed. Knotweeds grow aggressively and are very hard to kill."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Knotweeds were introduced to British Columbia for use in gardens and landscaping due to their rapid growth and attractive appearance There are now four species established in BC: Bohemian (Reynoutria x bohemica), Giant (Reynoutria sachalinensis), Himalayan (Persicaria wallichii), and Japanese knotweed (Reynoutria japonica). Knotweeds grow aggressively and are very hard to kill. They are widespread throughout the province, and are often found in riparian areas, derelict land, road and railway right of ways and gardens. They thrive in moist soil and full or partial sun. Knotweeds can spread by seed, root fragments, and stem fragments, making them very difficult to control. Himalayan knotweed is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Similar to bamboo canes, stems grow tall, straight and densely (at a rapid pace). They are hollow and green, sometimes with reddish-brown speckles, and up 5 m in height. Stems may persist through the winter as bare, grey or straw-coloured hollow stalks. \nKnotweeds have attractive plumes of small, white to green flowers in the spring. \nHimalayan knotweeds, unlike the other three species, have elongated, tapered leaves that are 8-10 cm wide and 15 cm in length."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Hoary alyssum",
+        "scientificName": "Berteroa incana",
+        "links": [
+          "https://bcinvasives.ca/invasives/hoary-alyssum/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Hoary alyssum (False hoary madwort, Hoary berteroa) is a flowering plant with clusters of small white flowers with deeply notched petals. It spreads quickly through a long season of seed production. Seeds are dispersed by vehicles, equipment, footwear, wildlife, and birds."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Hoary alyssum (False hoary madwort, Hoary berteroa) prefers dry, disturbed sites such as roadsides, rail embankments, and rangelands. It is native to Europe. Hoary alyssum spreads quickly through a long season of seed production. Seeds are dispersed by vehicles, equipment, footwear, wildlife, and birds. It can also contaminate hay. Hoary alyssum is designated as a Regional Noxious Weed by the BC Weed Control Act, as well as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Hoary alyssum is upright to 0.7 m tall and is covered in star-shaped hairs. \nIt has small white flowers with deeply notched petals. Oval seedpods are 5-8 mm long, somewhat flattened, and held close to the stem. \nLeaves are greenish grey in color and clasp closely to the stem."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Hoary cress",
+        "scientificName": "Lepidium draba",
+        "links": [
+          "https://bcinvasives.ca/invasives/hoary-cress/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Hoary cress (Heart-podded hoary cress, White top) is a perennial plant with numerous small, white flowers with 4 petals each. It invades open, sunny areas such as hayfields, meadows, and roadsides. It spreads by roots and seeds and crowds out native vegetation. It is considered a noxious weed in parts of BC."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Hoary cress (Heart-podded hoary cress, White top) is a perennial plant that invades open, sunny areas such as hayfields, meadows, and roadsides. It is native to Eastern Europe and Western Asia. It spreads by roots and seeds and crowds out native vegetation. A single plant can produce 4,800 seeds and can spread up to 3.5 m2 per year. Hoary cress is designated as a Regional Noxious Weed by the BC Weed Control Act, as well as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Hoary cress grows from 10-60 cm tall. \nIt has numerous white flowers with 4 petals each. These dense flower clusters give the weed a flat-topped appearance early in the season. Seed pods are heart-shaped. \nLeaves on mature plants are hairy and shaped like arrowheads. Upper leaves on immature plants are typically hairless and clasp the stem."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Hound's tongue",
+        "scientificName": "Cynoglossum officinale",
+        "links": [
+          "https://bcinvasives.ca/invasives/hounds-tongue/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Hound’s tongue (Houndstooth, Dog’s tongue) is an invasive plant with large dog’s tongue shaped leaves and red-purple, coiled flowers. It grows on dry, well-drained sites. Each plant can produce 2,000 -4,000 barbed seeds a year that cling to clothing, livestock, and wildlife."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Hound’s tongue (Houndstooth, Dog’s tongue) grows on dry, well-drained sites such as roadsides, pastures and disturbed soils. It was unintentionally introduced from its native range in Europe. Each plant can produce 2,000–4,000 barbed seeds per year that cling to clothing, livestock, and wildlife. This plant is poisonous to wildlife and livestock if ingested. Hound’s tongue is designated as a Provincial Noxious Weed by the BC Weed Control Act."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Hound’s tongue is an invasive plant that can grow up to 1.5 m tall with hairy, upright stems. \nFlowers are a dull red-purple with five petals each. Each flower produces four rounded-triangular seeds covered with hooked prickles. \nFirst year Hound’s tongue plants form a rosette with flopping leaves that resemble the shape of a dog’s tongue. In the second year, mature plants develop rough, hairy, wide leaves."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Japanese knotweed",
+        "scientificName": "Reynoutria japonica",
+        "links": [
+          "https://bcinvasives.ca/invasives/japanese-knotweed/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Knotweeds were introduced to British Columbia for use in gardens and landscaping due to their rapid growth and attractive appearance. There are now four species established in BC: Bohemian, Giant, Himalayan, and Japanese knotweed."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Knotweeds were introduced to British Columbia for use in gardens and landscaping due to their rapid growth and attractive appearance There are now four species established in BC: Bohemian (Reynoutria x bohemica), Giant (Reynoutria sachalinensis), Himalayan (Persicaria wallichii), and Japanese knotweed (Reynoutria japonica). Knotweeds grow aggressively and are very hard to kill. They are widespread throughout the province, and are often found in riparian areas, derelict land, road and railway right of ways and gardens. They thrive in moist soil and full or partial sun. Knotweeds can spread by seed, root fragments, and stem fragments, making them very difficult to control. Himalayan knotweed is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Japanese knotweed is a bamboo-like tall, straight and dense plant growing 1-5m in height. Stems are hollow and green, sometimes with reddish-brown speckles and may persist through the winter as bare, grey- or straw-colored hollow stalks.  \nFlowers are attractive plumes of small, white to green clusters in the spring.  \nLeaves are heart- to triangular-shaped, 8-10 cm wide and 15 cm in length. A distinguishing feature of Japanese knotweed is that its leaves grow in a zigzag pattern in along the plant’s arching stems."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Leafy spurge",
+        "scientificName": "Euphorbia esula",
+        "links": [
+          "https://bcinvasives.ca/invasives/leafy-spurge/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Leafy spurge (Green spurge) is a perennial plant with green-yellow flowers in a flat-topped umbrella shaped. It is a garden plant that has escaped into natural areas and can now be found on dry roadsides, fields, grasslands, open forests, and disturbed sites. It can spread rapidly by its large root system, growing 9 metres down into the soil."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Leafy spurge (Green spurge) is a perennial that was introduced to BC as a garden plant from Europe and has escaped into natural areas. It can now be found on dry roadsides, fields, grasslands, open forests, and disturbed sites. It spreads rapidly by its huge root system, which can grow to 4.5 m horizontally and 9 m vertically (underground). This plant has a secret weapon that helps it spread – it produces a chemical that stops other plants growing nearby. Leafy spurge is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Leafy spurge grows up to 1 m tall as a bushy plant. All parts of the plant contain a milky juice (latex) that can irritate skin when the plant is cut or broken when being handled. \nGreenish-yellow flowers grow in a flat-topped umbrella shape, with pairs of heart-shaped floral leaves underneath flower clusters.  \nLeaves are narrow and spiral around the stem."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Marsh plume thistle",
+        "scientificName": "Cirsium palustre",
+        "links": [
+          "https://bcinvasives.ca/invasives/marsh-plume-thistle/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Marsh plume thistle (Marsh thistle, European swamp thistle) is a biennial plant with purple flowers, and spiny, hairy leaves. It prefers moist to wet, naturally open or disturbed areas. Seeds are spread by wind, water, birds, vehicles, and equipment."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Marsh plume thistle (Marsh thistle, European swamp thistle) is a biennial plant native to Europe that prefers moist to wet, naturally open or disturbed areas. Plants will replace native vegetation in natural areas and are also known to compete with tree seedlings that have been planted in cut blocks. Seeds spread by wind, water, birds, vehicles, and equipment. Marsh plume thistle is designated as a Regional Noxious Weed by the BC Weed Control Act, as well as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Marsh plume thistle has a single, slender, unbranched stem with spiny wings that can grow up to 1.5 m in height. \nLeaves are spiny, hairy and have woody veins on the underside.  \nPurple flowers cluster at the end of stems."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Mountain bluet",
+        "scientificName": "Centaurea montana",
+        "links": [
+          "https://bcinvasives.ca/invasives/mountain-bluet/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Mountain bluet (Perennial cornflower, Montane knapweed) is a perennial plant with large, bright blue, ray-like flowers and long, lance shaped leaves. It is an escaped garden plant that invades natural areas. This plant can self-seed, which makes it difficult to control."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Mountain bluet (Perennial cornflower, Montane knapweed) is a popular garden perennial introduced from Europe; however, it easily escapes gardens and invades natural areas. This plant can self-seed, which makes it difficult to control. It also spreads through roots. Mountain bluet is found in meadows, pastures, roadsides and disturbed open areas. Mountain bluet is designated as a Management species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Mountain bluet ranges from 30-80 cm in height. Fine hairs cover the stem. \nFlowers are large, bright blue with a ray-like appearance and black fringe at the base and look a lot like knapweed flowers.  \nLeaves are 10-30 cm long, lance shaped, with a woolly underside."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Myrtle spurge",
+        "scientificName": "Euphorbia myrsinites",
+        "links": [
+          "https://bcinvasives.ca/invasives/myrtle-spurge/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Myrtle spurge (Donkey tail, Blue spurge) is a short, creeping escaped garden perennial with oval, spiraling blue green stems and yellow-green flowers. It likes dry, disturbed soils where it grows quickly and aggressively, releasing chemicals from its roots which stop other plants from growing near it."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Myrtle spurge (Donkey tail, Blue spurge) is a short, creeping escaped garden perennial introduced from Europe. It likes dry, disturbed soils where it grows quickly and aggressively, releasing chemicals from its roots which stop other plants from growing near it. This helps it crowd out native species. Myrtle spurge reproduces by seeds, but roots fragmented by cultivation can also produce new plants."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Myrtle spurge’s (Donkey tail, Blue spurge) is a short, creeping escaped garden perennial that can grow 10-15 cm tall and forms a low, spreading mound. \nMyrtle spurge’s flowers are small and yellow surrounded be bract cups. \nIt’s leaves and stems are a light blue-green color. Its leaves are very sharp and spiral closely around the stem."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Orange hawkweed",
+        "scientificName": "Hieracium aurantiacum",
+        "links": [
+          "https://bcinvasives.ca/invasives/orange-hawkweed/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Orange hawkweed (Orange hawk bit, Fox-and-cubs) is a short flowering plant that can grow from 30–60 cm in height with bright orange-red flowers clustered on top. It can create dense mats that crowd out native plants. Hawkweeds spread quickly through above ground runners, horizontal roots, and seeds."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Orange hawkweed (Orange hawk bit, Fox-and-cubs) can create dense mats that crowd out native plants. It was an ornamental garden plant introduced from Europe. Hawkweeds spread quickly through above ground runners, horizontal roots, and seeds. Agriculture and recreational activities, wildlife, and wind can help the spread of hawkweeds. One plant can produce hundreds of seeds. Orange hawkweed is designated as a Regional Noxious Weed by the BC Weed Control Act, as well as a Management species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Orange hawkweed grows from 30-60 cm in height with a hairy stem, that contains a milky fluid when broken open. \nFlowers are a bright orange-red cluster at the top.\nLeaves are bristly-hairy with few to no leaves being found on the stem."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Oxeye daisy",
+        "scientificName": "Leucanthemum vulgare",
+        "links": [
+          "https://bcinvasives.ca/invasives/oxeye-daisy/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Oxeye daisy (Dog daisy, Marguerite) is an herbaceous plant of variable height with typical white daisy-like flowers with a yellow centre and wavy leaves. It was first introduced to North America in seed mixes. It is still commonly sold in many store-bought wildflower mixes and remains popular among gardeners despite its negative impacts. \r\n\r\nScentless chamomile (Matricaria maritima) is a similar species; however its leaves are fern-like, and it has smaller flowerheads."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Oxeye daisy (Dog daisy, Marguerite) was first introduced through seed mixes and is still commonly sold in many store-bought wildflower mixes and remains popular among gardeners despite its negative impacts. It was introduced from its native range of Europe. It spreads rapidly and is often found in pastures, grasslands, waste areas and along roadsides. A single plant can produce up to 26,000 seeds that can survive in the soil for up to 20 years. In large infestations, Oxeye daisy reduces the number of native plants and reduces forage for livestock and wildlife. Oxeye daisy is designated as a Regional Noxious Weed by the BC Weed Control Act."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Oxeye daisy is a flowering plant that can range from 20–80 cm in height. \nFlowers have a typical daisy-like appearance, with single white flowers and a yellow center.  \nLeaves are wavy and clasp toward the stem."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Purple deadnettle",
+        "scientificName": "Lamium purpureum",
+        "links": [
+          "https://bcinvasives.ca/invasives/purple-deadnettle/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Purple deadnettle (Red deadnettle, Purple archangel) is a short herbaceous plant with small pink flowers, square stems and hairy leaves. It lives as an annual or biennial. A single plant can produce thousands of seeds which remain viable in the soil for several years. It can also spread via stem and root fragments."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Purple deadnettle (Red deadnettle, Purple archangel) is a short herbaceous plant that can survive as an annual or biennial. It was introduced from its native range of Europe and Asia. A single plant can produce thousands of seeds which remain viable in the soil for several years. It can also spread via stem and root fragments. Purple deadnettle thrives in a range of soil types from dry to moist and is frequently observed in lawns, waste areas, and gardens."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Purple deadnettle is a short plant that grows up to 30 cm tall, with square stems that can look like a dusty purple carpet from afar.  \nIt has small pink flowers from March-May that bloom in the crease where the leaves meet the stem (these are called axillary flowers).  \nIt leaves are hairy, oval to heart shaped, smaller and deep purple/plum coloured towards the top, fading to green and larger towards the base of the stem."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Purple loosestrife",
+        "scientificName": "Lythrum salicaria",
+        "links": [
+          "https://bcinvasives.ca/invasives/purple-loosestrife/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Purple loosestrife (Spike loosestrife, Purple lythrum) is a perennial shrub-like plant with a showy spike of, purple-pink flowers and narrow, stalkless leaves. It spreads rapidly by seed and root fragments. The tiny seeds are dispersed by wind, mud, moving water, wildlife and humans."
+          },
+          {
+            "header": "Habitat",
+            "description": "Aquatic"
+          },
+          {
+            "header": "About",
+            "description": "Purple loosestrife (Spike loosestrife, Purple lythrum) is a perennial plant that spreads rapidly by seed and root fragments. It was introduced from its native range of Europe and Asia. The tiny seeds are dispersed by wind, mud, moving water, wildlife and humans. A mature plant can produce up to 2.5 million seeds that can survive in the soil for up to 20 years. Purple loosestrife grows in wetlands and aquatic habitats, as well in wet pastures and roadside ditches and is quite easily recognized by its flowers. Purple loosestrife is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Management species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Purple loosestrife has a shrub-like appearance, with stiff, four-sided stems. Plants can grow up to 3 m in height. \nFlowers grow in in dense spikes and are showy and pinkish-purple.  \nIt has narrow, stalkless leaves.  \nPurple loosestrife is often confused with the native plant fireweed."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Queen Anne's lace",
+        "scientificName": "Daucus carota",
+        "links": [
+          "https://bcinvasives.ca/invasives/queen-annes-lace/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Queen Annes’ lace (Wild carrot) is an herbaceous plant with an umbrella-shaped cluster of white flowers, hairy stem and finely dissected, hairy, fern like leaves. It is common to roadsides and other disturbed areas. This biennial plant persists in clay soils and can be a threat to recovering grasslands."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Queen Annes’ lace (Wild carrot) is common to roadsides and other disturbed areas. It was introduced from Europe as a medicinal herb. This biennial plant persists in clay soils and can be a threat to recovering grasslands. After going to seed the dried flower takes on a “birds’ nest” like appearance and can move like a tumble weed to help spread its seeds."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Queen Anne’s lace grows up to 1 m in height with hairy stems, and deep penetrating taproots and carrot-like smell. \nIts flowers are in an umbrella-shaped cluster and white, usually blooming from May to October.  \nLeaves are finely dissected, fern-like and hairy."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Rush skeletonweed",
+        "scientificName": "Chondrilla juncea",
+        "links": [
+          "https://bcinvasives.ca/invasives/rush-skeletonweed/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Rush skeletonweed (Gum succory, Devil’s grass, Nakedweed) is a perennial plant with numerous wiry, branched stems, extremely narrow leaves and small yellow flowers. It invades rangelands, roadsides and disturbed areas. It competes with other plants for soil moisture and nutrients."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Rush skeletonweed (Gum succory, Devil’s grass, Nakedweed) is a perennial plant that invades rangelands, roadsides and disturbed areas. It was unintentionally introduced from its native range in Europe and Asia. It competes with other plants for soil moisture and nutrients. Plants may produce up to 20,000 seeds per year, that can travel easily with wind and water, as well as on animals, humans and machinery such as a farming equipment. This plant also spreads by horizontal roots. Rush skeletonweed is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Provincial Containment species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Rush skeletonweed grows up to 1.3 m tall, and has many wiry, branched stems that have reddish, down-turned hairs at the base.  \nIt has small yellow flowers that are flat and toothed across the end. \nBarely visible narrow leaves give this plant a skeleton-like appearance."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Russian olive",
+        "scientificName": "Elaeagnus angustifolia",
+        "links": [
+          "https://bcinvasives.ca/invasives/russian-olive/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Russian olive (Silver berry, Oleaster) is a short invasive tree with silver leaves, black bark and small, yellow flowers. It can survive in dry conditions, cold temperatures and poor soils. It drinks more water than most plants in dry soil settings, therefore it can outgrow and compete with native species."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Russian olive (Silver berry, Oleaster) is a short invasive tree that can survive in dry conditions,cold temperatures and poor soils. It was introduced from its native range in Russia and Aisa. It drinks more water than most plants in dry soil settings, therefore it can outgrow and compete with native species. Seeds are spread from bird droppings and wildlife eating the berries, as well as through flowing water and by beaver activity."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Russian olive is a small ornamental tree with black bark that can grow 3–8 m tall. \nFlowers are small, yellow and fragrant flowers, and its edible silver fruit resembles olives. \nLeaves are long, narrow and silver."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Scentless chamomile",
+        "scientificName": "Tripleurospermum perforatum",
+        "links": [
+          "https://bcinvasives.ca/invasives/scentless-chamomile/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Scentless chamomile (Scentless mayweed, Wild chamomile) is a plant of variable height with daisy-like flowers of white petals and yellow centres as well as thin, carrot like leaves. It can produce up to 1,000,000 seeds every year, and the seeds can survive in the soil for up to 15 years. It prefers moist soil conditions and can aggressively take over pastures, grasslands, and other agricultural areas."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Scentless chamomile (Scentless mayweed, Wild chamomile) prefers moist soil conditions. It was introduced from its native range in Europe, Asian and North Africa. It can produce up to 1,000,000 seeds every year, and the seeds can survive in the soil for up to 15 years. This plant can aggressively take over pastures, grasslands, and other agricultural areas. If colonies form near riparian areas, the plants can easily crowd out other plants entirely. Scentless chamomile is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Management species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Scentless chamomile can grow from 15 cm-1 m tall, with mature plants having many flowers growing on separate stems. \nFlowers are like a daisy with white petals and a yellow center.  \nLeaves are small and look like frilly carrot leaf tops that grow all along the length of the stem.  \nSimilar species: Oxeye daisy looks similar; however its flowers are larger, and leaves are not carrot-like."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Scotch broom",
+        "scientificName": "Cytisus scoparius",
+        "links": [
+          "https://bcinvasives.ca/invasives/scotch-broom/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Scotch broom (English broom) is a woody shrub with bright yellow flowers, and small three leaflet leaves. It easily invades sunny, disturbed sites such as rangelands, roadsides, and areas of recent logging. Scotch broom can increase the intensity of wildfires, obstruct sightlines along roads, and crowd out native plants that animals depend on."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Scotch broom (English broom) is an escaped garden plant introduced from Europe that easily invades sunny, disturbed sites such as rangelands, roadsides, and areas of recent logging. Scotch broom can increase the intensity of wildfires, obstruct sightlines along roads, and crowd out native plants that animals depend on. A mature plant can live up to 25 years and produce seeds that can survive in the soil for 30 years. Scotch broom is designated as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Scotch broom is a shrub that grows from 1-3 m in height. Stems are woody, rigid and five-angled.  \nIt has bright yellow pea-like flowers, that sometimes have red markings in the middle. \nLower leaves have three leaflets, while the upper leaves are singular."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Scotch thistle",
+        "scientificName": "Onopordum acanthium",
+        "links": [
+          "https://bcinvasives.ca/invasives/scotch-thistle/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Scotch thistle (Cotton thistle) is a biennial or perennial plant with grey-green, woolly, lobbed leaves and spiney stems. It reproduces through thousands of seeds that can survive in the soil for over 30 years. Seeds can spread with the wind, but also in hay and water, and by attaching to clothing or animal fur."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Scotch thistle (Cotton thistle) is a biennial or perennial native to Europe and Asia that reproduces through thousands of seeds that can survive in the soil for over 30 years. The seeds need moisture to germinate. Seeds can spread with the wind, but also in hay and water, and by attaching to clothing or animal fur. It creates dense stands that are extremely difficult for humans and animals to walk through. Scotch thistle is designated as a Regional Noxious Weed by the BC Weed Control Act, as well as a Management species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Scotch thistle can grow up to 3 m tall and has stems with spine-edged wings that run up the sides.\nFlowers are large pink, purple or sometimes reddish.  \nLeaves are irregularly lobed, have sharp yellow spikes, and are covered in woolly hairs that give the foliage a grey-green appearance."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Smallflower touch-me-not",
+        "scientificName": "Impatiens parviflora",
+        "links": [
+          "https://bcinvasives.ca/invasives/smallflower-touch-me-not/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Smallflower touch-me-not (Small balsam) is a twiggy, branching, fine-textured annual species with pale yellow flowers and serrated, glossy leaves. It is often found growing in moist soils such as those around rivers, streams, and wetlands ecosystems. Although this species prefers moist soils, it is tolerant to a range of sun exposures, soil types, and climates, making it difficult to eradicate."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Smallflower touch-me-not (Small balsam) is an herbaceous annual species introduced from Europe and Asia that is often found growing in moist soils such as those around rivers, streams, and wetlands ecosystems. Although this species prefers moist soils, it is tolerant to a range of sun exposures, soil types, and climates, making it difficult to eradicate."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Smallflower touch-me-not is a twiggy, branching, fine-textured plant that ranges in height from 20-80 cm tall. \nFlowers are pale yellow on thin stalks, with slightly darker yellow-orange centers. \nLeaves are serrated, glossy and 3-12 cm long."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Spotted knapweed",
+        "scientificName": "Centaurea stoebe",
+        "links": [
+          "https://bcinvasives.ca/invasives/spotted-knapweed/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Spotted knapweed (Panicled knapweed) is a biennial, herbaceous plant with several small, purple flowers with long, thin petals branching from the stem. It is a prolific seed producer, with individual plants producing up to 140,000 seeds per square metre. Seeds and plant fragments make their way into hay and the undercarriages of vehicles, allowing for new infestations over great distances."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Spotted knapweed (Panicled knapweed) is a prolific seed producer, with individual plants producing up to 140,000 seeds per m2. This plant was unintentionally introduced from Europe and Asia. Seeds and plant fragments make their way into hay and the undercarriages of vehicles, allowing for new infestations over great distances. Both knapweeds spread by wind, livestock, and people, preferring open areas and well-drained soils where they establish in grasslands, open forests, and along roadsides. Spotted and Diffuse knapweed are able to spread over large areas because of a secret weapon — an ability to release a chemical that kills surrounding plants. They choke out desirable forage for livestock and wildlife and increase soil erosion. Spotted knapweed is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Spotted knapweed is a biennial plant that can grow 60-150 cm tall with several branched stems growing vertically from a thick taproot. \nFlowers are purple, sometimes white, found individually (not in clusters), at the ends of branches. Black-tipped flower head bracts (leaf-like petals) give plants a spotted appearance.   \nLeaves are grey-green, deeply lobed with alternate arrangement. They become smaller as they advance up the stem."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Sulphur cinquefoil",
+        "scientificName": "Potentilla recta",
+        "links": [
+          "https://bcinvasives.ca/invasives/sulphur-cinquefoil/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Sulphur cinquefoil (Rough-fruited cinquefoil) is a long-lived perennial with a 5 petal, pale yellow flowers and a palm-like hairy leaf. It invades grasslands, dry open forests, and disturbed sites such as roadsides and rangelands. A single plant can produce up to 1,600 seeds, living up to 20 years as new shoots can emerge from the main root."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Sulphur cinquefoil (Rough-fruited cinquefoil) is a long-lived perennial native to Europe and Asia. It invades grasslands, dry open forests, and disturbed sites such as roadsides and rangelands. A single plant can produce up to 1,600 seeds, living up to 20 years as new shoots can emerge from the main root. Sulphur cinquefoil is designated as a Regional Noxious Weed by the BC Weed Control Act, as well as a Management species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Sulphur cinquefoil is an herbaceous plant that can grow from 0.3-0.8 m tall.  \nIt has pale yellow flowers, each with 5 heart-shaped petals.  \nLeaves are hairy and divided into 5-7 separate toothed leaflets, arranged in a palm-like formation. \nSimilar species: It is often confused with the native Graceful cinquefoil (Potentilla gracilis), which is shorter and has white wooly hair on the underside of the leaves."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Tamarisk",
+        "scientificName": "Tamarix spp.",
+        "links": [
+          "https://bcinvasives.ca/invasives/tamarisk/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Tamarisk (salt cedar) is a shrub-like tree with light green, scale-like leaves and light pink flowers. Its other known common name of ‘salt cedar’ comes from its ability to release salt from its leaves, which prevents the growth of any native vegetation within its range."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Tamarisk (salt cedar) is a shrub-like tree native to Europe and Asia. It’s other known common name of ‘salt cedar’ comes from its ability to release salt from its leaves, which prevents the growth of any native vegetation within its range. A single tree can produce hundreds of thousands of seeds. Tamarisk prefers moist soil located in pastures and rangelands, waste areas, drainages, streambanks, rivers, near lakes, and coastal areas."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Tamarisk is a thicket-forming shrub that can grow 2-3m in height. \nFlowers are light pink in airy clusters. \nLeaves are light green and scale-like."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Tansy ragwort",
+        "scientificName": "Senecio jacobaea",
+        "links": [
+          "https://bcinvasives.ca/invasives/tansy-ragwort/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Tansy ragwort (Common ragwort, Stinking willie, Staggerwort) is a biennial to short-lived perennial with dense clusters of bright yellow flowers and ruffled, dark green leaves. It grows in pasturelands and disturbed areas. Seeds are easily transported by wind, soils, human activity, and livestock."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Tansy ragwort (Common ragwort, Stinking willie, Staggerwort) is a biennial to short-lived perennial that grows in pasturelands and disturbed areas. Seeds are easily transported by wind, soils, human activity, and livestock. A single plant can produce 150,000 seeds that can survive in the soil for up to 15 years. Tansy ragwort is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Management species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Tansy ragwort can grow to be 0.2-1.2 m in height with purplish stems. \nIt has bright yellow daisy-like flowers with 10-15 petals each. Flowers are arranged in a dense, flat-topped cluster. \nLeaves are dark green and ruffled, becoming ragged in appearance during their second year of growth."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Teasel",
+        "scientificName": "Dipsacus fullonum",
+        "links": [
+          "https://bcinvasives.ca/invasives/teasel/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Teasel (Wild teasel) is a biennial plant with spiny, cone-shaped seed heads, small pink flowers and long thin leaves. It prefers sunny locations and can grow in a range of wet to dry soils. Spreading through seed dispersal, it typically invades meadows, pastures, roadsides, and disturbed areas."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Teasel (Wild teasel) is a biennial plant that prefers sunny locations and can grow in a range of wet to dry soils. Originally introduced to North America in the 1700’s for wool production from its native range of Europe, Asia and North Africa, it has spread to natural spaces where it is inedible to wildlife. Spreading through seed dispersal, it typically invades meadows, pastures, roadsides, and disturbed areas.  Teasel is designated as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Stems grow from 0.5-2 m and taller, with few prickly branches.  \nIt has a spiny cone-shaped seed head with small pink or light purple flowers. \nLeaves are long, thin and arrow shaped."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Tree of heaven",
+        "scientificName": "Ailanthus altissima",
+        "links": [
+          "https://bcinvasives.ca/invasives/tree-of-heaven/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Tree of heaven (Ailanthus, Varnish tree) is a deciduous tree that can reach 20-30m in height, with small white flowers and oval shaped leaflets. It became popular in BC with gardeners for its rapid growth and interesting foliage. It produces by seed and by division and can sprout nearly anywhere, making it very difficult to eradicate!"
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Tree of heaven (Ailanthus, Varnish tree) is a deciduous tree that became popular in BC with gardeners for its rapid growth and interesting foliage. It is native to China and Taiwan. It produces by seed and by division and can sprout nearly anywhere – it is tolerant to a wide range of environmental condition. It is described as foul-smelling and now considered a weedy, invasive species that crowds out other plants."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Tree of heaven can reach between 20–30 m in height and 10–15 m in width at maturity. Bark is grey and lightly textured. \nFlowers are small and white. Fruit is a showy red samara (like a maple’s “helicopter” like winged seeds).  \nLeaves grow to 50 cm and are divided into oval-shaped leaflets. In the fall, the foliage turns yellow."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Wild caraway",
+        "scientificName": "Carum carvi",
+        "links": [
+          "https://bcinvasives.ca/invasives/wild-caraway/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Wild caraway (Meridian fennel, Persian cumin) is an herbaceous plant of variable height with fern-like leaves and white groups of lowers. It was introduced to Canada as a spice crop but has escaped cultivation. It is a biennial plant that can quickly outgrow native plants. It can grow in light shade, survive light frost and extra moisture in the soil."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Wild caraway (Meridian fennel, Persian cumin) was introduced to Canada as a spice crop from its native range of Europe, Asia and North Africa but has since escaped cultivation. It is a biennial plant that can quickly outgrow native plants. It prefers to grow in rangelands, pastures, roadsides or disturbed areas but can tolerate light shade or excess soil moisture, as well as survive light frost."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Wild caraway is an herbaceous plant with several erect, branched stems that grow 60-90 cm tall.  \nIt is identified by white groups of flowers  \nLeaves are very finely divided and fern-like. This plant is difficult to identify when not in flower."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Wild chervil",
+        "scientificName": "Anthriscus sylvestris",
+        "links": [
+          "https://bcinvasives.ca/invasives/wild-chervil/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Wild chervil (Cow parsley, Wild beaked parsley) is a biennial to short-lived perennial with small white flowers in umbrella like clusters and fern like leaves. It is typically found along roadsides, fence lines, streambanks, in ditches and competing with pasture and hay crops. It has a thick taproot that spreads aggressively, as deep as 2 m into the soil, and is very difficult to remove."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Wild chervil (Cow parsley, Wild beaked parsley) is a biennial to short-lived perennial in the Parsley family. It is typically found along roadsides, fencelines, streambanks, in ditches and competing with pasture and hay crops. It is native to Europe, Asia and Northern Africa. It has a thick taproot that spreads aggressively, as deep as 2 meters into the soil, and is very difficult to remove. Wild chervil is designated as a Regional Noxious Weed by the BC Weed Control Act, as well as a Provincial Containment species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Wild chervil is an herbaceous plant that can range in height from 30 cm-1.8m with hollow stems. \nSmall white flowers in umbrella-like clusters that grow at the end of stems.  \nLeaves are fern-like and nearly hairless."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Yellow archangel",
+        "scientificName": "Lamiastrum galeobdolon",
+        "links": [
+          "https://bcinvasives.ca/invasives/yellow-archangel/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Yellow archangel (Artillery plant, Aluminium plant, Yellow weasel-snout) is a perennial plant with small yellow flowers on the leaf axils, and opposite hairy, round-toothed leaves. This plant prefers shady sites such as forested areas and grows in a dense mat that smothers other native plants. It spreads by seed and plant fragments, and by animals and humans passing through the vegetation."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Yellow archangel (Artillery plant, Aluminium plant, Yellow weasel-snout) is a perennial plant that introduced from Europe as a horticultural plant that has since escaped and become invasive. This plant prefers shady sites such as forested areas and grows in a dense mat that smothers native plants. It spreads by seed and plant fragments, and by animals and humans passing through the vegetation. Yellow archangel is designated as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Yellow archangel is a ground cover perennial plant with square-sided stem that grows from 30-60 cm in height.  \nSmall, yellow flowers grow in a clump close to the stem. \nLeaves are hairy, oval to heart-shaped, with toothed edges, and are dark green with an outer silver lining."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Yellow flag iris",
+        "scientificName": "Iris pseudacorus",
+        "links": [
+          "https://bcinvasives.ca/invasives/yellow-flag-iris/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Yellow flag iris (Water flag) is a perennial aquatic plant with bright yellow flowers on tall, smooth stems. It invades ditches, wetlands, streams, lake shorelines, and shallow ponds. This plant reproduces through seed dispersal and horizontal roots, and each rhizome fragment can sprout into a new plant, making it a difficult invasive species to control."
+          },
+          {
+            "header": "Habitat",
+            "description": "Aquatic"
+          },
+          {
+            "header": "About",
+            "description": "Yellow flag iris (Water flag) invades ditches, wetlands, streams, lake shorelines, and shallow ponds. It was a horticultural plant introduced from its native range of Europe, Asia, and Northern Africa. This plant reproduces through seed dispersal, horizontal roots, and when pieces of the roots break off, which can form new plants. The seeds float on the water in spring and fall, causing them to spread quickly. Several hundreds of plants may be connected underwater due to the extensive root system, which creates a thick mat that damages wildlife habitat, reduces water flow, and crowds out native vegetation. Yellow flag iris is designated as a Provincial Noxious Weed by the BC Weed Control Act, as well as a Regional Containment/Control species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Yellow flag iris is a perennial aquatic plant that can grow to be 1-1.5 m tall on a smooth green stem. \nFlowers are bright yellow, often with brown spots or purple veins, with 3 upward pointing petals and three downward pointing, tongue shaped “petals” called sepals.  \nLeaves are flat and sword-shaped, up to 90 cm long and 3 cm wide."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Yellow floating heart",
+        "scientificName": "Nymphoides peltata",
+        "links": [
+          "https://bcinvasives.ca/invasives/yellow-floating-heart/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Yellow floating heart (Water fringe, Fringed water lily, Entire marshwort) is an aquatic perennial that resembles a water lily with its round, glossy leaves that float on the water’s surface and yellow flowers attached to sturdy, upright stems. It will form thick mats of vegetation in a sensitive aquatic ecosystem. It spreads both by seed and vegetatively, making this species extremely difficult to control."
+          },
+          {
+            "header": "Habitat",
+            "description": "Aquatic"
+          },
+          {
+            "header": "About",
+            "description": "Yellow floating heart (Water fringe, Fringed water lily, Entire marshwort) is an aquatic species that resembles water lily. It spreads both by seed and vegetatively making this species extremely difficult to control. It forms dense mats that impede water flow and disturbs sensitive aquatic habitats. It was initially used as an ornamental pond plant introduced from its native range of East Asia and the Mediterranean but has escaped cultivation and has the potential to cause major damage in BC. Yellow floating heart prefers depths of 0-4 m and slow-moving water. Yellow floating heart is designated as a Provincial EDRR species by the BC Provincial Priority Invasive Species List."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Yellow floating heart is a floating aquatic perennial species that resembles a water lily. \nA single yellow flower appears on a stalk above the leaf. The fruit is a flattened, oval capsule that turns from green to brown as it matures and ripens. \nLeaves are round, floating and 3-15 cm in diameter that sit on the surface of the water, typically found growing in dense mats."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Yellow loosestrife",
+        "scientificName": "Lysimachia punctata",
+        "links": [
+          "https://bcinvasives.ca/invasives/yellow-loosestrife/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Yellow loosestrife is a tall, fast-spreading perennial plant with yellow flowers. It prefers to grow in wet soils and is typically found in wetlands, wet roadsides, ditches, and along shorelines. It can form dense clumps that spread out over large areas, crowding out native plants."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Yellow loosestrife is a tall, fast-spreading perennial plant. It was introduced to North America as a garden ornamental from its native range of Europe and has since escaped and become invasive. Yellow loosestrife prefers moist soils, and is typically found in wet roadsides, ditches, along shorelines and wetlands. It spreads through seeds and rhizomes, forming dense clumps that cover large areas, crowding out native plants. These monocultures reduce biodiversity and degrade habitat for waterfowl, wildlife, birds and fish."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Yellow loosestrife is a tall, perennial plant that grows 60-150 cm tall with sturdy, hairy and dotted stems.  \nFlowers are loose spikes of bright yellow star-shaped flowers that bloom in early to mid-summer.  \nLeaves are light green, with serrated edges, and range from 3-10 cm long forming a bushy clump."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      },
+      {
+        "commonName": "Yellow toadflax",
+        "scientificName": "Linaria vulgaris",
+        "links": [
+          "https://bcinvasives.ca/invasives/yellow-toadflax-common-toadflax/"
+        ],
+        "info": [
+          {
+            "header": "Summary",
+            "description": "Yellow toadflax (Common toadflax, Butter-and-eggs) is a creeping plant with light yellow flowers and long, slim green leaves. It is typically found in cultivated fields, pastures, along roadsides and other disturbed areas. Yellow toadflax can out-compete native plants, which negatively affects plant crops, and reduces grass growing in pastures and rangelands."
+          },
+          {
+            "header": "Habitat",
+            "description": "Terrestrial"
+          },
+          {
+            "header": "About",
+            "description": "Yellow toadflax (Common toadflax, Butter-and-eggs) spreads by a creeping root system. It was introduced from its native range of Europe and Asia. It is typically found in cultivated fields, pastures, along roadsides and other disturbed areas throughout BC. Yellow toadflax can out-compete native plants, which negatively affects plant crops, and reduces grass growing in pastures and rangelands."
+          },
+          {
+            "header": "How To Identify",
+            "description": "Yellow toadflax grows up to 80 cm in height by a creeping root system. \nFlowers are light yellow with an orange spot on its lower lip, like a snapdragon.  \nIt has long, slim, light green leaves.  \nSimilar species: Dalmatian toadflax is a similar plant with yellow, snapdragon-like flowers but grows taller, has larger flowers, and heart shaped leaves."
+          }
+        ],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from ISCBC"
+        ]
+      }
+    ]
+  },
+  {
+    "region_code_name": "ON",
+    "regionName": "Ontario",
+    "demographic": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Canada_Ontario_Density_2016.png/800px-Canada_Ontario_Density_2016.png",
+    "invasiveSpeciesList": [
+      {
+        "commonName": "Brazilian Elodea",
+        "scientificName": "Egeria densa",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/brazilian-elodea/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Eurasian Water-Milfoil",
+        "scientificName": "Myriophyllum spicatum",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/eurasian-water-milfoil-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "European Frog-bit",
+        "scientificName": "Hydrocharis morsus-ranae",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/european-frog-bit-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "European Water Chestnut",
+        "scientificName": "Trapa natans",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/european-water-chestnut-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Fanwort",
+        "scientificName": "Cabomba caroliniana",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/fanwort-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Flowering Rush",
+        "scientificName": "Butomus umbellatus",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/flowering-rush-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Hydrilla",
+        "scientificName": "Hydrilla verticillata",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/hydrilla-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Parrot Feather",
+        "scientificName": "Myriophyllum aquaticum",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/parrot-feather-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Starry Stonewort",
+        "scientificName": "Nitellopsis obtusa",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/starry-stonewort-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Water Hyacinth",
+        "scientificName": "Eichhornia crassipes",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/water-hyacinth-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Water Lettuce",
+        "scientificName": "Pistia stratiotes",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/water-lettuce-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Water Soldier",
+        "scientificName": "Stratiotes aloides",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/water-soldier-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Yellow Floating-heart",
+        "scientificName": "Nymphoides peltata",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/yellow-floating-heart-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Yellow Iris",
+        "scientificName": "Iris pseudacorus",
+        "links": [
+          "https://www.invadingspecies.com/invaders/aquatic-plants/yellow-iris-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Common Buckthorn",
+        "scientificName": "Rhamnus cathartica",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/common-buckthorn-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Dog-Strangling Vine",
+        "scientificName": "Vincetoxicum rossicum & Vincetoxicum nigrum",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/dog-strangling-vine-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Garlic Mustard",
+        "scientificName": "Alliaria petiolata",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/garlic-mustard-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Giant Hogweed",
+        "scientificName": "Heracleum mantegazzianum",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/giant-hogweed-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Himalayan Balsam",
+        "scientificName": "Impatiens glandulifera",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/himalayan-balsam-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Invasive Ground Covers",
+        "scientificName": "",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/invasive-ground-covers-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Invasive Honeysuckles",
+        "scientificName": "Lonicera spp.",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/invasive-honeysuckles-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Invasive Phragmites",
+        "scientificName": "Phragmites australis",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/invasive-phragmites-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Japanese Barberry",
+        "scientificName": "Berberis thunbergii",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/japanese-barberry-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Japanese Knotweed",
+        "scientificName": "Fallopia japonica",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/japanese-knotweed-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Japanese Stiltgrass",
+        "scientificName": "Microstegium vimineum",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/japanese-stiltgrass-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Kudzu",
+        "scientificName": "Pueraria montana",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/kudzu-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Miscanthus",
+        "scientificName": "Miscanthus spp.",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/miscanthus-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Purple Loosestrife",
+        "scientificName": "Lythrum salicaria",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/purple-loosestrife-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Wild Chervil",
+        "scientificName": "Anthriscus sylvestris",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/wild-chervil-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Wild Parsnip",
+        "scientificName": "Pastinaca sativa",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/wild-parsnip-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      },
+      {
+        "commonName": "Winged Euonymus",
+        "scientificName": "Euonymus alatus",
+        "links": [
+          "https://www.invadingspecies.com/invaders/plants/winged-euonymus-2/"
+        ],
+        "info": [],
+        "alternatives": [],
+        "citation": [
+          "The provided information is obtained from the Ontario Invading Species Awareness Program."
+        ]
+      }
+    ]
+  }
+]

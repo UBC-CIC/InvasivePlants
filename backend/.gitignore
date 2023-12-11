@@ -1,0 +1,19 @@
+*.js
+!lambda/*.js
+!jest.config.js
+*.d.ts
+node_modules
+*.DS_Store
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+
+### CDK-specific ignores ###
+*.swp
+cdk.context.json
+package-lock.json
+yarn.lock
+.cdk.staging
+cdk.out
+
