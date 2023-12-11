@@ -615,7 +615,7 @@ function InvasiveSpeciesPage() {
             <TableRow>
               <TableCell style={{ width: "10%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  Scientific Name
+                  Scientific Name(s)
                 </Typography>
               </TableCell>
               <TableCell style={{ width: "35%" }}>
@@ -630,7 +630,7 @@ function InvasiveSpeciesPage() {
               </TableCell>
               <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  Resources
+                  Resource Links
                 </Typography>
               </TableCell>
               <TableCell style={{ width: "7%" }}>

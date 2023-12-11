@@ -609,7 +609,7 @@ function AlternativeSpeciesPage() {
             <TableRow>
               <TableCell style={{ width: "8%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  Scientific Name
+                  Scientific Name(s)
                 </Typography>
               </TableCell>
               <TableCell style={{ width: "10%" }}>

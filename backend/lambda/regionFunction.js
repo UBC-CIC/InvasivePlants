@@ -33,11 +33,11 @@ exports.handler = async (event) => {
 					const region_fullname = "%" + event.queryStringParameters.region_fullname + "%";
 					data = await sql`	SELECT * FROM regions
 										WHERE region_fullname ILIKE ${region_fullname} 
-										ORDER BY region_fullname 
+										ORDER BY region_fullname, region_id
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {
 					data = await sql`	SELECT * FROM regions
-										ORDER BY region_fullname
+										ORDER BY region_fullname, region_id
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				}
 

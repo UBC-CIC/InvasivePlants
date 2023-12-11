@@ -214,6 +214,7 @@ function Navbar(props) {
     const location = useLocation();
     const currentPath = decodeURIComponent(location.pathname);
     const currentPage = currentPath.substring(1);
+    // console.log("Current Page: ", currentPage);
 
     return (
         <Grid item xs={12} className={classes.appBar}>
@@ -228,7 +229,7 @@ function Navbar(props) {
                             /* Creates a URL path and button for each page */
                             <NavLink
                                 to={"/" + formatUrl(page)}
-                                className={`${classes.inactiveLink} ${currentPage === page.toLowerCase() ? classes.activeLink : ''}`}
+                                className={`${classes.inactiveLink} ${currentPage.toLowerCase() === page.toLowerCase().replace(/\s/g, '') ? classes.activeLink : ''}`}
                             >
                                 <Typography className={classes.title} variant="h6" component={"h1"}>
                                     <span

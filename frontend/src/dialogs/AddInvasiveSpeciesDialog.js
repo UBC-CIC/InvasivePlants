@@ -131,7 +131,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
                 <DialogContent>
                     <TextField
                         fullWidth
-                        label="Scientific Name*"
+                        label="Scientific Name(s) (separate by commas)*"
                         value={speciesData.scientific_name}
                         onChange={(e) => handleInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}
@@ -185,14 +185,14 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
 
                     <TextField
                         fullWidth
-                        label="Resource links (separate with commas)"
+                        label="Resource links (separate by commas)"
                         value={speciesData.resource_links}
                         onChange={(e) => handleInputChange("resource_links", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
                     <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
-                        <InputLabel id="region-label">Region (multiselect)*</InputLabel>
+                        <InputLabel id="region-label">Region(s) (multiselect)*</InputLabel>
                         <Select
                             labelId="region-label"
                             multiple
