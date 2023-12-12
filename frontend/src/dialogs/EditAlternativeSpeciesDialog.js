@@ -156,7 +156,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
 
                 <DialogContent style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <TextField
-                        label="Scientific Name(s) (separate by commas)"
+                        label="Scientific Name(s) (separate by commas)*"
                         value={Array.isArray(tempData.scientific_name) ? tempData.scientific_name.join(', ') : tempData.scientific_name}
                         onChange={(e) => handleInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
