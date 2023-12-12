@@ -503,7 +503,7 @@
   },
   {
     "scientific_name": [
-      "cynoglossum_officinale_"
+      "cynoglossum_officinale"
     ],
     "resource_links": [
       "https://bcinvasives.ca/invasives/hounds-tongue/"
@@ -1102,8 +1102,8 @@
   },
   {
     "scientific_name": [
-      "vincetoxicum_rossicum_",
-      "_vincetoxicum_nigrum"
+      "vincetoxicum_rossicum",
+      "vincetoxicum_nigrum"
     ],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/dog-strangling-vine-2/"
@@ -1147,7 +1147,9 @@
   },
   {
     "scientific_name": [
-      ""
+      "vinca_minor",
+      "hedera_helix",
+      "aegopodium_podagraria"
     ],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/invasive-ground-covers-2/"

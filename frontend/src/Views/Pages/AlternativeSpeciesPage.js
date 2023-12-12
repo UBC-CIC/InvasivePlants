@@ -18,6 +18,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SearchIcon from '@mui/icons-material/Search';
+import Spinner from 'react-bootstrap/Spinner';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import axios from "axios";
 import { boldText, capitalizeFirstWord, capitalizeEachWord, formatString } from '../../functions/helperFunctions';
@@ -50,6 +52,7 @@ function AlternativeSpeciesPage() {
   const [shouldReset, setShouldReset] = useState(false); // state of should reset 
   const [shouldSave, setShouldSave] = useState(false); // state of should save 
 
+  const [isLoading, setIsLoading] = useState(false); // loading data or not
   const [user, setUser] = useState(""); // authorized admin user
 
   // Retrieves user and alternative species on load
@@ -71,6 +74,7 @@ function AlternativeSpeciesPage() {
   // Fetches all alternative species (recursively) in the database
   const fetchAllAlternativeSpecies = async (currOffset = null) => {
     try {
+      setIsLoading(true);
       const response = await axios.get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
           curr_offset: currOffset,
@@ -102,6 +106,8 @@ function AlternativeSpeciesPage() {
       }
     } catch (error) {
       console.error("Error retrieving alternative species", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -118,6 +124,7 @@ function AlternativeSpeciesPage() {
 
   // Fetches rowsPerPage number of alternative species (pagination)
   const handleGetAlternativeSpecies = () => {
+    setIsLoading(true);
     axios
       .get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
@@ -160,6 +167,9 @@ function AlternativeSpeciesPage() {
       })
       .catch((error) => {
         console.error("Error getting alternative species", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -215,6 +225,7 @@ function AlternativeSpeciesPage() {
   // Fetches the alternative species that matches user search
   const handleGetAlternativeSpeciesAfterSearch = () => {
     let formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
+    setIsLoading(true);
 
     axios
       .get(`${API_BASE_URL}alternativeSpecies`, {
@@ -245,6 +256,9 @@ function AlternativeSpeciesPage() {
       })
       .catch((error) => {
         console.error("Error searching up alternative species", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -583,6 +597,11 @@ function AlternativeSpeciesPage() {
 
       {/* table */}
       <div style={{ width: "90%", display: "flex", justifyContent: "center", marginTop: "-20px" }}>
+        {isLoading ? (
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        ) : (
         <Table style={{ width: "100%", tableLayout: "fixed" }}>
           {/* table header */}
           <TableHead>
@@ -724,6 +743,7 @@ function AlternativeSpeciesPage() {
               ))}
           </TableBody>
         </Table>
+        )}
       </div >
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "78%" }}>

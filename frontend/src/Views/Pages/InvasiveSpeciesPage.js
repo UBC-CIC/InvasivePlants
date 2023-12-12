@@ -11,14 +11,14 @@ import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialog";
 import AddInvasiveSpeciesDialog from "../../dialogs/AddInvasiveSpeciesDialog";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import handleGetRegions from "../../functions/RegionMap"
-import Spinner from 'react-bootstrap/Spinner';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 // icons
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SearchIcon from '@mui/icons-material/Search';
+import Spinner from 'react-bootstrap/Spinner';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import axios from "axios";
 import { boldText, formatString, capitalizeFirstWord } from '../../functions/helperFunctions';
@@ -172,6 +172,7 @@ function InvasiveSpeciesPage() {
 
   // Fetches rowsPerPage number of invasive species (pagination)
   const handleGetInvasiveSpecies = () => {
+    setIsLoading(true);
     axios
       .get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
@@ -217,8 +218,12 @@ function InvasiveSpeciesPage() {
             setData(formattedData);
             setCurrOffset(response.data.nextOffset);
           });
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error("Error retrieving invasive species", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -266,6 +271,7 @@ function InvasiveSpeciesPage() {
   const handleGetInvasiveSpeciesAfterSearch = () => {
     let formattedSearchInput = searchInput.toLowerCase().replace(/ /g, '_');
     setIsLoading(true);
+
     axios
       .get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
@@ -303,9 +309,11 @@ function InvasiveSpeciesPage() {
             formattedData.length > 0 ? setStart(1) : setStart(0);
             setEnd(response.data.species.length);
           });
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error("Error searching up invasive species", error);
-      }).finally(() => {
+      })
+      .finally(() => {
         setIsLoading(false);
       })
   };

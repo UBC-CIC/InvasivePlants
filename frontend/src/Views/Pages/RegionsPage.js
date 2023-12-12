@@ -19,6 +19,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import Spinner from 'react-bootstrap/Spinner';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import {  capitalizeEachWord } from '../../functions/helperFunctions';
 import axios from "axios";
@@ -52,6 +54,7 @@ function RegionsPage() {
     const [shouldReset, setShouldReset] = useState(false); // state of should reset 
     const [shouldSave, setShouldSave] = useState(false); // state of should save 
 
+    const [isLoading, setIsLoading] = useState(false); // loading data or not
     const [user, setUser] = useState("");
 
     // Retrieves user and regions on load
@@ -74,6 +77,7 @@ function RegionsPage() {
     // Fetches all regions (recursively) in the database
     const fetchAllRegions = async (currOffset = null) => {
         try {
+            setIsLoading(true);
             const response = await axios.get(`${API_BASE_URL}region`, {
                 params: {
                     curr_offset: currOffset,
@@ -94,6 +98,8 @@ function RegionsPage() {
             }
         } catch (error) {
             console.error("Error retrieving regions", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -110,6 +116,7 @@ function RegionsPage() {
 
     // Fetches rowsPerPage number of regions (pagination)
     const handleGetRegions = () => {
+        setIsLoading(true);
         axios
             .get(`${API_BASE_URL}region`, {
                 params: {
@@ -137,6 +144,9 @@ function RegionsPage() {
             })
             .catch((error) => {
                 console.error("Error retrieving region", error);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     };
 
@@ -185,6 +195,7 @@ function RegionsPage() {
     // Fetches the regions that matches user search
     const handleGetRegionsAfterSearch = () => {
         const formattedSearchInput = capitalizeEachWord(searchInput);
+        setIsLoading(true);
 
         axios
             .get(`${API_BASE_URL}region`, {
@@ -200,6 +211,9 @@ function RegionsPage() {
             })
             .catch((error) => {
                 console.error("Error searching up region", error);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     };
 
@@ -485,6 +499,11 @@ function RegionsPage() {
 
 
             <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
+                {isLoading ? (
+                    <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                ) : (
                 <Table style={{ width: "100%", tableLayout: "fixed" }}>
                     <TableHead>
                         <TableRow>
@@ -545,6 +564,7 @@ function RegionsPage() {
                             ))}
                     </TableBody>
                 </Table>
+                )}
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginLeft: "79%" }}>
