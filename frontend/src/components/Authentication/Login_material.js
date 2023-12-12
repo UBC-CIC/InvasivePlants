@@ -266,7 +266,7 @@ function Login(props) {
                 setLoading(false);
                 setCurrentUser(user);
             } else {
-                if(user.signInUserSession.idToken.payload["cognito:groups"] != undefined && user.signInUserSession.idToken.payload["cognito:groups"].some(element => element === "ADMIN_USER")){
+                if (user.signInUserSession.idToken.payload["cognito:groups"] !== undefined && user.signInUserSession.idToken.payload["cognito:groups"].some(element => element === "ADMIN_USER")) {
                     resetStates("signedIn");
                     setLoading(false);
                 } else {

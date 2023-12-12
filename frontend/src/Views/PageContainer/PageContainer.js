@@ -6,8 +6,6 @@ import { connect } from "react-redux";
 import { updateMenuState } from "../../Actions/menuActions";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-
-// icons
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
@@ -67,34 +65,34 @@ function PageContainer(props) {
         updateMenuState(false);
     }
 
-    // {/* Example side menu is provided below */ }
-    // const list = () => (
-    //     <div
-    //         className={classes.drawerContainer}
-    //         onClick={handleSideMenuClose(false)}
-    //         onKeyDown={handleSideMenuClose(false)}
-    //     >
-    //         <List>
-    //             <ListItem button key={"home"} onClick={() => history.push("/home")}>
-    //                 <ListItemIcon><HomeIcon /></ListItemIcon>
-    //                 <ListItemText primary={"Home"} />
-    //             </ListItem>
-    //             <ListItem button key={"controlPanel"} onClick={() => history.push("/controlPanel")}>
-    //                 <ListItemIcon><DashboardIcon /></ListItemIcon>
-    //                 <ListItemText primary={"Control Panel"} />
-    //             </ListItem>
-    //         </List>
-    //         <Divider />
-    //         <List>
-    //             {['Inactive', 'Inactive', 'Inactive'].map((text, index) => (
-    //                 <ListItem button key={text}>
-    //                     <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-    //                     <ListItemText primary={text} />
-    //                 </ListItem>
-    //             ))}
-    //         </List>
-    //     </div>
-    // );
+    {/* Example side menu is provided below */ }
+    const list = () => (
+        <div
+            className={classes.drawerContainer}
+            onClick={handleSideMenuClose(false)}
+            onKeyDown={handleSideMenuClose(false)}
+        >
+            <List>
+                <ListItem button key={"home"} onClick={() => history.push("/home")}>
+                    <ListItemIcon><HomeIcon /></ListItemIcon>
+                    <ListItemText primary={"Home"} />
+                </ListItem>
+                <ListItem button key={"controlPanel"} onClick={() => history.push("/controlPanel")}>
+                    <ListItemIcon><DashboardIcon /></ListItemIcon>
+                    <ListItemText primary={"Control Panel"} />
+                </ListItem>
+            </List>
+            <Divider />
+            <List>
+                {['Inactive', 'Inactive', 'Inactive'].map((text, index) => (
+                    <ListItem button key={text}>
+                        <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                        <ListItemText primary={text} />
+                    </ListItem>
+                ))}
+            </List>
+        </div>
+    );
 
     return (<Grid container direction="column">
         {/* Navbar component, set side menu button parameter --> button updates redux state to show/hide left sidebar */}

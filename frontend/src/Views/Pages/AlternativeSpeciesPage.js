@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
-  InputAdornment, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button,
-  TextField, Typography, ThemeProvider
+  Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button,
+  Typography, ThemeProvider
 } from "@mui/material";
 import Theme from './Theme';
 import { Auth } from "aws-amplify";
