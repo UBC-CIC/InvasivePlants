@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  InputAdornment, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow,
-  Button, TextField, Typography, ThemeProvider
-} from "@mui/material";
+import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography, ThemeProvider } from "@mui/material";
 import Theme from './Theme';
 import { Auth } from "aws-amplify";
 
@@ -20,6 +17,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SearchIcon from '@mui/icons-material/Search';
+import Spinner from 'react-bootstrap/Spinner';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import axios from "axios";
 import { boldText, formatString, capitalizeFirstWord } from '../../functions/helperFunctions';
@@ -38,7 +37,6 @@ function InvasiveSpeciesPage() {
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false); // state of the editing an invasive species dialog
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false); // state of the adding an invasive species dialog
   const [searchInput, setSearchInput] = useState(""); // input of the species search bar
-  const [regionCodeName, setRegionCodeName] = useState([]); // region code name (ex. BC)
   const [regionMap, setRegionsMap] = useState({}); // maps region code name to region id
   const [deleteId, setDeleteId] = useState(null); // species_id of the row being deleted
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
@@ -55,6 +53,7 @@ function InvasiveSpeciesPage() {
   const [shouldReset, setShouldReset] = useState(false); // reset above values
   const [shouldSave, setShouldSave] = useState(false); // reset above values
 
+  const [isLoading, setIsLoading] = useState(false); // loading data or not
   const [user, setUser] = useState(""); // authorized admin user
 
   // Retrieves user, regions, invasive species, and alternative species on load
@@ -88,6 +87,7 @@ function InvasiveSpeciesPage() {
   // Fetches all invasive species (recursively) in the database
   const fetchAllInvasiveSpecies = async (currOffset = null) => {
     try {
+      setIsLoading(true);
       const response = await axios.get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
           curr_offset: currOffset,
@@ -118,6 +118,8 @@ function InvasiveSpeciesPage() {
       }
     } catch (error) {
       console.error("Error retrieving invasive species", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -170,6 +172,7 @@ function InvasiveSpeciesPage() {
 
   // Fetches rowsPerPage number of invasive species (pagination)
   const handleGetInvasiveSpecies = () => {
+    setIsLoading(true);
     axios
       .get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
@@ -215,8 +218,12 @@ function InvasiveSpeciesPage() {
             setData(formattedData);
             setCurrOffset(response.data.nextOffset);
           });
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error("Error retrieving invasive species", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -224,7 +231,7 @@ function InvasiveSpeciesPage() {
   // the current page is maintained instead of starting from page 1
   const handleGetInvasiveSpeciesAfterSave = () => {
     setCurrOffset(curr => curr - rowsPerPage);
-    setShouldSave(true)// useEffect listens for this state to change and will GET invasive species when True
+    setShouldSave(true); // useEffect listens for this state to change and will GET invasive species when True
   };
 
   // Request to GET invasive species (same page) after editing a row to see the updated data when shouldSave state changes
@@ -263,11 +270,14 @@ function InvasiveSpeciesPage() {
   // Fetches the invasive species that matches user search
   const handleGetInvasiveSpeciesAfterSearch = () => {
     let formattedSearchInput = searchInput.toLowerCase().replace(/ /g, '_');
+    setIsLoading(true);
 
     axios
       .get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
           scientific_name: formattedSearchInput,
+          region_id: regionId,
+          rows_per_page: speciesCount
         },
         headers: {
           'x-api-key': process.env.REACT_APP_X_API_KEY
@@ -287,6 +297,7 @@ function InvasiveSpeciesPage() {
 
         return Promise.all(promises)
           .then(regionResponses => {
+
             const formattedData = response.data.species.map((item, index) => {
               return {
                 ...item,
@@ -295,10 +306,16 @@ function InvasiveSpeciesPage() {
             });
 
             setDisplayData(formattedData);
+            formattedData.length > 0 ? setStart(1) : setStart(0);
+            setEnd(response.data.species.length);
           });
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error("Error searching up invasive species", error);
-      });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      })
   };
 
   // Updates editing states when editing a species
@@ -365,8 +382,8 @@ function InvasiveSpeciesPage() {
         })
         .catch((error) => {
           console.error("Error updating species", error);
-        });
-  };
+        })
+    };
   };
 
   // Opens confirmation dialog before deletion
@@ -468,6 +485,7 @@ function InvasiveSpeciesPage() {
   const handleSearch = (searchInput) => {
     if (searchInput === "") {
       setDisplayData(data);
+      setSearchInput("");
     }
   };
 
@@ -475,16 +493,8 @@ function InvasiveSpeciesPage() {
   const handleLocationSearch = (locationInput) => {
     if (locationInput === "") {
       setDisplayData(data);
-    } else {
-      const results = data.filter((item) =>
-        item.region_id.some(
-          (id) =>
-            regionMap[id] &&
-            regionMap[id].toLowerCase().trim() === locationInput.toLowerCase().trim()
-        )
-      );
-      setDisplayData(results);
-    }
+      setRegionId("");
+    } 
   }
 
   // Calculates start and end species indices of the current page of displayed data
@@ -521,14 +531,14 @@ function InvasiveSpeciesPage() {
     setPage(page - 1);
   };
 
-  // Disables the next button if there are no species left to query
+  // Disables the next button if there are no species left to query or if search by region only
   useEffect(() => {
-    if (displayData.length === 0 || displayData.length < rowsPerPage) {
+    if (displayData.length === 0 || displayData.length < rowsPerPage || regionId) {
       setDisabled(true);
     } else {
       setDisabled(false);
     }
-  }, [displayData, rowsPerPage]);
+  }, [displayData, rowsPerPage, regionId]);
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -539,8 +549,8 @@ function InvasiveSpeciesPage() {
           text={"Search by region"}
           inputData={regionMap}
           handleLocationSearch={handleLocationSearch}
-          location={regionCodeName}
-          setLocation={setRegionCodeName}
+          location={regionId}
+          setLocation={setRegionId}
         />
 
         <SearchComponent
@@ -592,6 +602,11 @@ function InvasiveSpeciesPage() {
 
       {/* table */}
       <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
+        {isLoading ? (
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        ) : (
         <Table style={{ width: "100%", tableLayout: "fixed" }}>
           {/* table header */}
           <TableHead>
@@ -701,6 +716,7 @@ function InvasiveSpeciesPage() {
               ))}
           </TableBody>
         </Table>
+        )}
       </div >
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "78%" }}>
@@ -737,6 +753,8 @@ function InvasiveSpeciesPage() {
         handleClose={() => setOpenDeleteConfirmation(false)}
         handleDelete={handleConfirmDelete}
       />
+
+
     </div >
   );
 }

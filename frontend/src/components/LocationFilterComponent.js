@@ -10,7 +10,16 @@ const LocationFilterComponent = ({ text, handleLocationSearch, inputData, locati
       <Autocomplete
         options={options}
         getOptionLabel={(option) => option} 
-        onInputChange={(e, newInputValue) => handleLocationSearch(newInputValue.toLowerCase())}
+        onInputChange={(e, newInputValue) => {
+          handleLocationSearch(newInputValue.toLowerCase());
+        }}
+        onChange={(e, selectedValue) => {
+          // Find the key associated with the selected value
+          const selectedKey = Object.keys(inputData).find(
+            (key) => inputData[key] === selectedValue
+          );
+          setLocation(selectedKey);
+        }}
         renderInput={(params) => (
           <TextField
             {...params}

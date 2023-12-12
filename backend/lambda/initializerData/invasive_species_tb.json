@@ -503,7 +503,7 @@
   },
   {
     "scientific_name": [
-      "cynoglossum_officinale_"
+      "cynoglossum_officinale"
     ],
     "resource_links": [
       "https://bcinvasives.ca/invasives/hounds-tongue/"
@@ -593,7 +593,7 @@
   },
   {
     "scientific_name": [
-      "hieracium_aurantiacum"
+      "pilosella_aurantiaca"
     ],
     "resource_links": [
       "https://bcinvasives.ca/invasives/orange-hawkweed/"
@@ -693,7 +693,7 @@
   },
   {
     "scientific_name": [
-      "tripleurospermum_perforatum_"
+      "tripleurospermum_inodorum"
     ],
     "resource_links": [
       "https://bcinvasives.ca/invasives/scentless-chamomile/"
@@ -759,7 +759,8 @@
   },
   {
     "scientific_name": [
-      "tamarix_spp._"
+      "tamarix_ramosissima",
+      "tamarix_chinensis"
     ],
     "resource_links": [
       "https://bcinvasives.ca/invasives/tamarisk/"
@@ -837,7 +838,7 @@
   },
   {
     "scientific_name": [
-      "lamiastrum_galeobdolon"
+      "lamium_galeobdolon"
     ],
     "resource_links": [
       "https://bcinvasives.ca/invasives/yellow-archangel/"
@@ -1101,8 +1102,8 @@
   },
   {
     "scientific_name": [
-      "vincetoxicum_rossicum_",
-      "_vincetoxicum_nigrum"
+      "vincetoxicum_rossicum",
+      "vincetoxicum_nigrum"
     ],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/dog-strangling-vine-2/"
@@ -1146,7 +1147,9 @@
   },
   {
     "scientific_name": [
-      ""
+      "vinca_minor",
+      "hedera_helix",
+      "aegopodium_podagraria"
     ],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/invasive-ground-covers-2/"
@@ -1157,7 +1160,8 @@
   },
   {
     "scientific_name": [
-      "lonicera_spp."
+      "lonicera_maackii",
+      "lonicera_tatarica"
     ],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/invasive-honeysuckles-2/"
@@ -1226,7 +1230,7 @@
   },
   {
     "scientific_name": [
-      "miscanthus_spp."
+      "miscanthus_sacchariflorus"
     ],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/miscanthus-2/"
