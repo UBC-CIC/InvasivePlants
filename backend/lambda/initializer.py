@@ -32,6 +32,7 @@ def readJSONFile(filepath):
 
 def handler(event, context):
     try:
+        ## TODO: Remove this on deployment
         delete_table = """
             DROP TABLE IF EXISTS regions;
             DROP TABLE IF EXISTS invasive_species;
