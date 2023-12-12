@@ -79,6 +79,12 @@ paths:
           description: search parameter for region fullname
           schema: 
             type: string
+        - in: query
+          name: region_code_name
+          required: false
+          description: search parameter for region code 
+          schema: 
+            type: string
       responses:
         "200": 
           description: Data Available
