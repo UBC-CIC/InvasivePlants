@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
-  InputAdornment, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow,
-  Button, TextField, Typography, ThemeProvider
+  Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow,
+  Button, Typography, ThemeProvider
 } from "@mui/material";
 import Theme from './Theme';
 import { Auth } from "aws-amplify";
@@ -38,7 +38,7 @@ function InvasiveSpeciesPage() {
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false); // state of the editing an invasive species dialog
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false); // state of the adding an invasive species dialog
   const [searchInput, setSearchInput] = useState(""); // input of the species search bar
-  const [regionCodeName, setRegionCodeName] = useState([]); // region code name (ex. BC)
+  const [regionCodeName, setRegionCodeName] = useState(""); // region code name (ex. BC)
   const [regionMap, setRegionsMap] = useState({}); // maps region code name to region id
   const [deleteId, setDeleteId] = useState(null); // species_id of the row being deleted
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
@@ -268,6 +268,8 @@ function InvasiveSpeciesPage() {
       .get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
           scientific_name: formattedSearchInput,
+          region_id: regionId,
+          rows_per_page: speciesCount
         },
         headers: {
           'x-api-key': process.env.REACT_APP_X_API_KEY
@@ -295,10 +297,12 @@ function InvasiveSpeciesPage() {
             });
 
             setDisplayData(formattedData);
+            formattedData.length > 0 ? setStart(1) : setStart(0);
+            setEnd(response.data.species.length);
           });
       }).catch((error) => {
         console.error("Error searching up invasive species", error);
-      });
+      })
   };
 
   // Updates editing states when editing a species
@@ -468,6 +472,7 @@ function InvasiveSpeciesPage() {
   const handleSearch = (searchInput) => {
     if (searchInput === "") {
       setDisplayData(data);
+      setSearchInput("");
     }
   };
 
@@ -475,16 +480,8 @@ function InvasiveSpeciesPage() {
   const handleLocationSearch = (locationInput) => {
     if (locationInput === "") {
       setDisplayData(data);
-    } else {
-      const results = data.filter((item) =>
-        item.region_id.some(
-          (id) =>
-            regionMap[id] &&
-            regionMap[id].toLowerCase().trim() === locationInput.toLowerCase().trim()
-        )
-      );
-      setDisplayData(results);
-    }
+      setRegionId("");
+    } 
   }
 
   // Calculates start and end species indices of the current page of displayed data
@@ -521,14 +518,14 @@ function InvasiveSpeciesPage() {
     setPage(page - 1);
   };
 
-  // Disables the next button if there are no species left to query
+  // Disables the next button if there are no species left to query or if search by region only
   useEffect(() => {
-    if (displayData.length === 0 || displayData.length < rowsPerPage) {
+    if (displayData.length === 0 || displayData.length < rowsPerPage || regionId) {
       setDisabled(true);
     } else {
       setDisabled(false);
     }
-  }, [displayData, rowsPerPage]);
+  }, [displayData, rowsPerPage, regionId]);
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -539,8 +536,8 @@ function InvasiveSpeciesPage() {
           text={"Search by region"}
           inputData={regionMap}
           handleLocationSearch={handleLocationSearch}
-          location={regionCodeName}
-          setLocation={setRegionCodeName}
+          location={regionId}
+          setLocation={setRegionId}
         />
 
         <SearchComponent
