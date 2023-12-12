@@ -29,10 +29,10 @@ exports.handler = async (event) => {
 				let curr_offset = (event.queryStringParameters != null && event.queryStringParameters.curr_offset) ? event.queryStringParameters.curr_offset : 0;
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
 
-				if (event.queryStringParameters != null && event.queryStringParameters.region_fullname) {
-					const region_fullname = "%" + event.queryStringParameters.region_fullname + "%";
+				if (event.queryStringParameters != null && event.queryStringParameters.region_code_name) {
+					const region_codeName = "%" + event.queryStringParameters.region_code_name + "%";
 					data = await sql`	SELECT * FROM regions
-										WHERE region_fullname ILIKE ${region_fullname} 
+										WHERE region_code_name ILIKE ${region_codeName} 
 										ORDER BY region_fullname 
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {
