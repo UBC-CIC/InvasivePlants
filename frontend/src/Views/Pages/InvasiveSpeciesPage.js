@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow,
-  Button, Typography, ThemeProvider
-} from "@mui/material";
+import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography, ThemeProvider } from "@mui/material";
 import Theme from './Theme';
 import { Auth } from "aws-amplify";
 
@@ -14,6 +11,8 @@ import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialog";
 import AddInvasiveSpeciesDialog from "../../dialogs/AddInvasiveSpeciesDialog";
 import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
 import handleGetRegions from "../../functions/RegionMap"
+import Spinner from 'react-bootstrap/Spinner';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // icons
 import EditIcon from '@mui/icons-material/Edit';
@@ -38,7 +37,6 @@ function InvasiveSpeciesPage() {
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false); // state of the editing an invasive species dialog
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false); // state of the adding an invasive species dialog
   const [searchInput, setSearchInput] = useState(""); // input of the species search bar
-  const [regionCodeName, setRegionCodeName] = useState(""); // region code name (ex. BC)
   const [regionMap, setRegionsMap] = useState({}); // maps region code name to region id
   const [deleteId, setDeleteId] = useState(null); // species_id of the row being deleted
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
@@ -55,6 +53,7 @@ function InvasiveSpeciesPage() {
   const [shouldReset, setShouldReset] = useState(false); // reset above values
   const [shouldSave, setShouldSave] = useState(false); // reset above values
 
+  const [isLoading, setIsLoading] = useState(false); // loading data or not
   const [user, setUser] = useState(""); // authorized admin user
 
   // Retrieves user, regions, invasive species, and alternative species on load
@@ -88,6 +87,7 @@ function InvasiveSpeciesPage() {
   // Fetches all invasive species (recursively) in the database
   const fetchAllInvasiveSpecies = async (currOffset = null) => {
     try {
+      setIsLoading(true);
       const response = await axios.get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
           curr_offset: currOffset,
@@ -118,6 +118,8 @@ function InvasiveSpeciesPage() {
       }
     } catch (error) {
       console.error("Error retrieving invasive species", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -224,7 +226,7 @@ function InvasiveSpeciesPage() {
   // the current page is maintained instead of starting from page 1
   const handleGetInvasiveSpeciesAfterSave = () => {
     setCurrOffset(curr => curr - rowsPerPage);
-    setShouldSave(true)// useEffect listens for this state to change and will GET invasive species when True
+    setShouldSave(true); // useEffect listens for this state to change and will GET invasive species when True
   };
 
   // Request to GET invasive species (same page) after editing a row to see the updated data when shouldSave state changes
@@ -263,7 +265,7 @@ function InvasiveSpeciesPage() {
   // Fetches the invasive species that matches user search
   const handleGetInvasiveSpeciesAfterSearch = () => {
     let formattedSearchInput = searchInput.toLowerCase().replace(/ /g, '_');
-
+    setIsLoading(true);
     axios
       .get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
@@ -289,6 +291,7 @@ function InvasiveSpeciesPage() {
 
         return Promise.all(promises)
           .then(regionResponses => {
+
             const formattedData = response.data.species.map((item, index) => {
               return {
                 ...item,
@@ -302,6 +305,8 @@ function InvasiveSpeciesPage() {
           });
       }).catch((error) => {
         console.error("Error searching up invasive species", error);
+      }).finally(() => {
+        setIsLoading(false);
       })
   };
 
@@ -369,8 +374,8 @@ function InvasiveSpeciesPage() {
         })
         .catch((error) => {
           console.error("Error updating species", error);
-        });
-  };
+        })
+    };
   };
 
   // Opens confirmation dialog before deletion
@@ -589,6 +594,11 @@ function InvasiveSpeciesPage() {
 
       {/* table */}
       <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
+        {isLoading ? (
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        ) : (
         <Table style={{ width: "100%", tableLayout: "fixed" }}>
           {/* table header */}
           <TableHead>
@@ -698,6 +708,7 @@ function InvasiveSpeciesPage() {
               ))}
           </TableBody>
         </Table>
+        )}
       </div >
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "78%" }}>
@@ -734,6 +745,8 @@ function InvasiveSpeciesPage() {
         handleClose={() => setOpenDeleteConfirmation(false)}
         handleDelete={handleConfirmDelete}
       />
+
+
     </div >
   );
 }
