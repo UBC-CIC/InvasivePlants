@@ -88,15 +88,12 @@ const getListOfAlternativeSpecies = (speciesDataXRegion)=>{
 // Checks if species is invasive given location
 const isInvasive = async (scientificName, location) => {
     scientificName = scientificName.toLowerCase().replace(/ /g, '_');
-    console.log("isInvasive: ", scientificName);
 
     if (location === "BC") {
         let invasiveListBC = await getInvasiveSpeciesScientificNamesBC();
-        console.log("BC invasive list: ", invasiveListBC);
         return invasiveListBC.includes(scientificName);
     } else if (location === "ON") {
         let invasiveListON = await getInvasiveSpeciesScientificNamesON();
-        console.log("ON invasive list: ", invasiveListON);
         return invasiveListON.includes(scientificName);
     }
 };
@@ -171,8 +168,6 @@ const fullIntegrationOfFlaggingSpecies = async (speciesData)=>{
         flaggedSpecies.push(...data);
     });
 
-    console.log("Flagged species:", flaggedSpecies);
-
     return flaggedSpecies;
 }
 
@@ -223,13 +218,7 @@ const dataPipelineForDB = async () => {
     const listAlternativeSpeciesForDB = await getAllAlternativePlantsForDB(speciesDataXRegion);
     alternative_species_tb.push(...listAlternativeSpeciesForDB);
 
-    console.log("regions_tb: ", regions_tb);
-    console.log("invasive_species_tb: ", invasive_species_tb);
-    console.log("alternative_species_tb: ", alternative_species_tb);
-
     // The flagged species should not be added, they need to be fixed first.
-    console.log("Flagged species: ", flaggedSpecies);
-
     return {regions_tb, invasive_species_tb, alternative_species_tb, flaggedSpecies};
 }
 

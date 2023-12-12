@@ -191,8 +191,6 @@ function Navbar(props) {
             try {
                 const returnedUser = await Auth.currentAuthenticatedUser();
                 setUser(returnedUser.attributes.email);
-                // setCurrUser(returnedUser);
-                console.log("returned user: ", returnedUser);
             } catch (e) {
                 console.log(e);
             }
@@ -228,7 +226,7 @@ function Navbar(props) {
                             /* Creates a URL path and button for each page */
                             <NavLink
                                 to={"/" + formatUrl(page)}
-                                className={`${classes.inactiveLink} ${currentPage === page.toLowerCase() ? classes.activeLink : ''}`}
+                                className={`${classes.inactiveLink} ${currentPage.toLowerCase() === page.toLowerCase().replace(/\s/g, '') ? classes.activeLink : ''}`}
                             >
                                 <Typography className={classes.title} variant="h6" component={"h1"}>
                                     <span

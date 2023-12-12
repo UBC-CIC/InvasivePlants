@@ -65,7 +65,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                 <DialogContent style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
                     <TextField
-                        label="Scientific Name"
+                        label="Scientific Name(s) (separate by commas)*"
                         value={
                             Array.isArray(tempData.scientific_name)
                                 ? tempData.scientific_name.join(", ")
@@ -131,13 +131,13 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                     />
 
                     <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
-                        <InputLabel id="region-label">Region (multiselect)</InputLabel>
+                        <InputLabel id="region-label">Region(s) (multiselect)*</InputLabel>
                         <Select
                             labelId="region-label"
                             multiple
                             value={tempData.region_id}
                             onChange={(e) => handleInputChange("region_code_name", e.target.value)}
-                            label="Region (multiselect)"
+                            label="Region(s) (multiselect)*"
                             renderValue={(selected) => {
                                 const selectedNames = selected.map(id => regionMap[id]);
                                 return selectedNames.join(", ");

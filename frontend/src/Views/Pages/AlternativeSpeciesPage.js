@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
-  InputAdornment, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button,
-  TextField, Typography, ThemeProvider
+  Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button,
+  Typography, ThemeProvider
 } from "@mui/material";
 import Theme from './Theme';
 import { Auth } from "aws-amplify";
@@ -56,7 +56,6 @@ function AlternativeSpeciesPage() {
   useEffect(() => {
     retrieveUser();
     fetchAllAlternativeSpecies();
-    console.log("finished loading alternative species")
   }, [])
 
   // Gets current authorized user
@@ -64,7 +63,6 @@ function AlternativeSpeciesPage() {
     try {
       const returnedUser = await Auth.currentAuthenticatedUser();
       setUser(returnedUser);
-      console.log("current user: ", returnedUser);
     } catch (e) {
       console.log("error getting user: ", e);
     }
@@ -146,8 +144,6 @@ function AlternativeSpeciesPage() {
           };
         });
 
-        console.log("retrieved alternative species data:", formattedData);
-
         // Resets pagination details
         // This will clear the last species id history and display the first page
         if (shouldReset) {
@@ -203,7 +199,6 @@ function AlternativeSpeciesPage() {
             };
           });
 
-          console.log("retrieved alternative species data:", formattedData);
           setDisplayData(formattedData);
           setCurrOffset(response.data.nextOffset);
         })
@@ -220,7 +215,6 @@ function AlternativeSpeciesPage() {
   // Fetches the alternative species that matches user search
   const handleGetAlternativeSpeciesAfterSearch = () => {
     let formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
-    console.log("formatted search input: ", formattedSearchInput);
 
     axios
       .get(`${API_BASE_URL}alternativeSpecies`, {
@@ -247,7 +241,6 @@ function AlternativeSpeciesPage() {
           };
         });
 
-        console.log("Alternative species retrieved successfully", formattedData);
         setDisplayData(formattedData);
       })
       .catch((error) => {
@@ -295,8 +288,6 @@ function AlternativeSpeciesPage() {
         common_name: commonNames
       };
 
-      console.log("formatted data", formattedData);
-
       // Maps species_id to image_url if links exist and is not empty
       const plantImages = (formattedData.image_links && formattedData.image_links.length > 0) ?
         formattedData.image_links.map(link => ({ species_id: formattedData.species_id, image_url: link })) : null;
@@ -324,7 +315,6 @@ function AlternativeSpeciesPage() {
                 }
               })
               .then(response => {
-                console.log("Images added successfully", response.data);
                 if (start > rowsPerPage) {
                   handleGetAlternativeSpeciesAfterSave();
                 } else {
@@ -349,7 +339,6 @@ function AlternativeSpeciesPage() {
           }
         })
         .then((response) => {
-          console.log("alternative species updated successfully", response.data);
           if (start > rowsPerPage) {
             handleGetAlternativeSpeciesAfterSave();
           } else {
@@ -371,7 +360,6 @@ function AlternativeSpeciesPage() {
 
   // Deletes alternative species from the table
   const handleConfirmDelete = () => {
-    console.log("alt species id to delete: ", deleteId);
     retrieveUser();
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
@@ -386,7 +374,6 @@ function AlternativeSpeciesPage() {
           setSpeciesCount(prevCount => prevCount - 1)
           setAllAlternativeSpecies(prevSpecies => prevSpecies.filter(species => species.species_id !== deleteId));
           setShouldReset(true);
-          console.log("alternative species deleted successfully", response.data);
         })
         .catch((error) => {
           console.error("Error deleting alternative species", error);
@@ -408,8 +395,6 @@ function AlternativeSpeciesPage() {
       )
     }
 
-    console.log("adding a new alternative species: ", newSpeciesData);
-
     retrieveUser();
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
@@ -421,8 +406,6 @@ function AlternativeSpeciesPage() {
         }
       })
       .then((response) => {
-        console.log("Alternative species added successfully", response);
-
         // Ensures that if a species has multiple scientific names, each are separately displayed      
         const formattedData = response.data.flatMap(item => {
           return item.scientific_name.map(name => {
@@ -456,11 +439,9 @@ function AlternativeSpeciesPage() {
         }
 
         const allPlantImages = plantsWithImgLinks.concat(plantsWithImgFiles);
-        console.log("merged plants: ", allPlantImages);
 
         // Uploads all plant images 
         allPlantImages.forEach((plantData) => {
-          console.log("plant: ", plantData);
           axios
             .post(API_BASE_URL + "plantsImages", plantData, {
               headers: {
@@ -468,7 +449,6 @@ function AlternativeSpeciesPage() {
               }
             })
             .then((response) => {
-              console.log("all images added successfully", response.data);
               setShouldReset(true);
               setOpenAddSpeciesDialog(false);
             })
@@ -609,7 +589,7 @@ function AlternativeSpeciesPage() {
             <TableRow>
               <TableCell style={{ width: "8%" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  Scientific Name
+                  Scientific Name(s)
                 </Typography>
               </TableCell>
               <TableCell style={{ width: "10%" }}>
