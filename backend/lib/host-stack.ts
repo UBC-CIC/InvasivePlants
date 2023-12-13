@@ -269,10 +269,10 @@ export class HostStack extends Stack {
         });
 
         // Attach WAF to ALB
-        const WAFALB = new wafv2.CfnWebACLAssociation(this,'Attach-WAF-ALB', {
-            resourceArn: ALBFargateService.loadBalancer.loadBalancerArn,
-            webAclArn: WAFwebACL.attrArn,
-        });
+        // const WAFALB = new wafv2.CfnWebACLAssociation(this,'Attach-WAF-ALB', {
+        //     resourceArn: ALBFargateService.loadBalancer.loadBalancerArn,
+        //     webAclArn: WAFwebACL.attrArn,
+        // });
 
         // Attach WAF to API
         const WAFAPI = new wafv2.CfnWebACLAssociation(this,'Attach-WAF-API', {
