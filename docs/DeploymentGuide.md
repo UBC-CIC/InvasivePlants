@@ -25,7 +25,7 @@ If you are on a Windows device, it is recommended to install the [Windows Subsys
     - [Step 2: Upload Database Secrets](#step-2-upload-database-secrets)
     - [Step 3: CDK Deployment](#step-3-cdk-deployment)
     - [Extra: Taking down the deployed stacks](#extra-taking-down-the-deployed-stacks)
-    
+
 ## Step 1: Clone The Repository
 
 First, clone the GitHub repository onto your machine. To do this:
@@ -140,6 +140,7 @@ Once a repository is created, we can create and push Docker images. Assume you a
 1. Go to ECR in AWS Console
 2. Look for `invasive-plants-repo` repository
 3. Click on `View push commands` and follow the instruction
+4. Make sure you have Docker daemon running
 
 This is a sample of the `View push commands`:
 
@@ -201,4 +202,6 @@ After deployment is completed, look for the following in the terminal:
 
 ### Extra: Taking down the deployed stacks
 
-To take down the deployed stack for a fresh redeployment in the future, navigate to AWS Cloudformation, click on the stack(s), and hit Delete. Please wait for the stacks in each step to be properly deleted before deleting the stack downstream.
+To take down the deployed stack for a fresh redeployment in the future, navigate to AWS Cloudformation, click on the stack(s), and hit Delete. Please wait for the stacks in each step to be properly deleted before deleting the stack downstream. 
+
+Also make sure to delete secrets in Secrets Manager and a stack in the `us-east-1`. 
