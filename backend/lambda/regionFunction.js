@@ -21,6 +21,11 @@ exports.handler = async (event) => {
 		sql = await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT); 
 	}
 	
+	// Function to format region full names (lowercase and spaces replaced with "_")
+	const formatRegionName = (name) => {
+		return name.toLowerCase().replace(/\s+/g, '_');
+	};
+
 	let data;
 	try {
 		const pathData = event.httpMethod + " " + event.resource;
@@ -73,12 +78,15 @@ exports.handler = async (event) => {
 					if (bd.region_code_name &&
 						bd.region_fullname &&
 						bd.country_fullname) {
-						
+
+						// Ensure that fields are formatted correctly
+						const formattedRegionName = formatRegionName(bd.region_fullname);
+
 						// Optional parameters
 						const geographic_coordinate = (bd.geographic_coordinate) ? bd.geographic_coordinate : "";
 						data = await sql`
 							INSERT INTO regions (region_code_name, region_fullname, country_fullname, geographic_coordinate)
-							VALUES (${bd.region_code_name}, ${bd.region_fullname}, ${bd.country_fullname}, ${geographic_coordinate})
+							VALUES (${bd.region_code_name.toUpperCase()}, ${formattedRegionName}, ${bd.country_fullname.toLowerCase()}, ${geographic_coordinate})
 							RETURNING *;
 						`;
 						
@@ -118,14 +126,18 @@ exports.handler = async (event) => {
 						bd.region_fullname &&
 						bd.country_fullname) {
 
+						// Ensure that fields are formatted correctly
+						const formattedRegionName = formatRegionName(bd.region_fullname);
+
 						// Optional parameters
 						const geographic_coordinate = (bd.geographic_coordinate) ? bd.geographic_coordinate : "";
+
 						data = await sql`
 							UPDATE regions
-							SET region_code_name = ${bd.region_code_name}, 
-								region_fullname = ${bd.region_fullname}, 
-								country_fullname = ${bd.country_fullname},
-								geographic_coordinate = ${bd.geographic_coordinate}
+							SET region_code_name = ${bd.region_code_name.toUpperCase()}, 
+								region_fullname = ${formattedRegionName}, 
+								country_fullname = ${bd.country_fullname.toLowerCase()},
+								geographic_coordinate = ${geographic_coordinate}
 							WHERE region_id = ${event.pathParameters.region_id}
 							RETURNING *;
 						`;
