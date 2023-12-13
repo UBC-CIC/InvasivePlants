@@ -163,8 +163,10 @@ def handler(event, context):
                     SELECT species_id FROM alternative_species WHERE %s = ANY(scientific_name);
                 """
                 cursor.execute(alternativeSpecies_idList, (sci_name,))
-                speciesId = cursor.fetchone()[0]
-                alternativeSpecies_id.append(speciesId)
+                data = cursor.fetchone()
+                if data is not None:
+                    speciesId = data[0]
+                    alternativeSpecies_id.append(speciesId)
             
             # Add invasive species into invasive_species table
             addInvasiveSpecies = """
