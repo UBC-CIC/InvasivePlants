@@ -106,8 +106,8 @@ function RegionsPage() {
     // Updates search bar dropdown when regions are added or deleted
     useEffect(() => {
         const updatedRegionFullNames = allRegions.map(region => ({
-            label: region.region_fullname,
-            value: region.region_fullname
+            label: capitalizeEachWord(region.region_fullname),
+            value: capitalizeEachWord(region.region_fullname)
         }));
 
         setAllRegionNames(updatedRegionFullNames);
@@ -138,8 +138,17 @@ function RegionsPage() {
                     setShouldReset(false);
                 }
 
-                setDisplayData(response.data.regions);
-                setData(response.data.regions);
+                const formattedData = response.data.regions.map(item => {
+                    return {
+                        ...item,
+                        region_fullname: capitalizeEachWord(item.region_fullname),
+                        region_code_name: item.region_code_name.toUpperCase(),
+                        country_fullname: capitalizeEachWord(item.country_fullname)
+                    };
+                });
+
+                setDisplayData(formattedData);
+                setData(formattedData);
                 setCurrOffset(response.data.nextOffset);
             })
             .catch((error) => {
@@ -194,7 +203,7 @@ function RegionsPage() {
 
     // Fetches the regions that matches user search
     const handleGetRegionsAfterSearch = () => {
-        const formattedSearchInput = capitalizeEachWord(searchInput);
+        const formattedSearchInput = searchInput.toLowerCase().replace(/\s+/g, '_');;
         setIsLoading(true);
 
         axios
@@ -207,7 +216,15 @@ function RegionsPage() {
                 }
             })
             .then((response) => {
-                setDisplayData(response.data.regions);
+                const formattedData = response.data.regions.map(item => {
+                    return {
+                        ...item,
+                        region_fullname: capitalizeEachWord(item.region_fullname),
+                        region_code_name: item.region_code_name.toUpperCase(),
+                        country_fullname: capitalizeEachWord(item.country_fullname)
+                    };
+                });
+                setDisplayData(formattedData);
             })
             .catch((error) => {
                 console.error("Error searching up region", error);

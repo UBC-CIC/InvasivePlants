@@ -145,7 +145,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
         <DialogContent>
           <TextField
             fullWidth
-            label="Scientific Name*"
+            label="Scientific Name(s)*"
             value={speciesData.scientific_name}
             onChange={(e) => handleInputChange("scientific_name", e.target.value)}
             sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}
