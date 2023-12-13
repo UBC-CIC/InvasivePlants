@@ -8,10 +8,41 @@ Once you have deployed the solution, the following user guide will help you navi
 
 | Index                              | Description                                                |
 | :--------------------------------- | :----------------------------------------------------------|
+| [Login](#login) | Creating an Admin user and logging in  |
 | [Invasive Species](#invasive-species) | Walkthrough of the Invasive Species page   |
 | [Alternative Species](#alternative-species) | Walkthrough of the Alternative Species page   |
 | [Regions](#regions)  | Walkthrough of the Regions page |
 
+## Login
+If you have already logged in, you can continue to [Invasive Species](#invasive-species). Otherwise, the following section will walkthrough creating an Admin user and logging in to the Admin page.
+
+In the AWS Console:
+
+1. Search for Amazon Cognito in the search bar and click on it
+![cognito console search](./images/login/cognito_console.png)
+
+2. Select the ```invasivePlantsUserPool``` user pool
+![user pool](./images/login/user_pool.png)
+
+3. Next, we will create a user. Under Users, click on ```Create user``` .
+![create user button](./images/login/create_user_button.png)
+
+4. Under User information:
+   - select ```Send an email invitation```
+   - input the user's email address under the Email address field and mark as verified 
+   - select ```Generate a password```
+   - Click ```Create user```
+![create user button](./images/login/create_user.png)
+
+5. Next, we will add this user to the ```ADMIN_USER``` group. Click into the newly added user, then under Group memberships, click on ```Add user to a group```
+![add user to group button](./images/login/add_user_to_group_button.png)
+
+6. Select the ```ADMIN_USER``` group then click ```Add```
+![add user to group](./images/login/add_user_to_group.png)
+
+Great! Now you can login with the newly created admin user. Check your email for the temporary password to sign in. Upon sign in, you will be asked to change your password. 
+![login page](./images/login/login_page.png)
+<br>
 
 ## Invasive Species
 The Invasive Species page is the default page after login. This page displays a table of the invasive species available in the database with information including:

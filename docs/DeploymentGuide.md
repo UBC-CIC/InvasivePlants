@@ -8,6 +8,8 @@ Before you deploy, you must have the following installed on your device:
 - [GitHub Account](https://github.com/)
 - [AWS CLI](https://aws.amazon.com/cli/)
 - [AWS CDK](https://docs.aws.amazon.com/cdk/latest/guide/cli.html)
+- [Docker](https://www.docker.com/products/docker-desktop/)
+- an IDE, such as [VS Code](https://code.visualstudio.com/download)
 
 If you are on a Windows device, it is recommended to install the [Windows Subsystem For Linux](https://docs.microsoft.com/en-us/windows/wsl/install), which lets you run a Linux terminal on your Windows computer natively. Some of the steps will require its use. [Windows Terminal](https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701) is also recommended for using WSL.
 
@@ -24,6 +26,9 @@ If you are on a Windows device, it is recommended to install the [Windows Subsys
     - [Step 1: Install Dependencies](#step-1-install-dependencies)
     - [Step 2: Upload Database Secrets](#step-2-upload-database-secrets)
     - [Step 3: CDK Deployment](#step-3-cdk-deployment)
+      - [1. Create Elastic Container Registry (ECR)](#1-create-elastic-container-registry-ecr)
+      - [2. Create and Push Docker Image to ECR](#2-create-and-push-docker-image-to-ecr)
+      - [3. Deploy all stacks](#3-deploy-all-stacks)
     - [Extra: Taking down the deployed stacks](#extra-taking-down-the-deployed-stacks)
 
 ## Step 1: Clone The Repository
@@ -44,8 +49,19 @@ The code should now be in the folder you created. Navigate into the root folder 
 cd InvasivePlants
 ```
 
+To open the repo in VS Code, run:
+```bash
+code .
+```
+
 ## Step 2: Local Deployment
-For local deployment, we only need to add an ```.env``` file at ```InvasivePlants/frontend/```. Note that eventhough this is a local deployment, one still need to deploy all other CDK stacks except ```hostStack```. The ```.env``` file should have the following values:
+For local deployment, we only need to add an ```.env``` file in ```InvasivePlants/frontend/```. Assuming you are in ```InvasivePlants```, you can navigate into this directory by running
+
+```bash
+cd frontend
+```
+
+Note that even though this is a local deployment, one still need to deploy all other CDK stacks except ```hostStack```. The ```.env``` file should have the following values:
 
 ```bash
 REACT_APP_USERPOOL_ID
@@ -56,12 +72,13 @@ REACT_APP_X_API_KEY
 REACT_APP_S3_BASE_URL
 ```
 
-Then, one can install all packages using the command below at ```InvasivePlants/frontend/```, 
+Then, one can install all packages at ```InvasivePlants/frontend/``` using: 
+
 ```bash
 npm install
 ```
 
-Afterward, one can run the application by running,
+Afterward, one can run the application by running:
 ```bash
 npm start
 ```
@@ -70,11 +87,16 @@ npm start
 
 ![Network Diagram](./assets/Architecture-Diagram-Simplify.png)
 
-It's time to set up everything that goes on behind the scenes and host it! For more information on how the backend works, feel free to refer to the Architecture Deep Dive, but an understanding of the backend is not necessary for deployment.
+It's time to set up everything that goes on behind the scenes and host it! For more information on how the backend works, feel free to refer to the [Architecture Deep Dive](./ArchitectureDeepDive.md), but an understanding of the backend is not necessary for deployment.
 
 ### Step 1: Install Dependencies
 
-The first step is to get into the backend folder. Assuming you are currently still inside the root folder `InvasivePlants/`, this can be done with the following commands:
+The first step is to get into the backend folder. Assuming you are currently still in `InvasivePlants/frontend` with the application running, you can terminate the application using ```Ctrl + C```. To navigate back to the root directory, run:
+
+```bash
+cd ..
+```
+then navigate to `InvasivePlants/backend` using:
 
 ```bash
 cd backend
@@ -87,7 +109,7 @@ npm install
 ```
 
 ### Step 2: Upload Database Secrets
-You would have to supply a custom database username when deploying the solution to increase security. Run the following command and ensure you replace DB-USERNAME with the custom name of your choice.
+You would have to supply a custom database username when deploying the solution to increase security. Run the following command and ensure you replace YOUR-DB-USERNAME with the custom name of your choice.
 
 ```bash
 aws secretsmanager create-secret \
@@ -120,7 +142,6 @@ For CDK deployment, we are going to do the following:
 2. [Create a Docker image and push it to ECR](#2-create-and-push-docker-image-to-ecr)
 3. [Deploy all stacks](#3-deploy-all-stacks)
 
-Make sure to fill necessary information in the ```<>```. 
 
 Most of the commands assume you are in ```InvasivePlants/backend/``` directory unless the instruction says to change the directory.
 
@@ -136,17 +157,17 @@ Run the following command to create an ECR repository.
 cdk deploy ECRStack --profile <aws-profile-name>
 ```
 #### 2. Create and Push Docker Image to ECR
-Once a repository is created, we can create and push Docker images. Assume you are in ```InvasivePlants``` directory.
+Once a repository is created, we can create and push Docker images. Navigate back to the ```InvasivePlants``` directory.
 1. Go to ECR in AWS Console
 2. Look for `invasive-plants-repo` repository
-3. Click on `View push commands` and follow the instruction
+3. Click on `View push commands` and follow the instructions*
 4. Make sure you have Docker daemon running
 
 This is a sample of the `View push commands`:
 
 ![Push commands for ECR](./images/depGuide/push_ecr.png)
 
-Note, in step 1 of the command, you can specify which profile to use by specifying in the following: 
+*Note: in Step 1 of the instructions, you can specify which profile to use by specifying in the following: 
 
 ```bash
 aws ecr get-login-password --region ca-central-1 --profile <aws-profile-name>| docker login --username AWS --password-stdin <link-to-ecr>
@@ -155,17 +176,17 @@ aws ecr get-login-password --region ca-central-1 --profile <aws-profile-name>| d
 #### 3. Deploy all stacks
 
 This step will create the following CloudFormation stacks:
- - `Cloudfront-WAFWebACL` - create a CLOUDFRONT Web ACL in `us-east-1` region
- - `VpcStack` - create a VPC
- - `FunctionalityStack` - create fuctional services like Cognito, S3, Cloudfront distribution
- - `DBStack` - create RDS database 
- - `DBFlowStack` - loading existing data to database
- - `APIStack` - create an API Gateway as well has Lambda that attach with each endpoints
- - `hostStack` - launch admin page to ECS fronted by CloudFront (for local deployment, you can skip this step)
+ - `Cloudfront-WAFWebACL` - creates a CLOUDFRONT Web ACL in `us-east-1` region
+ - `VpcStack` - creates a VPC
+ - `FunctionalityStack` - creates fuctional services like Cognito, S3, Cloudfront distribution
+ - `DBStack` - creates RDS database 
+ - `DBFlowStack` - loads existing data to database
+ - `APIStack` - creates an API Gateway and Lambdas that attach with each endpoints
+ - `hostStack` - launches the admin page to ECS fronted by CloudFront (for local deployment, you can skip this step)
 
-Assume you are in ```/InvasivePlants/backend/``` directory. This deployment will take time. If your login session is short, you can always deploy one stack at a time in the order above.
+Navigate to the ```/InvasivePlants/backend/``` directory. This deployment will take time. If your login session is short, you can always deploy one stack at a time in the order above.
 
-The deployment command for the `hostStack` requires a parameter calls `prefixListID` which is use for ALB security group. This value can be obtained from the table below, based on the region that the `hostStack` deploys to.
+The deployment command for the `hostStack` requires a parameter calls `prefixListID` which is used for ALB security group. This value can be obtained from the table below, based on the region that the `hostStack` deploys to.
 
 | Region Code     | PL Code      |
 |-----------------|--------------|
@@ -191,7 +212,7 @@ Then, use the command below and pass in the `prefixListID` value.
 cdk deploy --all --parameters hostStack:prefixListID=<your-region-preFixListId> --profile <aws-profile-name>
 ```
 
-Example, the `prefixListID` for `ca-central-1` is `pl-38a64351`, then we have the following command:
+For example, the `prefixListID` for `ca-central-1` is `pl-38a64351`, so we have the following command:
 
 ```bash
 cdk deploy --all --parameters hostStack:prefixListID=pl-38a64351 --profile AWSProfilSSO
@@ -204,4 +225,4 @@ After deployment is completed, look for the following in the terminal:
 
 To take down the deployed stack for a fresh redeployment in the future, navigate to AWS Cloudformation, click on the stack(s), and hit Delete. Please wait for the stacks in each step to be properly deleted before deleting the stack downstream. 
 
-Also make sure to delete secrets in Secrets Manager and a stack in the `us-east-1`. 
+Also make sure to delete secrets in Secrets Manager and a stack in `us-east-1`. 
