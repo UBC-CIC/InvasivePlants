@@ -96,3 +96,35 @@ This will open up a dialog with the selected species' information that can be ed
 The steps for deleting an alternative species are the same as [deleting an invasive species](#deleting-an-invasive-species). 
 
 ## Regions
+The Regions page displays a table of the regions available in the database. These are the regions available to be selected for each [invasive species](#invasive-species) as the regions in which the species is invaisve. The table includes the following information:
+
+- **Region** - the full name of the region
+- **Region Code** -- the abbrieviated name/code representing the region
+- **Country** - the country in which the region resides in
+- **Geographic Coordinates (latitude, longitude)** - the latitude and longitude of the region. The current data was taken from this [website](https://www.latlong.net/category/provinces-40-60.html)
+
+![regions page](./images/regions/alternative_species_page.png)
+
+
+At the top of the page, the administrator can search up a region species by its name. The administrator can also select the number of species to display on each page. 
+
+
+### Adding a region
+To add an alternative species, click on the button below the search filters. 
+![add region button](./images/regions/add_alternative_button.png)
+
+This will open up a dialog with fields to complete. The fields marked with an asterisk are mandatory, the rest are optional. 
+
+![add region dialog](./images/regions/add_alternative_dialog.png)
+
+### Editing a region
+To edit a region, click on the edit icon in the Actions column for the region you want to edit, just like when [editing an invasive species](#editing-an-invasive-species).
+
+
+This will open up a dialog with the selected region's information that can be edited. Again, mandatory fields are marked with an asterisk.
+
+![edit region dialog](./images/regions/edit_alternative_dialog.png)
+
+
+### Deleting a region
+The steps for deleting a region are the same as [deleting an invasive species](#deleting-an-invasive-species). 

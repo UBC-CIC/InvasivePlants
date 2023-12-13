@@ -21,7 +21,7 @@ exports.handler = async (event) => {
 		sql = await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT); 
 	}
 
-	// Function to format scientific names (capitalized and spaces replaced with "_")
+	// Function to format scientific names (lowercase and spaces replaced with "_")
 	const formatScientificName = (name) => {
 		return name.toLowerCase().replace(/\s+/g, '_');
 	};
