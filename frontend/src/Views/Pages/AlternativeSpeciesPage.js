@@ -33,7 +33,6 @@ function AlternativeSpeciesPage() {
   const [speciesCount, setSpeciesCount] = useState(0); // number of alternative species
   const [data, setData] = useState([]); // original data
   const [displayData, setDisplayData] = useState([]); // data displayed in the table
-  const [editingSpeciesId, setEditingSpeciesId] = useState(null); // species_id of the row being edited
   const [tempEditingData, setTempEditingData] = useState({}); // temp data of the species being edited
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false); // state of the editing an alternative species dialog
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false); // state of the adding a new alternative species dialog
@@ -263,8 +262,7 @@ function AlternativeSpeciesPage() {
   };
 
   // Updates editing states when editing a species
-  const startEdit = (species_id, rowData) => {
-    setEditingSpeciesId(species_id);
+  const startEdit = (rowData) => {
     setTempEditingData(rowData);
     setOpenEditSpeciesDialog(true);
   };
@@ -272,7 +270,6 @@ function AlternativeSpeciesPage() {
   // Updates states after editing a species and saving 
   const handleFinishEditingRow = () => {
     setOpenEditSpeciesDialog(false);
-    setEditingSpeciesId(null);
   };
 
   // Updates changes to the database on save
@@ -727,7 +724,7 @@ function AlternativeSpeciesPage() {
                     {/* edit/delete actions */}
                     <TableCell>
                       <Tooltip title="Edit"
-                        onClick={() => startEdit(row.species_id, row)}>
+                        onClick={() => startEdit(row)}>
                         <IconButton><EditIcon /></IconButton>
                       </Tooltip>
                       <Tooltip

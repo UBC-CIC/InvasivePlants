@@ -35,7 +35,6 @@ function RegionsPage() {
     const [country, setCountry] = useState(""); // current country
     const [data, setData] = useState([]); // original data
     const [displayData, setDisplayData] = useState([]); // data displayed in the table
-    const [editingRegionId, setEditingRegionId] = useState(null);// region_id of the row being edited
     const [tempData, setTempData] = useState({}); // temp data of the region being edited
     const [openEditRegionDialog, setOpenEditRegionDialog] = useState(false); // state of the editing an region dialog
     const [openAddRegionDialog, setOpenAddRegionDialog] = useState(false); // state of the adding a new region dialog
@@ -235,8 +234,7 @@ function RegionsPage() {
     };
 
     // Updates editing states when editing a region
-    const startEdit = (region_id, rowData) => {
-        setEditingRegionId(region_id);
+    const startEdit = (rowData) => {
         setTempData(rowData);
         setOpenEditRegionDialog(true);
     };
@@ -244,7 +242,6 @@ function RegionsPage() {
     // Updates states after editing a region and saving 
     const handleFinishEditingRow = () => {
         setOpenEditRegionDialog(false);
-        setEditingRegionId(null);
     };
 
     // Updates changes to the database on save
@@ -563,7 +560,7 @@ function RegionsPage() {
                                         <TableCell>{row.geographic_coordinate}</TableCell>
                                         <TableCell>
                                             <Tooltip title="Edit"
-                                                onClick={() => startEdit(row.region_id, row)}>
+                                                onClick={() => startEdit(row)}>
                                                 <IconButton>
                                                     <EditIcon />
                                                 </IconButton>

@@ -1,7 +1,7 @@
 import { Autocomplete, Box, TextField } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
-// Textfield that displays a dropdown of locations
+// TextField that displays a dropdown of locations
 const LocationFilterComponent = ({ text, handleLocationSearch, inputData, location, setLocation }) => {
   const options = Object.values(inputData);
 
