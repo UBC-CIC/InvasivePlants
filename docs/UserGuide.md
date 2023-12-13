@@ -35,7 +35,7 @@ The following image shows the result of searching up the species *Digitalis purp
 
 ### Adding an invasive species
 To add an invasive species, click on the button below the search filters. 
-![add invasive species button](./images/invasive/add_button.png)
+![add invasive species button](./images/invasive/add_invasive_button.png)
 
 This will open up a dialog with fields to complete. The fields marked with an asterisk are mandatory, the rest are optional. 
 ![add invasive species dialog](./images/invasive/add_invasive_species_dialog.png)
