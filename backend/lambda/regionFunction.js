@@ -83,7 +83,8 @@ exports.handler = async (event) => {
 						const formattedRegionName = formatRegionName(bd.region_fullname);
 
 						// Optional parameters
-						const geographic_coordinate = (bd.geographic_coordinate) ? bd.geographic_coordinate : "";
+						const geographic_coordinate = (bd.geographic_coordinate === "," || bd.geographic_coordinate === null) ? "" : bd.geographic_coordinate;
+
 						data = await sql`
 							INSERT INTO regions (region_code_name, region_fullname, country_fullname, geographic_coordinate)
 							VALUES (${bd.region_code_name.toUpperCase()}, ${formattedRegionName}, ${bd.country_fullname.toLowerCase()}, ${geographic_coordinate})
@@ -130,7 +131,8 @@ exports.handler = async (event) => {
 						const formattedRegionName = formatRegionName(bd.region_fullname);
 
 						// Optional parameters
-						const geographic_coordinate = (bd.geographic_coordinate) ? bd.geographic_coordinate : "";
+						// const geographic_coordinate = (bd.geographic_coordinate) ? bd.geographic_coordinate : "";
+						const geographic_coordinate = (bd.geographic_coordinate === "," || bd.geographic_coordinate === null) ? "" : bd.geographic_coordinate;
 
 						data = await sql`
 							UPDATE regions
