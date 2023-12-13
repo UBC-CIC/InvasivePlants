@@ -32,14 +32,14 @@ def readJSONFile(filepath):
 
 def handler(event, context):
     try:
-        ## TODO: Remove this on deployment
-        delete_table = """
-            DROP TABLE IF EXISTS regions;
-            DROP TABLE IF EXISTS invasive_species;
-            DROP TABLE IF EXISTS alternative_species;
-            DROP TABLE IF EXISTS images;
-            DROP TABLE IF EXISTS save_lists;
-        """
+        ## Could be used for test
+        # delete_table = """
+        #     DROP TABLE IF EXISTS regions;
+        #     DROP TABLE IF EXISTS invasive_species;
+        #     DROP TABLE IF EXISTS alternative_species;
+        #     DROP TABLE IF EXISTS images;
+        #     DROP TABLE IF EXISTS save_lists;
+        # """
 
          # Execute table creation
         cursor.execute(delete_table)
@@ -90,21 +90,6 @@ def handler(event, context):
                 "list_name" varchar,
                 "saved_species" varchar[]
             );
-        """
-
-        relations = """
-            ALTER TABLE invasive_species DROP CONSTRAINT IF EXISTS invasive_species_region_id_fkey;
-            ALTER TABLE invasive_species ADD CONSTRAINT invasive_species_region_id_fkey
-                FOREIGN KEY (region_id) REFERENCES regions (region_id);
-
-            ALTER TABLE invasive_species DROP CONSTRAINT IF EXISTS invasive_species_alternative_species_fkey;
-            ALTER TABLE invasive_species ADD CONSTRAINT invasive_species_alternative_species_fkey
-                FOREIGN KEY (alternative_species) REFERENCES alternative_species (species_id);
-
-            ALTER TABLE images DROP CONSTRAINT IF EXISTS images_species_id_fkey;
-            ALTER TABLE images ADD CONSTRAINT images_species_id_fkey
-                FOREIGN KEY (species_id) REFERENCES alternative_species (species_id)
-                ON DELETE CASCADE;
         """
 
         # Execute table creation
