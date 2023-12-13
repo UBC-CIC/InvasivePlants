@@ -85,7 +85,7 @@ npm start
 
 ## Step 3: Cloud Deployment
 
-![Network Diagram](./assets/Architecture-Diagram-Simplify.png)
+![Network Diagram](./images/networkDiagram/architecture_diagram.svg)
 
 It's time to set up everything that goes on behind the scenes and host it! For more information on how the backend works, feel free to refer to the [Architecture Deep Dive](./ArchitectureDeepDive.md), but an understanding of the backend is not necessary for deployment.
 
