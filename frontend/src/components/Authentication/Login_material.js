@@ -123,7 +123,6 @@ function Login(props) {
     const [passwordUnmatchError, setPasswordUnmatchError] = useState(false);
     const [confirmPasswordString, setConfirmPasswordString] = useState('');
 
-
     const classes = useStyles();
 
     useEffect(() => {
@@ -304,7 +303,7 @@ function Login(props) {
             const { password } = formState;
             setLoading(true);
             await Auth.completeNewPassword(currentUser, password);
-            resetStates("signedIn");
+            updateLoginState("signIn") // require user to login again after resetting password
             setLoading(false);
         } catch (e) {
             setLoading(false);
@@ -750,7 +749,9 @@ function Login(props) {
                                     </Grid>
                                     <BackAndSubmitButtons
                                         backAction={() => resetStates("signIn")}
-                                        submitAction={setNewPassword}
+                                        submitAction={() => {
+                                            setNewPassword();
+                                        }}
                                         submitMessage={"Set Password"}
                                         loadingState={loading}
                                     />
