@@ -41,9 +41,9 @@ def handler(event, context):
         #     DROP TABLE IF EXISTS save_lists;
         # """
 
-         # Execute table creation
-        cursor.execute(delete_table)
-        connection.commit()
+        # Execute table creation
+        # cursor.execute(delete_table)
+        # connection.commit()
 
         # Created 4 tables based on the schema
         sqlTableCreation = """
