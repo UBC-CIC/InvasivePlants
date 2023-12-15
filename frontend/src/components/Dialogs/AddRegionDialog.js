@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import SnackbarOnSuccess from "../components/SnackbarComponent";
-import CustomAlert from "../components/AlertComponent";
-import CustomWarning from "../components/WarningComponent";
+import SnackbarOnSuccess from "../SnackbarComponent";
+import CustomAlert from "../AlertComponent";
+import CustomWarning from "../WarningComponent";
 
 // Dialog for adding a region
 const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {

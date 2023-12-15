@@ -4,17 +4,17 @@ import {
     Select, MenuItem, FormControl, InputLabel
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
-import SnackbarOnSuccess from "../components/SnackbarComponent";
-import CustomAlert from "../components/AlertComponent";
-import CustomWarning from '../components/WarningComponent';
-import handleGetRegions from "../functions/RegionMap";
+import SnackbarOnSuccess from "../SnackbarComponent";
+import CustomAlert from "../AlertComponent";
+import CustomWarning from '../WarningComponent';
+import handleGetRegions from "../../functions/RegionMap";
 
 // Dialog for adding an invasive species
 const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternativeSpeciesData }) => {
     const initialSpeciesData = {
         scientific_name: [],
         resource_links: [],
-        species_description	: "",
+        species_description: "",
         alternative_species: [],
         region_id: []
     };
@@ -79,7 +79,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
             speciesData.alternative_species :
             splitByCommaWithSpaces(speciesData.alternative_species);
 
-        const alternativeSpeciesIds = []; 
+        const alternativeSpeciesIds = [];
 
         alternativeSpeciesArray.forEach(species => {
             alternativeSpeciesIds.push(species.species_id);
@@ -151,7 +151,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
                         <Autocomplete
                             multiple
                             id="alternative-species-autocomplete"
-                            options={alternativeSpeciesData} 
+                            options={alternativeSpeciesData}
                             getOptionLabel={(option) =>
                                 `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
                             }
