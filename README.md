@@ -41,7 +41,6 @@ For instructions on how to navigate the web app interface, refer to the [Web App
     └── src
         ├── actions
         ├── components
-        ├── dialogs
         ├── functions
         ├── reducers
         └── views
@@ -56,7 +55,6 @@ For instructions on how to navigate the web app interface, refer to the [Web App
 3. `/frontend`: Contains the user interface of the application
     - `/src/actions`: Contains login actions
     - `/src/components`: Contains components used in the application
-    - `/src/dialogs`: Contains dialogs used in the application
     - `/src/functions`: Contains helper functions used in the application
     - `/src/reducers`: Contains reducers facilitating the application's functionality
     - `/src/views`: Contains pages comprising the application's interface

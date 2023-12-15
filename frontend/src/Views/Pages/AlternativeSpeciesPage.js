@@ -9,9 +9,9 @@ import { Auth } from "aws-amplify";
 // components
 import SearchComponent from '../../components/SearchComponent';
 import PaginationComponent from '../../components/PaginationComponent';
-import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";
-import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
-import AddAlternativeSpeciesDialog from "../../dialogs/AddAlternativeSpeciesDialog";
+import EditAlternativeSpeciesDialog from "../../components/Dialogs/EditAlternativeSpeciesDialog";
+import DeleteDialog from "../../components/Dialogs/ConfirmDeleteDialog";
+import AddAlternativeSpeciesDialog from "../../components/Dialogs/AddAlternativeSpeciesDialog";
 
 // icons
 import EditIcon from '@mui/icons-material/Edit';

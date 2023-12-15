@@ -7,9 +7,9 @@ import { Auth } from "aws-amplify";
 import LocationFilterComponent from '../../components/LocationFilterComponent';
 import SearchComponent from '../../components/SearchComponent';
 import PaginationComponent from '../../components/PaginationComponent';
-import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialog";
-import AddInvasiveSpeciesDialog from "../../dialogs/AddInvasiveSpeciesDialog";
-import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
+import EditInvasiveSpeciesDialog from "../../components/Dialogs/EditInvasiveSpeciesDialog";
+import AddInvasiveSpeciesDialog from "../../components/Dialogs/AddInvasiveSpeciesDialog";
+import DeleteDialog from "../../components/Dialogs/ConfirmDeleteDialog";
 import handleGetRegions from "../../functions/RegionMap"
 
 // icons
