@@ -1,4 +1,4 @@
-import {Stack, StackProps } from 'aws-cdk-lib';
+import { Stack, StackProps, RemovalPolicy, SecretValue } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Duration } from 'aws-cdk-lib';
 
@@ -8,6 +8,7 @@ import * as rds from 'aws-cdk-lib/aws-rds';
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as secretmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as logs from "aws-cdk-lib/aws-logs";
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 
 // Stack import
 import { VpcStack } from './vpc-stack';
@@ -15,7 +16,8 @@ import { VpcStack } from './vpc-stack';
 
 export class DBStack extends Stack {
     public readonly dbInstance: rds.DatabaseInstance;
-    public readonly secretPath: string;
+    public readonly secretPathAdminName: string;
+    public readonly secretPathUser: secretsmanager.Secret;
     public readonly rdsProxyEndpoint: string; 
     constructor(scope: Construct, id: string, vpcStack: VpcStack, props?: StackProps){
         super(scope, id, props);
@@ -29,9 +31,25 @@ export class DBStack extends Stack {
 
         /**
          * 
+         * Create Empty Secret Manager
+         * Secrets will be populate at initalization of data
+         */
+        this.secretPathAdminName = "InvasivePlants/credentials/dbCredentials"; // Name in the Secret Manager to store DB credentials
+        const secretPathUserName = "InvasivePlants/userCredentials/dbCredentials";
+        this.secretPathUser = new secretsmanager.Secret(this, secretPathUserName, {
+            secretName: secretPathUserName,
+            description: "Secrets for clients to connect to RDS",
+            removalPolicy: RemovalPolicy.DESTROY,
+            secretObjectValue: {
+                username: SecretValue.unsafePlainText(""),
+                password: SecretValue.unsafePlainText("")
+            }
+        });
+
+        /**
+         * 
          * Create an RDS with Postgres database in an isolated subnet
          */
-        this.secretPath = "InvasivePlants/credentials/dbCredentials"; // Name in the Secret Manager to store DB credentials
         this.dbInstance = new rds.DatabaseInstance(this, "InvasivePlants", {
             vpc: vpcStack.vpc,
             vpcSubnets: {
@@ -45,7 +63,7 @@ export class DBStack extends Stack {
                 ec2.InstanceSize.MICRO
             ),
             credentials: rds.Credentials.fromUsername(secret.secretValueFromJson("DB_Username").unsafeUnwrap(), {
-                secretName: this.secretPath,
+                secretName: this.secretPathAdminName,
             }),
             multiAz: true,
             allocatedStorage: 100,
@@ -77,7 +95,7 @@ export class DBStack extends Stack {
          */
         const rdsProxy = new rds.DatabaseProxy(this, "invasivePlants-RDSProxy", {
             proxyTarget: rds.ProxyTarget.fromInstance(this.dbInstance),
-            secrets: [this.dbInstance.secret!],
+            secrets: [this.dbInstance.secret!, this.secretPathUser!],
             vpc: vpcStack.vpc,
             securityGroups: this.dbInstance.connections.securityGroups,
             // securityGroups: [ec2.SecurityGroup.fromSecurityGroupId(this, 'VpcDefaultSecurityGroup', vpcStack.vpc.vpcDefaultSecurityGroup)],

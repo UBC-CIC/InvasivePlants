@@ -56,8 +56,6 @@ export class APIStack extends Stack {
 
         this.stageARN_APIGW = api.deploymentStage.stageArn;
         this.apiGW_basedURL = api.urlForPath();
-        
-        // console.log("this.apiGW_endpoint: ", this.apiGW_basedURL);
 
         // Attach API Key to the api
         const secretJsonValue = functionalityStack.secret.secretValueFromJson("REACT_APP_X_API_KEY").unsafeUnwrap().toString();
@@ -78,9 +76,6 @@ export class APIStack extends Stack {
           allowOrigins: apigateway.Cors.ALL_ORIGINS,
           allowMethods: apigateway.Cors.ALL_METHODS
         });
-
-        // Source Code: https://stackoverflow.com/questions/62179893/aws-cdk-how-to-create-an-api-gateway-backed-by-lambda-from-openapi-spec
-        // https://medium.com/@gwieser/solving-a-nightmare-aws-cdk-openapi-and-api-gateway-a1b6fdc1fd24 
 
         /**
          * 
@@ -156,7 +151,7 @@ export class APIStack extends Stack {
             timeout: Duration.seconds(300),
             vpc: vpcStack.vpc,
             environment: {
-                SM_DB_CREDENTIALS: db.secretPath,
+              SM_DB_CREDENTIALS: db.secretPathUser.secretName,
                 RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint
               },
             functionName: "IntegLambRegion",
@@ -187,7 +182,7 @@ export class APIStack extends Stack {
             timeout: Duration.seconds(300),
             vpc: vpcStack.vpc,
             environment: {
-                SM_DB_CREDENTIALS: db.secretPath,
+              SM_DB_CREDENTIALS: db.secretPathUser.secretName,
                 RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint
             },
             functionName: "IntegLambInvasiveSpecies",
@@ -219,7 +214,7 @@ export class APIStack extends Stack {
             timeout: Duration.seconds(300),
             vpc: vpcStack.vpc,
             environment: {
-                SM_DB_CREDENTIALS: db.secretPath,
+              SM_DB_CREDENTIALS: db.secretPathUser.secretName,
                 RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint
               },
             functionName: "IntegLambAlternativeSpecies",
@@ -250,7 +245,7 @@ export class APIStack extends Stack {
             timeout: Duration.seconds(300),
             vpc: vpcStack.vpc,
             environment: {
-                SM_DB_CREDENTIALS: db.secretPath,
+              SM_DB_CREDENTIALS: db.secretPathUser.secretName,
                 RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint
               },
             functionName: "IntegLambSaveList",
@@ -332,7 +327,7 @@ export class APIStack extends Stack {
           timeout: Duration.seconds(300),
           vpc: vpcStack.vpc,
           environment: {
-            SM_DB_CREDENTIALS: db.secretPath,
+            SM_DB_CREDENTIALS: db.secretPathUser.secretName,
             RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint,
             BUCKET_NAME: functionalityStack.bucketName
           },

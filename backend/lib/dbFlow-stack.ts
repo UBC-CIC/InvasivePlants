@@ -33,7 +33,8 @@ export class DBFlowStack extends Stack {
             timeout: Duration.seconds(300),
             memorySize: 512,
             environment:{
-                DB_SECRET_NAME: db.secretPath
+              DB_SECRET_NAME: db.secretPathAdminName,     // Admin Secret Manager name that only use once here.
+              DB_USER_SECRET_NAME: db.secretPathUser.secretName
             },
             vpc: vpcStack.vpc,
             code: lambda.Code.fromAsset("lambda"),
@@ -47,9 +48,10 @@ export class DBFlowStack extends Stack {
               actions: [
                 //Secrets Manager
                 "secretsmanager:GetSecretValue",
+                "secretsmanager:PutSecretValue"
               ],
               resources: [
-                `arn:aws:secretsmanager:${this.region}:${this.account}:secret:InvasivePlants/credentials/*`,
+                `arn:aws:secretsmanager:${this.region}:${this.account}:secret:InvasivePlants/*`,
               ],
             })
         );
