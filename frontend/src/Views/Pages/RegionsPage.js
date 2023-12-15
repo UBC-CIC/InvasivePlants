@@ -3,15 +3,15 @@ import {
     Autocomplete, Box, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button,
     TextField, Typography, ThemeProvider
 } from "@mui/material";
-import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
-import AddRegionDialog from "../../dialogs/AddRegionDialog";
 import Theme from './Theme';
 import { Auth } from "aws-amplify";
 
 // components
-import EditRegionDialog from "../../dialogs/EditRegionsDialog";
 import PaginationComponent from '../../components/PaginationComponent';
 import SearchComponent from '../../components/SearchComponent';
+import DeleteDialog from "../../components/Dialogs/ConfirmDeleteDialog";
+import AddRegionDialog from "../../components/Dialogs/AddRegionDialog";
+import EditRegionDialog from '../../components/Dialogs/EditRegionsDialog';
 
 // icons
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';

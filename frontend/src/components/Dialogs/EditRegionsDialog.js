@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
-import SnackbarOnSuccess from '../components/SnackbarComponent';
-import CustomAlert from '../components/AlertComponent';
+import SnackbarOnSuccess from '../SnackbarComponent';
+import CustomAlert from '../AlertComponent';
 
 // Dialog for editing a region
 const EditRegionDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave }) => {
@@ -83,13 +83,13 @@ const EditRegionDialog = ({ open, tempData, handleInputChange, handleFinishEditi
                             <TextField
                                 fullWidth
                                 label="Latitude"
-                                    onChange={(e) => handleInputChange("geographic_latitude", e.target.value)}
+                                onChange={(e) => handleInputChange("geographic_latitude", e.target.value)}
                                 sx={{ width: "100%", marginRight: "4px" }}
                             />
                             <TextField
                                 fullWidth
                                 label="Longitude"
-                                    onChange={(e) => handleInputChange("geographic_longitude", e.target.value)}
+                                onChange={(e) => handleInputChange("geographic_longitude", e.target.value)}
                                 sx={{ width: "100%", marginLeft: "4px" }}
                             />
                         </Box>
