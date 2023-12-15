@@ -35,16 +35,16 @@ def readJSONFile(filepath):
 
 def handler(event, context):
     try:
-        # Could be used for test
-        delete_table = """
-            DROP TABLE IF EXISTS regions;
-            DROP TABLE IF EXISTS invasive_species;
-            DROP TABLE IF EXISTS alternative_species;
-            DROP TABLE IF EXISTS images;
-            DROP TABLE IF EXISTS save_lists;
-        """
-        cursor.execute(delete_table)
-        connection.commit()
+        # # Could be used for test
+        # delete_table = """
+        #     DROP TABLE IF EXISTS regions;
+        #     DROP TABLE IF EXISTS invasive_species;
+        #     DROP TABLE IF EXISTS alternative_species;
+        #     DROP TABLE IF EXISTS images;
+        #     DROP TABLE IF EXISTS save_lists;
+        # """
+        # cursor.execute(delete_table)
+        # connection.commit()
 
         #
         ## Create tables and schema
