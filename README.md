@@ -71,6 +71,7 @@ This application was architected and developed by Visal Saosuo, Julia You, and Y
 This project is distributed under the [MIT License](LICENSE).
 
 Licenses of libraries and tools used by the system are listed below:
+
 [MIT License](LICENSE)
 
 Used by Material UI library to design user interface
