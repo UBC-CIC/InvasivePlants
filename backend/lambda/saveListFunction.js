@@ -32,7 +32,8 @@ exports.handler = async (event) => {
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
 		  case "GET /saveList":
-				data = await sql`SELECT * FROM save_lists WHERE user_uuid = ${userId}`;
+				data =
+          await sql`SELECT * FROM save_lists WHERE user_uuid = ${userId} ORDER BY list_name;`;
 				response.body = JSON.stringify(data);
 				break;
 			case "POST /saveList":
@@ -79,19 +80,23 @@ exports.handler = async (event) => {
 					const bd = JSON.parse(event.body);
 					
 					// Check if required parameters are passed
-					if( event.pathParameters.list_id && bd.list_name && bd.saved_species){
+					if (
+            event.pathParameters.list_id &&
+            bd.list_name &&
+            bd.saved_species
+          ) {
             await sql`
 							UPDATE save_lists
 							SET list_name = ${bd.list_name}, 
-							  saved_species = ${bd.saved_species},
+							  saved_species = ${bd.saved_species}
 							WHERE list_id = ${event.pathParameters.list_id} AND user_uuid = ${userId};
 						`;
 
             response.body = "Updated the data to the save list";
           } else {
-						response.statusCode = 400;
-						response.body = "Invalid value";
-					}
+            response.statusCode = 400;
+            response.body = "Invalid value";
+          }
 				} else {
 					response.statusCode = 400;
 					response.body = "Invalid value";	
