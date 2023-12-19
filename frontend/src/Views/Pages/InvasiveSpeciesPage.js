@@ -51,6 +51,7 @@ function InvasiveSpeciesPage() {
   const [end, setEnd] = useState(0); // end index of species
   const [shouldReset, setShouldReset] = useState(false); // reset above values
   const [shouldSave, setShouldSave] = useState(false); // reset above values
+  const [shouldCalculate, setShouldCalculate] = useState(true); // whether calculation of start and end should be made
 
   const [isLoading, setIsLoading] = useState(false); // loading data or not
   const [user, setUser] = useState(""); // authorized admin user
@@ -303,7 +304,9 @@ function InvasiveSpeciesPage() {
                 scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name))
               };
             });
-
+            
+            // updates pagination start and end indices
+            setShouldCalculate(false);
             setDisplayData(formattedData);
             formattedData.length > 0 ? setStart(1) : setStart(0);
             setEnd(response.data.species.length);
@@ -482,7 +485,7 @@ function InvasiveSpeciesPage() {
   const handleSearch = (searchInput) => {
     if (searchInput === "") {
       setDisplayData(data);
-      setSearchInput("");
+      setShouldCalculate(true);
     }
   };
 
@@ -496,6 +499,7 @@ function InvasiveSpeciesPage() {
 
   // Calculates start and end species indices of the current page of displayed data
   const calculateStartAndEnd = () => {
+    console.log("calculating!", page, rowsPerPage, displayData.length);
     const newStart = page * rowsPerPage + 1;
     const newEnd = Math.min((page + 1) * rowsPerPage, (page * rowsPerPage) + displayData.length);
     setStart(newStart);
@@ -504,7 +508,9 @@ function InvasiveSpeciesPage() {
 
   // Call to calculate indices
   useEffect(() => {
-    calculateStartAndEnd();
+    if (shouldCalculate) {
+      calculateStartAndEnd();
+    }
   }, [page, rowsPerPage, displayData]);
 
   // Resets if rowsPerPage changes 
