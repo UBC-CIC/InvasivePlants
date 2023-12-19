@@ -643,22 +643,24 @@ function AlternativeSpeciesPage() {
                 <TableRow key={row.species_id}>
                   <>
                     {/* scientific names */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{
+                      whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top'
+                    }}>
                       {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
                     </TableCell>
 
                     {/* common names */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.common_name) ? row.common_name.join(", ") : row.common_name}
                     </TableCell>
 
                     {/* Description */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {boldText(row.species_description)}
                     </TableCell>
 
                     {/* resource links */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.resource_links) ? (
                         row.resource_links.map((link, index) => (
                           <span key={index}>
@@ -681,7 +683,7 @@ function AlternativeSpeciesPage() {
                     </TableCell>
 
                     {/* image links */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.image_links) ? (
                         row.image_links.map((link, index) => (
                           <span key={index}>
