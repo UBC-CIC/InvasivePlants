@@ -15,7 +15,7 @@ const LoginPage = ({ handleLogin }) => {
         setPassword(event.target.value);
     };
 
-    // autheticates user -- edit adminCredentials.json file to add an admin to the system
+    // Authenticates user -- edit adminCredentials.json file to add an admin to the system
     const handleLoginSubmit = (event) => {
         event.preventDefault();
         const foundUser = adminCredentials.find((user) => user.username === username && user.password === password);

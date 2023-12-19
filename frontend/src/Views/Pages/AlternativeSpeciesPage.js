@@ -9,9 +9,9 @@ import { Auth } from "aws-amplify";
 // components
 import SearchComponent from '../../components/SearchComponent';
 import PaginationComponent from '../../components/PaginationComponent';
-import EditAlternativeSpeciesDialog from "../../dialogs/EditAlternativeSpeciesDialog";
-import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
-import AddAlternativeSpeciesDialog from "../../dialogs/AddAlternativeSpeciesDialog";
+import EditAlternativeSpeciesDialog from "../../components/Dialogs/EditAlternativeSpeciesDialog";
+import DeleteDialog from "../../components/Dialogs/ConfirmDeleteDialog";
+import AddAlternativeSpeciesDialog from "../../components/Dialogs/AddAlternativeSpeciesDialog";
 
 // icons
 import EditIcon from '@mui/icons-material/Edit';
@@ -33,7 +33,6 @@ function AlternativeSpeciesPage() {
   const [speciesCount, setSpeciesCount] = useState(0); // number of alternative species
   const [data, setData] = useState([]); // original data
   const [displayData, setDisplayData] = useState([]); // data displayed in the table
-  const [editingSpeciesId, setEditingSpeciesId] = useState(null); // species_id of the row being edited
   const [tempEditingData, setTempEditingData] = useState({}); // temp data of the species being edited
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false); // state of the editing an alternative species dialog
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false); // state of the adding a new alternative species dialog
@@ -263,8 +262,7 @@ function AlternativeSpeciesPage() {
   };
 
   // Updates editing states when editing a species
-  const startEdit = (species_id, rowData) => {
-    setEditingSpeciesId(species_id);
+  const startEdit = (rowData) => {
     setTempEditingData(rowData);
     setOpenEditSpeciesDialog(true);
   };
@@ -272,7 +270,6 @@ function AlternativeSpeciesPage() {
   // Updates states after editing a species and saving 
   const handleFinishEditingRow = () => {
     setOpenEditSpeciesDialog(false);
-    setEditingSpeciesId(null);
   };
 
   // Updates changes to the database on save
@@ -646,22 +643,24 @@ function AlternativeSpeciesPage() {
                 <TableRow key={row.species_id}>
                   <>
                     {/* scientific names */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{
+                      whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top'
+                    }}>
                       {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
                     </TableCell>
 
                     {/* common names */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.common_name) ? row.common_name.join(", ") : row.common_name}
                     </TableCell>
 
                     {/* Description */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {boldText(row.species_description)}
                     </TableCell>
 
                     {/* resource links */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.resource_links) ? (
                         row.resource_links.map((link, index) => (
                           <span key={index}>
@@ -684,7 +683,7 @@ function AlternativeSpeciesPage() {
                     </TableCell>
 
                     {/* image links */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.image_links) ? (
                         row.image_links.map((link, index) => (
                           <span key={index}>
@@ -727,7 +726,7 @@ function AlternativeSpeciesPage() {
                     {/* edit/delete actions */}
                     <TableCell>
                       <Tooltip title="Edit"
-                        onClick={() => startEdit(row.species_id, row)}>
+                        onClick={() => startEdit(row)}>
                         <IconButton><EditIcon /></IconButton>
                       </Tooltip>
                       <Tooltip

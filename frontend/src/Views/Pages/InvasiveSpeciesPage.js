@@ -7,9 +7,9 @@ import { Auth } from "aws-amplify";
 import LocationFilterComponent from '../../components/LocationFilterComponent';
 import SearchComponent from '../../components/SearchComponent';
 import PaginationComponent from '../../components/PaginationComponent';
-import EditInvasiveSpeciesDialog from "../../dialogs/EditInvasiveSpeciesDialog";
-import AddInvasiveSpeciesDialog from "../../dialogs/AddInvasiveSpeciesDialog";
-import DeleteDialog from "../../dialogs/ConfirmDeleteDialog";
+import EditInvasiveSpeciesDialog from "../../components/Dialogs/EditInvasiveSpeciesDialog";
+import AddInvasiveSpeciesDialog from "../../components/Dialogs/AddInvasiveSpeciesDialog";
+import DeleteDialog from "../../components/Dialogs/ConfirmDeleteDialog";
 import handleGetRegions from "../../functions/RegionMap"
 
 // icons
@@ -32,7 +32,6 @@ function InvasiveSpeciesPage() {
   const [speciesCount, setSpeciesCount] = useState(0); // number of invasive species
   const [data, setData] = useState([]); // original data
   const [displayData, setDisplayData] = useState([]); // data displayed in the table
-  const [editingSpeciesId, setEditingSpeciesId] = useState(null); // species_id of the row being edited
   const [tempEditingData, setTempEditingData] = useState({}); // data of the species being edited
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false); // state of the editing an invasive species dialog
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false); // state of the adding an invasive species dialog
@@ -319,8 +318,7 @@ function InvasiveSpeciesPage() {
   };
 
   // Updates editing states when editing a species
-  const startEdit = (id, rowData) => {
-    setEditingSpeciesId(id);
+  const startEdit = (rowData) => {
     setTempEditingData(rowData);
     setOpenEditSpeciesDialog(true);
   };
@@ -328,7 +326,6 @@ function InvasiveSpeciesPage() {
   // Updates states after editing a species and saving 
   const handleFinishEditingRow = () => {
     setOpenEditSpeciesDialog(false);
-    setEditingSpeciesId(null);
   };
 
   // Updates changes to the database on save
@@ -651,7 +648,7 @@ function InvasiveSpeciesPage() {
                 <TableRow key={row.species_id}>
                   <>
                     {/* scientific names */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
                     </TableCell>
 
@@ -659,14 +656,14 @@ function InvasiveSpeciesPage() {
                     <TableCell>{boldText(row.species_description)}</TableCell>
 
                     {/* alternative species */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.alternative_species)
                         ? row.alternative_species.map((item) => item.scientific_name).join(", ")
                         : row.alternative_species}
                     </TableCell>
 
                     {/* resource links */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.resource_links) ? (
                         row.resource_links.map((link, index) => (
                           <span key={index}>
@@ -689,7 +686,7 @@ function InvasiveSpeciesPage() {
                     </TableCell>
 
                     {/* regions */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.region_id)
                         ? row.region_id.map((id) => regionMap[id]).join(", ")
                         : regionMap[row.region_id]}
@@ -698,7 +695,7 @@ function InvasiveSpeciesPage() {
                     {/* actions: edit/delete */}
                     <TableCell>
                       <Tooltip title="Edit"
-                        onClick={() => startEdit(row.species_id, row)}>
+                        onClick={() => startEdit(row)}>
                         <IconButton>
                           <EditIcon />
                         </IconButton>

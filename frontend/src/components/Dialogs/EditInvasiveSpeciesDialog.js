@@ -4,9 +4,9 @@ import {
     Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import SnackbarOnSuccess from '../components/SnackbarComponent';
-import CustomAlert from '../components/AlertComponent';
-import handleGetRegions from '../functions/RegionMap';
+import SnackbarOnSuccess from '../SnackbarComponent';
+import CustomAlert from '../AlertComponent';
+import handleGetRegions from '../../functions/RegionMap';
 
 // Dialog for editing an invasive species
 const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave, alternativeSpeciesData }) => {
@@ -87,7 +87,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                         <Autocomplete
                             multiple
                             id="alternative-species-autocomplete"
-                            options={alternativeSpeciesData} 
+                            options={alternativeSpeciesData}
                             getOptionLabel={(option) =>
                                 `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
                             }

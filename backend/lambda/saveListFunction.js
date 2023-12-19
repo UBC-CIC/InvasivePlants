@@ -15,6 +15,12 @@ exports.handler = async (event) => {
         },
 		body: "",
 	};
+	
+	const userId = event?.requestContext?.authorizer?.userId ?? null;
+
+  if (userId == null || userId == undefined) {
+    throw new Error("user id is not found.");
+  }
 
 	// Initialize the database connection if not already initialized
 	if (!sql) {
@@ -26,31 +32,25 @@ exports.handler = async (event) => {
 		const pathData = event.httpMethod + " " + event.resource;
 		switch(pathData) {
 		  case "GET /saveList":
-				data = await sql`SELECT * FROM save_lists`;
+				data = await sql`SELECT * FROM save_lists WHERE user_uuid = ${userId}`;
 				response.body = JSON.stringify(data);
 				break;
 			case "POST /saveList":
 				if(event.body != null){
 					const bd = JSON.parse(event.body);
 					
-					// Check if required parameters are passed
-					// TODO: check for user_uuid
-					if( bd.list_name && bd.saved_species){
-						
-						// Optional parameters
-						const user_uuid = "123-fad-453-ball";
-						
-						let list_id_returns = await sql`
+					if (bd.list_name && bd.saved_species) {
+            let list_id_returns = await sql`
 							INSERT INTO save_lists (user_uuid, list_name, saved_species)
-							VALUES (${user_uuid}, ${bd.list_name}, ${bd.saved_species})
+							VALUES (${userId}, ${bd.list_name}, ${bd.saved_species})
 							RETURNING list_id;
-						`; 
-						
-						response.body = JSON.stringify(list_id_returns[0]);
-					} else {
-						response.statusCode = 400;
-						response.body = "Invalid value";
-					}
+						`;
+
+            response.body = JSON.stringify(list_id_returns[0]);
+          } else {
+            response.statusCode = 400;
+            response.body = "Invalid value";
+          }
 				} else {
 					response.statusCode = 400;
 					response.body = "Invalid value";	
@@ -62,7 +62,8 @@ exports.handler = async (event) => {
 					
 					// Check if required parameters are passed
 					if(bd.list_id){
-						data = await sql`SELECT * FROM save_lists WHERE list_id = ${bd.list_id};`;
+						data =
+              await sql`SELECT * FROM save_lists WHERE list_id = ${bd.list_id} AND user_uuid = ${userId};`;
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
@@ -88,7 +89,7 @@ exports.handler = async (event) => {
 							SET list_name = ${bd.list_name}, 
 							  saved_species = ${bd.saved_species},
 								user_uuid = ${user_uuid}
-							WHERE list_id = ${event.pathParameters.list_id};
+							WHERE list_id = ${event.pathParameters.list_id} AND user_uuid = ${userId};
 						`;
 						
 						response.body = "Updated the data to the save list";
@@ -107,7 +108,8 @@ exports.handler = async (event) => {
 					
 					// Check if required parameters are passed
 					if(bd.list_id){
-						data = await sql`DELETE FROM save_lists WHERE list_id = ${bd.list_id};`;
+						data =
+              await sql`DELETE FROM save_lists WHERE list_id = ${bd.list_id} AND user_uuid = ${userId};`;
 						response.body = "Deleted a save list";
 					} else {
 						response.statusCode = 400;

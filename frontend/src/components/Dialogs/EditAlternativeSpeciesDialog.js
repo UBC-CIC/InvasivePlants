@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
-import SnackbarOnSuccess from '../components/SnackbarComponent';
-import CustomAlert from '../components/AlertComponent';
-import DeleteDialog from '../dialogs/ConfirmDeleteDialog';
+import SnackbarOnSuccess from '../SnackbarComponent';
+import CustomAlert from '../AlertComponent';
+import DeleteDialog from './ConfirmDeleteDialog';
 import { Auth } from "aws-amplify";
 import axios from "axios";
 
@@ -188,7 +188,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                             Array.isArray(tempData.resource_links)
                                 ? tempData.resource_links.join(", ")
                                 : tempData.resource_links
-                        } 
+                        }
                         onChange={(e) =>
                             handleInputChange("resource_links", e.target.value.split(", "))
                         }
@@ -211,7 +211,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                     <Box sx={{ width: '100%', textAlign: 'left', marginBottom: '2rem' }}>
                         <Typography variant="body1" sx={{ width: '100%' }}>
                             Upload Images:
-                        </Typography> 
+                        </Typography>
                         <input
                             type="file"
                             multiple

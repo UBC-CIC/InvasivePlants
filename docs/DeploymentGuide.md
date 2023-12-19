@@ -71,6 +71,7 @@ REACT_APP_API_BASE_URL
 REACT_APP_X_API_KEY
 REACT_APP_S3_BASE_URL
 ```
+Note: make sure to put forward slash, `/`, at the end of the link. 
 
 Then, one can install all packages at ```InvasivePlants/frontend/``` using: 
 
@@ -209,17 +210,36 @@ The deployment command for the `hostStack` requires a parameter calls `prefixLis
 
 Then, use the command below and pass in the `prefixListID` value.
 ```bash
-cdk deploy --all --parameters hostStack:prefixListID=<your-region-preFixListId> --profile <aws-profile-name>
+cdk deploy --all \
+  --parameters hostStack:prefixListID=<your-region-preFixListId> \
+  --parameters FunctionalityStack:apiKey=<custome-api-key> \ 
+  --profile <aws-profile-name>
 ```
 
 For example, the `prefixListID` for `ca-central-1` is `pl-38a64351`, so we have the following command:
 
 ```bash
-cdk deploy --all --parameters hostStack:prefixListID=pl-38a64351 --profile AWSProfilSSO
+cdk deploy --all \
+   --parameters hostStack:prefixListID=pl-38a64351 \
+   --parameters FunctionalityStack:apiKey=IQN8JSrycHj1nRi2IbBIwts54Gt \
+   --profile AWSProfilSSO
 ```
+
+**Note:** on modificaiton of stacks that involve redeployment of `FunctionalityStack`, one need to ensure that `FunctionalityStack:apiKey` parameter is consistent with the apiKey of the deployed API Gateway. In other word, make sure that `--parameters FunctionalityStack:apiKey=IQN8JSrycHj1nRi2IbBIwts54Gt` is passed on stack that needs to redeploy `FunctionalityStack` such as `FunctionalityStack`, `APIStack`, and `hostStack`.
+
+### Extra: Finding important values
 After deployment is completed, look for the following in the terminal:
-- `Hosted Website URL` - the hosted admin page URL
-- `` - the API Gateway stage URL
+- `Hosted Website URL` - this is the hosted admin page URL which can be acces through a browser
+
+![API Gateway Screen](./images/depGuide/api_gateway.png)
+
+To get api base url:
+1. Go to API Gateway in the AWS Console and click on the project api
+2. Go to `Stages` and look for `Invoke URL`
+
+To get api key:
+1. Go to `API Keys`
+2. Look for key with the name `InvasivePlantsCustomizedAPIKey` or something similiar
 
 ### Extra: Taking down the deployed stacks
 
