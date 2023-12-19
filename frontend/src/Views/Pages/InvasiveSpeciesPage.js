@@ -648,7 +648,7 @@ function InvasiveSpeciesPage() {
                 <TableRow key={row.species_id}>
                   <>
                     {/* scientific names */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
                     </TableCell>
 
@@ -656,14 +656,14 @@ function InvasiveSpeciesPage() {
                     <TableCell>{boldText(row.species_description)}</TableCell>
 
                     {/* alternative species */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.alternative_species)
                         ? row.alternative_species.map((item) => item.scientific_name).join(", ")
                         : row.alternative_species}
                     </TableCell>
 
                     {/* resource links */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.resource_links) ? (
                         row.resource_links.map((link, index) => (
                           <span key={index}>
@@ -686,7 +686,7 @@ function InvasiveSpeciesPage() {
                     </TableCell>
 
                     {/* regions */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                       {Array.isArray(row.region_id)
                         ? row.region_id.map((id) => regionMap[id]).join(", ")
                         : regionMap[row.region_id]}
