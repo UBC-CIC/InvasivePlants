@@ -21,7 +21,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import axios from "axios";
-import { boldText, formatString, capitalizeFirstWord } from '../../functions/helperFunctions';
+import { boldText, formatString, capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperFunctions';
 
 function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -195,9 +195,21 @@ function InvasiveSpeciesPage() {
           )
         );
 
+        console.log("species:", response.data.species);
         return Promise.all(promises)
-          .then(regionResponses => {
+          .then(() => {
             const formattedData = response.data.species.map((item, index) => {
+              if (item.alternative_species) {
+                item.alternative_species.forEach(species => {
+                  species.scientific_name = species.scientific_name.map(name =>
+                    capitalizeFirstWord(name)
+                  );
+                  species.common_name = species.common_name.map(name =>
+                    capitalizeEachWord(name)
+                  );
+                });
+              }
+
               return {
                 ...item,
                 scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name))
@@ -499,7 +511,6 @@ function InvasiveSpeciesPage() {
 
   // Calculates start and end species indices of the current page of displayed data
   const calculateStartAndEnd = () => {
-    console.log("calculating!", page, rowsPerPage, displayData.length);
     const newStart = page * rowsPerPage + 1;
     const newEnd = Math.min((page + 1) * rowsPerPage, (page * rowsPerPage) + displayData.length);
     setStart(newStart);
