@@ -50,6 +50,7 @@ function AlternativeSpeciesPage() {
   const [end, setEnd] = useState(0); // end index of species
   const [shouldReset, setShouldReset] = useState(false); // state of should reset 
   const [shouldSave, setShouldSave] = useState(false); // state of should save 
+  const [shouldCalculate, setShouldCalculate] = useState(true); // whether calculation of start and end should be made
 
   const [isLoading, setIsLoading] = useState(false); // loading data or not
   const [user, setUser] = useState(""); // authorized admin user
@@ -220,7 +221,6 @@ function AlternativeSpeciesPage() {
     }
   }, [shouldSave]);
 
-
   // Fetches the alternative species that matches user search
   const handleGetAlternativeSpeciesAfterSearch = () => {
     let formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
@@ -251,7 +251,11 @@ function AlternativeSpeciesPage() {
           };
         });
 
+        // updates pagination start and end indices
+        setShouldCalculate(false);
         setDisplayData(formattedData);
+        formattedData.length > 0 ? setStart(1) : setStart(0);
+        setEnd(response.data.species.length);
       })
       .catch((error) => {
         console.error("Error searching up alternative species", error);
@@ -493,8 +497,10 @@ function AlternativeSpeciesPage() {
   const handleSearch = (searchInput) => {
     if (searchInput === "") {
       setDisplayData(data);
+      setShouldCalculate(true);
     }
   };
+
 
   // Calculates start and end species indices of the current page of displayed data
   const calculateStartAndEnd = () => {
@@ -506,7 +512,9 @@ function AlternativeSpeciesPage() {
 
   // Call to calculate indices
   useEffect(() => {
-    calculateStartAndEnd();
+    if (shouldCalculate) {
+      calculateStartAndEnd();
+    }
   }, [rowsPerPage, page, displayData]);
 
 

@@ -167,7 +167,7 @@
       "cornus_canadensis",
       "maianthemum_dilatatum",
       "arctostaphylos_uva-ursi",
-      "cotoneaster_dammeri_‘lowfast’",
+      "cotoneaster_dammeri",
       "oxalis_oregana"
     ],
     "region_id": "BC"
@@ -318,7 +318,7 @@
     ],
     "species_description": "Flowering rush (Grass rush) is an aquatic perennial with green, grass-like foliage and pink almond-scented flowers. It can be difficult to identify as it resembles several native species but will quickly crowds out other plants. It can be found in freshwater marshes, lakes or streams and reproduces primarily through its rhizomes.",
     "alternative_species": [
-      "carex_oshimensis_‘evergold’",
+      "carex_oshimensis",
       "iris_ensata",
       "eriophorum_angustifolium",
       "iris_missouriensis",
@@ -339,7 +339,7 @@
       "liatris_spicata",
       "lupinus_polyphyllus",
       "delphinium_hybrids",
-      "aconitum_spp."
+      "aconitum"
     ],
     "region_id": "BC"
   },
@@ -446,7 +446,8 @@
       "penstemon_barbatus",
       "dicentra_formosa",
       "mimulus_lewisii",
-      "chelone_lyonii,_c._oblique",
+      "chelone_lyonii",
+      "chelone_oblique",
       "aquilegia_formosa"
     ],
     "region_id": "BC"

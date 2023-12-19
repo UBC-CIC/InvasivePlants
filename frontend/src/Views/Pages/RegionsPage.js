@@ -52,6 +52,7 @@ function RegionsPage() {
     const [end, setEnd] = useState(0); // end index of regions
     const [shouldReset, setShouldReset] = useState(false); // state of should reset 
     const [shouldSave, setShouldSave] = useState(false); // state of should save 
+    const [shouldCalculate, setShouldCalculate] = useState(true); // whether calculation of start and end should be made
 
     const [isLoading, setIsLoading] = useState(false); // loading data or not
     const [user, setUser] = useState("");
@@ -223,7 +224,12 @@ function RegionsPage() {
                         country_fullname: capitalizeEachWord(item.country_fullname)
                     };
                 });
+
+                // updates pagination start and end indices
+                setShouldCalculate(false);
                 setDisplayData(formattedData);
+                formattedData.length > 0 ? setStart(1) : setStart(0);
+                setEnd(response.data.regions.length);
             })
             .catch((error) => {
                 console.error("Error searching up region", error);
@@ -379,6 +385,7 @@ function RegionsPage() {
     const handleSearch = (searchInput) => {
         if (searchInput === "") {
             setDisplayData(data);
+            setShouldCalculate(true);
         }
     };
 
@@ -404,7 +411,9 @@ function RegionsPage() {
 
     // Call to calculate indices
     useEffect(() => {
-        calculateStartAndEnd();
+        if (shouldCalculate) {
+            calculateStartAndEnd();
+        }
     }, [rowsPerPage, page, displayData]);
 
 
