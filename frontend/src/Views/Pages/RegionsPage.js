@@ -554,11 +554,11 @@ function RegionsPage() {
                             .map((row) => (
                                 <TableRow key={row.region_id}>
                                     <>
-                                        <TableCell>{row.region_fullname}</TableCell>
-                                        <TableCell> {row.region_code_name} </TableCell>
-                                        <TableCell>{row.country_fullname}</TableCell>
-                                        <TableCell>{row.geographic_coordinate}</TableCell>
-                                        <TableCell>
+                                        <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.region_fullname}</TableCell>
+                                        <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}> {row.region_code_name} </TableCell>
+                                        <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.country_fullname}</TableCell>
+                                        <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.geographic_coordinate}</TableCell>
+                                        <TableCell >
                                             <Tooltip title="Edit"
                                                 onClick={() => startEdit(row)}>
                                                 <IconButton>
