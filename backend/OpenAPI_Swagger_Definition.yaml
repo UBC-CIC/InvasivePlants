@@ -740,7 +740,7 @@ paths:
     put: 
       tags:
         - Save List
-      summary: Update save list details
+      summary: Update save list details (replace operation not insertion)
       operationId: saveList_listID_PUT
       parameters:
         - in: path

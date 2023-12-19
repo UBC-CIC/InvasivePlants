@@ -80,20 +80,15 @@ exports.handler = async (event) => {
 					
 					// Check if required parameters are passed
 					if( event.pathParameters.list_id && bd.list_name && bd.saved_species){
-						
-						// Optional parameters
-						const user_uuid = "123-fad-453-ball";
-						
-						await sql`
+            await sql`
 							UPDATE save_lists
 							SET list_name = ${bd.list_name}, 
 							  saved_species = ${bd.saved_species},
-								user_uuid = ${user_uuid}
 							WHERE list_id = ${event.pathParameters.list_id} AND user_uuid = ${userId};
 						`;
-						
-						response.body = "Updated the data to the save list";
-					} else {
+
+            response.body = "Updated the data to the save list";
+          } else {
 						response.statusCode = 400;
 						response.body = "Invalid value";
 					}
