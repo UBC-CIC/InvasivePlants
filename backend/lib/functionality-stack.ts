@@ -92,6 +92,14 @@ export class FunctionalityStack extends cdk.Stack {
          * User pool id, client id, and region the user pool deployed
          */
         const secretsName = "Invasive_Plants_Cognito_Secrets";   //"Invasive_Plants_Setup_Secrets";
+
+        // Read parameter from user 
+        const apiKey = new cdk.CfnParameter(this, "apiKey", {
+            type: 'String',
+            description: 'Custome apiKey for the API Gateway.',
+            default: "InvasivePlantsAPI"
+        });
+
         this.secret = new secretsmanager.Secret(this, secretsName, {
             secretName: secretsName,
             description: "Cognito Secrets for authentication",
@@ -99,10 +107,11 @@ export class FunctionalityStack extends cdk.Stack {
                 REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(userpool.userPoolId),
                 REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(appClient.userPoolClientId),
                 REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
-                REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(generateRandomString(32))
+                REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(apiKey.valueAsString)
             },
             removalPolicy: cdk.RemovalPolicy.DESTROY
         });
+
 
         /**
          * 
