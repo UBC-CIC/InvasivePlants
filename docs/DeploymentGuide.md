@@ -210,14 +210,23 @@ The deployment command for the `hostStack` requires a parameter calls `prefixLis
 
 Then, use the command below and pass in the `prefixListID` value.
 ```bash
-cdk deploy --all --parameters hostStack:prefixListID=<your-region-preFixListId> --profile <aws-profile-name>
+cdk deploy --all \
+  --parameters hostStack:prefixListID=<your-region-preFixListId> \
+  --parameters FunctionalityStack:apiKey=<custome-api-key> \ 
+  --profile <aws-profile-name>
 ```
 
 For example, the `prefixListID` for `ca-central-1` is `pl-38a64351`, so we have the following command:
 
 ```bash
-cdk deploy --all --parameters hostStack:prefixListID=pl-38a64351 --profile AWSProfilSSO
+cdk deploy --all \
+   --parameters hostStack:prefixListID=pl-38a64351 \
+   --parameters FunctionalityStack:apiKey=IQN8JSrycHj1nRi2IbBIwts54Gt \
+   --profile AWSProfilSSO
 ```
+
+**Note:** on modificaiton of stacks that involve redeployment of `FunctionalityStack`, one need to ensure that `FunctionalityStack:apiKey` parameter is consistent with the apiKey of the deployed API Gateway. In other word, make sure that `--parameters FunctionalityStack:apiKey=IQN8JSrycHj1nRi2IbBIwts54Gt` is passed on stack that needs to redeploy `FunctionalityStack` such as `FunctionalityStack`, `APIStack`, and `hostStack`.
+
 ### Extra: Finding important values
 After deployment is completed, look for the following in the terminal:
 - `Hosted Website URL` - this is the hosted admin page URL which can be acces through a browser
