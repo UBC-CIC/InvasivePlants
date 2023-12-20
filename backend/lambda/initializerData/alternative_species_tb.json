@@ -105,7 +105,7 @@
     {
         "species_id": "862d11ea-d195-433a-acd2-e565cb9a1893",
         "scientific_name": [
-            "Amelanchier Arborea"
+            "amelanchier_arborea"
         ],
         "common_name": [
             "Allegheny Serviceberry",
@@ -238,8 +238,7 @@
         ],
         "species_description": "Arnica /ˈɑːrnɪkə/ is a genus of perennial, herbaceous plants in the sunflower family (Asteraceae). The genus name Arnica may be derived from the Greek arni, \"lamb\", in reference to the plants' soft, hairy leaves. Arnica is also known by the names mountain tobacco and confusingly, leopard's bane and wolfsbane—two names that it shares with the entirely unrelated genus Aconitum.\n\nThis circumboreal and montane (subalpine) genus occurs mostly in the temperate regions of western North America, with a few species native to the Arctic regions of northern Eurasia and North America.\n\nArnica species are used as food plants by the larvae of some Lepidoptera species, including Bucculatrix arnicella.\n\nArnica was previously classified in the tribe Senecioneae because it has a flower or pappus of fine bristles.",
         "image_links": [
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Arnica_chamissonis0.jpg/440px-Arnica_chamissonis0.jpg",
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Arnica_montana_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-015.jpg/440px-Arnica_montana_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-015.jpg"
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Arnica_chamissonis0.jpg/440px-Arnica_chamissonis0.jpg"
         ]
     },
     {
@@ -466,7 +465,7 @@
         "resource_links": [
             "https://en.wikipedia.org/wiki/campanula%20rotundifolia"
         ],
-        "species_description": "Campanula rotundifolia, the harebell, Scottish bluebell, or bluebell of Scotland, is a species of flowering plant in the bellflower family Campanulaceae. This herbaceous perennial is found throughout the temperate regions of the northern hemisphere. In Scotland, it is often known simply as bluebell. It is the floral emblem of Sweden where it is known as small bluebell. It produces its violet-blue, bell-shaped flowers in late summer and autumn.The Latin specific epithet rotundifolia means \"round leaved\". However, not all leaves are round in shape. Middle stem-leaves are linear.: 707",
+        "species_description": "Campanula rotundifolia, the harebell, Scottish bluebell, or bluebell of Scotland, is a species of flowering plant in the bellflower family Campanulaceae. This herbaceous perennial is found throughout the temperate regions of the northern hemisphere. In Scotland, it is often known simply as bluebell. It is the floral emblem of Sweden where it is known as small bluebell. It produces its violet-blue, bell-shaped flowers in late summer and autumn.The Latin specific epithet rotundifolia means \"round leaved\". However, not all leaves are round in shape. Middle stem-leaves are linear.",
         "image_links": [
             "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Campanula_rotondifolia.jpg/220px-Campanula_rotondifolia.jpg"
         ]
@@ -474,7 +473,7 @@
     {
         "species_id": "e76634a9-2896-4c12-a31f-1f0ffa06f92b",
         "scientific_name": [
-            "carex_oshimensis_‘evergold’"
+            "carex_oshimensis"
         ],
         "common_name": [
             "evergold_sedge"
@@ -559,7 +558,8 @@
     {
         "species_id": "779f546f-ef42-43ce-b2da-50666ff8900d",
         "scientific_name": [
-            "chelone_lyonii,_c._oblique"
+            "chelone_lyonii",
+            "chelone_oblique"
         ],
         "common_name": [
             "pink_turtle"
@@ -645,7 +645,7 @@
     {
         "species_id": "2aac96d0-8f3e-4026-9b68-93365bd63e66",
         "scientific_name": [
-            "cotoneaster_dammeri_‘lowfast’"
+            "cotoneaster_dammeri"
         ],
         "common_name": [
             "lowfast_cotoneaster"
@@ -1158,8 +1158,7 @@
     {
         "species_id": "91cd4973-98cc-48ba-b3a5-dee1a8b876ce",
         "scientific_name": [
-            "iris_germanica",
-            "iris"
+            "iris_germanica"
         ],
         "common_name": [
             "Bearded Iris"
@@ -1511,8 +1510,7 @@
     {
         "species_id": "48474cbf-31e1-48ba-a373-1390697d126e",
         "scientific_name": [
-            "mimulus_lewisii",
-            "mimulus_lewisii_lewisii"
+            "mimulus_lewisii"
         ],
         "common_name": [
             "Lewis' monkeyflower",
@@ -1769,7 +1767,7 @@
         "resource_links": [
             "https://en.wikipedia.org/wiki/rhus%20aromatica"
         ],
-        "species_description": "Rhus aromatica, the fragrant sumac, is a deciduous shrub in the family Anacardiaceae native to North America. It is found in southern Canada (Alberta to Quebec) and nearly all of the lower 48 states except peninsular Florida.Fragrant sumac is a woody plant with a rounded form that grows to around 2 ft (0.6 m) to 5 ft (1.5 m) tall and 5 ft (1.5 m) to 10 ft (3.0 m) wide. The plant develops yellow flowers in clusters on short lateral shoots in March through May. The flower is a small, dense inflorescence that usually opens before the plant's leaves do.The species is polygamodioecious (mostly dioecious, primarily bearing flowers of only one sex, but with either a few flowers of the opposite sex or a few bisexual flowers on the same plant). Male (staminate) flowers develop in yellowish catkins, while female (pistillate) flowers develop in short bright yellow panicles at the ends of branches.Pollinated flowers develop clusters of 5 mm (0.2 in) to 7 mm (0.3 in) hairy red drupes containing a single nutlet during June through August. The fruits become an important winter food for birds and small mammals that can remain on the plant until spring if not eaten.The plant's alternate compound leaves have three leaflets that vary in shape, lobing, and margination.  The unstalked leaflets are ovate to rhomboid, more or less wedge-shaped at the base, coarsely-toothed and usually shiny glabrous above. The terminal leaflet is 3 cm (1.2 in) to 6.5 cm (2.6 in) long.Fragrant sumac's three-leafleted lobed leaves resemble those of its relative, poison ivy (Toxicodendron radicans). However, poison ivy's central leaflet has a stem, whereas fragrant sumac's does not.The plant's  green to glossy blue-green summer foliage becomes orange to red or purple in the fall. Stems are thin and brownish-gray, with rust-colored lenticels when young. Leaves and stems emit a lemon scent when crushed. There are no terminal buds, but overwintering male catkins are present.Fragrant sumac is common along the forested eastern margins of the Great Plains and in open or otherwise disturbed sites on the margins of the Gulf Coast prairie. It grows at a range of sites including open rocky woodlands, valley bottoms, lower rocky slopes, and roadsides. It is not widely used for landscape plantings but is often used as a ground cover, especially on banks. The plant's colorful fall foliage is its main ornamental feature.The plant grows in full deep shade to full sun and well-drained soils slightly acid to well alkaline with a pH range of about 6.0 to 8.5. It has a shallow, fibrous root system and is easily transplanted. Some of its branches can trail upon the ground and develop roots.  The plant can ground sucker to form a colony.SpreadFoliagePistillate inflorescenceFruit",
+        "species_description": "Rhus aromatica, the fragrant sumac, is a deciduous shrub in the family Anacardiaceae native to North America. It is found in southern Canada (Alberta to Quebec) and nearly all of the lower 48 states except peninsular Florida.Fragrant sumac is a woody plant with a rounded form that grows to around 2 ft (0.6 m) to 5 ft (1.5 m) tall and 5 ft (1.5 m) to 10 ft (3.0 m) wide. The plant develops yellow flowers in clusters on short lateral shoots in March through May. The flower is a small, dense inflorescence that usually opens before the plant's leaves do.The species is polygamodioecious (mostly dioecious, primarily bearing flowers of only one sex, but with either a few flowers of the opposite sex or a few bisexual flowers on the same plant). Male (staminate) flowers develop in yellowish catkins, while female (pistillate) flowers develop in short bright yellow panicles at the ends of branches.Pollinated flowers develop clusters of 5 mm (0.2 in) to 7 mm (0.3 in) hairy red drupes containing a single nutlet during June through August. The fruits become an important winter food for birds and small mammals that can remain on the plant until spring if not eaten.The plant's alternate compound leaves have three leaflets that vary in shape, lobing, and margination.  The unstalked leaflets are ovate to rhomboid, more or less wedge-shaped at the base, coarsely-toothed and usually shiny glabrous above. The terminal leaflet is 3 cm (1.2 in) to 6.5 cm (2.6 in) long.Fragrant sumac's three-leafleted lobed leaves resemble those of its relative, poison ivy (Toxicodendron radicans). However, poison ivy's central leaflet has a stem, whereas fragrant sumac's does not.The plant's  green to glossy blue-green summer foliage becomes orange to red or purple in the fall. Stems are thin and brownish-gray, with rust-colored lenticels when young. Leaves and stems emit a lemon scent when crushed. There are no terminal buds, but overwintering male catkins are present.Fragrant sumac is common along the forested eastern margins of the Great Plains and in open or otherwise disturbed sites on the margins of the Gulf Coast prairie. It grows at a range of sites including open rocky woodlands, valley bottoms, lower rocky slopes, and roadsides. It is not widely used for landscape plantings but is often used as a ground cover, especially on banks. The plant's colorful fall foliage is its main ornamental feature.The plant grows in full deep shade to full sun and well-drained soils slightly acid to well alkaline with a pH range of about 6.0 to 8.5. It has a shallow, fibrous root system and is easily transplanted. Some of its branches can trail upon the ground and develop roots.  The plant can ground sucker to form a colony.",
         "image_links": [
             "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Rhus_aromatica_foliage_catkins.jpg/220px-Rhus_aromatica_foliage_catkins.jpg"
         ]
@@ -1939,8 +1937,7 @@
     {
         "species_id": "dcddf9dd-e773-4764-b591-411f082f2dc1",
         "scientific_name": [
-            "sambucus_racemosa_subsp._pubens",
-            "sambucus_racemosa_melanocarpa"
+            "sambucus_racemosa_subsp._pubens"
         ],
         "common_name": [
             "american_red_elder"
@@ -2312,65 +2309,5 @@
             "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Russian_sage_by_RO_IV.jpg/220px-Russian_sage_by_RO_IV.jpg"
         ],
         "species_description": "Salvia yangii, previously known as Perovskia atriplicifolia (/pəˈrɒvskiə ætrɪplɪsɪˈfoʊliə/), and commonly called Russian sage, is a flowering herbaceous perennial plant and subshrub. Although not previously a member of Salvia, the genus widely known as sage, since 2017 it has been included within them. It has an upright habit, typically reaching .mw-parser-output .frac{white-space:nowrap}.mw-parser-output .frac .num,.mw-parser-output .frac .den{font-size:80%;line-height:0;vertical-align:super}.mw-parser-output .frac .den{vertical-align:sub}.mw-parser-output .sr-only{border:0;clip:rect(0,0,0,0);clip-path:polygon(0px 0px,0px 0px,0px 0px);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}0.5–1.2 metres (1+1⁄2–4 feet) tall, with square stems and gray-green leaves that yield a distinctive odor when crushed. It is best known for its flowers. Its flowering season extends from mid-summer to late October, with blue to violet blossoms arranged into showy, branched panicles.It is native to the steppes and hills of southwestern and central Asia. Successful over a wide range of climate and soil conditions, it has since become popular and widely planted. Several cultivars have been developed, differing primarily in leaf shape and overall height; 'Blue Spire' is the most common. This variation has been widely used in gardens and landscaping. S. yangii was the Perennial Plant Association's 1995 Plant of the Year, and the 'Blue Spire' cultivar received the Award of Garden Merit from the Royal Horticultural Society.The species has a long history of use in traditional medicine in its native range, where it is employed as a treatment for a variety of ailments. This has led to the investigation of its phytochemistry. Its flowers can be eaten in salads or crushed for dyemaking, and the plant has been considered for potential use in the phytoremediation of contaminated soil."
-    },
-    {
-        "scientific_name": [
-            "iris_sibirica"
-        ],
-        "common_name": [
-            "Siberian iris",
-            "Siberian flag"
-        ],
-        "resource_links": [
-            "https://en.wikipedia.org/wiki/Iris_sibirica"
-        ],
-        "image_links": [
-            "https://upload.wikimedia.org/wikipedia/commons/e/e5/Sibirische_Schwertlilie%2C_Iris_sibirica_06.JPG"
-        ],
-        "species_description": "Iris sibirica, commonly known as Siberian iris or Siberian flag, is a species of flowering plant in the family Iridaceae. It is a rhizomatous herbaceous perennial, from Europe (including France, Italy, Switzerland, Austria, Czech Republic, Slovakia, Germany, Hungary, Poland, Romania, Bulgaria, Former Yugoslavia, Belarus, Estonia, Latvia, Lithuania, Moldova, Ukraine and northern Turkey) and Central Asia (including Armenia, Azerbaijan and Siberia). It has long green grass-like leaves, tall stem, 2–5 violet-blue, to blue, and occasionally white flowers. It is cultivated as an ornamental plant in temperate regions."
-    },
-    {
-        "scientific_name": [
-            "amelanchier_arborea"
-        ],
-        "common_name": [
-            "Allegheny Serviceberry",
-            "Apple Shadbush",
-            "Common Serviceberry",
-            "Downy Juneberry",
-            "Downy Serviceberry",
-            "Downy Shadbush",
-            "Juneberry",
-            "Shadblow"
-        ],
-        "resource_links": [
-            "https://en.wikipedia.org/wiki/amelanchier%20arborea"
-        ],
-        "image_links": [
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Amelanchier_arborea_leaves.JPG/220px-Amelanchier_arborea_leaves.JPG",
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Status_TNC_G5.svg/220px-Status_TNC_G5.svg.png",
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Amelanchier_arborea_range_map_1.png/220px-Amelanchier_arborea_range_map_1.png"
-        ],
-        "species_description": "Amelanchier arborea (downy serviceberry or common serviceberry), is native to eastern North America from the Gulf Coast north to Thunder Bay in Ontario and Lake St. John in Quebec, and west to Texas and Minnesota.Other common names are \"shadberries\" (as their blossoming coincides with the shad runs in New England), \"Juneberries\" (because the berries usually set on in June), and \"Service\" or \"Sarvice\" berries because their blooms mean that the muddy back roads into the \"coves and hollers\" of Appalachia will soon be passable for circuit-riding preachers and the communities will be able to have Sunday services again. (Some say, more morbidly, that it means the ground is soft enough to dig, which means that those who died over winter can be buried and have services said over them.)Amelanchier arborea is generally 5–12 m (16–39 ft) tall. Occasionally, it can grow up to 20 metres (66 ft) tall and reach into the overstory. The trunk can be up to 15 cm (6 in) in diameter (rarely to 40 cm or 16 in). The bark is smooth and gray.The buds are slender with a pointed tip, and usually more than two scales visible. The leaves are ovate or elliptical, .mw-parser-output .frac{white-space:nowrap}.mw-parser-output .frac .num,.mw-parser-output .frac .den{font-size:80%;line-height:0;vertical-align:super}.mw-parser-output .frac .den{vertical-align:sub}.mw-parser-output .sr-only{border:0;clip:rect(0,0,0,0);clip-path:polygon(0px 0px,0px 0px,0px 0px);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}4–8 cm (1+1⁄2–3+1⁄4 in), rarely 10 cm (4 in), long and 2.5–4 cm (1–1+5⁄8 in) wide, with pointed tips and finely serrated margins. A characteristic useful for identification is that the young leaves emerge downy on the underside. The fall color is variable, from orange-yellow to pinkish or reddish.It has perfect flowers that are 15–25 mm (5⁄8–1 in) in diameter, with 5 petals, emerging during budbreak in early spring. The petals are white. Flowers are produced on pendulous racemes 3–5 cm (1+1⁄4–2 in) long with 4–10 flowers on each raceme. The flowers are pollinated by bees. The fruit is a reddish-purple pome, resembling a small apple in shape. They ripen in summer and are very popular with birds. The fruit is eaten by over 40 species of birds and various mammals, including squirrels, rabbits, chipmunks, mice, voles, foxes,  black bears, deer, and elk.It also commonly hybridizes with other species of Amelanchier, the hybrid Amelanchier × grandiflora being one example, and identification can be very difficult as a result."
-    },
-    {
-        "scientific_name": [
-            "aconitum_spp."
-        ],
-        "common_name": [
-            "Aconite",
-            "Monkshood",
-            "Wolfsbane",
-            "Leopard's bane",
-            "Devil's helmet",
-            "Blue rocket"
-        ],
-        "resource_links": [
-            "https://en.wikipedia.org/wiki/Aconitum"
-        ],
-        "image_links": [
-            "https://upload.wikimedia.org/wikipedia/commons/f/ff/Aconitum_variegatum_110807f.jpg"
-        ],
-        "species_description": "Aconitum (/ˌækəˈnaɪtəm/), also known as aconite, monkshood, wolfsbane, leopard's bane, devil's helmet, or blue rocket, is a genus of over 250 species of flowering plants belonging to the family Ranunculaceae. These herbaceous perennial plants are chiefly native to the mountainous parts of the Northern Hemisphere in North America, Europe, and Asia; growing in the moisture-retentive but well-draining soils of mountain meadows."
     }
 ]

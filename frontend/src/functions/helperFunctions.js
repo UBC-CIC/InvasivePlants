@@ -30,7 +30,10 @@ export function capitalizeFirstWord(str) {
 
 // Capitalizes first letter of each word in a string (ex. gypsophila_paniculata => Gypsophila Paniculata)
 export function capitalizeEachWord(str) {
-    return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    const strSplitUnderscore = str.split("_");
+    const words = strSplitUnderscore.flatMap(word => word.split(" "));
+
+    return words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 
 // Formats a string by spliting it based on commas and spacces

@@ -1,11 +1,7 @@
 [
   {
-    "scientific_name": [
-      "gypsophila_paniculata"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/babys-breath/"
-    ],
+    "scientific_name": ["gypsophila_paniculata"],
+    "resource_links": ["https://bcinvasives.ca/invasives/babys-breath/"],
     "species_description": "Baby’s breath (Common gypsophila) is a slender, short bush with silvery, narrow leaves and lots of tiny, star shaped white flowers. It is an escaped ornamental plant that spreads primarily through seed, with each plant having the ability to spread over 10,000 seeds. When it invades grazing land, it reduces native grasses and forage for grazing animals and wildlife.",
     "alternative_species": [
       "perovskia_atriplicifolia",
@@ -17,12 +13,8 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "centaurea_cyanus"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/bachelors-button/"
-    ],
+    "scientific_name": ["centaurea_cyanus"],
+    "resource_links": ["https://bcinvasives.ca/invasives/bachelors-button/"],
     "species_description": "Bachelor’s button (Cornflower) is a flowering plant that can be 1 m in height, with multiple bell-shaped blue, purple or pink marginal flower arranged around the flower head. This invasive plant produces large amounts of seed and can easily invade dry meadows, fields, and grasslands.",
     "alternative_species": [
       "linum_lewisii",
@@ -34,12 +26,8 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "echium_vulgare"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/blueweed/"
-    ],
+    "scientific_name": ["echium_vulgare"],
+    "resource_links": ["https://bcinvasives.ca/invasives/blueweed/"],
     "species_description": "Blueweed (Viper’s bugloss) is a plant that is hairy and painful to touch with bright blue flowers. It is toxic to horses and cattle and reduces forage quality in rangelands and pastures, resulting in economic losses. Plants can drop up to 2800 rough seeds that can be further spread by clinging onto animals or humans.",
     "alternative_species": [
       "lupinus_arcticus",
@@ -50,12 +38,8 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "reynoutria_x_bohemica"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/bohemian-knotweed/"
-    ],
+    "scientific_name": ["reynoutria_x_bohemica"],
+    "resource_links": ["https://bcinvasives.ca/invasives/bohemian-knotweed/"],
     "species_description": "Bohemian knotweed is a hybrid between Japanese (Reynoutria japonica) and Giant knotweed (Reynoutria sachalinensis) and resembles both species. Knotweeds were introduced to British Columbia for use in gardens and landscaping due to their rapid growth and attractive appearance. There are now four species established in BC: Bohemian, Giant, Himalayan, and Japanese knotweed.",
     "alternative_species": [
       "sambucus_racemosa_var._melanocarpa",
@@ -67,23 +51,15 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "anthriscus_caucalis"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/bur-chervil/"
-    ],
+    "scientific_name": ["anthriscus_caucalis"],
+    "resource_links": ["https://bcinvasives.ca/invasives/bur-chervil/"],
     "species_description": "Bur chervil (Bur parsley) is an herbaceous plant with fern-like leaves and small white flowers. It can be found in most growing conditions, particularly in moist areas such as ditches and fields. Bur chervil easily out-grows native vegetation. Each flower produces two bur-like seeds that have a pronounced peak and are covered in bristles that easily stick to humans and animals to spread.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "buddleja_davidii"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/butterfly-bush/"
-    ],
+    "scientific_name": ["buddleja_davidii"],
+    "resource_links": ["https://bcinvasives.ca/invasives/butterfly-bush/"],
     "species_description": "Butterfly bush (Summer lilac, Orange eye) is a semi-evergreen shrub that grows up to 5 m tall with a long, showy spike of tiny, purple flowers. This attractive, fast-growing plant has escaped gardens and now rapidly spreads into disturbed, open areas and along coastal forest edges, roadsides, and especially on sunny stream edges and riverbanks where it replaces native plants. Butterflies are often attracted to its flowers.",
     "alternative_species": [
       "sambucus_cerulea",
@@ -95,56 +71,36 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "cirsium_arvense"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/canada-thistle/"
-    ],
+    "scientific_name": ["cirsium_arvense"],
+    "resource_links": ["https://bcinvasives.ca/invasives/canada-thistle/"],
     "species_description": "Canada thistle (Creeping thistle, California thistle, Cursed thistle) is a shiny green, spiny herbaceous plant of variable height with purple flowers. Plants form thick infestations through creeping rhizomatous roots that crowd out forage grasses in pastures and rangelands, reducing crop yields and production. Canada thistle is commonly found growing on roadsides, cultivated fields, pastures, logged forests, riverbanks, and other disturbed areas where it also out-grows native species.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "bromus_tectorum"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/cheatgrass/"
-    ],
+    "scientific_name": ["bromus_tectorum"],
+    "resource_links": ["https://bcinvasives.ca/invasives/cheatgrass/"],
     "species_description": "Cheatgrass (Downy brome, Drooping brome) is an annual grass introduced to North America in the late 1800’s with hairy leaves and drooping spikelets. It can be found alongside roads or disturbed areas, or in sagebrush ecosystems where it can form dense stands and outcompete native grasses. It can dramatically alter wildfire regimes, as well as injure livestock and animals' eyes and mouths by its sharp awns.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "anchusa_officinalis"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/common-bugloss/"
-    ],
+    "scientific_name": ["anchusa_officinalis"],
+    "resource_links": ["https://bcinvasives.ca/invasives/common-bugloss/"],
     "species_description": "Common bugloss (Alkanet) is a hairy, biennial plant of variable height with small, purple flowers. It invades disturbed, sunny areas such as roadsides, pastures, and hay fields, which reduces the yield of these crops. It spreads primarily through seed, but root fragments can propagate. Bugloss leaves include alkaloid compounds which are toxic if ingested by humans or livestock.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "arctium_minus"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/burdock/"
-    ],
+    "scientific_name": ["arctium_minus"],
+    "resource_links": ["https://bcinvasives.ca/invasives/burdock/"],
     "species_description": "Common burdock (Lesser burdock, Louse-bur, Wild rhubarb) is a biennial plant that forms a basal rosette with large leaves it’s first year and a very tall flowering stem it’s second year. It’s known for its clinging burrs that attach and cling to wild and farm animals. This can cause health issues such as blindness to these animals and allows burdock to spread large distances from a single plant.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "symphytum_officinale"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/common-comfrey/"
-    ],
+    "scientific_name": ["symphytum_officinale"],
+    "resource_links": ["https://bcinvasives.ca/invasives/common-comfrey/"],
     "species_description": "Common comfrey is a fuzzy, herbaceous, perennial plant with white or purple flowers that grows to a height of 1 m. It primarily reproduces vegetatively and is notoriously difficult to remove due to its tendency to sprout whole plants from small root fragments. Its large taproot allows it to bioaccumulate nutrients in the soil and outcompete native plants.",
     "alternative_species": [
       "salvia_guarantica",
@@ -156,51 +112,35 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "vinca_minor"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/common-periwinkle/"
-    ],
+    "scientific_name": ["vinca_minor"],
+    "resource_links": ["https://bcinvasives.ca/invasives/common-periwinkle/"],
     "species_description": "Common periwinkle (Lesser periwinkle, Dwarf periwinkle) is a shiny evergreen trailing plant with showy purple flowers. It was a common ornamental groundcover popular for its fast growth and dense coverage. However, it has since escaped captivity and spread rapidly through BC forest’s understories, choking out native plant species.",
     "alternative_species": [
       "cornus_canadensis",
       "maianthemum_dilatatum",
       "arctostaphylos_uva-ursi",
-      "cotoneaster_dammeri_‘lowfast’",
+      "cotoneaster_dammeri",
       "oxalis_oregana"
     ],
-    "region_id": "BC"
+    "region_id": ["BC", "ON"]
   },
   {
-    "scientific_name": [
-      "hypericum_perforatum"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/st-johns-wort/"
-    ],
+    "scientific_name": ["hypericum_perforatum"],
+    "resource_links": ["https://bcinvasives.ca/invasives/st-johns-wort/"],
     "species_description": "Common St. John’s-Wort is a perennial plant that with dark green, opposite leaves and bright yellow, 5 petalled, clustered flowers. It grows in dense patches which can crowd out natural plants and reduce the grasses that animals feed on. St. John’s wort spreads by lateral roots and can produce up to 100,000 seeds per plant.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "tanacetum_vulgare"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/common-tansy/"
-    ],
+    "scientific_name": ["tanacetum_vulgare"],
+    "resource_links": ["https://bcinvasives.ca/invasives/common-tansy/"],
     "species_description": "Common tansy (Bitter buttons, Cow bitter) is an herbaceous plant of variable height with fern-like leaves and yellow, flat-topped round flowers. It’s often found growing in sunny, disturbed areas such as roadsides or pastures where it can displace native vegetation. Infestations in rangeland can be toxic to livestock, and it’s reported that dairy cattle consuming the leaves often have unpleasant tasting milk.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "euphorbia_cyparissias"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/cypress-spurge/"
-    ],
+    "scientific_name": ["euphorbia_cyparissias"],
+    "resource_links": ["https://bcinvasives.ca/invasives/cypress-spurge/"],
     "species_description": "Cypress spurge (Graveyard weed) is a short herbaceous plant with numerous yellow cup like flowers on stalks. It was originally grown as an ornamental but has since escaped into the wild. It prefers sun and can be found growing in open, disturbed sites like meadows, pastures, and roadsides. This plant and its sap are extremely toxic to humans and animals. \r\n\r\nToxic to humans, livestock and wildlife when consumed, or when its sap contacts skin. The sap causes nausea, vomiting and diarrhea when eaten. It can cause blindness if it gets in people’s eyes and skin contact causes redness, swelling and blisters.",
     "alternative_species": [
       "sedum_spathulifolium",
@@ -213,9 +153,7 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "daphne_laureola"
-    ],
+    "scientific_name": ["daphne_laureola"],
     "resource_links": [
       "https://bcinvasives.ca/invasives/daphne-spurge-laurel/"
     ],
@@ -230,23 +168,15 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "centaurea_diffusa"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/diffuse-knapweed/"
-    ],
+    "scientific_name": ["centaurea_diffusa"],
+    "resource_links": ["https://bcinvasives.ca/invasives/diffuse-knapweed/"],
     "species_description": "Diffuse knapweed (White knapweed, Tumble knapweed) is a short flowering plant with white flowers, slender stems and leaves. It is often found growing in open areas and well-drained soils where they establish in grasslands, open forests, and along roadsides. They choke out desirable forage for livestock and wildlife and increase soil erosion. Seeds can be spread by wind, livestock, and people.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "ilex_aquifolium"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/english-holly/"
-    ],
+    "scientific_name": ["ilex_aquifolium"],
+    "resource_links": ["https://bcinvasives.ca/invasives/english-holly/"],
     "species_description": "English holly (European holly, Common holly) is a plant with dark green, spiny evergreen leaves and shiny red berries that can grow as a large tree, shrub, or creeping vine. It’s an extremely adaptable invasive species capable of growing in shade or sun. Its berries are preferred by birds, allowing it to spread in unpredictable patterns.",
     "alternative_species": [
       "osmanthus_heterophyllus",
@@ -258,12 +188,8 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "hedera_helix"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/english-ivy/"
-    ],
+    "scientific_name": ["hedera_helix"],
+    "resource_links": ["https://bcinvasives.ca/invasives/english-ivy/"],
     "species_description": "English ivy (European ivy, Common ivy) is a creeping evergreen vine that can grow as dense groundcover or while climbing up trees. It was commonly planted to provide quick cover for walls and buildings, and as ground cover in commercial landscape. It spreads throughout rainforest understories where it suppresses native biodiversity.",
     "alternative_species": [
       "parthenocissus_tricuspidata",
@@ -275,116 +201,95 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "myriophyllum_spicatum"
-    ],
+    "scientific_name": ["myriophyllum_spicatum"],
     "resource_links": [
-      "https://bcinvasives.ca/invasives/eurasian-watermilfoil/"
+      "https://bcinvasives.ca/invasives/eurasian-watermilfoil/",
+      "https://www.invadingspecies.com/invaders/aquatic-plants/eurasian-water-milfoil-2/"
     ],
     "species_description": "Eurasian watermilfoil (Spiked watermilfoil) is an aquatic plant with long slender stems, and thin feathery leaves. It has likely been let loose from aquariums. It can quickly take over waterways, causing sluggish water that attracts mosquitos and reduces the recreational potential of the waterway such as swimming and boating.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": ["BC", "ON"]
   },
   {
-    "scientific_name": [
-      "nymphaea_alba"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/european-waterlily/"
-    ],
+    "scientific_name": ["nymphaea_alba"],
+    "resource_links": ["https://bcinvasives.ca/invasives/european-waterlily/"],
     "species_description": "European waterlily (European white waterlily) is an aquatic plant with floating glossy green ‘lily pads’ on the water’s surface and large white flowers. It can be found in slow-moving water such as in lakes and ponds. This plant creates a swimming and recreational hazard by overtaking aquatic environments and choking out native species.",
-    "alternative_species": [
-      "nuphar_lutea_subsp._polysepala"
-    ],
+    "alternative_species": ["nuphar_lutea_subsp._polysepala"],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "knautia_arvensis"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/field-scabious/"
-    ],
+    "scientific_name": ["knautia_arvensis"],
+    "resource_links": ["https://bcinvasives.ca/invasives/field-scabious/"],
     "species_description": "Field scabious is a short perennial plant with large violet to pink clover-like flowers. It can found growing along roadside or in pastures. It crowds out forage and pasture plants, reducing food availability for grazing animals. A single plant can produce up to 2,000 seeds, which makes this plant difficult to remove once established.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "butomus_umbellatus"
-    ],
+    "scientific_name": ["butomus_umbellatus"],
     "resource_links": [
-      "https://bcinvasives.ca/invasives/flowering-rush/"
+      "https://bcinvasives.ca/invasives/flowering-rush/",
+      "https://www.invadingspecies.com/invaders/aquatic-plants/flowering-rush-2/"
     ],
     "species_description": "Flowering rush (Grass rush) is an aquatic perennial with green, grass-like foliage and pink almond-scented flowers. It can be difficult to identify as it resembles several native species but will quickly crowds out other plants. It can be found in freshwater marshes, lakes or streams and reproduces primarily through its rhizomes.",
     "alternative_species": [
-      "carex_oshimensis_‘evergold’",
+      "carex_oshimensis",
       "iris_ensata",
       "eriophorum_angustifolium",
       "iris_missouriensis",
-      "scirpus_microcarpus"
+      "scirpus_microcarpus",
+      "verbena_hastata",
+      "chelone_glabra",
+      "eupatorium_maculatum",
+      "hibiscus_moscheutos",
+      "asclepias_incarnata",
+      "eupatorium_perfoliatum",
+      "caltha_palustris"
     ],
-    "region_id": "BC"
+    "region_id": ["BC", "ON"]
   },
   {
-    "scientific_name": [
-      "digitalis_purpurea"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/foxglove/"
-    ],
+    "scientific_name": ["digitalis_purpurea"],
+    "resource_links": ["https://bcinvasives.ca/invasives/foxglove/"],
     "species_description": "Foxglove (Purple foxglove) is a tall flowering plant mimicking a column of bell-shaped flowers. It's an extremely abundant exotic species that has naturalized throughout the province, leading many to believe this plant is a BC native! Found growing along roadsides, waste areas, and forests, a single foxglove specimen can produce 5,000 seeds each season. Every part of this plant (including the seeds) is extremely poisonous.",
     "alternative_species": [
       "penstemon_barbatus",
       "liatris_spicata",
       "lupinus_polyphyllus",
       "delphinium_hybrids",
-      "aconitum_spp."
+      "aconitum"
     ],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "nymphaea_odorata"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/fragrant-waterlily/"
-    ],
+    "scientific_name": ["nymphaea_odorata"],
+    "resource_links": ["https://bcinvasives.ca/invasives/fragrant-waterlily/"],
     "species_description": "Fragrant waterlily (American white waterlily, Beaver root) is an aquatic perennial plant with round glossy green leaves that float on the water’s surface. This popular, fragrant aquatic perennial is still sold in garden and pond centers throughout the province despite its potential to invade and destroy our sensitive aquatic ecosystems.",
-    "alternative_species": [
-      "nuphar_lutea_subsp._polysepala"
-    ],
+    "alternative_species": ["nuphar_lutea_subsp._polysepala"],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "alliaria_petiolata"
-    ],
+    "scientific_name": ["alliaria_petiolata"],
     "resource_links": [
-      "https://bcinvasives.ca/invasives/garlic-mustard/"
+      "https://bcinvasives.ca/invasives/garlic-mustard/",
+      "https://www.invadingspecies.com/invaders/plants/garlic-mustard-2/"
     ],
     "species_description": "Garlic mustard is a biennial plant with triangular, toothed leaves and small white flowers. In can be found growing in disturbed ecosystems, or in forest understories as it is a shade-tolerant plant. It reproduces by seed only and is unpalatable for herbivore grazers.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": ["BC", "ON"]
   },
   {
-    "scientific_name": [
-      "heracleum_mantegazzianum"
-    ],
+    "scientific_name": ["heracleum_mantegazzianum"],
     "resource_links": [
-      "https://bcinvasives.ca/invasives/giant-hogweed/"
+      "https://bcinvasives.ca/invasives/giant-hogweed/",
+      "https://www.invadingspecies.com/invaders/plants/giant-hogweed-2/"
     ],
     "species_description": "Giant hogweed (Giant cow parsnip, Cartwheel flower) is an extremely toxic invasive plant that is unusually large with deeply incised and sharp toothed leaves. Its sap will cause burns, blisters and scars when touched by bare skin. It can be found in moist disturbed soils, or riparian areas such as streams. It can grow very quickly and dominate ravines and stream banks posing serious negative risks to human health and ecology.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": ["BC", "ON"]
   },
   {
-    "scientific_name": [
-      "reynoutria_sachalinensis"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/giant-knotweed/"
-    ],
+    "scientific_name": ["reynoutria_sachalinensis"],
+    "resource_links": ["https://bcinvasives.ca/invasives/giant-knotweed/"],
     "species_description": "Giant knotweed is the largest of the knotweed species found in BC, with leaves that can be 16-20 cm wide and 30 cm in length. Knotweeds are frequently found in riparian areas, derelict land, road and railway right of ways and gardens. They thrive in moist soil and full or partial sun. Knotweeds can spread by seed, root fragments, and stem fragments, making them very difficult to control.",
     "alternative_species": [
       "sambucus_racemosa_var._melanocarpa",
@@ -396,12 +301,8 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "sedum_acre"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/goldmoss-stonecrop/"
-    ],
+    "scientific_name": ["sedum_acre"],
+    "resource_links": ["https://bcinvasives.ca/invasives/goldmoss-stonecrop/"],
     "species_description": "Goldmoss stonecrop (Biting stonecrop) is a rapidly growing succulent that was popular for rock and xeriscape gardens and is also occasionally used as a green roof species for its ability to withstand extreme temperatures and drought. However, this species is quite aggressively growing and overtakes other plants, rapidly spreading by both seed and vegetatively. A single leaf can root and turn into a whole new plant.",
     "alternative_species": [
       "sedum_rupestre_'angelina'",
@@ -413,48 +314,38 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "ulex_europaeus"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/gorse/"
-    ],
+    "scientific_name": ["ulex_europaeus"],
+    "resource_links": ["https://bcinvasives.ca/invasives/gorse/"],
     "species_description": "Gorse (Furze, Whin) is a spiny, perennial evergreen shrub. A mature plant can disperse up to 18,000 seeds per plant, and their seeds are easily distributed by human, environmental, and animal transport. Gorse poses a fire hazard due to its volatile oils. It is considered a noxious weed throughout the province.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "hypochaeris_radicata"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/hairy-cats-ear/"
-    ],
+    "scientific_name": ["hypochaeris_radicata"],
+    "resource_links": ["https://bcinvasives.ca/invasives/hairy-cats-ear/"],
     "species_description": "Hairy cat’s-ear (Common cat’s ear, False dandelion) is a short, yellow flowered perennial herbaceous plant that invades pastures, meadows, roadsides, riverbanks, lawns, and disturbed sites. This plant can grow in a wide range of conditions, but thrives the most in sunny, open areas. It displaces native plants and is a nuisance weed on lawns.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "impatiens_glandulifera"
-    ],
+    "scientific_name": ["impatiens_glandulifera"],
     "resource_links": [
-      "https://bcinvasives.ca/invasives/himalayan-balsam/"
+      "https://bcinvasives.ca/invasives/himalayan-balsam/",
+      "https://www.invadingspecies.com/invaders/plants/himalayan-balsam-2/"
     ],
     "species_description": "Himalayan balsam (Policeman’s helmet, Ornamental jewelweed) is a short herbaceous plant with hooded white, pink or purple flowers. This plant will take over areas with moist soils, including stream and riverbanks. It has seed pods that when ripe, can explode or shoot seeds up to 7 m from the plant.",
     "alternative_species": [
       "penstemon_barbatus",
       "dicentra_formosa",
       "mimulus_lewisii",
-      "chelone_lyonii,_c._oblique",
+      "chelone_lyonii",
+      "chelone_oblique",
       "aquilegia_formosa"
     ],
-    "region_id": "BC"
+    "region_id": ["BC", "ON"]
   },
   {
-    "scientific_name": [
-      "rubus_armeniacus"
-    ],
+    "scientific_name": ["rubus_armeniacus"],
     "resource_links": [
       "https://bcinvasives.ca/invasives/himalayan-blackberry/"
     ],
@@ -463,12 +354,8 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "persicaria_wallichii"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/himalayan-knotweed/"
-    ],
+    "scientific_name": ["persicaria_wallichii"],
+    "resource_links": ["https://bcinvasives.ca/invasives/himalayan-knotweed/"],
     "species_description": "Note: Both BC Priority Invasive Species List and iNaturalist have scientific name of Persicaria wallichii. Noxious weed list uses Polygonum polystachyum. \r\n\r\n \r\n\r\nKnotweeds were introduced to British Columbia for use in gardens and landscaping due to their rapid growth and attractive appearance There are now four species established in BC: Bohemian, Giant, Himalayan, and Japanese knotweed. Knotweeds grow aggressively and are very hard to kill.",
     "alternative_species": [
       "sambucus_racemosa_var._melanocarpa",
@@ -480,45 +367,29 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "berteroa_incana"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/hoary-alyssum/"
-    ],
+    "scientific_name": ["berteroa_incana"],
+    "resource_links": ["https://bcinvasives.ca/invasives/hoary-alyssum/"],
     "species_description": "Hoary alyssum (False hoary madwort, Hoary berteroa) is a flowering plant with clusters of small white flowers with deeply notched petals. It spreads quickly through a long season of seed production. Seeds are dispersed by vehicles, equipment, footwear, wildlife, and birds.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "lepidium_draba"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/hoary-cress/"
-    ],
+    "scientific_name": ["lepidium_draba"],
+    "resource_links": ["https://bcinvasives.ca/invasives/hoary-cress/"],
     "species_description": "Hoary cress (Heart-podded hoary cress, White top) is a perennial plant with numerous small, white flowers with 4 petals each. It invades open, sunny areas such as hayfields, meadows, and roadsides. It spreads by roots and seeds and crowds out native vegetation. It is considered a noxious weed in parts of BC.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "cynoglossum_officinale"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/hounds-tongue/"
-    ],
+    "scientific_name": ["cynoglossum_officinale"],
+    "resource_links": ["https://bcinvasives.ca/invasives/hounds-tongue/"],
     "species_description": "Hound’s tongue (Houndstooth, Dog’s tongue) is an invasive plant with large dog’s tongue shaped leaves and red-purple, coiled flowers. It grows on dry, well-drained sites. Each plant can produce 2,000 -4,000 barbed seeds a year that cling to clothing, livestock, and wildlife.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "reynoutria_japonica"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/japanese-knotweed/"
-    ],
+    "scientific_name": ["reynoutria_japonica"],
+    "resource_links": ["https://bcinvasives.ca/invasives/japanese-knotweed/"],
     "species_description": "Knotweeds were introduced to British Columbia for use in gardens and landscaping due to their rapid growth and attractive appearance. There are now four species established in BC: Bohemian, Giant, Himalayan, and Japanese knotweed.",
     "alternative_species": [
       "sambucus_racemosa_var._melanocarpa",
@@ -530,12 +401,8 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "euphorbia_esula"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/leafy-spurge/"
-    ],
+    "scientific_name": ["euphorbia_esula"],
+    "resource_links": ["https://bcinvasives.ca/invasives/leafy-spurge/"],
     "species_description": "Leafy spurge (Green spurge) is a perennial plant with green-yellow flowers in a flat-topped umbrella shaped. It is a garden plant that has escaped into natural areas and can now be found on dry roadsides, fields, grasslands, open forests, and disturbed sites. It can spread rapidly by its large root system, growing 9 metres down into the soil.",
     "alternative_species": [
       "sedum_spathulifolium",
@@ -547,23 +414,15 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "cirsium_palustre"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/marsh-plume-thistle/"
-    ],
+    "scientific_name": ["cirsium_palustre"],
+    "resource_links": ["https://bcinvasives.ca/invasives/marsh-plume-thistle/"],
     "species_description": "Marsh plume thistle (Marsh thistle, European swamp thistle) is a biennial plant with purple flowers, and spiny, hairy leaves. It prefers moist to wet, naturally open or disturbed areas. Seeds are spread by wind, water, birds, vehicles, and equipment.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "centaurea_montana"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/mountain-bluet/"
-    ],
+    "scientific_name": ["centaurea_montana"],
+    "resource_links": ["https://bcinvasives.ca/invasives/mountain-bluet/"],
     "species_description": "Mountain bluet (Perennial cornflower, Montane knapweed) is a perennial plant with large, bright blue, ray-like flowers and long, lance shaped leaves. It is an escaped garden plant that invades natural areas. This plant can self-seed, which makes it difficult to control.",
     "alternative_species": [
       "gilia_capitata",
@@ -575,12 +434,8 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "euphorbia_myrsinites"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/myrtle-spurge/"
-    ],
+    "scientific_name": ["euphorbia_myrsinites"],
+    "resource_links": ["https://bcinvasives.ca/invasives/myrtle-spurge/"],
     "species_description": "Myrtle spurge (Donkey tail, Blue spurge) is a short, creeping escaped garden perennial with oval, spiraling blue green stems and yellow-green flowers. It likes dry, disturbed soils where it grows quickly and aggressively, releasing chemicals from its roots which stop other plants from growing near it.",
     "alternative_species": [
       "sedum_spathulifolium",
@@ -592,23 +447,15 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "pilosella_aurantiaca"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/orange-hawkweed/"
-    ],
+    "scientific_name": ["pilosella_aurantiaca"],
+    "resource_links": ["https://bcinvasives.ca/invasives/orange-hawkweed/"],
     "species_description": "Orange hawkweed (Orange hawk bit, Fox-and-cubs) is a short flowering plant that can grow from 30–60 cm in height with bright orange-red flowers clustered on top. It can create dense mats that crowd out native plants. Hawkweeds spread quickly through above ground runners, horizontal roots, and seeds.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "leucanthemum_vulgare"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/oxeye-daisy/"
-    ],
+    "scientific_name": ["leucanthemum_vulgare"],
+    "resource_links": ["https://bcinvasives.ca/invasives/oxeye-daisy/"],
     "species_description": "Oxeye daisy (Dog daisy, Marguerite) is an herbaceous plant of variable height with typical white daisy-like flowers with a yellow centre and wavy leaves. It was first introduced to North America in seed mixes. It is still commonly sold in many store-bought wildflower mixes and remains popular among gardeners despite its negative impacts. \r\n\r\nScentless chamomile (Matricaria maritima) is a similar species; however its leaves are fern-like, and it has smaller flowerheads.",
     "alternative_species": [
       "arnica_spp.",
@@ -620,12 +467,8 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "lamium_purpureum"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/purple-deadnettle/"
-    ],
+    "scientific_name": ["lamium_purpureum"],
+    "resource_links": ["https://bcinvasives.ca/invasives/purple-deadnettle/"],
     "species_description": "Purple deadnettle (Red deadnettle, Purple archangel) is a short herbaceous plant with small pink flowers, square stems and hairy leaves. It lives as an annual or biennial. A single plant can produce thousands of seeds which remain viable in the soil for several years. It can also spread via stem and root fragments.",
     "alternative_species": [
       "cornus_canadensis",
@@ -637,50 +480,37 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "lythrum_salicaria"
-    ],
+    "scientific_name": ["lythrum_salicaria"],
     "resource_links": [
-      "https://bcinvasives.ca/invasives/purple-loosestrife/"
+      "https://bcinvasives.ca/invasives/purple-loosestrife/",
+      "https://www.invadingspecies.com/invaders/plants/purple-loosestrife-2/"
     ],
-    "species_description": "Purple loosestrife (Spike loosestrife, Purple lythrum) is a perennial shrub-like plant with a showy spike of, purple-pink flowers and narrow, stalkless leaves. It spreads rapidly by seed and root fragments. The tiny seeds are dispersed by wind, mud, moving water, wildlife and humans.",
+    "species_description": "Purple loosestrife (Spike loosestrife, Purple lythrum) is a perennial shrub-like plant with a showy spike of, purple-pink flowers and narrow, stalkless leaves. It spreads rapidly by seed and root fragments. The tiny seeds are dispersed by wind, mud, moving water, wildlife and humans. Impacts of Purple Loosestrife\n\nThe plant forms dense stands with thick mats of roots that can spread over large areas, degrading habitat for many native birds, insects and other species.\nBy crowding out native plants it reduces biodiversity.\nLarge stands of purple loosestrife can clog irrigation canals, degrade farm land and reduce the forage value of pastures.\n",
     "alternative_species": [
       "liatris_spicata",
       "astilbe_x_arendsii",
       "spiraea_douglasii",
       "veronica_spicata"
     ],
-    "region_id": "BC"
+    "region_id": ["BC", "ON"]
   },
   {
-    "scientific_name": [
-      "daucus_carota"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/queen-annes-lace/"
-    ],
+    "scientific_name": ["daucus_carota"],
+    "resource_links": ["https://bcinvasives.ca/invasives/queen-annes-lace/"],
     "species_description": "Queen Annes’ lace (Wild carrot) is an herbaceous plant with an umbrella-shaped cluster of white flowers, hairy stem and finely dissected, hairy, fern like leaves. It is common to roadsides and other disturbed areas. This biennial plant persists in clay soils and can be a threat to recovering grasslands.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "chondrilla_juncea"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/rush-skeletonweed/"
-    ],
+    "scientific_name": ["chondrilla_juncea"],
+    "resource_links": ["https://bcinvasives.ca/invasives/rush-skeletonweed/"],
     "species_description": "Rush skeletonweed (Gum succory, Devil’s grass, Nakedweed) is a perennial plant with numerous wiry, branched stems, extremely narrow leaves and small yellow flowers. It invades rangelands, roadsides and disturbed areas. It competes with other plants for soil moisture and nutrients.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "elaeagnus_angustifolia"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/russian-olive/"
-    ],
+    "scientific_name": ["elaeagnus_angustifolia"],
+    "resource_links": ["https://bcinvasives.ca/invasives/russian-olive/"],
     "species_description": "Russian olive (Silver berry, Oleaster) is a short invasive tree with silver leaves, black bark and small, yellow flowers. It can survive in dry conditions, cold temperatures and poor soils. It drinks more water than most plants in dry soil settings, therefore it can outgrow and compete with native species.",
     "alternative_species": [
       "sambucus_cerulea",
@@ -692,42 +522,28 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "tripleurospermum_inodorum"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/scentless-chamomile/"
-    ],
+    "scientific_name": ["tripleurospermum_inodorum"],
+    "resource_links": ["https://bcinvasives.ca/invasives/scentless-chamomile/"],
     "species_description": "Scentless chamomile (Scentless mayweed, Wild chamomile) is a plant of variable height with daisy-like flowers of white petals and yellow centres as well as thin, carrot like leaves. It can produce up to 1,000,000 seeds every year, and the seeds can survive in the soil for up to 15 years. It prefers moist soil conditions and can aggressively take over pastures, grasslands, and other agricultural areas.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "cytisus_scoparius"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/scotch-broom/"
-    ],
+    "scientific_name": ["cytisus_scoparius"],
+    "resource_links": ["https://bcinvasives.ca/invasives/scotch-broom/"],
     "species_description": "Scotch broom (English broom) is a woody shrub with bright yellow flowers, and small three leaflet leaves. It easily invades sunny, disturbed sites such as rangelands, roadsides, and areas of recent logging. Scotch broom can increase the intensity of wildfires, obstruct sightlines along roads, and crowd out native plants that animals depend on.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "onopordum_acanthium"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/scotch-thistle/"
-    ],
+    "scientific_name": ["onopordum_acanthium"],
+    "resource_links": ["https://bcinvasives.ca/invasives/scotch-thistle/"],
     "species_description": "Scotch thistle (Cotton thistle) is a biennial or perennial plant with grey-green, woolly, lobbed leaves and spiney stems. It reproduces through thousands of seeds that can survive in the soil for over 30 years. Seeds can spread with the wind, but also in hay and water, and by attaching to clothing or animal fur.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "impatiens_parviflora"
-    ],
+    "scientific_name": ["impatiens_parviflora"],
     "resource_links": [
       "https://bcinvasives.ca/invasives/smallflower-touch-me-not/"
     ],
@@ -736,35 +552,22 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "centaurea_stoebe"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/spotted-knapweed/"
-    ],
+    "scientific_name": ["centaurea_stoebe"],
+    "resource_links": ["https://bcinvasives.ca/invasives/spotted-knapweed/"],
     "species_description": "Spotted knapweed (Panicled knapweed) is a biennial, herbaceous plant with several small, purple flowers with long, thin petals branching from the stem. It is a prolific seed producer, with individual plants producing up to 140,000 seeds per square metre. Seeds and plant fragments make their way into hay and the undercarriages of vehicles, allowing for new infestations over great distances.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "potentilla_recta"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/sulphur-cinquefoil/"
-    ],
+    "scientific_name": ["potentilla_recta"],
+    "resource_links": ["https://bcinvasives.ca/invasives/sulphur-cinquefoil/"],
     "species_description": "Sulphur cinquefoil (Rough-fruited cinquefoil) is a long-lived perennial with a 5 petal, pale yellow flowers and a palm-like hairy leaf. It invades grasslands, dry open forests, and disturbed sites such as roadsides and rangelands. A single plant can produce up to 1,600 seeds, living up to 20 years as new shoots can emerge from the main root.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "tamarix_ramosissima",
-      "tamarix_chinensis"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/tamarisk/"
-    ],
+    "scientific_name": ["tamarix_ramosissima", "tamarix_chinensis"],
+    "resource_links": ["https://bcinvasives.ca/invasives/tamarisk/"],
     "species_description": "Tamarisk (salt cedar) is a shrub-like tree with light green, scale-like leaves and light pink flowers. Its other known common name of ‘salt cedar’ comes from its ability to release salt from its leaves, which prevents the growth of any native vegetation within its range.",
     "alternative_species": [
       "spiraea_betulifolia_subsp._lucida",
@@ -776,34 +579,22 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "senecio_jacobaea"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/tansy-ragwort/"
-    ],
+    "scientific_name": ["senecio_jacobaea"],
+    "resource_links": ["https://bcinvasives.ca/invasives/tansy-ragwort/"],
     "species_description": "Tansy ragwort (Common ragwort, Stinking willie, Staggerwort) is a biennial to short-lived perennial with dense clusters of bright yellow flowers and ruffled, dark green leaves. It grows in pasturelands and disturbed areas. Seeds are easily transported by wind, soils, human activity, and livestock.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "dipsacus_fullonum"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/teasel/"
-    ],
+    "scientific_name": ["dipsacus_fullonum"],
+    "resource_links": ["https://bcinvasives.ca/invasives/teasel/"],
     "species_description": "Teasel (Wild teasel) is a biennial plant with spiny, cone-shaped seed heads, small pink flowers and long thin leaves. It prefers sunny locations and can grow in a range of wet to dry soils. Spreading through seed dispersal, it typically invades meadows, pastures, roadsides, and disturbed areas.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "ailanthus_altissima"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/tree-of-heaven/"
-    ],
+    "scientific_name": ["ailanthus_altissima"],
+    "resource_links": ["https://bcinvasives.ca/invasives/tree-of-heaven/"],
     "species_description": "Tree of heaven (Ailanthus, Varnish tree) is a deciduous tree that can reach 20-30m in height, with small white flowers and oval shaped leaflets. It became popular in BC with gardeners for its rapid growth and interesting foliage. It produces by seed and by division and can sprout nearly anywhere, making it very difficult to eradicate!",
     "alternative_species": [
       "sambucus_spp.",
@@ -815,34 +606,25 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "carum_carvi"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/wild-caraway/"
-    ],
+    "scientific_name": ["carum_carvi"],
+    "resource_links": ["https://bcinvasives.ca/invasives/wild-caraway/"],
     "species_description": "Wild caraway (Meridian fennel, Persian cumin) is an herbaceous plant of variable height with fern-like leaves and white groups of lowers. It was introduced to Canada as a spice crop but has escaped cultivation. It is a biennial plant that can quickly outgrow native plants. It can grow in light shade, survive light frost and extra moisture in the soil.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "anthriscus_sylvestris"
-    ],
+    "scientific_name": ["anthriscus_sylvestris"],
     "resource_links": [
-      "https://bcinvasives.ca/invasives/wild-chervil/"
+      "https://bcinvasives.ca/invasives/wild-chervil/",
+      "https://www.invadingspecies.com/invaders/plants/wild-chervil-2/"
     ],
     "species_description": "Wild chervil (Cow parsley, Wild beaked parsley) is a biennial to short-lived perennial with small white flowers in umbrella like clusters and fern like leaves. It is typically found along roadsides, fence lines, streambanks, in ditches and competing with pasture and hay crops. It has a thick taproot that spreads aggressively, as deep as 2 m into the soil, and is very difficult to remove.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": ["BC", "ON"]
   },
   {
-    "scientific_name": [
-      "lamium_galeobdolon"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/yellow-archangel/"
-    ],
+    "scientific_name": ["lamium_galeobdolon"],
+    "resource_links": ["https://bcinvasives.ca/invasives/yellow-archangel/"],
     "species_description": "Yellow archangel (Artillery plant, Aluminium plant, Yellow weasel-snout) is a perennial plant with small yellow flowers on the leaf axils, and opposite hairy, round-toothed leaves. This plant prefers shady sites such as forested areas and grows in a dense mat that smothers other native plants. It spreads by seed and plant fragments, and by animals and humans passing through the vegetation.",
     "alternative_species": [
       "epimedium_spp.",
@@ -854,11 +636,10 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "iris_pseudacorus"
-    ],
+    "scientific_name": ["iris_pseudacorus"],
     "resource_links": [
-      "https://bcinvasives.ca/invasives/yellow-flag-iris/"
+      "https://bcinvasives.ca/invasives/yellow-flag-iris/",
+      "https://www.invadingspecies.com/invaders/aquatic-plants/yellow-iris-2/"
     ],
     "species_description": "Yellow flag iris (Water flag) is a perennial aquatic plant with bright yellow flowers on tall, smooth stems. It invades ditches, wetlands, streams, lake shorelines, and shallow ponds. This plant reproduces through seed dispersal and horizontal roots, and each rhizome fragment can sprout into a new plant, making it a difficult invasive species to control.",
     "alternative_species": [
@@ -866,38 +647,35 @@
       "iris_virginica",
       "iris_ensata",
       "iris_tenax",
-      "iris_sibirica"
+      "iris_sibirica",
+      "lobelia_cardinalis",
+      "iris_versicolor",
+      "acorus_calamus"
     ],
-    "region_id": "BC"
+    "region_id": ["BC", "ON"]
   },
   {
-    "scientific_name": [
-      "nymphoides_peltata"
-    ],
+    "scientific_name": ["nymphoides_peltata"],
     "resource_links": [
-      "https://bcinvasives.ca/invasives/yellow-floating-heart/"
+      "https://bcinvasives.ca/invasives/yellow-floating-heart/",
+      "https://www.invadingspecies.com/invaders/aquatic-plants/yellow-floating-heart-2/"
     ],
     "species_description": "Yellow floating heart (Water fringe, Fringed water lily, Entire marshwort) is an aquatic perennial that resembles a water lily with its round, glossy leaves that float on the water’s surface and yellow flowers attached to sturdy, upright stems. It will form thick mats of vegetation in a sensitive aquatic ecosystem. It spreads both by seed and vegetatively, making this species extremely difficult to control.",
     "alternative_species": [
-      "nuphar_lutea_subsp._polysepala"
+      "nuphar_lutea_subsp._polysepala",
+      "nymphaea_odorata"
     ],
-    "region_id": "BC"
+    "region_id": ["BC", "ON"]
   },
   {
-    "scientific_name": [
-      "lysimachia_punctata"
-    ],
-    "resource_links": [
-      "https://bcinvasives.ca/invasives/yellow-loosestrife/"
-    ],
+    "scientific_name": ["lysimachia_punctata"],
+    "resource_links": ["https://bcinvasives.ca/invasives/yellow-loosestrife/"],
     "species_description": "Yellow loosestrife is a tall, fast-spreading perennial plant with yellow flowers. It prefers to grow in wet soils and is typically found in wetlands, wet roadsides, ditches, and along shorelines. It can form dense clumps that spread out over large areas, crowding out native plants.",
     "alternative_species": [],
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "linaria_vulgaris"
-    ],
+    "scientific_name": ["linaria_vulgaris"],
     "resource_links": [
       "https://bcinvasives.ca/invasives/yellow-toadflax-common-toadflax/"
     ],
@@ -912,9 +690,7 @@
     "region_id": "BC"
   },
   {
-    "scientific_name": [
-      "egeria_densa"
-    ],
+    "scientific_name": ["egeria_densa"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/brazilian-elodea/"
     ],
@@ -923,33 +699,16 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "myriophyllum_spicatum"
-    ],
-    "resource_links": [
-      "https://www.invadingspecies.com/invaders/aquatic-plants/eurasian-water-milfoil-2/"
-    ],
-    "species_description": "Impacts of Eurasian Water-Milfoil\n\nThe plant reduces biodiversity by competing aggressively with native plants.\nReduces oxygen levels in the water, caused by decomposing plants, which can lead to fish die-offs.\nThick mats of Eurasian water-milfoil can hinder recreational activities such as swimming, boating, and fishing.\nDense stands can create stagnant water, which is an ideal habitat for mosquitoes.\n",
-    "alternative_species": [],
-    "region_id": "ON"
-  },
-  {
-    "scientific_name": [
-      "hydrocharis_morsus-ranae"
-    ],
+    "scientific_name": ["hydrocharis_morsus-ranae"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/european-frog-bit-2/"
     ],
     "species_description": "Impacts of European Frog-bit\n\nThe fast-growing plant forms thick mats that reduce biodiversity by crowding out native plants and preventing sunlight from reaching submerged plants.\nWhen a large colony of the plant dies and decomposes, it removes oxygen from the water, which can affect fish communities and other aquatic life.\nDense masses of European frog-bit can hinder swimmers and boaters, prevent other recreational uses of waterways, and clog drainage canals and streams.\n",
-    "alternative_species": [
-      "sagittaria_latifolia"
-    ],
+    "alternative_species": ["sagittaria_latifolia"],
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "trapa_natans"
-    ],
+    "scientific_name": ["trapa_natans"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/european-water-chestnut-2/"
     ],
@@ -958,54 +717,25 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "cabomba_caroliniana"
-    ],
+    "scientific_name": ["cabomba_caroliniana"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/fanwort-2/"
     ],
     "species_description": "Impacts of Fanwort\nThe fanwort population growing in the Crowe River watershed is the only known wild population in Ontario. If fanwort spreads outside this area, it could disrupt the plant and animal life in other waterways and interfere with recreation. Other impacts, include:\n \n\nIt is a fast-growing plant, that forms thick mats that crowd out native plants, block sunlight to submerged plants, disrupt fish communities, and clog drainage canals and streams.\nDense stands of fanwort can hinder swimmers and boaters and prevent other recreational uses of waterways.\nBecause fanwort thrives in acidic water, it could spread to lakes on the Canadian Shield, which tend to be acidic.\n",
-    "alternative_species": [
-      "ceratophyllum_demersum"
-    ],
+    "alternative_species": ["ceratophyllum_demersum"],
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "butomus_umbellatus"
-    ],
-    "resource_links": [
-      "https://www.invadingspecies.com/invaders/aquatic-plants/flowering-rush-2/"
-    ],
-    "species_description": "Impacts of Flowering Rush\n\nOutcompetes native aquatic vegetation, reducing biodiversity.\nCan hinder recreational activities, such as boating, fishing, and swimming.\nCan impact habitat for wildlife, including native fish habitat and bird nesting and rearing sites.\n",
-    "alternative_species": [
-      "verbena_hastata",
-      "chelone_glabra",
-      "eupatorium_maculatum",
-      "hibiscus_moscheutos",
-      "asclepias_incarnata",
-      "eupatorium_perfoliatum",
-      "caltha_palustris"
-    ],
-    "region_id": "ON"
-  },
-  {
-    "scientific_name": [
-      "hydrilla_verticillata"
-    ],
+    "scientific_name": ["hydrilla_verticillata"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/hydrilla-2/"
     ],
     "species_description": "Impacts of Hydrilla\n\nOnce established, hydrilla is able to grow aggressively, outcompeting native plants.\nIt forms dense mats that block sunlight from reaching other submerged plants, including native species.\nThe plant degrades water quality by raising pH levels, decreasing oxygen, and increasing water temperature.\nIt can hinder the flow of water, as well as recreational activities such as swimming, fishing, and boating.\nBy causing stagnant water, hydrilla may provide habitat that allows mosquitoes to breed.\n",
-    "alternative_species": [
-      "vallisneria_americana"
-    ],
+    "alternative_species": ["vallisneria_americana"],
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "myriophyllum_aquaticum"
-    ],
+    "scientific_name": ["myriophyllum_aquaticum"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/parrot-feather-2/"
     ],
@@ -1014,9 +744,7 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "nitellopsis_obtusa"
-    ],
+    "scientific_name": ["nitellopsis_obtusa"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/starry-stonewort-2/"
     ],
@@ -1025,9 +753,7 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "eichhornia_crassipes"
-    ],
+    "scientific_name": ["eichhornia_crassipes"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/water-hyacinth-2/"
     ],
@@ -1036,63 +762,25 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "pistia_stratiotes"
-    ],
+    "scientific_name": ["pistia_stratiotes"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/water-lettuce-2/"
     ],
     "species_description": "Impacts of Water Lettuce\n\nThe plant forms thick mats that block sunlight and slow or prevent the growth of native aquatic plants.\nAs the plant dies and decomposes, it removes oxygen from the water, which can disrupt and even kill fish communities.\nDense mats of water lettuce can hinder swimmers and boaters, prevent other recreational uses of waterways, and restrict water flow in irrigation and flood control canals.\n",
-    "alternative_species": [
-      "pontederia_cordata"
-    ],
+    "alternative_species": ["pontederia_cordata"],
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "stratiotes_aloides"
-    ],
+    "scientific_name": ["stratiotes_aloides"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/water-soldier-2/"
     ],
     "species_description": "Impacts of Water Soldier\n\nForms dense mats of floating vegetation, creating stagnant waters\nCrowds out native vegetation resulting in decreased plant biodiversity.\nHas the potential to alter surrounding water chemistry, which may harm phytoplankton and other important aquatic organisms.\nDense floating mats of water soldier can hinder recreational activities, such as boating, angling, and swimming.\nSharp serrated leaf edges can cut swimmers and individuals who handle water soldier plants. Caution should be taken if you come in contact with the plant.\n\nSince water soldier has been listed as a prohibited species under the Invasive Species Act, 2015, it is important to prevent the plant’s further introduction and spread to new locations. To prevent further spread, an inter-agency working group consisting of the Ontario Federation of Anglers and Hunters, Parks Canada, the Ministry of Natural Resources and Forestry, Ministry of Environment, Conservation and Parks, Trent University, Lower Trent Conservation authority are monitoring and tracking the spread of water soldier within Ontario waterbodies and undertaking a variety of control measures to prevent its spread.",
-    "alternative_species": [
-      "hippuris_vulgaris"
-    ],
+    "alternative_species": ["hippuris_vulgaris"],
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "nymphoides_peltata"
-    ],
-    "resource_links": [
-      "https://www.invadingspecies.com/invaders/aquatic-plants/yellow-floating-heart-2/"
-    ],
-    "species_description": "Impacts of Yellow Floating-heart\nYellow floating-heart creates dense mats of floating vegetation that impact the environment around it by:\n \n\nShading out native aquatic plants.\nDegrading fish and wildlife habitats.\nDecreasing the level of oxygen, creating stagnant water environments which are ideal habitats for mosquitoes to breed.\nMaking it difficult to enjoy recreational activities such as boating, fishing, and swimming.\n",
-    "alternative_species": [
-      "nymphaea_odorata"
-    ],
-    "region_id": "ON"
-  },
-  {
-    "scientific_name": [
-      "iris_pseudacorus"
-    ],
-    "resource_links": [
-      "https://www.invadingspecies.com/invaders/aquatic-plants/yellow-iris-2/"
-    ],
-    "species_description": "Impacts of Yellow Iris\n\nYellow iris can form dense stands with thick mats of rhizomes and dead leaves that can displace native plants and dry out wetlands, altering the ecosystem for its residents.\nThe dense mats can also block water flow in irrigation and flood control ditches.\nThe plant reduces habitat available for wildlife, including native fish habitat and bird nesting and rearing sites.\nYellow iris is poisonous to both humans and animals, if eaten, and its sap can cause dermatitis.\n",
-    "alternative_species": [
-      "lobelia_cardinalis",
-      "iris_versicolor",
-      "acorus_calamus"
-    ],
-    "region_id": "ON"
-  },
-  {
-    "scientific_name": [
-      "rhamnus_cathartica"
-    ],
+    "scientific_name": ["rhamnus_cathartica"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/common-buckthorn-2/"
     ],
@@ -1101,10 +789,7 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "vincetoxicum_rossicum",
-      "vincetoxicum_nigrum"
-    ],
+    "scientific_name": ["vincetoxicum_rossicum", "vincetoxicum_nigrum"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/dog-strangling-vine-2/"
     ],
@@ -1113,44 +798,7 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "alliaria_petiolata"
-    ],
-    "resource_links": [
-      "https://www.invadingspecies.com/invaders/plants/garlic-mustard-2/"
-    ],
-    "species_description": "Impacts of Garlic Mustard\n\nGarlic mustard can invade relatively undisturbed forests. Once established, it can displace native wildflowers like trilliums (Trillium sp) and trout lily (Erythronium americanum). It hinders other plants by interfering with the growth of fungi that bring nutrients to the roots of the plants.\nThe plant threatens several of Ontario’s species at risk, including American ginseng (Panax quinquefolius), drooping trillium (Trillium flexipes), false rue-anemone (Enemion biternatum), hoary mountain mint (Pycnanthemum incanum), white wood aster (Eurybia divaricata), wild hyacinth (Camassia scilloides) and wood poppy (Stylophorum diphyllum).\n",
-    "alternative_species": [],
-    "region_id": "ON"
-  },
-  {
-    "scientific_name": [
-      "heracleum_mantegazzianum"
-    ],
-    "resource_links": [
-      "https://www.invadingspecies.com/invaders/plants/giant-hogweed-2/"
-    ],
-    "species_description": "Background\nGiant Hogweed (Heracleum mantegazzianum) is a perennial plant and a member of the carrot family. It is a garden ornamental from southwest Asia that is naturalizing in North America and becoming more common in southern and central Ontario. Giant hogweed has the potential to spread readily and grows along roadsides, ditches and streams. It invades old fields and native habitats such as open woodlands.",
-    "alternative_species": [],
-    "region_id": "ON"
-  },
-  {
-    "scientific_name": [
-      "impatiens_glandulifera"
-    ],
-    "resource_links": [
-      "https://www.invadingspecies.com/invaders/plants/himalayan-balsam-2/"
-    ],
-    "species_description": "Impacts of Himalayan Balsam\n\nCreates dense stands that prevent native plants from establishing and reduce biodiversity and ecological value of land.\nProlific nectar producer, drawing pollinators away from surrounding native species.\nProduces about 800 seeds per plant, which are released from capsules once they are disturbed or dry out.\nAn annual species that can aggressively replace native perennial plants along river banks, leading to soil erosion.\n",
-    "alternative_species": [],
-    "region_id": "ON"
-  },
-  {
-    "scientific_name": [
-      "vinca_minor",
-      "hedera_helix",
-      "aegopodium_podagraria"
-    ],
+    "scientific_name": ["hedera_helix", "aegopodium_podagraria"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/invasive-ground-covers-2/"
     ],
@@ -1159,10 +807,7 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "lonicera_maackii",
-      "lonicera_tatarica"
-    ],
+    "scientific_name": ["lonicera_maackii", "lonicera_tatarica"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/invasive-honeysuckles-2/"
     ],
@@ -1171,9 +816,7 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "phragmites_australis"
-    ],
+    "scientific_name": ["phragmites_australis"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/invasive-phragmites-2/"
     ],
@@ -1182,23 +825,16 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "berberis_thunbergii"
-    ],
+    "scientific_name": ["berberis_thunbergii"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/japanese-barberry-2/"
     ],
     "species_description": "Impacts of Japanese Barberry\n\nForms dense thickets that reduce wildlife habitat, affect native plants and restrict recreational activities along trails.\nThe dense growth of Japanese barberry plants shade out native species in the forest understory.\nJapanese barberry is capable of invading undisturbed forests and hybridizing with the common barberry (Berberis vulgaris, another invasive species).\nCan impact agriculture, barberry species are the alternate hosts of black stem rust, a disease capable of causing major damage/loss to grain crops.\n",
-    "alternative_species": [
-      "viburnum_lentago",
-      "viburnum_lantanoides"
-    ],
+    "alternative_species": ["viburnum_lentago", "viburnum_lantanoides"],
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "fallopia_japonica"
-    ],
+    "scientific_name": ["fallopia_japonica"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/japanese-knotweed-2/"
     ],
@@ -1207,9 +843,7 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "microstegium_vimineum"
-    ],
+    "scientific_name": ["microstegium_vimineum"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/japanese-stiltgrass-2/"
     ],
@@ -1218,9 +852,7 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "pueraria_montana"
-    ],
+    "scientific_name": ["pueraria_montana"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/kudzu-2/"
     ],
@@ -1229,9 +861,7 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "miscanthus_sacchariflorus"
-    ],
+    "scientific_name": ["miscanthus_sacchariflorus"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/miscanthus-2/"
     ],
@@ -1240,31 +870,7 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "lythrum_salicaria"
-    ],
-    "resource_links": [
-      "https://www.invadingspecies.com/invaders/plants/purple-loosestrife-2/"
-    ],
-    "species_description": "Impacts of Purple Loosestrife\n\nThe plant forms dense stands with thick mats of roots that can spread over large areas, degrading habitat for many native birds, insects and other species.\nBy crowding out native plants it reduces biodiversity.\nLarge stands of purple loosestrife can clog irrigation canals, degrade farm land and reduce the forage value of pastures.\n",
-    "alternative_species": [],
-    "region_id": "ON"
-  },
-  {
-    "scientific_name": [
-      "anthriscus_sylvestris"
-    ],
-    "resource_links": [
-      "https://www.invadingspecies.com/invaders/plants/wild-chervil-2/"
-    ],
-    "species_description": "Impacts of Wild Chervil\n\nAn aggressive competitor, with broad leaves that shade out surrounding vegetation and limit water and nutrients for other plants.\nWhen mature, it forms tall dense vegetation stands that are unpalatable to livestock.\nProduces large amounts of seeds that are easily spread by people, animals and the wind.\nDifficult to control due to resistance to certain herbicides and a deep root system.\nHost to the plant disease yellow fleck virus, which can impact species in the carrot and parsnip family.\n",
-    "alternative_species": [],
-    "region_id": "ON"
-  },
-  {
-    "scientific_name": [
-      "pastinaca_sativa"
-    ],
+    "scientific_name": ["pastinaca_sativa"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/wild-parsnip-2/"
     ],
@@ -1273,9 +879,7 @@
     "region_id": "ON"
   },
   {
-    "scientific_name": [
-      "euonymus_alatus"
-    ],
+    "scientific_name": ["euonymus_alatus"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/plants/winged-euonymus-2/"
     ],
