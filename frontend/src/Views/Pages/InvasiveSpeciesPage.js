@@ -195,10 +195,9 @@ function InvasiveSpeciesPage() {
           )
         );
 
-        console.log("species:", response.data.species);
         return Promise.all(promises)
           .then(() => {
-            const formattedData = response.data.species.map((item, index) => {
+            const formattedData = response.data.species.map((item) => {
               if (item.alternative_species) {
                 item.alternative_species.forEach(species => {
                   species.scientific_name = species.scientific_name.map(name =>
@@ -308,15 +307,25 @@ function InvasiveSpeciesPage() {
         );
 
         return Promise.all(promises)
-          .then(regionResponses => {
+          .then(() => {
+            const formattedData = response.data.species.map((item) => {
+              if (item.alternative_species) {
+                item.alternative_species.forEach(species => {
+                  species.scientific_name = species.scientific_name.map(name =>
+                    capitalizeFirstWord(name)
+                  );
+                  species.common_name = species.common_name.map(name =>
+                    capitalizeEachWord(name)
+                  );
+                });
+              }
 
-            const formattedData = response.data.species.map((item, index) => {
               return {
                 ...item,
                 scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name))
               };
             });
-            
+
             // updates pagination start and end indices
             setShouldCalculate(false);
             setDisplayData(formattedData);
@@ -506,7 +515,7 @@ function InvasiveSpeciesPage() {
     if (locationInput === "") {
       setDisplayData(data);
       setRegionId("");
-    } 
+    }
   }
 
   // Calculates start and end species indices of the current page of displayed data
@@ -536,7 +545,7 @@ function InvasiveSpeciesPage() {
 
   // Increments the page count by 1 
   const handleNextPage = () => {
-    setPage(page + 1); 
+    setPage(page + 1);
   };
 
   // Decrements page count by 1 and removes last id in seen species history 
@@ -621,115 +630,115 @@ function InvasiveSpeciesPage() {
             <span className="visually-hidden">Loading...</span>
           </Spinner>
         ) : (
-        <Table style={{ width: "100%", tableLayout: "fixed" }}>
-          {/* table header */}
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ width: "10%" }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Scientific Name(s)
-                </Typography>
-              </TableCell>
-              <TableCell style={{ width: "35%" }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Description
-                </Typography>
-              </TableCell>
-              <TableCell style={{ width: "13%" }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Alternative Species
-                </Typography>
-              </TableCell>
-              <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Resource Links
-                </Typography>
-              </TableCell>
-              <TableCell style={{ width: "7%" }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Region(s)
-                </Typography>
-              </TableCell>
-              <TableCell style={{ width: "7%" }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Actions
-                </Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
+          <Table style={{ width: "100%", tableLayout: "fixed" }}>
+            {/* table header */}
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ width: "10%" }}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Scientific Name(s)
+                  </Typography>
+                </TableCell>
+                <TableCell style={{ width: "35%" }}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Description
+                  </Typography>
+                </TableCell>
+                <TableCell style={{ width: "13%" }}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Alternative Species
+                  </Typography>
+                </TableCell>
+                <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Resource Links
+                  </Typography>
+                </TableCell>
+                <TableCell style={{ width: "7%" }}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Region(s)
+                  </Typography>
+                </TableCell>
+                <TableCell style={{ width: "7%" }}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Actions
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            </TableHead>
 
-          {/* table body: display species */}
-          <TableBody>
-            {(displayData && displayData.length > 0 ? displayData : [])
-              .map((row) => (
-                <TableRow key={row.species_id}>
-                  <>
-                    {/* scientific names */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                      {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
-                    </TableCell>
+            {/* table body: display species */}
+            <TableBody>
+              {(displayData && displayData.length > 0 ? displayData : [])
+                .map((row) => (
+                  <TableRow key={row.species_id}>
+                    <>
+                      {/* scientific names */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                        {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
+                      </TableCell>
 
-                    {/* description */}
-                    <TableCell>{boldText(row.species_description)}</TableCell>
+                      {/* description */}
+                      <TableCell>{boldText(row.species_description)}</TableCell>
 
-                    {/* alternative species */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                      {Array.isArray(row.alternative_species)
-                        ? row.alternative_species.map((item) => item.scientific_name).join(", ")
-                        : row.alternative_species}
-                    </TableCell>
+                      {/* alternative species */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                        {Array.isArray(row.alternative_species)
+                          ? row.alternative_species.map((item) => item.scientific_name).join(", ")
+                          : row.alternative_species}
+                      </TableCell>
 
-                    {/* resource links */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                      {Array.isArray(row.resource_links) ? (
-                        row.resource_links.map((link, index) => (
-                          <span key={index}>
-                            <a href={link} target="_blank" rel="noopener noreferrer">
-                              {link}
+                      {/* resource links */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                        {Array.isArray(row.resource_links) ? (
+                          row.resource_links.map((link, index) => (
+                            <span key={index}>
+                              <a href={link} target="_blank" rel="noopener noreferrer">
+                                {link}
+                              </a>
+                              <br />
+                              <br />
+                            </span>
+                          ))
+                        ) : (
+                          <span>
+                            <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
+                              {row.resource_links}
                             </a>
                             <br />
                             <br />
                           </span>
-                        ))
-                      ) : (
-                        <span>
-                          <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
-                            {row.resource_links}
-                          </a>
-                          <br />
-                          <br />
-                        </span>
-                      )}
-                    </TableCell>
+                        )}
+                      </TableCell>
 
-                    {/* regions */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                      {Array.isArray(row.region_id)
-                        ? row.region_id.map((id) => regionMap[id]).join(", ")
-                        : regionMap[row.region_id]}
-                    </TableCell>
+                      {/* regions */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                        {Array.isArray(row.region_id)
+                          ? row.region_id.map((id) => regionMap[id]).join(", ")
+                          : regionMap[row.region_id]}
+                      </TableCell>
 
-                    {/* actions: edit/delete */}
-                    <TableCell>
-                      <Tooltip title="Edit"
-                        onClick={() => startEdit(row)}>
-                        <IconButton>
-                          <EditIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip
-                        title="Delete"
-                        onClick={() => handleDeleteRow(row.species_id, row)}>
-                        <IconButton>
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
+                      {/* actions: edit/delete */}
+                      <TableCell>
+                        <Tooltip title="Edit"
+                          onClick={() => startEdit(row)}>
+                          <IconButton>
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip
+                          title="Delete"
+                          onClick={() => handleDeleteRow(row.species_id, row)}>
+                          <IconButton>
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
         )}
       </div >
 
