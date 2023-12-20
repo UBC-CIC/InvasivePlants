@@ -36,15 +36,15 @@ def readJSONFile(filepath):
 def handler(event, context):
     try:
         # # Could be used for test
-        # delete_table = """
-        #     DROP TABLE IF EXISTS regions;
-        #     DROP TABLE IF EXISTS invasive_species;
-        #     DROP TABLE IF EXISTS alternative_species;
-        #     DROP TABLE IF EXISTS images;
-        #     DROP TABLE IF EXISTS save_lists;
-        # """
-        # cursor.execute(delete_table)
-        # connection.commit()
+        delete_table = """
+            DROP TABLE IF EXISTS regions;
+            DROP TABLE IF EXISTS invasive_species;
+            DROP TABLE IF EXISTS alternative_species;
+            DROP TABLE IF EXISTS images;
+            DROP TABLE IF EXISTS save_lists;
+        """
+        cursor.execute(delete_table)
+        connection.commit()
 
         #
         ## Create tables and schema
@@ -118,31 +118,31 @@ def handler(event, context):
         #   - INSERT
         #   - UPDATE
         #   - DELETE
-        sqlCreateUser = """
-            DO $$
-            BEGIN
-                CREATE ROLE readwrite;
-            EXCEPTION
-                WHEN duplicate_object THEN
-                    RAISE NOTICE 'Role already exists.';
-            END
-            $$;
+        # sqlCreateUser = """
+        #     DO $$
+        #     BEGIN
+        #         CREATE ROLE readwrite;
+        #     EXCEPTION
+        #         WHEN duplicate_object THEN
+        #             RAISE NOTICE 'Role already exists.';
+        #     END
+        #     $$;
             
-            GRANT CONNECT ON DATABASE postgres TO readwrite;
+        #     GRANT CONNECT ON DATABASE postgres TO readwrite;
             
-            GRANT USAGE, CREATE ON SCHEMA public TO readwrite;
-            GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO readwrite;
-            ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO readwrite;
-            GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO readwrite;
-            ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO readwrite;
+        #     GRANT USAGE, CREATE ON SCHEMA public TO readwrite;
+        #     GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO readwrite;
+        #     ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO readwrite;
+        #     GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO readwrite;
+        #     ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO readwrite;
             
-            CREATE USER "%s" WITH PASSWORD '%s';
-            GRANT readwrite TO "%s";
-        """
+        #     CREATE USER "%s" WITH PASSWORD '%s';
+        #     GRANT readwrite TO "%s";
+        # """
         
-        # Execute table creation
-        cursor.execute(sqlCreateUser, (AsIs(username), AsIs(password), AsIs(username),))
-        connection.commit()
+        # # Execute table creation
+        # cursor.execute(sqlCreateUser, (AsIs(username), AsIs(password), AsIs(username),))
+        # connection.commit()
         
         #
         ## Load client username and password to SSM
@@ -154,10 +154,10 @@ def handler(event, context):
         
         dbSecret.update(authInfo)
         
-        sm_client = boto3.client("secretsmanager")
-        sm_client.put_secret_value(
-            SecretId=DB_USER_SECRET_NAME,
-            SecretString=json.dumps(dbSecret))
+        # sm_client = boto3.client("secretsmanager")
+        # sm_client.put_secret_value(
+        #     SecretId=DB_USER_SECRET_NAME,
+        #     SecretString=json.dumps(dbSecret))
 
         #
         ## Populate data to database
@@ -226,7 +226,20 @@ def handler(event, context):
                 VALUES (%s, %s, %s, %s, %s);
             """
             formatted_alternativeSpecies_id = "{" + ",".join(alternativeSpecies_id) + "}"
-            region_uuid_array = "{" + ",".join(regionIDs[invSpecies["region_id"]]) + "}"
+
+            # Format region_id into uuid array format. If region_id is a string, convert it to uuid format. 
+            # If region_id is a list, convert it to uuid format. 
+            # If region_id is not provided, return an empty array.
+            def format_region_ids(region_ids):
+                if isinstance(region_ids, str):
+                    return "{" + regionIDs[region_ids] + "}"
+                elif isinstance(region_ids, list):
+                    return "{" + ",".join(regionIDs[region_id] for region_id in region_ids) + "}"
+                else:
+                    return "{}" 
+            
+            region_uuid_array = format_region_ids(invSpecies["region_id"])
+            
             cursor.execute(addInvasiveSpecies, (invSpecies["scientific_name"], invSpecies["resource_links"], invSpecies["species_description"], region_uuid_array, formatted_alternativeSpecies_id))
             connection.commit()
 
