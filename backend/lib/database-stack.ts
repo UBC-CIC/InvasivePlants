@@ -34,8 +34,8 @@ export class DBStack extends Stack {
          * Create Empty Secret Manager
          * Secrets will be populate at initalization of data
          */
-        this.secretPathAdminName = "InvasivePlants/credentials/dbCredentials"; // Name in the Secret Manager to store DB credentials
-        const secretPathUserName = "InvasivePlants/userCredentials/dbCredentials";
+        this.secretPathAdminName = "InvasivePlants/dbCredentials/admin"; // Name in the Secret Manager to store DB credentials
+        const secretPathUserName = "InvasivePlants/dbCredentials/application";
         this.secretPathUser = new secretsmanager.Secret(this, secretPathUserName, {
             secretName: secretPathUserName,
             description: "Secrets for clients to connect to RDS",
@@ -93,20 +93,28 @@ export class DBStack extends Stack {
          * 
          * Create an RDS proxy that sit between lambda and RDS
          */
-        const rdsProxy = new rds.DatabaseProxy(this, "invasivePlants-RDSProxy", {
-            proxyTarget: rds.ProxyTarget.fromInstance(this.dbInstance),
+        this.dbInstance.addProxy('Invasive-Plants-RDS-Proxy', {
             secrets: [this.dbInstance.secret!, this.secretPathUser!],
             vpc: vpcStack.vpc,
-            securityGroups: this.dbInstance.connections.securityGroups,
-            // securityGroups: [ec2.SecurityGroup.fromSecurityGroupId(this, 'VpcDefaultSecurityGroup', vpcStack.vpc.vpcDefaultSecurityGroup)],
             requireTLS: false,
+            securityGroups: this.dbInstance.connections.securityGroups,
         });
+
+        
+        // const rdsProxy = new rds.DatabaseProxy(this, "invasivePlants-RDSProxy", {
+        //     proxyTarget: rds.ProxyTarget.fromInstance(this.dbInstance),
+        //     secrets: [this.dbInstance.secret!, this.secretPathUser!],
+        //     vpc: vpcStack.vpc,
+        //     securityGroups: this.dbInstance.connections.securityGroups,
+        //     // securityGroups: [ec2.SecurityGroup.fromSecurityGroupId(this, 'VpcDefaultSecurityGroup', vpcStack.vpc.vpcDefaultSecurityGroup)],
+        //     requireTLS: false,
+        // });
       
-        const dbProxyRole = new iam.Role(this, "DBProxyRole", {
-            assumedBy: new iam.AccountPrincipal(this.account),
-        });
-        rdsProxy.grantConnect(dbProxyRole, "admin"); // Grant the role connection access to the DB Proxy for database user 'admin'.
+        // const dbProxyRole = new iam.Role(this, "DBProxyRole", {
+        //     assumedBy: new iam.AccountPrincipal(this.account),
+        // });
+        // rdsProxy.grantConnect(dbProxyRole, "admin"); // Grant the role connection access to the DB Proxy for database user 'admin'.
       
-        this.rdsProxyEndpoint = rdsProxy.endpoint;
+        // this.rdsProxyEndpoint = rdsProxy.endpoint;
     }
 }
