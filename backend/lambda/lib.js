@@ -22,10 +22,10 @@ async function initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT) {
 	};
 
 	// Create the PostgreSQL connection
-	// sql = postgres(connectionConfig);
-
+	// Global variable to hold the database connection
+    global.sqlConnection = postgres(connectionConfig);
+	
 	console.log("Database connection initialized");
-    return postgres(connectionConfig);
 }
 
 module.exports = { initializeConnection };

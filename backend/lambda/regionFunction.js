@@ -3,7 +3,8 @@ const { initializeConnection } = require("./lib.js");
 // Setting up evironments
 let { SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT } = process.env;
 
-let sql; // Global variable to hold the database connection
+// SQL conneciton from global variable at lib.js
+let sqlConnection = global.sqlConnection;
 
 exports.handler = async (event) => {
 	const response = {
@@ -17,8 +18,9 @@ exports.handler = async (event) => {
 	};
 
 	// Initialize the database connection if not already initialized
-	if (!sql) {
-		sql = await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT); 
+	if (!sqlConnection) {
+		await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT);
+		sqlConnection = global.sqlConnection;
 	}
 	
 	// Function to format region full names (lowercase and spaces replaced with "_")
@@ -36,18 +38,18 @@ exports.handler = async (event) => {
 
 				if (event.queryStringParameters != null && event.queryStringParameters.region_fullname) {
 					const region_fullname = "%" + event.queryStringParameters.region_fullname + "%";
-					data = await sql`	SELECT * FROM regions
+					data = await sqlConnection`	SELECT * FROM regions
 										WHERE region_fullname ILIKE ${region_fullname} 
 										ORDER BY region_fullname, region_id
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else if (event.queryStringParameters != null && event.queryStringParameters.region_code_name) {
 					const region_codeName = "%" + event.queryStringParameters.region_code_name + "%";
-					data = await sql`	SELECT * FROM regions
+					data = await sqlConnection`	SELECT * FROM regions
 										WHERE region_code_name ILIKE ${region_codeName} 
 										ORDER BY region_fullname, region_id
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {
-					data = await sql`	SELECT * FROM regions
+					data = await sqlConnection`	SELECT * FROM regions
 										ORDER BY region_fullname, region_id
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				}
@@ -85,7 +87,7 @@ exports.handler = async (event) => {
 						// Optional parameters
 						const geographic_coordinate = (bd.geographic_coordinate === "," || bd.geographic_coordinate === null) ? "" : bd.geographic_coordinate;
 
-						data = await sql`
+						data = await sqlConnection`
 							INSERT INTO regions (region_code_name, region_fullname, country_fullname, geographic_coordinate)
 							VALUES (${bd.region_code_name.toUpperCase()}, ${formattedRegionName}, ${bd.country_fullname.toLowerCase()}, ${geographic_coordinate})
 							RETURNING *;
@@ -107,7 +109,7 @@ exports.handler = async (event) => {
 					
 					// Check if required parameters are passed
 					if (bd.region_id) {
-						data = await sql`SELECT * FROM regions WHERE region_id = ${bd.region_id};`;
+						data = await sqlConnection`SELECT * FROM regions WHERE region_id = ${bd.region_id};`;
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
@@ -134,7 +136,7 @@ exports.handler = async (event) => {
 						// const geographic_coordinate = (bd.geographic_coordinate) ? bd.geographic_coordinate : "";
 						const geographic_coordinate = (bd.geographic_coordinate === "," || bd.geographic_coordinate === null) ? "" : bd.geographic_coordinate;
 
-						data = await sql`
+						data = await sqlConnection`
 							UPDATE regions
 							SET region_code_name = ${bd.region_code_name.toUpperCase()}, 
 								region_fullname = ${formattedRegionName}, 
@@ -159,7 +161,7 @@ exports.handler = async (event) => {
 					
 					// Check if required parameters are passed
 					if (bd.region_id) {
-						data = await sql`DELETE FROM regions WHERE region_id = ${bd.region_id};`;
+						data = await sqlConnection`DELETE FROM regions WHERE region_id = ${bd.region_id};`;
 						response.body = "Deleted a region";
 					} else {
 						response.statusCode = 400;

@@ -3,7 +3,8 @@ const { initializeConnection } = require("./lib.js");
 // Setting up evironments
 let { SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT } = process.env;
 
-let sql; // Global variable to hold the database connection
+// SQL conneciton from global variable at lib.js
+let sqlConnection = global.sqlConnection;
 
 exports.handler = async (event) => {
 	const response = {
@@ -17,8 +18,9 @@ exports.handler = async (event) => {
 	};
 
 	// Initialize the database connection if not already initialized
-	if (!sql) {
-		sql = await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT); 
+	if (!sqlConnection) {
+		await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT); 
+		sqlConnection = global.sqlConnection;
 	}
 	
 	// Function to format scientific names (capitalized and spaces replaced with "_")
@@ -35,19 +37,19 @@ exports.handler = async (event) => {
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
 
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
-					data = await sql`	SELECT * FROM alternative_species 
+					data = await sqlConnection`	SELECT * FROM alternative_species 
 										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)
 										ORDER BY scientific_name[1], species_id 
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {
-					data = await sql`	SELECT * FROM alternative_species 
+					data = await sqlConnection`	SELECT * FROM alternative_species 
 										ORDER BY scientific_name[1], species_id 
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				}
 				
 				for(let i in data){
 					// Get list of images
-					data[i].images = await sql`SELECT * FROM images WHERE species_id = ${data[i].species_id};`;
+					data[i].images = await sqlConnection`SELECT * FROM images WHERE species_id = ${data[i].species_id};`;
 				}
 
 				let nextOffset = parseInt(curr_offset);
@@ -85,7 +87,7 @@ exports.handler = async (event) => {
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
 
-						data = await sql`
+						data = await sqlConnection`
 							INSERT INTO alternative_species (scientific_name, common_name, resource_links, species_description)
 							VALUES (${formattedScientificNames}, ${common_name}, ${resource_links}, ${species_description})
 							RETURNING *;
@@ -107,10 +109,10 @@ exports.handler = async (event) => {
 					
 					// Check if required parameters are passed
 					if (bd.species_id) {
-						data = await sql`SELECT * FROM alternative_species WHERE species_id = ${bd.species_id};`;
+						data = await sqlConnection`SELECT * FROM alternative_species WHERE species_id = ${bd.species_id};`;
 
 						// Get list of images
-						data[0].images = await sql`SELECT * FROM images WHERE species_id = ${data[0].species_id};`;
+						data[0].images = await sqlConnection`SELECT * FROM images WHERE species_id = ${data[0].species_id};`;
 
 						response.body = JSON.stringify(data);
 					} else {
@@ -138,7 +140,7 @@ exports.handler = async (event) => {
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
 						
-						data = await sql`
+						data = await sqlConnection`
 							UPDATE alternative_species
 							SET scientific_name = ${formattedScientificNames}, 
 								common_name = ${common_name},
@@ -164,7 +166,7 @@ exports.handler = async (event) => {
 					
 					// Check if required parameters are passed
 					if (bd.species_id) {
-						data = await sql`DELETE FROM alternative_species WHERE species_id = ${bd.species_id};`;
+						data = await sqlConnection`DELETE FROM alternative_species WHERE species_id = ${bd.species_id};`;
 						response.body = "Deleted an alternative species";
 					} else {
 						response.statusCode = 400;

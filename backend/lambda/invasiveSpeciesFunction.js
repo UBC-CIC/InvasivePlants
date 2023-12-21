@@ -3,7 +3,8 @@ const { initializeConnection } = require("./lib.js");
 // Setting up evironments
 let { SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT } = process.env;
 
-let sql; // Global variable to hold the database connection
+// SQL conneciton from global variable at lib.js
+let sqlConnection = global.sqlConnection;
 
 exports.handler = async (event) => {
 	const response = {
@@ -17,10 +18,11 @@ exports.handler = async (event) => {
 	};
 
 	// Initialize the database connection if not already initialized
-	if (!sql) {
-		sql = await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT); 
+	if (!sqlConnection) {
+		await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT); 
+		sqlConnection = global.sqlConnection;
 	}
-
+	
 	// Function to format scientific names (lowercase and spaces replaced with "_")
 	const formatScientificName = (name) => {
 		return name.toLowerCase().replace(/\s+/g, '_');
@@ -35,36 +37,36 @@ exports.handler = async (event) => {
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
 
 				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name && event.queryStringParameters.region_id){
-					data = await sql`	SELECT * FROM invasive_species 
+					data = await sqlConnection`	SELECT * FROM invasive_species 
 										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and ${event.queryStringParameters.region_id} = ANY(region_id)
 										ORDER BY scientific_name[1], species_id 
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
-					data = await sql`	SELECT * FROM invasive_species 
+					data = await sqlConnection`	SELECT * FROM invasive_species 
 										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)
 										ORDER BY scientific_name[1], species_id 
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else if (event.queryStringParameters != null && event.queryStringParameters.region_id) {
-					data = await sql`	SELECT * FROM invasive_species 
+					data = await sqlConnection`	SELECT * FROM invasive_species 
 										WHERE ${event.queryStringParameters.region_id} = ANY(region_id) 
 										ORDER BY scientific_name[1], species_id 
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else if (event.queryStringParameters != null && event.queryStringParameters.all) {
-					data = await sql`	SELECT * FROM invasive_species 
+					data = await sqlConnection`	SELECT * FROM invasive_species 
 										ORDER BY scientific_name[1], species_id
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {
-					data = await sql`	SELECT * FROM invasive_species 
+					data = await sqlConnection`	SELECT * FROM invasive_species 
 										ORDER BY scientific_name[1], species_id
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				}
 				for (let d in data) {
 					// Get alternative species and images
-					data[d].alternative_species = await sql`SELECT * FROM alternative_species WHERE species_id = ANY(${data[d].alternative_species});`;
+					data[d].alternative_species = await sqlConnection`SELECT * FROM alternative_species WHERE species_id = ANY(${data[d].alternative_species});`;
 
 					// Get images for each species
 					for (let d_alt in data[d].alternative_species) {
-						data[d].alternative_species[d_alt].images = await sql`SELECT * FROM images WHERE species_id = ${data[d].alternative_species[d_alt].species_id};`;
+						data[d].alternative_species[d_alt].images = await sqlConnection`SELECT * FROM images WHERE species_id = ${data[d].alternative_species[d_alt].species_id};`;
 					}
 				}
 
@@ -103,7 +105,7 @@ exports.handler = async (event) => {
 						const region_id = (bd.region_id) ? bd.region_id : [];
 						const alternative_species = (bd.alternative_species) ? bd.alternative_species : [];
 
-						data = await sql`
+						data = await sqlConnection`
 							INSERT INTO invasive_species (scientific_name, resource_links, species_description, region_id, alternative_species)
 							VALUES (${formattedScientificNames}, ${resource_links}, ${species_description}, ${region_id}, ${alternative_species})
 							RETURNING *;
@@ -125,14 +127,14 @@ exports.handler = async (event) => {
 					
 					// Check if required parameters are passed
 					if (bd.species_id) {
-						data = await sql`SELECT * FROM invasive_species WHERE species_id = ${bd.species_id};`;
+						data = await sqlConnection`SELECT * FROM invasive_species WHERE species_id = ${bd.species_id};`;
 
 						// Get alternative species and images
-						data[0].alternative_species = await sql`SELECT * FROM alternative_species WHERE species_id = ANY(${data[0].alternative_species});`;
+						data[0].alternative_species = await sqlConnection`SELECT * FROM alternative_species WHERE species_id = ANY(${data[0].alternative_species});`;
 
 						// Get images for each species
 						for (let i in data[0].alternative_species) {
-							data[0].alternative_species[i].images = await sql`SELECT * FROM images WHERE species_id = ${data[0].alternative_species[i].species_id};`;
+							data[0].alternative_species[i].images = await sqlConnection`SELECT * FROM images WHERE species_id = ${data[0].alternative_species[i].species_id};`;
 						}
 
 						response.body = JSON.stringify(data);
@@ -162,7 +164,7 @@ exports.handler = async (event) => {
 						const region_id = (bd.region_id) ? bd.region_id : [];
 						const alternative_species = (bd.alternative_species) ? bd.alternative_species : [];
 						
-						data = await sql`
+						data = await sqlConnection`
 							UPDATE invasive_species
 							SET scientific_name = ${formattedScientificNames}, 
 								resource_links = ${resource_links}, 
@@ -189,7 +191,7 @@ exports.handler = async (event) => {
 					
 					// Check if required parameters are passed
 					if (bd.species_id) {
-						data = await sql`DELETE FROM invasive_species WHERE species_id = ${bd.species_id};`;
+						data = await sqlConnection`DELETE FROM invasive_species WHERE species_id = ${bd.species_id};`;
 						response.body = "Deleted a region";
 					} else {
 						response.statusCode = 400;
