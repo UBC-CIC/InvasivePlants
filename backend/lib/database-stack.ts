@@ -93,28 +93,20 @@ export class DBStack extends Stack {
          * 
          * Create an RDS proxy that sit between lambda and RDS
          */
-        this.dbInstance.addProxy('Invasive-Plants-RDS-Proxy', {
-            secrets: [this.dbInstance.secret!, this.secretPathUser!],
+        const rdsProxy = new rds.DatabaseProxy(this, "invasivePlants-RDSProxy", {
+            proxyTarget: rds.ProxyTarget.fromInstance(this.dbInstance),
+            secrets: [this.secretPathUser!],
             vpc: vpcStack.vpc,
-            requireTLS: false,
             securityGroups: this.dbInstance.connections.securityGroups,
+            // securityGroups: [ec2.SecurityGroup.fromSecurityGroupId(this, 'VpcDefaultSecurityGroup', vpcStack.vpc.vpcDefaultSecurityGroup)],
+            requireTLS: false,
         });
-
-        
-        // const rdsProxy = new rds.DatabaseProxy(this, "invasivePlants-RDSProxy", {
-        //     proxyTarget: rds.ProxyTarget.fromInstance(this.dbInstance),
-        //     secrets: [this.dbInstance.secret!, this.secretPathUser!],
-        //     vpc: vpcStack.vpc,
-        //     securityGroups: this.dbInstance.connections.securityGroups,
-        //     // securityGroups: [ec2.SecurityGroup.fromSecurityGroupId(this, 'VpcDefaultSecurityGroup', vpcStack.vpc.vpcDefaultSecurityGroup)],
-        //     requireTLS: false,
-        // });
       
-        // const dbProxyRole = new iam.Role(this, "DBProxyRole", {
-        //     assumedBy: new iam.AccountPrincipal(this.account),
-        // });
-        // rdsProxy.grantConnect(dbProxyRole, "admin"); // Grant the role connection access to the DB Proxy for database user 'admin'.
+        const dbProxyRole = new iam.Role(this, "DBProxyRole", {
+            assumedBy: new iam.AccountPrincipal(this.account),
+        });
+        rdsProxy.grantConnect(dbProxyRole); // Use default role from Secret Manager
       
-        // this.rdsProxyEndpoint = rdsProxy.endpoint;
+        this.rdsProxyEndpoint = rdsProxy.endpoint;
     }
 }
