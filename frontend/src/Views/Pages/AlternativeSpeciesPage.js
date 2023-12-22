@@ -3,11 +3,13 @@ import {
   Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button,
   Typography, ThemeProvider
 } from "@mui/material";
+import { Autocomplete, Box, TextField } from '@mui/material';
+
 import Theme from './Theme';
 import { Auth } from "aws-amplify";
 
 // components
-import SearchComponent from '../../components/SearchComponent';
+// import SearchComponent from '../../components/SearchComponent';
 import PaginationComponent from '../../components/PaginationComponent';
 import EditAlternativeSpeciesDialog from "../../components/Dialogs/EditAlternativeSpeciesDialog";
 import DeleteDialog from "../../components/Dialogs/ConfirmDeleteDialog";
@@ -28,8 +30,7 @@ function AlternativeSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
-  const [allAlternativeSpecies, setAllAlternativeSpecies] = useState([]); // array of all alternative species
-  const [allAlternativeSpeciesNames, setAllAlternativeSpeciesNames] = useState([]); // array of alternative species names
+  const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
   const [speciesCount, setSpeciesCount] = useState(0); // number of alternative species
   const [data, setData] = useState([]); // original data
   const [displayData, setDisplayData] = useState([]); // data displayed in the table
@@ -58,7 +59,6 @@ function AlternativeSpeciesPage() {
   // Retrieves user and alternative species on load
   useEffect(() => {
     retrieveUser();
-    fetchAllAlternativeSpecies();
   }, [])
 
   // Gets current authorized user
@@ -70,56 +70,6 @@ function AlternativeSpeciesPage() {
       console.log("error getting user: ", e);
     }
   }
-
-  // Fetches all alternative species (recursively) in the database
-  const fetchAllAlternativeSpecies = async (currOffset = null) => {
-    try {
-      setIsLoading(true);
-      const response = await axios.get(`${API_BASE_URL}alternativeSpecies`, {
-        params: {
-          curr_offset: currOffset,
-          rows_per_page: rowsPerPage
-        },
-        headers: {
-          'x-api-key': process.env.REACT_APP_X_API_KEY
-        }
-      });
-
-      // Ensures that if a species has multiple scientific names, each are separately displayed      
-      const formattedData = response.data.species.flatMap(item => {
-        return item.scientific_name.map(name => {
-          const capitalizedScientificName = capitalizeFirstWord(name);
-          return {
-            ...item,
-            scientific_name: capitalizedScientificName
-          };
-        });
-      });
-
-      setAllAlternativeSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
-      setSpeciesCount(prevCount => prevCount + response.data.species.length)
-
-      // Recursively gets species
-      if (response.data.species.length === rowsPerPage) {
-        const nextOffset = response.data.nextOffset;
-        await fetchAllAlternativeSpecies(nextOffset);
-      }
-    } catch (error) {
-      console.error("Error retrieving alternative species", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Updates search bar dropdown when alternative species are added or deleted
-  useEffect(() => {
-    const updatedSpeciesNames = allAlternativeSpecies.map(species => ({
-      label: species.scientific_name,
-      value: species.scientific_name
-    }));
-
-    setAllAlternativeSpeciesNames(updatedSpeciesNames);
-  }, [allAlternativeSpecies]);
 
 
   // Fetches rowsPerPage number of alternative species (pagination)
@@ -161,6 +111,8 @@ function AlternativeSpeciesPage() {
           setShouldReset(false);
         }
 
+        // TODO: set count here
+        setSpeciesCount(response.data.count);
         setDisplayData(formattedData);
         setData(formattedData);
         setCurrOffset(response.data.nextOffset);
@@ -387,7 +339,7 @@ function AlternativeSpeciesPage() {
         })
         .then((response) => {
           setSpeciesCount(prevCount => prevCount - 1)
-          setAllAlternativeSpecies(prevSpecies => prevSpecies.filter(species => species.species_id !== deleteId));
+          // setAllAlternativeSpecies(prevSpecies => prevSpecies.filter(species => species.species_id !== deleteId));
           setShouldReset(true);
         })
         .catch((error) => {
@@ -432,7 +384,7 @@ function AlternativeSpeciesPage() {
           });
         });
 
-        setAllAlternativeSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
+        // setAllAlternativeSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
         setSpeciesCount(prevCount => prevCount + 1);
 
         // Maps species id to plant data with image links
@@ -493,11 +445,57 @@ function AlternativeSpeciesPage() {
     setTempEditingData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Displays original data when search input is empty
+  // Updates search dropdown
   const handleSearch = (searchInput) => {
     if (searchInput === "") {
       setDisplayData(data);
       setShouldCalculate(true);
+    } else {
+      console.log("search input:", searchInput);
+      axios
+        .get(`${API_BASE_URL}alternativeSpecies`, {
+          params: {
+            scientific_name: searchInput,
+          },
+          headers: {
+            'x-api-key': process.env.REACT_APP_X_API_KEY
+          }
+        })
+        .then((response) => {
+          const formattedData = response.data.species.map(item => {
+            const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
+            const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
+            const image_links = item.images.map(img => img.image_url);
+            const s3_keys = item.images.map(img => img.s3_key);
+
+            return {
+              ...item,
+              scientific_name: capitalizedScientificNames,
+              common_name: capitalizedCommonNames,
+              image_links: image_links,
+              s3_keys: s3_keys
+            };
+          });
+
+          console.log("formattedData:", formattedData);
+
+          if (formattedData.length > 0) {
+            const scientificNames = formattedData.flatMap((species) => species.scientific_name);
+            setSearchDropdownOptions(scientificNames);
+          }
+
+          // updates pagination start and end indices
+          // setShouldCalculate(false);
+          // setDisplayData(formattedData);
+          // formattedData.length > 0 ? setStart(1) : setStart(0);
+          // setEnd(response.data.species.length);
+        })
+        .catch((error) => {
+          console.error("Error searching up alternative species", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   };
 
@@ -547,18 +545,49 @@ function AlternativeSpeciesPage() {
     }
   }, [displayData, rowsPerPage]);
 
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleGetAlternativeSpeciesAfterSearch();
+    }
+  };
+
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
 
       {/* search bars*/}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "90%" }}>
-        <SearchComponent
+        {/* <SearchComponent
           text={"Search alternative species (scientific or common name)"}
           handleSearch={handleSearch}
           searchResults={allAlternativeSpeciesNames}
           searchTerm={searchInput}
           setSearchTerm={setSearchInput}
-        />
+        /> */}
+
+        <Box style={{ flex: 3, marginLeft: "10px" }}>
+          <Autocomplete
+            options={searchDropdownOptions}
+            onInputChange={(e, newInputValue) => {
+              setSearchInput(newInputValue);
+              handleSearch(newInputValue);
+            }}
+            clearOnBlur={false}
+            onKeyDown={handleKeyPress}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <SearchIcon sx={{ marginRight: '0.5rem' }} />
+                    {"Search alternative species (scientific or common name)"}
+                  </div>
+                }
+                style={{ marginTop: "2rem", marginBottom: "1rem" }}
+              />
+            )}
+          />
+        </Box>
 
         <ThemeProvider theme={Theme}>
           <Button variant="contained" onClick={() => handleGetAlternativeSpeciesAfterSearch()} style={{ marginLeft: "20px", marginTop: "12px", width: "10%", height: "53px", alignItems: "center" }}>
@@ -602,158 +631,162 @@ function AlternativeSpeciesPage() {
 
       {/* table */}
       <div style={{ width: "90%", display: "flex", justifyContent: "center", marginTop: "-20px" }}>
+
         {isLoading ? (
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
           </Spinner>
         ) : (
-        <Table style={{ width: "100%", tableLayout: "fixed" }}>
-          {/* table header */}
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ width: "8%" }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Scientific Name(s)
-                </Typography>
-              </TableCell>
-              <TableCell style={{ width: "10%" }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Common Name(s)
-                </Typography>
-              </TableCell>
-              <TableCell style={{ width: "35%" }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Description
-                </Typography>
-              </TableCell>
-              <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Resource Links
-                </Typography>
-              </TableCell>
-              <TableCell style={{ width: "10%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Images
-                </Typography>
-              </TableCell>
-              <TableCell style={{ width: "5%" }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  Actions
-                </Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
+          (displayData && displayData.length > 0 ? (
+            <Table style={{ width: "100%", tableLayout: "fixed" }}>
+              {/* table header */}
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ width: "8%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Scientific Name(s)
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "10%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Common Name(s)
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "35%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Description
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Resource Links
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "10%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Images
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "5%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Actions
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
 
-          {/* table body: display species */}
-          <TableBody>
-            {(displayData && displayData.length > 0 ? displayData : [])
-              .map((row) => (
-                <TableRow key={row.species_id}>
-                  <>
-                    {/* scientific names */}
-                    <TableCell sx={{
-                      whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top'
-                    }}>
-                      {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
-                    </TableCell>
+              {/* table body: display species */}
+              <TableBody>
+                {displayData.map((row) => (
+                  <TableRow key={row.species_id}>
+                    <>
+                      {/* scientific names */}
+                      <TableCell sx={{
+                        whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top'
+                      }}>
+                        {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
+                      </TableCell>
 
-                    {/* common names */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                      {Array.isArray(row.common_name) ? row.common_name.join(", ") : row.common_name}
-                    </TableCell>
+                      {/* common names */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                        {Array.isArray(row.common_name) ? row.common_name.join(", ") : row.common_name}
+                      </TableCell>
 
-                    {/* Description */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                      {boldText(row.species_description)}
-                    </TableCell>
+                      {/* Description */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                        {boldText(row.species_description)}
+                      </TableCell>
 
-                    {/* resource links */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                      {Array.isArray(row.resource_links) ? (
-                        row.resource_links.map((link, index) => (
-                          <span key={index}>
-                            <a href={link} target="_blank" rel="noopener noreferrer">
-                              {link}
+                      {/* resource links */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                        {Array.isArray(row.resource_links) ? (
+                          row.resource_links.map((link, index) => (
+                            <span key={index}>
+                              <a href={link} target="_blank" rel="noopener noreferrer">
+                                {link}
+                              </a>
+                              <br />
+                              <br />
+                            </span>
+                          ))
+                        ) : (
+                          <span>
+                            <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
+                              {row.resource_links}
                             </a>
                             <br />
                             <br />
-                              </span>
-                            ))
-                          ) : (
-                        <span>
-                          <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
-                            {row.resource_links}
-                          </a>
-                          <br />
-                          <br />
-                        </span>
-                      )}
-                    </TableCell>
-
-                    {/* image links */}
-                    <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                      {Array.isArray(row.image_links) ? (
-                        row.image_links.map((link, index) => (
-                          <span key={index}>
-                            <img
-                              src={link}
-                              alt={`${link}`}
-                              style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
-                            />
-                            {row.s3_keys && row.s3_keys[index] && (
-                              <span>
-                                <img
-                                  src={`${S3_BASE_URL}${row.s3_keys[index]}`}
-                                  alt={`${row.s3_keys[index]}`}
-                                  style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
-                                />
-                              </span>
-                            )}
-                            <br />
                           </span>
-                        ))
-                      ) : (
-                        <span>
-                          <a href={row.image_links} target="_blank" rel="noopener noreferrer">
-                            {row.image_links}
-                          </a>
-                          <br />
-                          {row.s3_keys && row.s3_keys.map((key, index) => (
+                        )}
+                      </TableCell>
+
+                      {/* image links */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                        {Array.isArray(row.image_links) ? (
+                          row.image_links.map((link, index) => (
                             <span key={index}>
-                              <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
-                                {row.s3_keys[index]}
-                              </a>
+                              <img
+                                src={link}
+                                alt={`${link}`}
+                                style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                              />
+                              {row.s3_keys && row.s3_keys[index] && (
+                                <span>
+                                  <img
+                                    src={`${S3_BASE_URL}${row.s3_keys[index]}`}
+                                    alt={`${row.s3_keys[index]}`}
+                                    style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                  />
+                                </span>
+                              )}
                               <br />
                             </span>
-                          ))}
-                          <br />
-                        </span>
-                      )}
-                    </TableCell>
+                          ))
+                        ) : (
+                          <span>
+                            <a href={row.image_links} target="_blank" rel="noopener noreferrer">
+                              {row.image_links}
+                            </a>
+                            <br />
+                            {row.s3_keys && row.s3_keys.map((key, index) => (
+                              <span key={index}>
+                                <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
+                                  {row.s3_keys[index]}
+                                </a>
+                                <br />
+                              </span>
+                            ))}
+                            <br />
+                          </span>
+                        )}
+                      </TableCell>
 
-                    {/* edit/delete actions */}
-                    <TableCell>
-                      <Tooltip title="Edit"
-                        onClick={() => startEdit(row)}>
-                        <IconButton><EditIcon /></IconButton>
-                      </Tooltip>
-                      <Tooltip
-                        title="Delete"
-                        onClick={() => {
-                          handleDeleteRow(row.species_id, row)
-                        }}>
-                        <IconButton><DeleteIcon /></IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-        )}
+                      {/* edit/delete actions */}
+                      <TableCell>
+                        <Tooltip title="Edit"
+                          onClick={() => startEdit(row)}>
+                          <IconButton><EditIcon /></IconButton>
+                        </Tooltip>
+                        <Tooltip
+                          title="Delete"
+                          onClick={() => {
+                            handleDeleteRow(row.species_id, row)
+                          }}>
+                          <IconButton><DeleteIcon /></IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            // no display data
+            <Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>
+          )))}
       </div >
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "78%" }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "75%" }}>
         <PaginationComponent
           start={start}
           end={end}
