@@ -5,6 +5,8 @@ const AWS = require("aws-sdk");
 const secretsManager = new AWS.SecretsManager();
 
 async function initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT) {
+	// Current RDS_PROXY_ENDPOINT is not used.
+	
 	// Retrieve the secret from AWS Secrets Manager
 	const secret = await secretsManager
 	.getSecretValue({ SecretId: SM_DB_CREDENTIALS })
@@ -13,7 +15,7 @@ async function initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT) {
 	const credentials = JSON.parse(secret.SecretString);
 
 	const connectionConfig = {
-		host: RDS_PROXY_ENDPOINT, // using the proxy endpoint instead of db host
+		host: credentials.host,
 		port: credentials.port,
 		username: credentials.username,
 		password: credentials.password,
