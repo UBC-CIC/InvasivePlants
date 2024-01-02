@@ -3,7 +3,8 @@ const { initializeConnection } = require("./lib.js");
 // Setting up evironments
 let { SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT } = process.env;
 
-let sql; // Global variable to hold the database connection
+// SQL conneciton from global variable at lib.js
+let sqlConnection = global.sqlConnection;
 
 exports.handler = async (event) => {
 	const response = {
@@ -23,8 +24,9 @@ exports.handler = async (event) => {
   }
 
 	// Initialize the database connection if not already initialized
-	if (!sql) {
-		sql = await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT); 
+	if (!sqlConnection) {
+		await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT); 
+		sqlConnection = global.sqlConnection;
 	}
 	
 	let data;
@@ -33,7 +35,7 @@ exports.handler = async (event) => {
 		switch(pathData) {
 		  case "GET /saveList":
 				data =
-          await sql`SELECT * FROM save_lists WHERE user_uuid = ${userId} ORDER BY list_name;`;
+          await sqlConnection`SELECT * FROM save_lists WHERE user_uuid = ${userId} ORDER BY list_name;`;
 				response.body = JSON.stringify(data);
 				break;
 			case "POST /saveList":
@@ -41,7 +43,7 @@ exports.handler = async (event) => {
 					const bd = JSON.parse(event.body);
 					
 					if (bd.list_name && bd.saved_species) {
-            let list_id_returns = await sql`
+            let list_id_returns = await sqlConnection`
 							INSERT INTO save_lists (user_uuid, list_name, saved_species)
 							VALUES (${userId}, ${bd.list_name}, ${bd.saved_species})
 							RETURNING list_id;
@@ -64,7 +66,7 @@ exports.handler = async (event) => {
 					// Check if required parameters are passed
 					if(bd.list_id){
 						data =
-              await sql`SELECT * FROM save_lists WHERE list_id = ${bd.list_id} AND user_uuid = ${userId};`;
+              await sqlConnection`SELECT * FROM save_lists WHERE list_id = ${bd.list_id} AND user_uuid = ${userId};`;
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
@@ -85,7 +87,7 @@ exports.handler = async (event) => {
             bd.list_name &&
             bd.saved_species
           ) {
-            await sql`
+            await sqlConnection`
 							UPDATE save_lists
 							SET list_name = ${bd.list_name}, 
 							  saved_species = ${bd.saved_species}
@@ -109,7 +111,7 @@ exports.handler = async (event) => {
 					// Check if required parameters are passed
 					if(bd.list_id){
 						data =
-              await sql`DELETE FROM save_lists WHERE list_id = ${bd.list_id} AND user_uuid = ${userId};`;
+              await sqlConnection`DELETE FROM save_lists WHERE list_id = ${bd.list_id} AND user_uuid = ${userId};`;
 						response.body = "Deleted a save list";
 					} else {
 						response.statusCode = 400;
