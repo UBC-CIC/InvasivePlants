@@ -111,8 +111,7 @@ function AlternativeSpeciesPage() {
           setShouldReset(false);
         }
 
-        // TODO: set count here
-        setSpeciesCount(response.data.count);
+        setSpeciesCount(response.data.count[0].count);
         setDisplayData(formattedData);
         setData(formattedData);
         setCurrOffset(response.data.nextOffset);
