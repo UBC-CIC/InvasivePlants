@@ -8,7 +8,7 @@ const PaginationComponent = ({ start, end, count, page, handlePreviousPage, hand
     return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px' }}>
             <span style={{ marginRight: '10px', marginLeft: "30px" }}>{`${start}-${end} of ${count}`}</span>
-            <IconButton onClick={handlePreviousPage} disabled={page === 0}>
+            <IconButton onClick={handlePreviousPage} disabled={page === 0 || start === 1}>
                 <NavigateBeforeIcon />
             </IconButton>
             <IconButton onClick={handleNextPage} disabled={disabled}>
