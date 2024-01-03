@@ -449,6 +449,7 @@ function AlternativeSpeciesPage() {
     if (searchInput === "") {
       setDisplayData(data);
       setShouldCalculate(true);
+      setSearchDropdownOptions([]);
     } else {
       console.log("search input:", searchInput);
       axios

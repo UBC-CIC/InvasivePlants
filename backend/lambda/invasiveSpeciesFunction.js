@@ -37,40 +37,84 @@ exports.handler = async (event) => {
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
 
 				if (event.queryStringParameters != null && event.queryStringParameters.scientific_name && event.queryStringParameters.region_id) {
-					data = await sqlConnection`	SELECT * FROM invasive_species 
-												WHERE 
-												  EXISTS (
-												    SELECT 1
-												    FROM unnest(scientific_name) AS name
-												    WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
-												  ) 
-												  and ${event.queryStringParameters.region_id} = ANY(region_id)
-												ORDER BY scientific_name[1], species_id 
-												LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
+					data = await sqlConnection`SELECT 
+                                i.*, 
+                                ARRAY_AGG(r.region_code_name) AS region_code_names
+                            FROM 
+                                invasive_species i
+                            JOIN 
+                                regions r ON r.region_id = ANY(i.region_id)
+                            WHERE 
+                                EXISTS (
+                                    SELECT 1
+                                    FROM unnest(i.scientific_name) AS name
+                                    WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+                                ) 
+                                AND ${event.queryStringParameters.region_id} = ANY(i.region_id)
+                            GROUP BY 
+                                i.species_id
+                            ORDER BY 
+                                i.scientific_name[1], i.species_id
+                            LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else if (event.queryStringParameters != null && event.queryStringParameters.scientific_name) {
-					data = await sqlConnection`	SELECT * FROM invasive_species 
-										WHERE 
-												  EXISTS (
-												    SELECT 1
-												    FROM unnest(scientific_name) AS name
-												    WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
-												  ) 
-										ORDER BY scientific_name[1], species_id 
-										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
+					data = await sqlConnection`SELECT 
+                                    i.*,
+                                    ARRAY_AGG(r.region_code_name) OVER (PARTITION BY i.species_id) AS region_code_names
+                                FROM 
+                                    invasive_species i
+                                JOIN 
+                                    regions r ON r.region_id = ANY(i.region_id)
+                                WHERE 
+                                    EXISTS (
+                                        SELECT 1
+                                        FROM unnest(i.scientific_name) AS name
+                                        WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+                                    )
+                                ORDER BY 
+                                    i.scientific_name[1], i.species_id 
+                                LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else if (event.queryStringParameters != null && event.queryStringParameters.region_id) {
-					data = await sqlConnection`	SELECT * FROM invasive_species 
-										WHERE ${event.queryStringParameters.region_id} = ANY(region_id) 
-										ORDER BY scientific_name[1], species_id 
-										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
+					data = await sqlConnection`SELECT 
+                                    i.*, 
+                                    ARRAY_AGG(r.region_code_name) AS region_code_names
+                                FROM 
+                                    invasive_species i
+                                JOIN 
+                                    regions r ON r.region_id = ANY(i.region_id)
+                                WHERE 
+                                    ${event.queryStringParameters.region_id} = ANY(i.region_id)
+                                GROUP BY 
+                                    i.species_id
+                                ORDER BY 
+                                    i.species_id
+                                LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else if (event.queryStringParameters != null && event.queryStringParameters.all) {
-					data = await sqlConnection`	SELECT * FROM invasive_species 
-										ORDER BY scientific_name[1], species_id
-										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
+					data = await sqlConnection`SELECT 
+                                    i.*, 
+                                    ARRAY_AGG(r.region_code_name) AS region_code_names
+                                FROM 
+                                    invasive_species i
+                                JOIN 
+                                    regions r ON r.region_id = ANY(i.region_id)
+                                ORDER BY 
+                                    i.scientific_name[1], i.species_id
+                                LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {
-					data = await sqlConnection`	SELECT * FROM invasive_species 
-										ORDER BY scientific_name[1], species_id
-										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
+					data = await sqlConnection`SELECT 
+                                    i.*, 
+                                    ARRAY_AGG(r.region_code_name) AS region_code_names
+                                FROM 
+                                    invasive_species i
+                                JOIN 
+                                    regions r ON r.region_id = ANY(i.region_id)
+                                GROUP BY 
+                                    i.species_id
+                                ORDER BY 
+                                    i.scientific_name[1], i.species_id
+                                LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				}
+
+
 				for (let d in data) {
 					// Get alternative species and images
 					data[d].alternative_species = await sqlConnection`SELECT * FROM alternative_species WHERE species_id = ANY(${data[d].alternative_species});`;

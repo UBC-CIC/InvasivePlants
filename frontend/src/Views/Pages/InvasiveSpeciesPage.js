@@ -28,6 +28,7 @@ import { boldText, formatString, capitalizeFirstWord, capitalizeEachWord } from 
 
 function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   const [allAlternativeSpecies, setAllAlternativeSpecies] = useState([]);
   const [searchDropdownSpeciesOptions, setSearchDropdownSpeciesOptions] = useState([]); // dropdown options for invasive species search bar (scientific names)
   const [searchDropdownRegionsOptions, setSearchDropdownRegionsOptions] = useState([]); // dropdown options for regions search bar 
@@ -38,8 +39,6 @@ function InvasiveSpeciesPage() {
   const [openEditSpeciesDialog, setOpenEditSpeciesDialog] = useState(false); // state of the editing an invasive species dialog
   const [openAddSpeciesDialog, setOpenAddSpeciesDialog] = useState(false); // state of the adding an invasive species dialog
   const [searchInput, setSearchInput] = useState(""); // input of the species search bar
-  const [locationInput, setLocationInput] = useState("");
-  const [regionMap, setRegionsMap] = useState({}); // maps region code name to region id
   const [deleteId, setDeleteId] = useState(null); // species_id of the row being deleted
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false); // state of the delete confirmation dialog 
   const [regionId, setRegionId] = useState(""); // current region id
@@ -62,7 +61,6 @@ function InvasiveSpeciesPage() {
   // Retrieves user, regions, invasive species, and alternative species on load
   useEffect(() => {
     retrieveUser()
-    fetchRegionData();
     fetchAllAlternativeSpecies();
   }, [])
 
@@ -75,16 +73,6 @@ function InvasiveSpeciesPage() {
       console.log("error getting user: ", e);
     }
   }
-
-  // Gets regions
-  const fetchRegionData = async () => {
-    try {
-      const regionMap = await handleGetRegions();
-      setRegionsMap(regionMap);
-    } catch (error) {
-      console.error('error fetching regions', error);
-    }
-  };
 
   // Fetches all alternative species (recursively) in the database
   const fetchAllAlternativeSpecies = async (currOffset = null) => {
@@ -261,6 +249,7 @@ function InvasiveSpeciesPage() {
 
         return Promise.all(promises)
           .then(() => {
+            // gets the species that match user search
             const formattedData = response.data.species.map((item) => {
               if (item.alternative_species) {
                 item.alternative_species.forEach(species => {
@@ -279,10 +268,30 @@ function InvasiveSpeciesPage() {
               };
             });
 
+            // ensure that there are no dupliaces
+            const uniqueFormattedData = [];
+            const uniqueScientificNames = new Set();
+
+            formattedData.forEach((item) => {
+              const capitalizedScientificNames = item.scientific_name.map(name =>
+                capitalizeFirstWord(name)
+              );
+
+              const scientificNameKey = capitalizedScientificNames.join('_');
+
+              if (!uniqueScientificNames.has(scientificNameKey)) {
+                uniqueFormattedData.push({
+                  ...item,
+                  scientific_name: capitalizedScientificNames
+                });
+                uniqueScientificNames.add(scientificNameKey);
+              }
+            });
+
             // updates pagination start and end indices
             setShouldCalculate(false);
-            setDisplayData(formattedData);
-            formattedData.length > 0 ? setStart(1) : setStart(0);
+            setDisplayData(uniqueFormattedData);
+            uniqueFormattedData.length > 0 ? setStart(1) : setStart(0);
             setEnd(response.data.species.length);
           });
       })
@@ -434,7 +443,20 @@ function InvasiveSpeciesPage() {
   // Updates temporary row data when field inputs change
   const handleInputChange = (field, value) => {
     if (field === "region_code_name") {
-      const selectedRegionCodes = value.map((region_id) => regionMap[region_id]);
+      const selectedRegionCodes = value.map((region_id) =>
+        axios
+          .get(`${API_BASE_URL}region/${region_id}`, {
+            headers: {
+              'x-api-key': process.env.REACT_APP_X_API_KEY
+            }
+          })
+          .then((response) => {
+            console.log("response code: ", response.data[0].region_code_name);
+            return response.data[0].region_code_name;
+          })
+          .catch((error) => {
+            console.error("Error getting region", error);
+          }));
       setTempEditingData((prev) => ({ ...prev, region_id: value, region_code_name: selectedRegionCodes }));
     }
     else {
@@ -447,13 +469,12 @@ function InvasiveSpeciesPage() {
     if (searchInput === "") {
       setDisplayData(data);
       setShouldCalculate(true);
+      setSearchDropdownSpeciesOptions([]);
     } else {
-      console.log("search input:", searchInput);
       axios
         .get(`${API_BASE_URL}invasiveSpecies`, {
           params: {
             scientific_name: searchInput,
-            region_id: regionId
           },
           headers: {
             'x-api-key': process.env.REACT_APP_X_API_KEY
@@ -469,11 +490,11 @@ function InvasiveSpeciesPage() {
             };
           });
 
-          console.log("region match:", formattedData);
-
+          // updates species search dropdown options
           if (formattedData.length > 0) {
             const scientificNames = formattedData.flatMap((species) => species.scientific_name);
-            setSearchDropdownSpeciesOptions(scientificNames);
+            const uniqueScientificNames = [...new Set(scientificNames)];
+            setSearchDropdownSpeciesOptions(uniqueScientificNames);
           }
         })
         .catch((error) => {
@@ -485,25 +506,25 @@ function InvasiveSpeciesPage() {
     }
   };
 
-  //   useEffect(() => {
-  //     if (shouldReset) {
-  //         handleGetRegions();
-  //     }
-  // }, [shouldReset]);
+  useEffect(() => {
+    if (shouldReset) {
+      handleGetRegions();
+    }
+  }, [shouldReset]);
 
   // Searches location and updates displayed data accordingly
-  const handleLocationSearch = () => {
+  const handleLocationSearch = (locationInput) => {
+    // gets only region full name
     locationInput.replace(/\s*\([^)]*\)\s*/, '') // Remove the region code within parentheses
-      .trim() // Trim trailing spaces
-      .toLowerCase() // Convert to lowercase
+      .trim()
+      .toLowerCase()
       .replace(/\s+/g, '_'); // Replace spaces with underscores 
 
-
+    // resets displayed data if no region search input is provided
     if (locationInput === "") {
       setDisplayData(data);
       setRegionId("");
     } else {
-      console.log("location input:", locationInput);
       axios
         .get(`${API_BASE_URL}region`, {
           params: {
@@ -519,18 +540,19 @@ function InvasiveSpeciesPage() {
               ...item,
               region_fullname: capitalizeEachWord(item.region_fullname),
               region_code_name: item.region_code_name.toUpperCase(),
-              country_fullname: capitalizeEachWord(item.country_fullname)
             };
           });
-          console.log("formattedData region match:", formattedData);
 
+          setRegionId(formattedData[0].region_id)
+
+          // updates region search dropdown options
           if (formattedData.length > 0) {
             const regionNames = formattedData.map((region) => `${region.region_fullname} (${region.region_code_name})`);
             setSearchDropdownRegionsOptions(regionNames);
           }
         })
         .catch((error) => {
-          console.error("Error searching up invasive species", error);
+          console.error("Error searching up region", error);
         })
         .finally(() => {
           setIsLoading(false);
@@ -583,6 +605,7 @@ function InvasiveSpeciesPage() {
     }
   }, [displayData, rowsPerPage, regionId]);
 
+  // search species on "enter" key
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       handleGetInvasiveSpeciesAfterSearch();
@@ -594,23 +617,14 @@ function InvasiveSpeciesPage() {
 
       {/* location and search bars*/}
       <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
-        {/* <LocationFilterComponent
-          text={"Search by region"}
-          inputData={regionMap}
-          handleLocationSearch={handleLocationSearch}
-          location={regionId}
-          setLocation={setRegionId}
-        /> */}
-
+        {/* regions search bar */}
         <Box style={{ flex: 1, marginLeft: "10px" }}>
           <Autocomplete
             options={searchDropdownRegionsOptions}
             onInputChange={(e, newInputValue) => {
-              setLocationInput(newInputValue);
               handleLocationSearch(newInputValue.toLowerCase());
             }}
             clearOnBlur={false}
-            // onKeyDown={handleKeyPress}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -626,7 +640,7 @@ function InvasiveSpeciesPage() {
           />
         </Box>
 
-
+        {/* invasive species search bar */}
         <Box style={{ flex: 3, marginLeft: "10px" }}>
           <Autocomplete
             options={searchDropdownSpeciesOptions}
@@ -780,9 +794,15 @@ function InvasiveSpeciesPage() {
 
                       {/* regions */}
                       <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.region_id)
-                          ? row.region_id.map((id) => regionMap[id]).join(", ")
-                          : regionMap[row.region_id]}
+                        {/* {Array.isArray(row.region_id) // region_id
+                          ? row.region_id.join(",")
+                          : row.region_id} */}
+                        {Array.isArray(row.region_code_names) //region_code_names
+                          ? row.region_code_names.join(", ")
+                          : row.region_code_names}
+                        {/* {Array.isArray(row.region_id)
+                          ? row.region_id.map((id) => regionMap[id]).join(", ") // using a map
+                          : regionMap[row.region_id]} */}
                       </TableCell>
 
                       {/* actions: edit/delete */}
