@@ -199,10 +199,10 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                                     ? speciesData.alternative_species
                                     : []
                             }
-                            onInputChange={(input) => {
+                            onInputChange={(e, input) => {
                                 handleSearch(input);
                             }}
-                            onChange={(input) =>
+                            onChange={(e, input) =>
                                 handleInputChange("alternative_species", input)
                             }
                             open={alternativeSpeciesAutocompleteOpen}
