@@ -56,10 +56,9 @@ function RegionsPage() {
     const [isLoading, setIsLoading] = useState(false); // loading data or not
     const [user, setUser] = useState("");
 
-    // Retrieves user and regions on load
+    // Retrieves user on load
     useEffect(() => {
         retrieveUser()
-        // fetchAllRegions();
     }, [])
 
 
@@ -235,7 +234,7 @@ function RegionsPage() {
                             'Authorization': `${jwtToken}`
                         }
                     })
-                .then((response) => {
+                .then(() => {
                     if (start > rowsPerPage) {
                         handleGetRegionsAfterSave();
                     } else {

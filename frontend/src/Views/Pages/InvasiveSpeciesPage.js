@@ -29,7 +29,6 @@ import { boldText, formatString, capitalizeFirstWord, capitalizeEachWord } from 
 function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-  const [allAlternativeSpecies, setAllAlternativeSpecies] = useState([]);
   const [searchDropdownSpeciesOptions, setSearchDropdownSpeciesOptions] = useState([]); // dropdown options for invasive species search bar (scientific names)
   const [searchDropdownRegionsOptions, setSearchDropdownRegionsOptions] = useState([]); // dropdown options for regions search bar 
   const [speciesCount, setSpeciesCount] = useState(0); // number of invasive species
@@ -58,10 +57,9 @@ function InvasiveSpeciesPage() {
   const [isLoading, setIsLoading] = useState(false); // loading data or not
   const [user, setUser] = useState(""); // authorized admin user
 
-  // Retrieves user, regions, invasive species, and alternative species on load
+  // Retrieves user on load
   useEffect(() => {
     retrieveUser()
-    fetchAllAlternativeSpecies();
   }, [])
 
   // Gets current authorized user
@@ -73,42 +71,6 @@ function InvasiveSpeciesPage() {
       console.log("error getting user: ", e);
     }
   }
-
-  // Fetches all alternative species (recursively) in the database
-  const fetchAllAlternativeSpecies = async (currOffset = null) => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}alternativeSpecies`, {
-        params: {
-          curr_offset: currOffset,
-          rows_per_page: rowsPerPage
-        },
-        headers: {
-          'x-api-key': process.env.REACT_APP_X_API_KEY
-        }
-      });
-
-      const formattedData = response.data.species.flatMap(item => {
-        return item.scientific_name.map(name => {
-          const capitalizedScientificName = capitalizeFirstWord(name);
-          return {
-            ...item,
-            scientific_name: capitalizedScientificName
-          };
-        });
-      });
-
-      setAllAlternativeSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
-
-      // Recursively gets species
-      if (response.data.species.length === rowsPerPage) {
-        const nextOffset = response.data.nextOffset;
-        await fetchAllAlternativeSpecies(nextOffset);
-      }
-    } catch (error) {
-      console.error("Error retrieving invasive species", error);
-    }
-  };
-
 
   // Fetches rowsPerPage number of invasive species (pagination)
   const handleGetInvasiveSpecies = () => {
@@ -355,7 +317,7 @@ function InvasiveSpeciesPage() {
               'Authorization': `${jwtToken}`
             }
           })
-        .then((response) => {
+        .then(() => {
           if (start > rowsPerPage) {
             handleGetInvasiveSpeciesAfterSave();
           } else {
@@ -388,7 +350,7 @@ function InvasiveSpeciesPage() {
               'Authorization': `${jwtToken}`
             }
           })
-        .then((response) => {
+        .then(() => {
           setSpeciesCount(prevCount => prevCount - 1)
           setShouldReset(true);
         })
@@ -442,7 +404,7 @@ function InvasiveSpeciesPage() {
 
   // Updates temporary row data when field inputs change
   const handleInputChange = (field, value) => {
-    // console.log("input change:", "field: ", field, "value: ", value)
+    console.log("input change:", "field: ", field, "value: ", value)
 
     if (field === "region_code_name") {
       const selectedRegionCodes = value.map((region_id) =>
@@ -849,7 +811,6 @@ function InvasiveSpeciesPage() {
         handleClose={() => setOpenAddSpeciesDialog(false)}
         handleAdd={handleAddSpecies}
         data={displayData}
-        alternativeSpeciesData={allAlternativeSpecies}
       />
 
       <EditInvasiveSpeciesDialog
@@ -858,7 +819,6 @@ function InvasiveSpeciesPage() {
         handleInputChange={handleInputChange}
         handleFinishEditingRow={handleFinishEditingRow}
         handleSave={handleSave}
-        alternativeSpeciesData={allAlternativeSpecies}
       />
 
       <DeleteDialog

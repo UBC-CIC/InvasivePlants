@@ -7,15 +7,16 @@ import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from '../SnackbarComponent';
 import CustomAlert from '../AlertComponent';
 import handleGetRegions from '../../functions/RegionMap';
-// import axios from "axios";
-// import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperFunctions';
+import axios from "axios";
+import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperFunctions';
 
 // Dialog for editing an invasive species
-const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave, alternativeSpeciesData }) => {
-    // const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-    // const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
-    const [showAlert, setShowAlert] = useState(false);
-    const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
+const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave }) => {
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+    const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
+    const [showAlert, setShowAlert] = useState(false); // alert for missing field
+    const [showSaveConfirmation, setShowSaveConfirmation] = useState(false); // confirmation before saving
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
     const [regionMap, setRegionsMap] = useState({});
     // const [resolvedRegionNames, setResolvedRegionNames] = useState([]);
@@ -50,6 +51,41 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
             return;
         }
         setShowSaveConfirmation(false);
+    };
+
+    // Updates search dropdown
+    const handleSearch = (searchInput) => {
+        if (searchInput === "") {
+            setSearchDropdownOptions([]);
+        } else {
+            axios
+                .get(`${API_BASE_URL}alternativeSpecies`, {
+                    params: {
+                        scientific_name: searchInput,
+                    },
+                    headers: {
+                        'x-api-key': process.env.REACT_APP_X_API_KEY
+                    }
+                })
+                .then((response) => {
+                    const formattedData = response.data.species.map(item => {
+                        const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
+                        const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
+
+                        return {
+                            ...item,
+                            scientific_name: capitalizedScientificNames,
+                            common_name: capitalizedCommonNames,
+                        };
+                    });
+
+                    console.log("formattedData:", formattedData);
+                    setSearchDropdownOptions(formattedData);
+                })
+                .catch((error) => {
+                    console.error("Error searching up alternative species", error);
+                })
+        }
     };
 
     return (
@@ -88,11 +124,12 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
+
                     <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: "1rem", width: "100%" }}>
                         <Autocomplete
                             multiple
                             id="alternative-species-autocomplete"
-                            options={alternativeSpeciesData}
+                            options={searchDropdownOptions}
                             getOptionLabel={(option) =>
                                 `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
                             }
@@ -101,8 +138,11 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                                     ? tempData.alternative_species
                                     : []
                             }
-                            onChange={(event, values) =>
-                                handleInputChange("alternative_species", values)
+                            onInputChange={(input) => {
+                                handleSearch(input);
+                            }}
+                            onChange={(input) =>
+                                handleInputChange("alternative_species", input)
                             }
                             open={alternativeSpeciesAutocompleteOpen}
                             onFocus={() => setAlternativeAutocompleteOpen(true)}
