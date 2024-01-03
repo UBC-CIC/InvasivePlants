@@ -39,15 +39,15 @@ def readJSONFile(filepath):
 def handler(event, context):
     try:
         # Could be used for test
-        # delete_table = """
-        #     DROP TABLE IF EXISTS regions;
-        #     DROP TABLE IF EXISTS invasive_species;
-        #     DROP TABLE IF EXISTS alternative_species;
-        #     DROP TABLE IF EXISTS images;
-        #     DROP TABLE IF EXISTS save_lists;
-        # """
-        # cursor.execute(delete_table)
-        # connection.commit()
+        delete_table = """
+            DROP TABLE IF EXISTS regions;
+            DROP TABLE IF EXISTS invasive_species;
+            DROP TABLE IF EXISTS alternative_species;
+            DROP TABLE IF EXISTS images;
+            DROP TABLE IF EXISTS save_lists;
+        """
+        cursor.execute(delete_table)
+        connection.commit()
 
         #
         ## Create tables and schema
@@ -121,6 +121,8 @@ def handler(event, context):
         #   - INSERT
         #   - UPDATE
         #   - DELETE
+
+        # comment out to 'connection.commit()' on redeployment
         sqlCreateUser = """
             DO $$
             BEGIN
@@ -159,8 +161,8 @@ def handler(event, context):
         ##
         authInfo = {"username": username, "password": password}
 
+        # comment out to on redeployment
         dbSecret.update(authInfo)
-
         sm_client = boto3.client("secretsmanager")
         sm_client.put_secret_value(
             SecretId=DB_USER_SECRET_NAME, SecretString=json.dumps(dbSecret)

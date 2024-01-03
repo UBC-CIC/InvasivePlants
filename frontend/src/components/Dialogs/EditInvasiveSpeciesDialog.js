@@ -7,13 +7,18 @@ import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from '../SnackbarComponent';
 import CustomAlert from '../AlertComponent';
 import handleGetRegions from '../../functions/RegionMap';
+// import axios from "axios";
+// import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperFunctions';
 
 // Dialog for editing an invasive species
 const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave, alternativeSpeciesData }) => {
+    // const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+    // const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
     const [showAlert, setShowAlert] = useState(false);
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
     const [regionMap, setRegionsMap] = useState({});
+    // const [resolvedRegionNames, setResolvedRegionNames] = useState([]);
 
     // Fetches regions
     useEffect(() => {
@@ -139,6 +144,30 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                             onChange={(e) => handleInputChange("region_code_name", e.target.value)}
                             label="Region(s) (multiselect)*"
                             renderValue={(selected) => {
+                                // const selectedRegionCodes = selected.map((region_id) =>
+                                //     axios
+                                //         .get(`${API_BASE_URL}region/${region_id}`, {
+                                //             headers: {
+                                //                 'x-api-key': process.env.REACT_APP_X_API_KEY
+                                //             }
+                                //         })
+                                //         .then((response) => {
+                                //             return response.data[0].region_code_name;
+                                //         })
+                                //         .catch((error) => {
+                                //             console.error("Error getting region", error);
+                                //         }))
+
+                                // //  Wait for all promises to resolve
+                                // Promise.all(selectedRegionCodes)
+                                //     .then((codes) => {
+                                //         setResolvedRegionNames(codes);
+                                //     })
+                                //     .catch((error) => {
+                                //         console.error("Error fetching all region codes", error);
+                                //     });
+
+                                // return resolvedRegionNames.join(", ");
                                 const selectedNames = selected.map(id => regionMap[id]);
                                 return selectedNames.join(", ");
                             }}                        >

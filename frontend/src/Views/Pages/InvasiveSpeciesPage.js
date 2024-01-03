@@ -442,6 +442,8 @@ function InvasiveSpeciesPage() {
 
   // Updates temporary row data when field inputs change
   const handleInputChange = (field, value) => {
+    // console.log("input change:", "field: ", field, "value: ", value)
+
     if (field === "region_code_name") {
       const selectedRegionCodes = value.map((region_id) =>
         axios
@@ -451,12 +453,13 @@ function InvasiveSpeciesPage() {
             }
           })
           .then((response) => {
-            console.log("response code: ", response.data[0].region_code_name);
+            // console.log("response code: ", response.data[0].region_code_name);
             return response.data[0].region_code_name;
           })
           .catch((error) => {
             console.error("Error getting region", error);
           }));
+      // console.log("selected region codes: ", selectedRegionCodes);
       setTempEditingData((prev) => ({ ...prev, region_id: value, region_code_name: selectedRegionCodes }));
     }
     else {

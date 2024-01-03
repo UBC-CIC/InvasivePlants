@@ -8,9 +8,12 @@ import SnackbarOnSuccess from "../SnackbarComponent";
 import CustomAlert from "../AlertComponent";
 import CustomWarning from '../WarningComponent';
 import handleGetRegions from "../../functions/RegionMap";
+// import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperFunctions';
+// import axios from "axios";
 
 // Dialog for adding an invasive species
 const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternativeSpeciesData }) => {
+    // const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const initialSpeciesData = {
         scientific_name: [],
         resource_links: [],
@@ -18,6 +21,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
         alternative_species: [],
         region_id: []
     };
+    // const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -109,6 +113,45 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
         setShowSnackbar(false)
     }
 
+    // Updates search dropdown
+    // const handleSearch = (searchInput) => {
+    //     if (searchInput === "") {
+    //         setSearchDropdownOptions([]);
+    //     } else {
+    //         axios
+    //             .get(`${API_BASE_URL}alternativeSpecies`, {
+    //                 params: {
+    //                     scientific_name: searchInput,
+    //                 },
+    //                 headers: {
+    //                     'x-api-key': process.env.REACT_APP_X_API_KEY
+    //                 }
+    //             })
+    //             .then((response) => {
+    //                 const formattedData = response.data.species.map(item => {
+    //                     const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
+    //                     const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
+
+    //                     return {
+    //                         ...item,
+    //                         scientific_name: capitalizedScientificNames,
+    //                         common_name: capitalizedCommonNames,
+    //                     };
+    //                 });
+
+    //                 console.log("formattedData:", formattedData);
+
+    //                 if (formattedData.length > 0) {
+    //                     const scientificNames = formattedData.flatMap((species) => species.scientific_name);
+    //                     setSearchDropdownOptions(scientificNames);
+    //                 }
+    //             })
+    //             .catch((error) => {
+    //                 console.error("Error searching up alternative species", error);
+    //             })
+    //     }
+    // };
+
     return (
         <div>
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}>
@@ -146,6 +189,42 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, alternat
                         onChange={(e) => handleInputChange("species_description", e.target.value)}
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
+
+                    {/* <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: "1rem" }}>
+                        <Autocomplete
+                            multiple
+                            id="alternative-species-autocomplete"
+                            options={searchDropdownOptions}
+                            value={
+                                Array.isArray(speciesData.alternative_species)
+                                    ? speciesData.alternative_species
+                                    : []
+                            }
+                            // onInputChange={(e, newInputValue) => {
+                            //     handleSearch(newInputValue);
+                            // }}
+                            onChange={(event, values) => {
+                                handleInputChange("alternative_species", values)
+                            }}
+                            open={alternativeSpeciesAutocompleteOpen}
+                            onFocus={() => setAlternativeAutocompleteOpen(true)}
+                            onBlur={() => setAlternativeAutocompleteOpen(false)}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="standard"
+                                    label={<div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <SearchIcon sx={{ marginRight: '0.5rem' }} />
+                                        Alternative Species (multiselect)
+                                    </div>
+                                    }
+                                    multiline
+                                    sx={{ width: "100%", marginBottom: "1rem" }}
+                                />
+                            )}
+                            sx={{ flex: 5, marginRight: '1rem', height: '100%', width: "100%" }}
+                        />
+                    </Box> */}
 
                     <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: "1rem" }}>
                         <Autocomplete

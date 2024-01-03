@@ -372,18 +372,6 @@ function AlternativeSpeciesPage() {
         }
       })
       .then((response) => {
-        // Ensures that if a species has multiple scientific names, each are separately displayed      
-        // const formattedData = response.data.flatMap(item => {
-        //   return item.scientific_name.map(name => {
-        //     const capitalizedScientificName = capitalizeFirstWord(name);
-        //     return {
-        //       ...item,
-        //       scientific_name: capitalizedScientificName
-        //     };
-        //   });
-        // });
-
-        // setAllAlternativeSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
         setSpeciesCount(prevCount => prevCount + 1);
 
         // Maps species id to plant data with image links

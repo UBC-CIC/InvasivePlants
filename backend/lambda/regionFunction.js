@@ -54,7 +54,7 @@ exports.handler = async (event) => {
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				}
 
-				let totalCount = await sqlConnection` SELECT COUNT(*) FROM invasive_species;`;
+				let totalCount = await sqlConnection` SELECT COUNT(*) FROM regions;`;
 				let nextOffset = parseInt(curr_offset);
 
 				// If the number of rows returned is less than the number of rows requested, 
