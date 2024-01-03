@@ -8,7 +8,7 @@ import { Auth } from "aws-amplify";
 
 // components
 import PaginationComponent from '../../components/PaginationComponent';
-import SearchComponent from '../../components/SearchComponent';
+// import SearchComponent from '../../components/SearchComponent';
 import DeleteDialog from "../../components/Dialogs/ConfirmDeleteDialog";
 import AddRegionDialog from "../../components/Dialogs/AddRegionDialog";
 import EditRegionDialog from '../../components/Dialogs/EditRegionsDialog';
@@ -22,15 +22,14 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import {  capitalizeEachWord } from '../../functions/helperFunctions';
+import { capitalizeEachWord } from '../../functions/helperFunctions';
 import axios from "axios";
 
 // displays regions
 function RegionsPage() {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-    const [allRegions, setAllRegions] = useState([]); // array of all regions
-    const [allRegionNames, setAllRegionNames] = useState([]); // array of all region names
+    const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
     const [regionCount, setRegionCount] = useState(0); // number of regions
     const [country, setCountry] = useState(""); // current country
     const [data, setData] = useState([]); // original data
@@ -60,7 +59,7 @@ function RegionsPage() {
     // Retrieves user and regions on load
     useEffect(() => {
         retrieveUser()
-        fetchAllRegions();
+        // fetchAllRegions();
     }, [])
 
 
@@ -73,46 +72,6 @@ function RegionsPage() {
             console.log("error getting user: ", e);
         }
     }
-
-    // Fetches all regions (recursively) in the database
-    const fetchAllRegions = async (currOffset = null) => {
-        try {
-            setIsLoading(true);
-            const response = await axios.get(`${API_BASE_URL}region`, {
-                params: {
-                    curr_offset: currOffset,
-                    rows_per_page: rowsPerPage
-                },
-                headers: {
-                    'x-api-key': process.env.REACT_APP_X_API_KEY
-                }
-            });
-
-            setAllRegions(prevRegions => [...prevRegions, ...response.data.regions]);
-            setRegionCount(prevCount => prevCount + response.data.regions.length)
-
-            // Recursively gets regions
-            if (response.data.regions.length === rowsPerPage) {
-                const nextOffset = response.data.nextOffset;
-                await fetchAllRegions(nextOffset);
-            }
-        } catch (error) {
-            console.error("Error retrieving regions", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // Updates search bar dropdown when regions are added or deleted
-    useEffect(() => {
-        const updatedRegionFullNames = allRegions.map(region => ({
-            label: capitalizeEachWord(region.region_fullname),
-            value: capitalizeEachWord(region.region_fullname)
-        }));
-
-        setAllRegionNames(updatedRegionFullNames);
-    }, [allRegions]);
-
 
     // Fetches rowsPerPage number of regions (pagination)
     const handleGetRegions = () => {
@@ -147,6 +106,7 @@ function RegionsPage() {
                     };
                 });
 
+                setRegionCount(response.data.count[0].count);
                 setDisplayData(formattedData);
                 setData(formattedData);
                 setCurrOffset(response.data.nextOffset);
@@ -203,7 +163,11 @@ function RegionsPage() {
 
     // Fetches the regions that matches user search
     const handleGetRegionsAfterSearch = () => {
-        const formattedSearchInput = searchInput.toLowerCase().replace(/\s+/g, '_');;
+        const formattedSearchInput = searchInput.replace(/\s*\([^)]*\)\s*/, '') // Remove the region code within parentheses
+            .trim() // Trim trailing spaces
+            .toLowerCase() // Convert to lowercase
+            .replace(/\s+/g, '_'); // Replace spaces with underscores 
+
         setIsLoading(true);
 
         axios
@@ -303,9 +267,8 @@ function RegionsPage() {
                         'Authorization': `${jwtToken}`
                     }
                 })
-                .then((response) => {
+                .then(() => {
                     setRegionCount(prevCount => prevCount - 1)
-                    setAllRegions(prevRegions => prevRegions.filter(region => region.region_id !== deleteId));
                     setShouldReset(true);
                     setOpenDeleteConfirmation(false);
                 })
@@ -338,15 +301,7 @@ function RegionsPage() {
                         'Authorization': `${jwtToken}`
                     }
                 })
-            .then((response) => {
-                const updatedData = response.data.map(item => {
-                    return {
-                        ...item,
-                        scientific_name: item.scientific_name
-                    };
-                });
-
-                setAllRegions(prevRegions => [...prevRegions, ...updatedData]);
+            .then(() => {
                 setRegionCount(prevCount => prevCount + 1);
                 setShouldReset(true);
                 setOpenAddRegionDialog(false);
@@ -372,8 +327,8 @@ function RegionsPage() {
         if ((field === 'geographic_latitude' && !isValidInput) || (field === 'geographic_longitude' && !isValidInput)) {
             alert('Invalid input. Please enter a numerical value.');
         } else if (field === 'geographic_latitude') {
-                setTempData((prev) => ({ ...prev, geographic_coordinate: `${value},${prev.geographic_coordinate.split(',')[1]}` }));
-            } else if (field === 'geographic_longitude') {
+            setTempData((prev) => ({ ...prev, geographic_coordinate: `${value},${prev.geographic_coordinate.split(',')[1]}` }));
+        } else if (field === 'geographic_longitude') {
             setTempData((prev) => ({ ...prev, geographic_coordinate: `${prev.geographic_coordinate.split(',')[0]},${value}` }));
         } else {
             setTempData((prev) => ({ ...prev, [field]: value }));
@@ -386,6 +341,41 @@ function RegionsPage() {
         if (searchInput === "") {
             setDisplayData(data);
             setShouldCalculate(true);
+        } else {
+            console.log("search input:", searchInput);
+            axios
+                .get(`${API_BASE_URL}region`, {
+                    params: {
+                        scientific_name: searchInput,
+                    },
+                    headers: {
+                        'x-api-key': process.env.REACT_APP_X_API_KEY
+                    }
+                })
+                .then((response) => {
+
+                    const formattedData = response.data.regions.map(item => {
+                        return {
+                            ...item,
+                            region_fullname: capitalizeEachWord(item.region_fullname),
+                            region_code_name: item.region_code_name.toUpperCase(),
+                            country_fullname: capitalizeEachWord(item.country_fullname)
+                        };
+                    });
+
+                    console.log("formattedData:", formattedData);
+
+                    if (formattedData.length > 0) {
+                        const regionNames = formattedData.map((region) => `${region.region_fullname} (${region.region_code_name})`);
+                        setSearchDropdownOptions(regionNames);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error searching up alternative species", error);
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
         }
     };
 
@@ -429,7 +419,7 @@ function RegionsPage() {
 
     // Increments the page count by 1 
     const handleNextPage = () => {
-        setPage(page + 1); 
+        setPage(page + 1);
     };
 
     // Decrements page count by 1 and removes last id in seen regions history 
@@ -446,6 +436,13 @@ function RegionsPage() {
             setDisableNextButton(false);
         }
     }, [displayData, rowsPerPage]);
+
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleGetRegionsAfterSearch();
+        }
+    };
 
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -475,13 +472,37 @@ function RegionsPage() {
                         )}
                     />
                 </Box>
-                <SearchComponent
+                {/* <SearchComponent
                     text={"Search regions"}
                     handleSearch={handleSearch}
                     searchResults={allRegionNames}
                     searchTerm={searchInput}
                     setSearchTerm={setSearchInput}
-                />
+                /> */}
+
+                <Box style={{ flex: 3, marginLeft: "10px" }}>
+                    <Autocomplete
+                        options={searchDropdownOptions}
+                        onInputChange={(e, newInputValue) => {
+                            setSearchInput(newInputValue);
+                            handleSearch(newInputValue);
+                        }}
+                        clearOnBlur={false}
+                        onKeyDown={handleKeyPress}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label={
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <SearchIcon sx={{ marginRight: '0.5rem' }} />
+                                        {"Search region"}
+                                    </div>
+                                }
+                                style={{ marginTop: "2rem", marginBottom: "1rem" }}
+                            />
+                        )}
+                    />
+                </Box>
 
                 <ThemeProvider theme={Theme}>
                     <Button variant="contained" onClick={() => handleGetRegionsAfterSearch()} style={{ marginLeft: "20px", marginTop: "27px", width: "10%", height: "53px", alignItems: "center" }}>
@@ -527,66 +548,66 @@ function RegionsPage() {
                         <span className="visually-hidden">Loading...</span>
                     </Spinner>
                 ) : (
-                <Table style={{ width: "100%", tableLayout: "fixed" }}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell style={{ width: "10%" }}>
-                                <Typography variant="subtitle1" fontWeight="bold">
-                                    Region
-                                </Typography>
-                            </TableCell>
-                            <TableCell style={{ width: "10%" }}>
-                                <Typography variant="subtitle1" fontWeight="bold">
-                                    Region Code
-                                </Typography>
-                            </TableCell>
-                            <TableCell style={{ width: "10%" }}>
-                                <Typography variant="subtitle1" fontWeight="bold">
-                                    Country
-                                </Typography>
-                            </TableCell>
-                            <TableCell style={{ width: "15%" }}>
-                                <Typography variant="subtitle1" fontWeight="bold">
-                                    Geographic Coordinates (latitude, longitude)
-                                </Typography>
-                            </TableCell>
-                            <TableCell style={{ width: "5%" }}>
-                                <Typography variant="subtitle1" fontWeight="bold">
-                                    Actions
-                                </Typography>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
+                    <Table style={{ width: "100%", tableLayout: "fixed" }}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell style={{ width: "10%" }}>
+                                    <Typography variant="subtitle1" fontWeight="bold">
+                                        Region
+                                    </Typography>
+                                </TableCell>
+                                <TableCell style={{ width: "10%" }}>
+                                    <Typography variant="subtitle1" fontWeight="bold">
+                                        Region Code
+                                    </Typography>
+                                </TableCell>
+                                <TableCell style={{ width: "10%" }}>
+                                    <Typography variant="subtitle1" fontWeight="bold">
+                                        Country
+                                    </Typography>
+                                </TableCell>
+                                <TableCell style={{ width: "15%" }}>
+                                    <Typography variant="subtitle1" fontWeight="bold">
+                                        Geographic Coordinates (latitude, longitude)
+                                    </Typography>
+                                </TableCell>
+                                <TableCell style={{ width: "5%" }}>
+                                    <Typography variant="subtitle1" fontWeight="bold">
+                                        Actions
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
 
-                    <TableBody>
-                        {(displayData && displayData.length > 0 ? displayData : [])
-                            .map((row) => (
-                                <TableRow key={row.region_id}>
-                                    <>
-                                        <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.region_fullname}</TableCell>
-                                        <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}> {row.region_code_name} </TableCell>
-                                        <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.country_fullname}</TableCell>
-                                        <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.geographic_coordinate}</TableCell>
-                                        <TableCell >
-                                            <Tooltip title="Edit"
-                                                onClick={() => startEdit(row)}>
-                                                <IconButton>
-                                                    <EditIcon />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip
-                                                title="Delete"
-                                                onClick={() => handleDeleteRow(row.region_id, row)}>
-                                                <IconButton>
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </TableCell>
-                                    </>
-                                </TableRow>
-                            ))}
-                    </TableBody>
-                </Table>
+                        <TableBody>
+                            {(displayData && displayData.length > 0 ? displayData : [])
+                                .map((row) => (
+                                    <TableRow key={row.region_id}>
+                                        <>
+                                            <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.region_fullname}</TableCell>
+                                            <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}> {row.region_code_name} </TableCell>
+                                            <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.country_fullname}</TableCell>
+                                            <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.geographic_coordinate}</TableCell>
+                                            <TableCell >
+                                                <Tooltip title="Edit"
+                                                    onClick={() => startEdit(row)}>
+                                                    <IconButton>
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip
+                                                    title="Delete"
+                                                    onClick={() => handleDeleteRow(row.region_id, row)}>
+                                                    <IconButton>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                        </>
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
                 )}
             </div>
 

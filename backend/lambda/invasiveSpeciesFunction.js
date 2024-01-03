@@ -10,19 +10,19 @@ exports.handler = async (event) => {
 	const response = {
 		statusCode: 200,
 		headers: {
-            "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "*"
-        },
+			"Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key",
+			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Methods": "*"
+		},
 		body: "",
 	};
 
 	// Initialize the database connection if not already initialized
 	if (!sqlConnection) {
-		await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT); 
+		await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT);
 		sqlConnection = global.sqlConnection;
 	}
-	
+
 	// Function to format scientific names (lowercase and spaces replaced with "_")
 	const formatScientificName = (name) => {
 		return name.toLowerCase().replace(/\s+/g, '_');
@@ -31,19 +31,30 @@ exports.handler = async (event) => {
 	let data;
 	try {
 		const pathData = event.httpMethod + " " + event.resource;
-		switch(pathData) {
+		switch (pathData) {
 			case "GET /invasiveSpecies":
 				let curr_offset = (event.queryStringParameters != null && event.queryStringParameters.curr_offset) ? event.queryStringParameters.curr_offset : 0;
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
 
-				if(event.queryStringParameters != null && event.queryStringParameters.scientific_name && event.queryStringParameters.region_id){
+				if (event.queryStringParameters != null && event.queryStringParameters.scientific_name && event.queryStringParameters.region_id) {
 					data = await sqlConnection`	SELECT * FROM invasive_species 
-										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name) and ${event.queryStringParameters.region_id} = ANY(region_id)
-										ORDER BY scientific_name[1], species_id 
-										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
-				} else if(event.queryStringParameters != null && event.queryStringParameters.scientific_name){
+												WHERE 
+												  EXISTS (
+												    SELECT 1
+												    FROM unnest(scientific_name) AS name
+												    WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+												  ) 
+												  and ${event.queryStringParameters.region_id} = ANY(region_id)
+												ORDER BY scientific_name[1], species_id 
+												LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
+				} else if (event.queryStringParameters != null && event.queryStringParameters.scientific_name) {
 					data = await sqlConnection`	SELECT * FROM invasive_species 
-										WHERE ${event.queryStringParameters.scientific_name} = ANY(scientific_name)
+										WHERE 
+												  EXISTS (
+												    SELECT 1
+												    FROM unnest(scientific_name) AS name
+												    WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+												  ) 
 										ORDER BY scientific_name[1], species_id 
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else if (event.queryStringParameters != null && event.queryStringParameters.region_id) {
@@ -70,6 +81,7 @@ exports.handler = async (event) => {
 					}
 				}
 
+				let totalCount = await sqlConnection` SELECT COUNT(*) FROM invasive_species;`;
 				let nextOffset = parseInt(curr_offset);
 
 				// If the number of rows returned is less than the number of rows requested, 
@@ -83,22 +95,23 @@ exports.handler = async (event) => {
 
 				let res = {
 					"nextOffset": nextOffset,
-					"species": data
+					"species": data,
+					"count": totalCount
 				};
 
 				response.body = JSON.stringify(res);
 				break;
 			case "POST /invasiveSpecies":
-				if(event.body != null){
+				if (event.body != null) {
 					const bd = JSON.parse(event.body);
-					
+
 					// Check if required parameters are passed
 					if (bd.scientific_name) {
 						// Ensure that scientific names are formatted correctly
 						const formattedScientificNames = Array.isArray(bd.scientific_name)
 							? bd.scientific_name.map(formatScientificName)
 							: [formatScientificName(bd.scientific_name)];
-						
+
 						// Optional parameters
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
@@ -110,7 +123,7 @@ exports.handler = async (event) => {
 							VALUES (${formattedScientificNames}, ${resource_links}, ${species_description}, ${region_id}, ${alternative_species})
 							RETURNING *;
 						`;
-						
+
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
@@ -118,13 +131,13 @@ exports.handler = async (event) => {
 					}
 				} else {
 					response.statusCode = 400;
-					response.body = "Invalid value";	
+					response.body = "Invalid value";
 				}
 				break;
 			case "GET /invasiveSpecies/{species_id}":
-				if(event.pathParameters != null){
+				if (event.pathParameters != null) {
 					const bd = event.pathParameters;
-					
+
 					// Check if required parameters are passed
 					if (bd.species_id) {
 						data = await sqlConnection`SELECT * FROM invasive_species WHERE species_id = ${bd.species_id};`;
@@ -144,13 +157,13 @@ exports.handler = async (event) => {
 					}
 				} else {
 					response.statusCode = 400;
-					response.body = "Invalid value";	
+					response.body = "Invalid value";
 				}
 				break;
 			case "PUT /invasiveSpecies/{species_id}":
-				if(event.body != null && event.pathParameters != null){
+				if (event.body != null && event.pathParameters != null) {
 					const bd = JSON.parse(event.body);
-					
+
 					// Check if required parameters are passed
 					if (event.pathParameters.species_id && bd.scientific_name) {
 						// Ensure that scientific names are formatted correctly
@@ -163,7 +176,7 @@ exports.handler = async (event) => {
 						const species_description = (bd.species_description) ? bd.species_description : "";
 						const region_id = (bd.region_id) ? bd.region_id : [];
 						const alternative_species = (bd.alternative_species) ? bd.alternative_species : [];
-						
+
 						data = await sqlConnection`
 							UPDATE invasive_species
 							SET scientific_name = ${formattedScientificNames}, 
@@ -174,7 +187,7 @@ exports.handler = async (event) => {
 							WHERE species_id = ${event.pathParameters.species_id}
 							RETURNING *;
 						`;
-						
+
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
@@ -182,13 +195,13 @@ exports.handler = async (event) => {
 					}
 				} else {
 					response.statusCode = 400;
-					response.body = "Invalid value";	
+					response.body = "Invalid value";
 				}
 				break;
 			case "DELETE /invasiveSpecies/{species_id}":
-				if(event.pathParameters != null){
+				if (event.pathParameters != null) {
 					const bd = event.pathParameters;
-					
+
 					// Check if required parameters are passed
 					if (bd.species_id) {
 						data = await sqlConnection`DELETE FROM invasive_species WHERE species_id = ${bd.species_id};`;
@@ -199,7 +212,7 @@ exports.handler = async (event) => {
 					}
 				} else {
 					response.statusCode = 400;
-					response.body = "Invalid value";	
+					response.body = "Invalid value";
 				}
 				break;
 			default:
@@ -207,8 +220,8 @@ exports.handler = async (event) => {
 		}
 	} catch (error) {
 		response.statusCode = 400;
-    	response.body = JSON.stringify(error.message);
+		response.body = JSON.stringify(error.message);
 	}
-	
+
 	return response;
 };

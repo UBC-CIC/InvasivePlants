@@ -10,10 +10,10 @@ exports.handler = async (event) => {
 	const response = {
 		statusCode: 200,
 		headers: {
-            "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "*"
-        },
+			"Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key",
+			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Methods": "*"
+		},
 		body: "",
 	};
 
@@ -22,7 +22,7 @@ exports.handler = async (event) => {
 		await initializeConnection(SM_DB_CREDENTIALS, RDS_PROXY_ENDPOINT);
 		sqlConnection = global.sqlConnection;
 	}
-	
+
 	// Function to format region full names (lowercase and spaces replaced with "_")
 	const formatRegionName = (name) => {
 		return name.toLowerCase().replace(/\s+/g, '_');
@@ -31,21 +31,21 @@ exports.handler = async (event) => {
 	let data;
 	try {
 		const pathData = event.httpMethod + " " + event.resource;
-		switch(pathData) {
+		switch (pathData) {
 			case "GET /region":
 				let curr_offset = (event.queryStringParameters != null && event.queryStringParameters.curr_offset) ? event.queryStringParameters.curr_offset : 0;
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
 
 				if (event.queryStringParameters != null && event.queryStringParameters.region_fullname) {
-					const region_fullname = "%" + event.queryStringParameters.region_fullname + "%";
 					data = await sqlConnection`	SELECT * FROM regions
-										WHERE region_fullname ILIKE ${region_fullname} 
+										WHERE (region_fullname ILIKE '%' || ${event.queryStringParameters.region_fullname} || '%')
+										OR (region_code_name ILIKE '%' ||  ${event.queryStringParameters.region_fullname} || '%')
 										ORDER BY region_fullname, region_id
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else if (event.queryStringParameters != null && event.queryStringParameters.region_code_name) {
 					const region_codeName = "%" + event.queryStringParameters.region_code_name + "%";
 					data = await sqlConnection`	SELECT * FROM regions
-										WHERE region_code_name ILIKE ${region_codeName} 
+										WHERE region_code_name ILIKE '%' || ${region_codeName} || '%' 
 										ORDER BY region_fullname, region_id
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {
@@ -54,6 +54,7 @@ exports.handler = async (event) => {
 										LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				}
 
+				let totalCount = await sqlConnection` SELECT COUNT(*) FROM invasive_species;`;
 				let nextOffset = parseInt(curr_offset);
 
 				// If the number of rows returned is less than the number of rows requested, 
@@ -67,15 +68,16 @@ exports.handler = async (event) => {
 
 				let res = {
 					"nextOffset": nextOffset,
-					"regions": data
+					"regions": data,
+					"count": totalCount
 				};
 
-				response.body = JSON.stringify(res);				
+				response.body = JSON.stringify(res);
 				break;
 			case "POST /region":
-				if(event.body != null){
+				if (event.body != null) {
 					const bd = JSON.parse(event.body);
-					
+
 					// Check if required parameters are passed
 					if (bd.region_code_name &&
 						bd.region_fullname &&
@@ -92,7 +94,7 @@ exports.handler = async (event) => {
 							VALUES (${bd.region_code_name.toUpperCase()}, ${formattedRegionName}, ${bd.country_fullname.toLowerCase()}, ${geographic_coordinate})
 							RETURNING *;
 						`;
-						
+
 						response.body = JSON.stringify(data);
 					} else {
 						response.statusCode = 400;
@@ -100,13 +102,13 @@ exports.handler = async (event) => {
 					}
 				} else {
 					response.statusCode = 400;
-					response.body = "Invalid value";	
+					response.body = "Invalid value";
 				}
 				break;
 			case "GET /region/{region_id}":
-				if(event.pathParameters != null){
+				if (event.pathParameters != null) {
 					const bd = event.pathParameters;
-					
+
 					// Check if required parameters are passed
 					if (bd.region_id) {
 						data = await sqlConnection`SELECT * FROM regions WHERE region_id = ${bd.region_id};`;
@@ -117,11 +119,11 @@ exports.handler = async (event) => {
 					}
 				} else {
 					response.statusCode = 400;
-					response.body = "Invalid value";	
+					response.body = "Invalid value";
 				}
 				break;
 			case "PUT /region/{region_id}":
-				if(event.body != null && event.pathParameters != null){
+				if (event.body != null && event.pathParameters != null) {
 					const bd = JSON.parse(event.body);
 
 					// Check if required parameters are passed
@@ -152,13 +154,13 @@ exports.handler = async (event) => {
 					}
 				} else {
 					response.statusCode = 400;
-					response.body = "Invalid value";	
+					response.body = "Invalid value";
 				}
 				break;
 			case "DELETE /region/{region_id}":
-				if(event.pathParameters != null){
+				if (event.pathParameters != null) {
 					const bd = event.pathParameters;
-					
+
 					// Check if required parameters are passed
 					if (bd.region_id) {
 						data = await sqlConnection`DELETE FROM regions WHERE region_id = ${bd.region_id};`;
@@ -169,7 +171,7 @@ exports.handler = async (event) => {
 					}
 				} else {
 					response.statusCode = 400;
-					response.body = "Invalid value";	
+					response.body = "Invalid value";
 				}
 				break;
 			default:
@@ -177,8 +179,8 @@ exports.handler = async (event) => {
 		}
 	} catch (error) {
 		response.statusCode = 400;
-    	response.body = JSON.stringify(error.message);
+		response.body = JSON.stringify(error.message);
 	}
-	
+
 	return response;
 };
