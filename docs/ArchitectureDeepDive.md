@@ -10,7 +10,7 @@ There are two main parts of the architecture:
 ![Archnitecture Diagram](./images/networkDiagram/architecture_diagram.svg)
 
 ## Admin Web Application
-This part of the application is responsible for modifying the data. It interacts with the API that connects to the databse and is hosted as a container on ECS Fargate.
+This part of the application is responsible for modifying the data. It interacts with the API that interacts with the database and is hosted as a container on ECS Fargate.
 1. In `A1`, the admin user sends a request to a Cloudfront Distribution with caching enabled. If there is a cache hit, the CloudFront returns the cached data. The Web Application Firewall (WAF) will ensure that general security protection is enforced. Further explanation on what is being protected can be found in the CDK stack.
 2. On cache miss, Cloudfront will send a request to an Application Load Balancer (ALB), as seen in `A2`.
 3. The ALB checks the health status of the container. If the status is healthy, it forwards the request to the container which runs on Elastic Container Service (ECS), `A3`.
