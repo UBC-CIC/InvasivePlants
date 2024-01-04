@@ -39,7 +39,16 @@ exports.handler = async (event) => {
 				if (event.queryStringParameters != null && event.queryStringParameters.scientific_name && event.queryStringParameters.region_id) {
 					data = await sqlConnection`SELECT 
                                 i.*, 
-                                ARRAY_AGG(r.region_code_name) AS region_code_names
+                                ARRAY_AGG(r.region_code_name) AS region_code_names,
+                                ARRAY_AGG(
+						                json_build_object(
+						                    'region_id', r.region_id,
+						                    'region_code_name', r.region_code_name,
+						                    'region_fullname', r.region_fullname,
+						                    'country_fullname', r.country_fullname,
+						                    'geographic_coordinate', r.geographic_coordinate
+						                )
+						            ) AS all_regions
                             FROM 
                                 invasive_species i
                             JOIN 
@@ -57,31 +66,33 @@ exports.handler = async (event) => {
                                 i.scientific_name[1], i.species_id
                             LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else if (event.queryStringParameters != null && event.queryStringParameters.scientific_name) {
-					data = await sqlConnection`SELECT 
-                                    i.*,
-                                    ARRAY_AGG(r.region_code_name) OVER (PARTITION BY i.species_id) AS region_code_names,
-                                    ARRAY_AGG(
-						                json_build_object(
-						                    'region_id', r.region_id,
-						                    'region_code_name', r.region_code_name,
-						                    'region_fullname', r.region_fullname,
-						                    'country_fullname', r.country_fullname,
-						                    'geographic_coordinate', r.geographic_coordinate
-						                )
-						            ) AS all_regions
-                                FROM 
-                                    invasive_species i
-                                JOIN 
-                                    regions r ON r.region_id = ANY(i.region_id)
-                                WHERE 
-                                    EXISTS (
-                                        SELECT 1
-                                        FROM unnest(i.scientific_name) AS name
-                                        WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
-                                    )
-                                ORDER BY 
-                                    i.scientific_name[1], i.species_id 
-                                LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
+					data = await sqlConnection`
+				        SELECT 
+				            DISTINCT ON (i.species_id) i.*, 
+				            ARRAY_AGG(r.region_code_name) OVER (PARTITION BY i.species_id) AS region_code_names,
+				            ARRAY_AGG(
+				                json_build_object(
+				                    'region_id', r.region_id,
+				                    'region_code_name', r.region_code_name,
+				                    'region_fullname', r.region_fullname,
+				                    'country_fullname', r.country_fullname,
+				                    'geographic_coordinate', r.geographic_coordinate
+				                )
+				            ) OVER (PARTITION BY i.species_id) AS all_regions
+				        FROM 
+				            invasive_species i
+				        JOIN 
+				            regions r ON r.region_id = ANY(i.region_id)
+				        WHERE 
+				            EXISTS (
+				                SELECT 1
+				                FROM unnest(i.scientific_name) AS name
+				                WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+				            )
+				        ORDER BY 
+				            i.species_id, r.region_id  -- Adjust ordering as necessary
+				        LIMIT ${rows_per_page} OFFSET ${curr_offset};
+				    `;
 				} else if (event.queryStringParameters != null && event.queryStringParameters.region_id) {
 					data = await sqlConnection`SELECT 
                                     i.*, 
