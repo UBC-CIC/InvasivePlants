@@ -38,11 +38,18 @@ exports.handler = async (event) => {
 
 				if (event.queryStringParameters != null && event.queryStringParameters.scientific_name) {
 					data = await sqlConnection`	SELECT * FROM alternative_species 
-												WHERE EXISTS (
+												WHERE 
+												  EXISTS (
 												    SELECT 1
 												    FROM unnest(scientific_name) AS name
 												    WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
-												)		
+												  )
+												  OR
+												  EXISTS (
+												    SELECT 1
+												    FROM unnest(common_name) AS cname
+												    WHERE cname ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+												  )
 												ORDER BY scientific_name[1], species_id 
 												LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {

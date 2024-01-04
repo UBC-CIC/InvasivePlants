@@ -56,7 +56,7 @@ function AlternativeSpeciesPage() {
   const [isLoading, setIsLoading] = useState(false); // loading data or not
   const [user, setUser] = useState(""); // authorized admin user
 
-  // Retrieves user and alternative species on load
+  // Retrieves user on load
   useEffect(() => {
     retrieveUser();
   }, [])
@@ -70,7 +70,6 @@ function AlternativeSpeciesPage() {
       console.log("error getting user: ", e);
     }
   }
-
 
   // Fetches rowsPerPage number of alternative species (pagination)
   const handleGetAlternativeSpecies = () => {
@@ -338,7 +337,6 @@ function AlternativeSpeciesPage() {
         })
         .then((response) => {
           setSpeciesCount(prevCount => prevCount - 1)
-          // setAllAlternativeSpecies(prevSpecies => prevSpecies.filter(species => species.species_id !== deleteId));
           setShouldReset(true);
         })
         .catch((error) => {
@@ -372,18 +370,6 @@ function AlternativeSpeciesPage() {
         }
       })
       .then((response) => {
-        // Ensures that if a species has multiple scientific names, each are separately displayed      
-        const formattedData = response.data.flatMap(item => {
-          return item.scientific_name.map(name => {
-            const capitalizedScientificName = capitalizeFirstWord(name);
-            return {
-              ...item,
-              scientific_name: capitalizedScientificName
-            };
-          });
-        });
-
-        // setAllAlternativeSpecies(prevSpecies => [...prevSpecies, ...formattedData]);
         setSpeciesCount(prevCount => prevCount + 1);
 
         // Maps species id to plant data with image links
@@ -414,7 +400,7 @@ function AlternativeSpeciesPage() {
                 'Authorization': `${jwtToken}`
               }
             })
-            .then((response) => {
+            .then(() => {
               setShouldReset(true);
               setOpenAddSpeciesDialog(false);
             })
@@ -449,6 +435,7 @@ function AlternativeSpeciesPage() {
     if (searchInput === "") {
       setDisplayData(data);
       setShouldCalculate(true);
+      setSearchDropdownOptions([]);
     } else {
       console.log("search input:", searchInput);
       axios
@@ -476,18 +463,10 @@ function AlternativeSpeciesPage() {
             };
           });
 
-          console.log("formattedData:", formattedData);
-
           if (formattedData.length > 0) {
             const scientificNames = formattedData.flatMap((species) => species.scientific_name);
             setSearchDropdownOptions(scientificNames);
           }
-
-          // updates pagination start and end indices
-          // setShouldCalculate(false);
-          // setDisplayData(formattedData);
-          // formattedData.length > 0 ? setStart(1) : setStart(0);
-          // setEnd(response.data.species.length);
         })
         .catch((error) => {
           console.error("Error searching up alternative species", error);

@@ -1,32 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
-    Select, MenuItem, FormControl, InputLabel, Box, Autocomplete,
-    Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography
+    Box, Autocomplete, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from '../SnackbarComponent';
 import CustomAlert from '../AlertComponent';
-import handleGetRegions from '../../functions/RegionMap';
+import axios from "axios";
+import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperFunctions';
 
 // Dialog for editing an invasive species
-const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave, alternativeSpeciesData }) => {
-    const [showAlert, setShowAlert] = useState(false);
-    const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
+const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave }) => {
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+    const [searchAlternativeDropdownOptions, setSearchAlternativeDropdownOptions] = useState([]); // dropdown options for alternative species search
+    const [searchRegionsDropdownOptions, setSearchRegionsDropdownOptions] = useState([]); // dropdown options for regions search
+    const [showAlert, setShowAlert] = useState(false); // alert for missing field
+    const [showSaveConfirmation, setShowSaveConfirmation] = useState(false); // confirmation before saving
     const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
-    const [regionMap, setRegionsMap] = useState({});
-
-    // Fetches regions
-    useEffect(() => {
-        const fetchRegionData = async () => {
-            try {
-                const regionMap = await handleGetRegions();
-                setRegionsMap(regionMap);
-            } catch (error) {
-                console.error('Error fetching region map from edit invasive species dialog:', error);
-            }
-        };
-        fetchRegionData();
-    }, []);
+    const [regionsAutocompleteOpen, setRegionsAutocompleteOpen] = useState(false);
+    const [typedValues, setTypedValues] = useState("");
 
     // Ensures all required fields are present before editing invasive species
     const handleConfirmEditInvasiveSpecies = () => {
@@ -45,6 +36,69 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
             return;
         }
         setShowSaveConfirmation(false);
+    };
+
+    // Updates search dropdown
+    const handleSearchAlternative = (searchInput) => {
+        if (searchInput === "") {
+            setSearchAlternativeDropdownOptions([]);
+        } else {
+            axios
+                .get(`${API_BASE_URL}alternativeSpecies`, {
+                    params: {
+                        scientific_name: searchInput,
+                    },
+                    headers: {
+                        'x-api-key': process.env.REACT_APP_X_API_KEY
+                    }
+                })
+                .then((response) => {
+                    const formattedData = response.data.species.map(item => {
+                        const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
+                        const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
+
+                        return {
+                            ...item,
+                            scientific_name: capitalizedScientificNames,
+                            common_name: capitalizedCommonNames,
+                        };
+                    });
+
+                    console.log("formattedData:", formattedData);
+                    setSearchAlternativeDropdownOptions(formattedData);
+                })
+                .catch((error) => {
+                    console.error("Error searching up alternative species", error);
+                })
+        }
+    };
+
+    // Updates search dropdown
+    const handleSearchRegion = () => {
+        axios
+            .get(`${API_BASE_URL}region`, {
+                params: {
+                    region_fullname: typedValues
+                },
+                headers: {
+                    'x-api-key': process.env.REACT_APP_X_API_KEY
+                }
+            })
+            .then((response) => {
+                const regionData = response.data.regions.map(item => {
+                    return {
+                        ...item,
+                        region_fullname: capitalizeEachWord(item.region_fullname),
+                        region_code_name: item.region_code_name.toUpperCase(),
+                        country_fullname: capitalizeEachWord(item.country_fullname)
+                    };
+                });
+                console.log("formattedData from region search:", regionData);
+                setSearchRegionsDropdownOptions(regionData);
+            })
+            .catch((error) => {
+                console.error("Error searching up region", error);
+            })
     };
 
     return (
@@ -83,11 +137,12 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
+
                     <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: "1rem", width: "100%" }}>
                         <Autocomplete
                             multiple
                             id="alternative-species-autocomplete"
-                            options={alternativeSpeciesData}
+                            options={searchAlternativeDropdownOptions}
                             getOptionLabel={(option) =>
                                 `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
                             }
@@ -96,8 +151,11 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                                     ? tempData.alternative_species
                                     : []
                             }
-                            onChange={(event, values) =>
-                                handleInputChange("alternative_species", values)
+                            onInputChange={(e, searchInput) => {
+                                handleSearchAlternative();
+                            }}
+                            onChange={(e, input) =>
+                                handleInputChange("alternative_species", input)
                             }
                             open={alternativeSpeciesAutocompleteOpen}
                             onFocus={() => setAlternativeAutocompleteOpen(true)}
@@ -130,25 +188,57 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                         sx={{ width: "100%", marginBottom: "1rem" }}
                     />
 
-                    <FormControl fullWidth sx={{ marginBottom: "1rem" }}>
-                        <InputLabel id="region-label">Region(s) (multiselect)*</InputLabel>
-                        <Select
-                            labelId="region-label"
+                    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: "1rem", width: "100%" }}>
+                        <Autocomplete
                             multiple
-                            value={tempData.region_id}
-                            onChange={(e) => handleInputChange("region_code_name", e.target.value)}
-                            label="Region(s) (multiselect)*"
-                            renderValue={(selected) => {
-                                const selectedNames = selected.map(id => regionMap[id]);
-                                return selectedNames.join(", ");
-                            }}                        >
-                            {Object.entries(regionMap).map(([region_id, region_code_name]) => (
-                                <MenuItem key={region_id} value={region_id}>
-                                    {region_code_name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                            id="regions-autocomplete"
+                            options={searchRegionsDropdownOptions}
+                            getOptionLabel={(option) =>
+                                `${option.region_fullname} (${option.region_code_name})`
+                            }
+                            value={
+                                Array.isArray(tempData.all_regions) ?
+                                    tempData.all_regions.map(region => ({
+                                        ...region,
+                                        region_fullname: capitalizeEachWord(region.region_fullname),
+                                    }))
+                                    : []
+                            }
+                            onInputChange={(e, input) => {
+                                setTypedValues((prev) => prev + input);
+                                handleSearchRegion();
+                            }}
+                            onChange={(e, input) => {
+                                handleInputChange("all_regions", input)
+                                setTypedValues("");
+                            }}
+                            open={regionsAutocompleteOpen}
+                            onFocus={() => {
+                                handleSearchRegion()
+                                setRegionsAutocompleteOpen(true)
+                            }}
+                            onBlur={() => {
+                                setRegionsAutocompleteOpen(false)
+                                setTypedValues("")
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="standard"
+                                    label={<div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <SearchIcon sx={{ marginRight: '0.5rem' }} />
+                                        Region(s)* (multiselect)
+                                    </div>
+                                    }
+                                    multiline
+                                    sx={{ width: "100%", marginBottom: "1rem" }}
+                                />
+                            )}
+                            sx={{ flex: 5, marginRight: '1rem', height: '100%', width: "100%" }}
+                        />
+                    </Box>
+
+
                 </DialogContent>
 
                 <DialogActions>
