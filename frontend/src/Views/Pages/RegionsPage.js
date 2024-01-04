@@ -346,14 +346,13 @@ function RegionsPage() {
             axios
                 .get(`${API_BASE_URL}region`, {
                     params: {
-                        scientific_name: searchInput,
+                        region_fullname: searchInput,
                     },
                     headers: {
                         'x-api-key': process.env.REACT_APP_X_API_KEY
                     }
                 })
                 .then((response) => {
-
                     const formattedData = response.data.regions.map(item => {
                         return {
                             ...item,
@@ -362,8 +361,6 @@ function RegionsPage() {
                             country_fullname: capitalizeEachWord(item.country_fullname)
                         };
                     });
-
-                    console.log("formattedData:", formattedData);
 
                     if (formattedData.length > 0) {
                         const regionNames = formattedData.map((region) => `${region.region_fullname} (${region.region_code_name})`);

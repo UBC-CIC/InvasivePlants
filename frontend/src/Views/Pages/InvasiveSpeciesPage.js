@@ -66,6 +66,7 @@ function InvasiveSpeciesPage() {
   const retrieveUser = async () => {
     try {
       const returnedUser = await Auth.currentAuthenticatedUser();
+      console.log(returnedUser);
       setUser(returnedUser);
     } catch (e) {
       console.log("error getting user: ", e);
@@ -371,7 +372,8 @@ function InvasiveSpeciesPage() {
       ...newSpeciesData,
       scientific_name: newSpeciesData.scientific_name.map(name =>
         name.toLowerCase().replace(/\s+/g, '_')
-      )
+      ),
+      region_id: newSpeciesData.all_regions.map(region => region.region_id),
     }
 
     retrieveUser();
@@ -406,6 +408,17 @@ function InvasiveSpeciesPage() {
   const handleInputChange = (field, value) => {
     console.log("input change:", "field: ", field, "value: ", value)
 
+    if (field === "all_regions") {
+      const regionIds = value.map(region => region.region_id);
+      const regionCodeNames = value.map(region => region.region_code_name);
+
+      setTempEditingData(prev => ({
+        ...prev,
+        region_id: regionIds,
+        region_code_name: regionCodeNames
+      }));
+    }
+
     if (field === "region_code_name") {
       const selectedRegionCodes = value.map((region_id) =>
         axios
@@ -415,13 +428,11 @@ function InvasiveSpeciesPage() {
             }
           })
           .then((response) => {
-            // console.log("response code: ", response.data[0].region_code_name);
             return response.data[0].region_code_name;
           })
           .catch((error) => {
             console.error("Error getting region", error);
           }));
-      // console.log("selected region codes: ", selectedRegionCodes);
       setTempEditingData((prev) => ({ ...prev, region_id: value, region_code_name: selectedRegionCodes }));
     }
     else {
@@ -429,7 +440,7 @@ function InvasiveSpeciesPage() {
     }
   };
 
-  // Displays original data when search input is empty
+  // Displays original data when search input is empty, otherwise updates dropdown
   const handleSearch = (searchInput) => {
     if (searchInput === "") {
       setDisplayData(data);

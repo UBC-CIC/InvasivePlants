@@ -59,7 +59,16 @@ exports.handler = async (event) => {
 				} else if (event.queryStringParameters != null && event.queryStringParameters.scientific_name) {
 					data = await sqlConnection`SELECT 
                                     i.*,
-                                    ARRAY_AGG(r.region_code_name) OVER (PARTITION BY i.species_id) AS region_code_names
+                                    ARRAY_AGG(r.region_code_name) OVER (PARTITION BY i.species_id) AS region_code_names,
+                                    ARRAY_AGG(
+						                json_build_object(
+						                    'region_id', r.region_id,
+						                    'region_code_name', r.region_code_name,
+						                    'region_fullname', r.region_fullname,
+						                    'country_fullname', r.country_fullname,
+						                    'geographic_coordinate', r.geographic_coordinate
+						                )
+						            ) AS all_regions
                                 FROM 
                                     invasive_species i
                                 JOIN 
@@ -76,7 +85,16 @@ exports.handler = async (event) => {
 				} else if (event.queryStringParameters != null && event.queryStringParameters.region_id) {
 					data = await sqlConnection`SELECT 
                                     i.*, 
-                                    ARRAY_AGG(r.region_code_name) AS region_code_names
+                                    ARRAY_AGG(r.region_code_name) AS region_code_names,
+                                    ARRAY_AGG(
+						                json_build_object(
+						                    'region_id', r.region_id,
+						                    'region_code_name', r.region_code_name,
+						                    'region_fullname', r.region_fullname,
+						                    'country_fullname', r.country_fullname,
+						                    'geographic_coordinate', r.geographic_coordinate
+						                )
+						            ) AS all_regions
                                 FROM 
                                     invasive_species i
                                 JOIN 
@@ -91,7 +109,16 @@ exports.handler = async (event) => {
 				} else if (event.queryStringParameters != null && event.queryStringParameters.all) {
 					data = await sqlConnection`SELECT 
                                     i.*, 
-                                    ARRAY_AGG(r.region_code_name) AS region_code_names
+                                    ARRAY_AGG(r.region_code_name) AS region_code_names,
+                                    ARRAY_AGG(
+						                json_build_object(
+						                    'region_id', r.region_id,
+						                    'region_code_name', r.region_code_name,
+						                    'region_fullname', r.region_fullname,
+						                    'country_fullname', r.country_fullname,
+						                    'geographic_coordinate', r.geographic_coordinate
+						                )
+						            ) AS all_regions
                                 FROM 
                                     invasive_species i
                                 JOIN 
@@ -102,7 +129,16 @@ exports.handler = async (event) => {
 				} else {
 					data = await sqlConnection`SELECT 
                                     i.*, 
-                                    ARRAY_AGG(r.region_code_name) AS region_code_names
+                                    ARRAY_AGG(r.region_code_name) AS region_code_names,
+                                    ARRAY_AGG(
+						                json_build_object(
+						                    'region_id', r.region_id,
+						                    'region_code_name', r.region_code_name,
+						                    'region_fullname', r.region_fullname,
+						                    'country_fullname', r.country_fullname,
+						                    'geographic_coordinate', r.geographic_coordinate
+						                )
+						            ) AS all_regions
                                 FROM 
                                     invasive_species i
                                 JOIN 
