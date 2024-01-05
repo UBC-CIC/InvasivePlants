@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-    Box, Autocomplete, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography
-} from '@mui/material';
+import { Box, Autocomplete, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from '../SnackbarComponent';
 import CustomAlert from '../AlertComponent';
@@ -11,13 +9,11 @@ import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperF
 // Dialog for editing an invasive species
 const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave }) => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
     const [searchAlternativeDropdownOptions, setSearchAlternativeDropdownOptions] = useState([]); // dropdown options for alternative species search
     const [searchRegionsDropdownOptions, setSearchRegionsDropdownOptions] = useState([]); // dropdown options for regions search
     const [showAlert, setShowAlert] = useState(false); // alert for missing field
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false); // confirmation before saving
-    const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
-    const [regionsAutocompleteOpen, setRegionsAutocompleteOpen] = useState(false);
-    const [typedValues, setTypedValues] = useState("");
 
     // Ensures all required fields are present before editing invasive species
     const handleConfirmEditInvasiveSpecies = () => {
@@ -31,14 +27,14 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
     };
 
     // Closes save confirmation on clickaway
-    const handleClose = (event, reason) => {
+    const handleClose = (e, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         setShowSaveConfirmation(false);
     };
 
-    // Updates search dropdown
+    // Updates search dropdown on user input change
     const handleSearchAlternative = (searchInput) => {
         if (searchInput === "") {
             setSearchAlternativeDropdownOptions([]);
@@ -73,13 +69,10 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
         }
     };
 
-    // Updates search dropdown
-    const handleSearchRegion = () => {
+    // Gets regions to update region search dropdown 
+    useEffect(() => {
         axios
             .get(`${API_BASE_URL}region`, {
-                params: {
-                    region_fullname: typedValues
-                },
                 headers: {
                     'x-api-key': process.env.REACT_APP_X_API_KEY
                 }
@@ -99,7 +92,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
             .catch((error) => {
                 console.error("Error searching up region", error);
             })
-    };
+    }, []);
 
     return (
         <div>
@@ -152,14 +145,11 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                                     : []
                             }
                             onInputChange={(e, searchInput) => {
-                                handleSearchAlternative();
+                                handleSearchAlternative(searchInput);
                             }}
                             onChange={(e, input) =>
                                 handleInputChange("alternative_species", input)
                             }
-                            open={alternativeSpeciesAutocompleteOpen}
-                            onFocus={() => setAlternativeAutocompleteOpen(true)}
-                            onBlur={() => setAlternativeAutocompleteOpen(false)}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -204,22 +194,8 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                                     }))
                                     : []
                             }
-                            onInputChange={(e, input) => {
-                                setTypedValues((prev) => prev + input);
-                                handleSearchRegion();
-                            }}
                             onChange={(e, input) => {
                                 handleInputChange("all_regions", input)
-                                setTypedValues("");
-                            }}
-                            open={regionsAutocompleteOpen}
-                            onFocus={() => {
-                                handleSearchRegion()
-                                setRegionsAutocompleteOpen(true)
-                            }}
-                            onBlur={() => {
-                                setRegionsAutocompleteOpen(false)
-                                setTypedValues("")
                             }}
                             renderInput={(params) => (
                                 <TextField

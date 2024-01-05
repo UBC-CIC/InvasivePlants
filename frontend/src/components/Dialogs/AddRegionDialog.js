@@ -13,12 +13,11 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
         geographic_coordinate: ""
     };
 
-    const [showSnackbar, setShowSnackbar] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
-    const [showWarning, setShowWarning] = useState(false);
-    const [regionData, setRegionData] = useState(initialRegionData);
-    const [selectedCountry, setSelectedCountry] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
+    const [showSnackbar, setShowSnackbar] = useState(false); // success snackbar
+    const [showAlert, setShowAlert] = useState(false); // alert when field is missing
+    const [showWarning, setShowWarning] = useState(false); // warning alert for duplicates
+    const [regionData, setRegionData] = useState(initialRegionData); // new region 
+    const [errorMessage, setErrorMessage] = useState(""); // error message for alert
 
     const handleInputChange = (field, value) => {
         // Checks that coordinates are of valid format (numbers)
@@ -29,7 +28,7 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
                     geographic_coordinate: [
                         field === "geographic_latitude" ? value : regionData.geographic_coordinate.split(', ')[0],
                         field === "geographic_longitude" ? value : regionData.geographic_coordinate.split(', ')[1],
-                    ].join(', '), 
+                    ].join(', '),
                 }));
                 setErrorMessage("");
             } else {
@@ -37,9 +36,6 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
             }
         } else {
             setRegionData((prev) => ({ ...prev, [field]: value }));
-            if (field === "country_fullname") {
-                setSelectedCountry(value);
-            }
         }
     };
 
@@ -70,11 +66,10 @@ const AddRegionDialog = ({ open, handleClose, handleAdd, data }) => {
         setShowWarning(false);
         setShowAlert(false);
         setRegionData(initialRegionData);
-        setSelectedCountry("");
         handleClose();
     };
 
-
+    // Closes success snackbar
     const handleCloseSnackbar = () => {
         setShowSnackbar(false)
     }

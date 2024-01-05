@@ -15,6 +15,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     species_description: "",
     resource_links: [],
   };
+
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
@@ -150,6 +151,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
             onChange={(e) => handleInputChange("scientific_name", e.target.value)}
             sx={{ width: "100%", marginTop: "0.5rem", marginBottom: "1rem" }}
           />
+
           <TextField
             fullWidth
             label="Common Name (separate with commas)"
@@ -157,6 +159,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
             onChange={(e) => handleInputChange("common_name", e.target.value)}
             sx={{ width: "100%", marginBottom: "1rem" }}
           />
+
           <TextField
             fullWidth
             label="Description"
@@ -166,6 +169,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
             onChange={(e) => handleInputChange("species_description", e.target.value)}
             sx={{ width: "100%", marginBottom: "1rem" }}
           />
+
           <TextField
             fullWidth
             label="Resource links (separate with commas)"
@@ -193,12 +197,13 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
               sx={{ width: '100%', marginBottom: '1rem' }}
             />
           </Box>
-
         </DialogContent>
+
         <DialogActions>
           <Button onClick={handleCancel}>Cancel</Button>
           <Button onClick={handleConfirmAddAlternativeSpecies}>Submit</Button>
         </DialogActions>
+
       </Dialog >
 
       <SnackbarOnSuccess open={showSnackbar} onClose={handleCloseSnackbar} text={"Added successfully!"} />

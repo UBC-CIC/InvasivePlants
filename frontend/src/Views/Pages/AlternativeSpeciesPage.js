@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {
-  Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button,
-  Typography, ThemeProvider
-} from "@mui/material";
+import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography, ThemeProvider } from "@mui/material";
 import { Autocomplete, Box, TextField } from '@mui/material';
 
 import Theme from './Theme';
 import { Auth } from "aws-amplify";
 
 // components
-// import SearchComponent from '../../components/SearchComponent';
 import PaginationComponent from '../../components/PaginationComponent';
 import EditAlternativeSpeciesDialog from "../../components/Dialogs/EditAlternativeSpeciesDialog";
 import DeleteDialog from "../../components/Dialogs/ConfirmDeleteDialog";
@@ -107,6 +103,7 @@ function AlternativeSpeciesPage() {
           setPage(0);
           setStart(0);
           setEnd(0);
+          setShouldCalculate(true);
           setShouldReset(false);
         }
 
@@ -279,7 +276,7 @@ function AlternativeSpeciesPage() {
                   'Authorization': `${jwtToken}`
                 }
               })
-              .then(response => {
+              .then(() => {
                 if (start > rowsPerPage) {
                   handleGetAlternativeSpeciesAfterSave();
                 } else {
@@ -303,7 +300,7 @@ function AlternativeSpeciesPage() {
             'Authorization': `${jwtToken}`
           }
         })
-        .then((response) => {
+        .then(() => {
           if (start > rowsPerPage) {
             handleGetAlternativeSpeciesAfterSave();
           } else {
@@ -335,7 +332,7 @@ function AlternativeSpeciesPage() {
             'Authorization': `${jwtToken}`
           }
         })
-        .then((response) => {
+        .then(() => {
           setSpeciesCount(prevCount => prevCount - 1)
           setShouldReset(true);
         })
@@ -535,14 +532,6 @@ function AlternativeSpeciesPage() {
 
       {/* search bars*/}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "90%" }}>
-        {/* <SearchComponent
-          text={"Search alternative species (scientific or common name)"}
-          handleSearch={handleSearch}
-          searchResults={allAlternativeSpeciesNames}
-          searchTerm={searchInput}
-          setSearchTerm={setSearchInput}
-        /> */}
-
         <Box style={{ flex: 3, marginLeft: "10px" }}>
           <Autocomplete
             options={searchDropdownOptions}

@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-    Autocomplete, Box, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button,
-    TextField, Typography, ThemeProvider
-} from "@mui/material";
+import { Autocomplete, Box, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, TextField, Typography, ThemeProvider } from "@mui/material";
 import Theme from './Theme';
 import { Auth } from "aws-amplify";
 
 // components
 import PaginationComponent from '../../components/PaginationComponent';
-// import SearchComponent from '../../components/SearchComponent';
 import DeleteDialog from "../../components/Dialogs/ConfirmDeleteDialog";
 import AddRegionDialog from "../../components/Dialogs/AddRegionDialog";
 import EditRegionDialog from '../../components/Dialogs/EditRegionsDialog';
@@ -446,6 +442,8 @@ function RegionsPage() {
 
             {/* location and search bars*/}
             <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
+
+                {/* country search and dropdown */}
                 <Box style={{ flex: 1, marginRight: "10px" }}>
                     <Autocomplete
                         options={Array.from(new Set(displayData.map((region) => region.country_fullname)))}
@@ -469,14 +467,8 @@ function RegionsPage() {
                         )}
                     />
                 </Box>
-                {/* <SearchComponent
-                    text={"Search regions"}
-                    handleSearch={handleSearch}
-                    searchResults={allRegionNames}
-                    searchTerm={searchInput}
-                    setSearchTerm={setSearchInput}
-                /> */}
 
+                {/* regions search and dropdown */}
                 <Box style={{ flex: 3, marginLeft: "10px" }}>
                     <Autocomplete
                         options={searchDropdownOptions}
@@ -640,7 +632,6 @@ function RegionsPage() {
                 handleClose={() => setOpenDeleteConfirmation(false)}
                 handleDelete={handleConfirmDelete}
             />
-
         </div >
     );
 }

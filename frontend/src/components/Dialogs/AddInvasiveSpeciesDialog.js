@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-    Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField
-} from "@mui/material";
+import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from "../SnackbarComponent";
 import CustomAlert from "../AlertComponent";
@@ -12,6 +10,7 @@ import axios from "axios";
 // Dialog for adding an invasive species
 const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
     const initialSpeciesData = {
         scientific_name: [],
         resource_links: [],
@@ -19,16 +18,14 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         alternative_species: [],
         region_id: []
     };
-    const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
-    const [alternativeSpeciesAutocompleteOpen, setAlternativeAutocompleteOpen] = useState(false);
+    const [searchAlternativeDropdownOptions, setSearchAlternativeDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
     const [searchRegionsDropdownOptions, setSearchRegionsDropdownOptions] = useState([]); // dropdown options for regions search
-    const [regionsAutocompleteOpen, setRegionsAutocompleteOpen] = useState(false);
-    const [typedValues, setTypedValues] = useState("");
-    const [showSnackbar, setShowSnackbar] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
-    const [showWarning, setShowWarning] = useState(false);
-    const [speciesData, setSpeciesData] = useState(initialSpeciesData);
+    const [showSnackbar, setShowSnackbar] = useState(false); // success snackbar
+    const [showAlert, setShowAlert] = useState(false); // severe alert 
+    const [showWarning, setShowWarning] = useState(false); // warning alert
+    const [speciesData, setSpeciesData] = useState(initialSpeciesData); // new species with empty fields
 
+    // Updates the species data when input changes
     const handleInputChange = (field, value) => {
         if (field === "region_code_name") {
             setSpeciesData((prev) => ({ ...prev, region_id: value }));
@@ -39,8 +36,6 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
 
     // Confirms all fields are present before adding, otherwise shows alerts
     const handleConfirmAddSpecies = () => {
-        console.log("speceis: ", speciesData);
-
         if (!speciesData.scientific_name || speciesData.scientific_name.length === 0 ||
             !speciesData.all_regions || speciesData.all_regions === 0) {
             setShowAlert(true);
@@ -102,10 +97,10 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         setShowSnackbar(false)
     }
 
-    // Updates search dropdown
-    const handleSearch = (searchInput) => {
+    // Updates search alternative dropdown
+    const handleSearchAlternative = (searchInput) => {
         if (searchInput === "") {
-            setSearchDropdownOptions([]);
+            setSearchAlternativeDropdownOptions([]);
         } else {
             axios
                 .get(`${API_BASE_URL}alternativeSpecies`, {
@@ -129,7 +124,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                     });
 
                     console.log("formattedData:", formattedData);
-                    setSearchDropdownOptions(formattedData);
+                    setSearchAlternativeDropdownOptions(formattedData);
                 })
                 .catch((error) => {
                     console.error("Error searching up alternative species", error);
@@ -137,13 +132,10 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         }
     };
 
-    // Updates search dropdown
-    const handleSearchRegion = () => {
+    // Gets regions to update region search dropdown 
+    useEffect(() => {
         axios
             .get(`${API_BASE_URL}region`, {
-                params: {
-                    region_fullname: typedValues
-                },
                 headers: {
                     'x-api-key': process.env.REACT_APP_X_API_KEY
                 }
@@ -163,7 +155,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
             .catch((error) => {
                 console.error("Error searching up region", error);
             })
-    };
+    }, []);
 
     return (
         <div>
@@ -207,7 +199,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                         <Autocomplete
                             multiple
                             id="alternative-species-autocomplete"
-                            options={searchDropdownOptions}
+                            options={searchAlternativeDropdownOptions}
                             getOptionLabel={(option) =>
                                 `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
                             }
@@ -217,14 +209,11 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                                     : []
                             }
                             onInputChange={(e, input) => {
-                                handleSearch(input);
+                                handleSearchAlternative(input);
                             }}
                             onChange={(e, input) =>
                                 handleInputChange("alternative_species", input)
                             }
-                            open={alternativeSpeciesAutocompleteOpen}
-                            onFocus={() => setAlternativeAutocompleteOpen(true)}
-                            onBlur={() => setAlternativeAutocompleteOpen(false)}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -266,22 +255,8 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                                     }))
                                     : []
                             }
-                            onInputChange={(e, input) => {
-                                setTypedValues((prev) => prev + input);
-                                handleSearchRegion();
-                            }}
                             onChange={(e, input) => {
                                 handleInputChange("all_regions", input)
-                                setTypedValues("");
-                            }}
-                            open={regionsAutocompleteOpen}
-                            onFocus={() => {
-                                setRegionsAutocompleteOpen(true)
-                                handleSearchRegion();
-                            }}
-                            onBlur={() => {
-                                setRegionsAutocompleteOpen(false)
-                                setTypedValues("")
                             }}
                             renderInput={(params) => (
                                 <TextField
