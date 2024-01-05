@@ -16,10 +16,10 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 
 /** Import Pages **/
 import Navbar from "../../components/Navbar/Navbar";
-import Error404 from '../Pages/error404';
-import InvasiveSpeciesPage from '../Pages/InvasiveSpeciesPage';
-import AlternativeSpeciesPage from '../Pages/AlternativeSpeciesPage';
-import RegionPage from '../Pages/RegionsPage';
+import Error404 from '../pages/error404';
+import InvasiveSpeciesPage from '../pages/InvasiveSpeciesPage';
+import AlternativeSpeciesPage from '../pages/AlternativeSpeciesPage';
+import RegionsPage from '../pages/RegionsPage';
 import { PlantNet } from '../Unused/pl@ntNet';
 import DownloadWebscrap from '../Unused/downloadWebscrap';
 
@@ -104,12 +104,12 @@ function PageContainer(props) {
                 <Route path="/login" element={<Navigate to="/invasiveSpecies" />} />
                 <Route path="/invasiveSpecies" element={<InvasiveSpeciesPage />} />
                 <Route path="/alternativeSpecies" element={<AlternativeSpeciesPage />} />
-                <Route path="/regions" element={<RegionPage />} />
+                <Route path="/regions" element={<RegionsPage />} />
 
                 <Route path="/test" element={<PlantNet />} />
                 <Route path="/download" element={<DownloadWebscrap />} />
                 <Route path="*" element={<Error404 />} />
-            </Routes>           
+            </Routes>
         </main>
     </Grid>)
 }

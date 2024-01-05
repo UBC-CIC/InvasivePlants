@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography, ThemeProvider,
-  Box, Autocomplete, TextField
-} from "@mui/material";
+import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography, ThemeProvider, Box, Autocomplete, TextField } from "@mui/material";
 import Theme from './Theme';
 import { Auth } from "aws-amplify";
 
 // components
-// import LocationFilterComponent from '../../components/LocationFilterComponent';
-// import SearchComponent from '../../components/SearchComponent';
 import PaginationComponent from '../../components/PaginationComponent';
 import EditInvasiveSpeciesDialog from "../../components/Dialogs/EditInvasiveSpeciesDialog";
 import AddInvasiveSpeciesDialog from "../../components/Dialogs/AddInvasiveSpeciesDialog";
 import DeleteDialog from "../../components/Dialogs/ConfirmDeleteDialog";
-import handleGetRegions from "../../functions/RegionMap"
 
 // icons
 import EditIcon from '@mui/icons-material/Edit';
@@ -125,6 +119,7 @@ function InvasiveSpeciesPage() {
               setPage(0);
               setStart(0);
               setEnd(0);
+              setShouldCalculate(true);
               setShouldReset(false);
             }
 
@@ -482,12 +477,6 @@ function InvasiveSpeciesPage() {
     }
   };
 
-  useEffect(() => {
-    if (shouldReset) {
-      handleGetRegions();
-    }
-  }, [shouldReset]);
-
   // Searches location and updates displayed data accordingly
   const handleLocationSearch = (locationInput) => {
     // gets only region full name
@@ -770,15 +759,9 @@ function InvasiveSpeciesPage() {
 
                       {/* regions */}
                       <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {/* {Array.isArray(row.region_id) // region_id
-                          ? row.region_id.join(",")
-                          : row.region_id} */}
                         {Array.isArray(row.region_code_names) //region_code_names
                           ? row.region_code_names.join(", ")
                           : row.region_code_names}
-                        {/* {Array.isArray(row.region_id)
-                          ? row.region_id.map((id) => regionMap[id]).join(", ") // using a map
-                          : regionMap[row.region_id]} */}
                       </TableCell>
 
                       {/* actions: edit/delete */}

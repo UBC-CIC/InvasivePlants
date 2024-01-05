@@ -11,11 +11,11 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
-    const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
-    const [user, setUser] = useState("");
-    const [deleteImg, setDeleteImg] = useState(null);
-    const [showWarning, setShowWarning] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
+    const [showSaveConfirmation, setShowSaveConfirmation] = useState(false); // save confirmation message
+    const [user, setUser] = useState("");  // current user
+    const [deleteImg, setDeleteImg] = useState(null); // sets image the delete
+    const [showWarning, setShowWarning] = useState(false); // warning alert for duplicates
+    const [showAlert, setShowAlert] = useState(false); // alert when a field is missing
 
     // Retrieves current authorized user
     const retrieveUser = async () => {
@@ -196,7 +196,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                             width: "100%", marginBottom: "1rem"
                         }}
                     />
-
 
                     <TextField
                         multiline

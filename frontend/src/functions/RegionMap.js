@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-// Request to fetch all regions in the database
+// Request to fetch all regions in the database -- unused in the admin page, only used in speciesToJSON.js
 const handleGetRegions = () => {
     return new Promise((resolve, reject) => {
         axios
