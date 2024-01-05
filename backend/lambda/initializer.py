@@ -123,38 +123,38 @@ def handler(event, context):
         #   - DELETE
 
         # comment out to 'connection.commit()' on redeployment
-        # sqlCreateUser = """
-        #     DO $$
-        #     BEGIN
-        #         CREATE ROLE readwrite;
-        #     EXCEPTION
-        #         WHEN duplicate_object THEN
-        #             RAISE NOTICE 'Role already exists.';
-        #     END
-        #     $$;
+        sqlCreateUser = """
+            DO $$
+            BEGIN
+                CREATE ROLE readwrite;
+            EXCEPTION
+                WHEN duplicate_object THEN
+                    RAISE NOTICE 'Role already exists.';
+            END
+            $$;
 
-        #     GRANT CONNECT ON DATABASE postgres TO readwrite;
+            GRANT CONNECT ON DATABASE postgres TO readwrite;
 
-        #     GRANT USAGE, CREATE ON SCHEMA public TO readwrite;
-        #     GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO readwrite;
-        #     ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO readwrite;
-        #     GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO readwrite;
-        #     ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO readwrite;
+            GRANT USAGE, CREATE ON SCHEMA public TO readwrite;
+            GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO readwrite;
+            ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO readwrite;
+            GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO readwrite;
+            ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO readwrite;
 
-        #     CREATE USER "%s" WITH PASSWORD '%s';
-        #     GRANT readwrite TO "%s";
-        # """
+            CREATE USER "%s" WITH PASSWORD '%s';
+            GRANT readwrite TO "%s";
+        """
 
-        # # Execute table creation
-        # cursor.execute(
-        #     sqlCreateUser,
-        #     (
-        #         AsIs(username),
-        #         AsIs(password),
-        #         AsIs(username),
-        #     ),
-        # )
-        # connection.commit()
+        # Execute table creation
+        cursor.execute(
+            sqlCreateUser,
+            (
+                AsIs(username),
+                AsIs(password),
+                AsIs(username),
+            ),
+        )
+        connection.commit()
 
         #
         ## Load client username and password to SSM
@@ -162,11 +162,11 @@ def handler(event, context):
         authInfo = {"username": username, "password": password}
 
         # comment out to on redeployment
-        # dbSecret.update(authInfo)
-        # sm_client = boto3.client("secretsmanager")
-        # sm_client.put_secret_value(
-        #     SecretId=DB_USER_SECRET_NAME, SecretString=json.dumps(dbSecret)
-        # )
+        dbSecret.update(authInfo)
+        sm_client = boto3.client("secretsmanager")
+        sm_client.put_secret_value(
+            SecretId=DB_USER_SECRET_NAME, SecretString=json.dumps(dbSecret)
+        )
 
         #
         ## Populate data to database
