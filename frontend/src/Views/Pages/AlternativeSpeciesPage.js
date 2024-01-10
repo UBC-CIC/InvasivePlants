@@ -367,8 +367,6 @@ function AlternativeSpeciesPage() {
         }
       })
       .then((response) => {
-        setSpeciesCount(prevCount => prevCount + 1);
-
         // Maps species id to plant data with image links
         let plantsWithImgLinks = [];
         if (newSpeciesData.image_links && newSpeciesData.image_links.length > 0) {
@@ -434,7 +432,6 @@ function AlternativeSpeciesPage() {
       setShouldCalculate(true);
       setSearchDropdownOptions([]);
     } else {
-      console.log("search input:", searchInput);
       axios
         .get(`${API_BASE_URL}alternativeSpecies`, {
           params: {

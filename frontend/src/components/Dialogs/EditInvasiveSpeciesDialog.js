@@ -60,7 +60,6 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                         };
                     });
 
-                    console.log("formattedData:", formattedData);
                     setSearchAlternativeDropdownOptions(formattedData);
                 })
                 .catch((error) => {
@@ -86,7 +85,6 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                         country_fullname: capitalizeEachWord(item.country_fullname)
                     };
                 });
-                console.log("formattedData from region search:", regionData);
                 setSearchRegionsDropdownOptions(regionData);
             })
             .catch((error) => {

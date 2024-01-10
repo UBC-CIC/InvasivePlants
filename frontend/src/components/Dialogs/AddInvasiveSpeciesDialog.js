@@ -149,7 +149,6 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                         country_fullname: capitalizeEachWord(item.country_fullname)
                     };
                 });
-                console.log("formattedData from region search:", regionData);
                 setSearchRegionsDropdownOptions(regionData);
             })
             .catch((error) => {

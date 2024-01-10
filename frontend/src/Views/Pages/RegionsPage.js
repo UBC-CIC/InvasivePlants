@@ -297,7 +297,6 @@ function RegionsPage() {
                     }
                 })
             .then(() => {
-                setRegionCount(prevCount => prevCount + 1);
                 setShouldReset(true);
                 setOpenAddRegionDialog(false);
             })
@@ -338,7 +337,6 @@ function RegionsPage() {
             setShouldCalculate(true);
             setSearchDropdownOptions([]);
         } else {
-            console.log("search input:", searchInput);
             axios
                 .get(`${API_BASE_URL}region`, {
                     params: {

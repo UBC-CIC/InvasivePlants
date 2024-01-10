@@ -60,7 +60,6 @@ function InvasiveSpeciesPage() {
   const retrieveUser = async () => {
     try {
       const returnedUser = await Auth.currentAuthenticatedUser();
-      console.log(returnedUser);
       setUser(returnedUser);
     } catch (e) {
       console.log("error getting user: ", e);
@@ -383,7 +382,6 @@ function InvasiveSpeciesPage() {
           }
         })
       .then(() => {
-        setSpeciesCount(prevCount => prevCount + 1);
         setShouldReset(true);
         setOpenAddSpeciesDialog(false);
       })
@@ -401,8 +399,6 @@ function InvasiveSpeciesPage() {
 
   // Updates temporary row data when field inputs change
   const handleInputChange = (field, value) => {
-    console.log("input change:", "field: ", field, "value: ", value)
-
     if (field === "all_regions") {
       const regionIds = value.map(region => region.region_id);
       const regionCodeNames = value.map(region => region.region_code_name);
