@@ -170,7 +170,9 @@ function AlternativeSpeciesPage() {
 
   // Fetches the alternative species that matches user search
   const handleGetAlternativeSpeciesAfterSearch = () => {
-    let formattedSearchInput = searchInput.toLowerCase().toLowerCase().replace(/ /g, '_');
+    // formats search
+    let formattedSearchInput = searchInput.toLowerCase().replace(/\([^)]*\)/g, '').trim().replace(/ /g, '_'); // only keep scientific name, and replace spaces with '_'
+    formattedSearchInput = formattedSearchInput.split(',')[0].trim(); // if multiple scientific names, just search up one
     setIsLoading(true);
 
     axios
@@ -457,8 +459,11 @@ function AlternativeSpeciesPage() {
             };
           });
 
+          console.log("formattedData:", formattedData);
           if (formattedData.length > 0) {
-            const scientificNames = formattedData.flatMap((species) => species.scientific_name);
+            const scientificNames = formattedData.flatMap((species) => `${species.scientific_name} (${species.common_name ? species.common_name.join(', ') : ''})`
+            );
+
             setSearchDropdownOptions(scientificNames);
           }
         })
