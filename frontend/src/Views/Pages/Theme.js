@@ -6,9 +6,9 @@ const Theme = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    backgroundColor: alpha('#699cb8', 0.9),
+                    backgroundColor: alpha('#607c3c', 0.9),
                     '&:hover': {
-                        backgroundColor: '#5e8da6',
+                        backgroundColor: '#809c13',
                     },
                 },
             },

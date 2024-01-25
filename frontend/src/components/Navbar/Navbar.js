@@ -186,7 +186,7 @@ function Navbar(props) {
         </Menu>
     );
 
-    useEffect(() => { 
+    useEffect(() => {
         async function retrieveUser() {
             try {
                 const returnedUser = await Auth.currentAuthenticatedUser();
@@ -215,7 +215,7 @@ function Navbar(props) {
 
     return (
         <Grid item xs={12} className={classes.appBar}>
-            <AppBar position="static" style={{ backgroundColor: '#3f5f70' }}>
+            <AppBar position="static" style={{ backgroundColor: '#607c3c' }}>
                 <Toolbar >
                     <Typography className={`${classes.title} ${classes.bold}`} variant="h6" component={"h1"} noWrap>
                         Invasive Plants Management System
@@ -252,7 +252,7 @@ function Navbar(props) {
                         <div
                             color="inherit"
                             style={{ display: "flex", alignItems: "flex-end", flexDirection: 'column', justifyContent: "center" }}>
-                            <Typography variant={"subtitle2"} style={{ color: `${theme.palette.secondary.main}` }}>Logged in as </Typography>
+                            <Typography variant={"subtitle2"} >Logged in as </Typography>
                             <Typography variant={"subtitle2"} >{user}</Typography>
                         </div>
                         <IconButton

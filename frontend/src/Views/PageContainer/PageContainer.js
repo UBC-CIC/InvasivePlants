@@ -16,10 +16,10 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 
 /** Import Pages **/
 import Navbar from "../../components/Navbar/Navbar";
-import Error404 from '../pages/error404';
-import InvasiveSpeciesPage from '../pages/InvasiveSpeciesPage';
-import AlternativeSpeciesPage from '../pages/AlternativeSpeciesPage';
-import RegionsPage from '../pages/RegionsPage';
+import Error404 from '../Pages/error404';
+import InvasiveSpeciesPage from '../Pages/InvasiveSpeciesPage';
+import AlternativeSpeciesPage from '../Pages/AlternativeSpeciesPage';
+import RegionsPage from '../Pages/RegionsPage';
 import { PlantNet } from '../Unused/pl@ntNet';
 import DownloadWebscrap from '../Unused/downloadWebscrap';
 

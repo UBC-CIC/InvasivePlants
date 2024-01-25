@@ -96,7 +96,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
         <div>
             <Dialog open={open} onClose={handleFinishEditingRow} maxWidth="sm" fullWidth>
                 {/* scientific name as the dialog title */}
-                < DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#c8dbe6", height: "60px" }
+                < DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#b7bf96", height: "60px" }
                 }>
                     <Typography
                         variant="h5"

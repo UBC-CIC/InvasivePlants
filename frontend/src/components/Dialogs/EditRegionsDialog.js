@@ -31,7 +31,7 @@ const EditRegionDialog = ({ open, tempData, handleInputChange, handleFinishEditi
     return (
         <div>
             <Dialog open={open} onClose={handleFinishEditingRow}>
-                <DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#c8dbe6", height: "60px" }}>
+                <DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#b7bf96", height: "60px" }}>
                     <Typography variant="h5" component="div">
                         {tempData.region_fullname}
                     </Typography>

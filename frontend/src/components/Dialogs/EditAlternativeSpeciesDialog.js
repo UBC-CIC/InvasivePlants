@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
+import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography, ThemeProvider } from '@mui/material';
 import SnackbarOnSuccess from '../SnackbarComponent';
 import CustomAlert from '../AlertComponent';
 import DeleteDialog from './ConfirmDeleteDialog';
 import { Auth } from "aws-amplify";
 import axios from "axios";
+import Theme from '../../Views/Pages/Theme'
 
 // Dialog for editing an alternative species
 const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave }) => {
@@ -144,15 +145,16 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
         <div>
             <Dialog open={open} onClose={handleFinishEditingRow} maxWidth="sm" fullWidth>
                 {/* scientific name as the dialog title */}
-                < DialogTitle style={{ display: "flex", alignItems: "center", backgroundColor: "#c8dbe6", height: "60px" }}>
+                < DialogTitle style={{ display: "flex", backgroundColor: "#b7bf96", alignItems: "center", height: "60px" }}>
                     <Typography
                         variant="h5"
                         component="div"
-                        style={{ fontStyle: "italic" }}
+                        style={{ fontStyle: "italic"}}
                     >
                         {Array.isArray(tempData.scientific_name) ? tempData.scientific_name.join(', ') : tempData.scientific_name}
                     </Typography>
                 </DialogTitle >
+                
 
                 <DialogContent style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <TextField
