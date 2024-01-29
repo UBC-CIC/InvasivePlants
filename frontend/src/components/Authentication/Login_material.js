@@ -273,7 +273,7 @@ function Login(props) {
                     setLoading(false);
                     await Auth.signOut();
                     updateFormState(() => ({ ...initialFormState, email, password }));
-                    throw {message: "Not enough permission", code:"DeniedPermission"};
+                    throw { message: "Not enough permission", code: "DeniedPermission" };
                 }
             }
         } catch (e) {
@@ -417,10 +417,15 @@ function Login(props) {
         <>
             {/*  An example image is provided. Please use a royalty-free photo, a photo owned by you, or a photo owned by the CIC */}
             <Grid container className={classes.centerBox} style={
-                (type === "image") ? (themeColor === "standard") ? { backgroundColor: "#012144", backgroundImage: "url(./Assets/Images/background.jpg)", backgroundSize: "cover", backgroundRepeat: "no", width: "100%", height: "100vh" } :
+                (type === "image") ? (themeColor === "standard") ?
+                    { backgroundColor: "#012144", backgroundImage: "url(./Assets/Images/background.jpg)", backgroundSize: "cover", backgroundRepeat: "no", width: "100%", height: "100vh" } :
                     { backgroundColor: themeColor, backgroundImage: "url(./Assets/Images/background.jpg)", backgroundSize: "cover", backgroundRepeat: "no", width: "100%", height: "100vh" } :
                     (themeColor === "standard") ? { backgroundColor: "#012144", width: "100%", height: "100vh" } : { backgroundColor: themeColor, width: "100%", height: "100vh" }
             }>
+                {/* attribution */}
+                <Typography variant="caption" style={{ position: 'absolute', bottom: 0, left: 0, padding: '10px', color: '#ffffff' }}>
+                    Photo by m kasahara (CC BY-NC-ND 2.0)
+                </Typography>
                 {/* Please use a royalty free video or a video that you or the CIC owns */}
                 {(type === "video") ?
                     <video playsInline autoPlay muted loop>
@@ -431,9 +436,9 @@ function Login(props) {
                     <Grid container item justify={"space-evenly"} alignItems={"center"} /*style={{height: "60vh"}}*/>
                         <Grid xs item className={`typewriter ${classes.marginHorizontal}`}>
                             <center>
-                                <Typography variant="h2" style={{fontWeight:"bold", color: "white"}}>Invasive Plants</Typography>
+                                <Typography variant="h2" style={{ fontWeight: "bold", color: "white" }}>Invasive Plants</Typography>
                             </center>
-                            
+
                             <p className={`${classes.textAlignCenter} ${(animateTitle) ?
                                 (darkMode) ? "line anim-typewriter" : "line anim-typewriter-light lightMode"
                                 :
