@@ -29,6 +29,7 @@ If you are on a Windows device, it is recommended to install the [Windows Subsys
       - [1. Create Elastic Container Registry (ECR)](#1-create-elastic-container-registry-ecr)
       - [2. Create and Push Docker Image to ECR](#2-create-and-push-docker-image-to-ecr)
       - [3. Deploy all stacks](#3-deploy-all-stacks)
+    - [Extra: Finding important values](#extra-finding-important-values)
     - [Extra: Taking down the deployed stacks](#extra-taking-down-the-deployed-stacks)
 
 ## Step 1: Clone The Repository
@@ -212,7 +213,6 @@ Then, use the command below and pass in the `prefixListID` value.
 ```bash
 cdk deploy --all \
   --parameters hostStack:prefixListID=<your-region-preFixListId> \
-  --parameters FunctionalityStack:apiKey=<custome-api-key> \ 
   --profile <aws-profile-name>
 ```
 
@@ -221,11 +221,9 @@ For example, the `prefixListID` for `ca-central-1` is `pl-38a64351`, so we have 
 ```bash
 cdk deploy --all \
    --parameters hostStack:prefixListID=pl-38a64351 \
-   --parameters FunctionalityStack:apiKey=IQN8JSrycHj1nRi2IbBIwts54Gt \
-   --profile AWSProfilSSO
+   --profile AWSProfileSSO
 ```
 
-**Note:** on modificaiton of stacks that involve redeployment of `FunctionalityStack`, one need to ensure that `FunctionalityStack:apiKey` parameter is consistent with the apiKey of the deployed API Gateway. In other word, make sure that `--parameters FunctionalityStack:apiKey=IQN8JSrycHj1nRi2IbBIwts54Gt` is passed on stack that needs to redeploy `FunctionalityStack` such as `FunctionalityStack`, `APIStack`, and `hostStack`.
 
 ### Extra: Finding important values
 After deployment is completed, look for the following in the terminal:
