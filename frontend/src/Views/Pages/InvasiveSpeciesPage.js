@@ -22,6 +22,7 @@ import { boldText, formatString, capitalizeFirstWord, capitalizeEachWord } from 
 
 function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
   const [searchDropdownSpeciesOptions, setSearchDropdownSpeciesOptions] = useState([]); // dropdown options for invasive species search bar (scientific names)
   const [searchDropdownRegionsOptions, setSearchDropdownRegionsOptions] = useState([]); // dropdown options for regions search bar 
@@ -681,6 +682,11 @@ function InvasiveSpeciesPage() {
                     Scientific Name(s)
                   </Typography>
                 </TableCell>
+                <TableCell style={{ width: "10%" }}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Common Name(s)
+                  </Typography>
+                </TableCell>
                 <TableCell style={{ width: "35%" }}>
                   <Typography variant="subtitle1" fontWeight="bold">
                     Description
@@ -691,7 +697,7 @@ function InvasiveSpeciesPage() {
                     Alternative Species
                   </Typography>
                 </TableCell>
-                <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                <TableCell style={{ width: "13%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
                   <Typography variant="subtitle1" fontWeight="bold">
                     Resource Links
                   </Typography>
@@ -701,7 +707,12 @@ function InvasiveSpeciesPage() {
                     Region(s)
                   </Typography>
                 </TableCell>
-                <TableCell style={{ width: "7%" }}>
+                <TableCell style={{ width: "10%" }}>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    Images
+                  </Typography>
+                </TableCell>
+                <TableCell style={{ width: "6%" }}>
                   <Typography variant="subtitle1" fontWeight="bold">
                     Actions
                   </Typography>
@@ -718,6 +729,11 @@ function InvasiveSpeciesPage() {
                       {/* scientific names */}
                       <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                         {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
+                      </TableCell>
+
+                      {/* common names */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                        {Array.isArray(row.common_name) ? row.common_name.join(", ") : row.common_name}
                       </TableCell>
 
                       {/* description */}
@@ -759,6 +775,49 @@ function InvasiveSpeciesPage() {
                           ? row.region_code_names.join(", ")
                           : row.region_code_names}
                       </TableCell>
+
+                      {/* TODO images */}
+                      {/* image links */}
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                        {Array.isArray(row.image_links) ? (
+                          row.image_links.map((link, index) => (
+                            <span key={index}>
+                              <img
+                                src={link}
+                                alt={`${link}`}
+                                style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                              />
+                              {row.s3_keys && row.s3_keys[index] && (
+                                <span>
+                                  <img
+                                    src={`${S3_BASE_URL}${row.s3_keys[index]}`}
+                                    alt={`${row.s3_keys[index]}`}
+                                    style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                  />
+                                </span>
+                              )}
+                              <br />
+                            </span>
+                          ))
+                        ) : (
+                          <span>
+                            <a href={row.image_links} target="_blank" rel="noopener noreferrer">
+                              {row.image_links}
+                            </a>
+                            <br />
+                            {row.s3_keys && row.s3_keys.map((key, index) => (
+                              <span key={index}>
+                                <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
+                                  {row.s3_keys[index]}
+                                </a>
+                                <br />
+                              </span>
+                            ))}
+                            <br />
+                          </span>
+                        )}
+                      </TableCell>
+
 
                       {/* actions: edit/delete */}
                       <TableCell>

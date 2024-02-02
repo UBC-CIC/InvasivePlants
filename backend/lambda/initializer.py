@@ -274,7 +274,17 @@ def handler(event, context):
                     formatted_alternativeSpecies_id,
                 ),
             )
+
+            invSpeciesId = cursor.fetchone()[0]
             connection.commit()
+
+            for image in invasiveSpecies["image_links"]:
+                addImage = """
+                    INSERT INTO images (species_id, image_url) 
+                    VALUES (%s, %s);
+                """
+                cursor.execute(addImage, (invSpeciesId, image))
+                connection.commit()
 
         # Close cursor and connection
         cursor.close()
