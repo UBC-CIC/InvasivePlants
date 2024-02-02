@@ -49,7 +49,8 @@ exports.handler = async (event) => {
 												    SELECT 1
 												    FROM unnest(common_name) AS cname
 												    WHERE cname ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
-												  )
+												  ) OR
+												  species_description ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
 												ORDER BY scientific_name[1], species_id 
 												LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {

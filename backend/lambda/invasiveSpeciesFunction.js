@@ -53,13 +53,19 @@ exports.handler = async (event) => {
                                 invasive_species i
                             JOIN 
                                 regions r ON r.region_id = ANY(i.region_id)
-                            WHERE 
-                                EXISTS (
-                                    SELECT 1
-                                    FROM unnest(i.scientific_name) AS name
-                                    WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
-                                ) 
-                                AND ${event.queryStringParameters.region_id} = ANY(i.region_id)
+							WHERE (
+								EXISTS (
+									SELECT 1
+									FROM unnest(i.scientific_name) AS name
+									WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+								) OR
+								EXISTS (
+									SELECT 1
+									FROM unnest(i.common_name) AS cname
+									WHERE cname ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+								) OR
+								i.species_description ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+							) AND ${event.queryStringParameters.region_id} = ANY(i.region_id);								
                             GROUP BY 
                                 i.species_id
                             ORDER BY 
@@ -83,16 +89,22 @@ exports.handler = async (event) => {
 				            invasive_species i
 				        JOIN 
 				            regions r ON r.region_id = ANY(i.region_id)
-				        WHERE 
-				            EXISTS (
-				                SELECT 1
-				                FROM unnest(i.scientific_name) AS name
-				                WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
-				            )
+						WHERE (
+							EXISTS (
+								SELECT 1
+								FROM unnest(i.scientific_name) AS name
+								WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+							) OR
+							EXISTS (
+								SELECT 1
+								FROM unnest(i.common_name) AS cname
+								WHERE cname ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+							) OR
+							i.species_description ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+						) 					
 				        ORDER BY 
-				            i.species_id, r.region_id  -- Adjust ordering as necessary
-				        LIMIT ${rows_per_page} OFFSET ${curr_offset};
-				    `;
+				            i.species_id, r.region_id  
+				        LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else if (event.queryStringParameters != null && event.queryStringParameters.region_id) {
 					data = await sqlConnection`SELECT 
                                     i.*, 
@@ -206,14 +218,15 @@ exports.handler = async (event) => {
 							: [formatScientificName(bd.scientific_name)];
 
 						// Optional parameters
+						const common_name = (bd.common_name) ? bd.common_name : [];
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
 						const region_id = (bd.region_id) ? bd.region_id : [];
 						const alternative_species = (bd.alternative_species) ? bd.alternative_species : [];
 
 						data = await sqlConnection`
-							INSERT INTO invasive_species (scientific_name, resource_links, species_description, region_id, alternative_species)
-							VALUES (${formattedScientificNames}, ${resource_links}, ${species_description}, ${region_id}, ${alternative_species})
+							INSERT INTO invasive_species (scientific_name, common_name, resource_links, species_description, region_id, alternative_species)
+							VALUES (${formattedScientificNames}, ${common_name}, ${resource_links}, ${species_description}, ${region_id}, ${alternative_species})
 							RETURNING *;
 						`;
 
@@ -268,6 +281,7 @@ exports.handler = async (event) => {
 							: [formatScientificName(bd.scientific_name)];
 
 						// Optional parameters
+						const common_name = (bd.common_name) ? bd.common_name : [];
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
 						const region_id = (bd.region_id) ? bd.region_id : [];
@@ -276,6 +290,7 @@ exports.handler = async (event) => {
 						data = await sqlConnection`
 							UPDATE invasive_species
 							SET scientific_name = ${formattedScientificNames}, 
+								common_name = ${common_name},
 								resource_links = ${resource_links}, 
 								species_description = ${species_description},
 								region_id = ${region_id},
