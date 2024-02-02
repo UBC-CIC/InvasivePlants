@@ -161,7 +161,6 @@ exports.handler = async (event) => {
                                 LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				}
 
-
 				for (let d in data) {
 					// Get alternative species and images
 					data[d].alternative_species = await sqlConnection`SELECT * FROM alternative_species WHERE species_id = ANY(${data[d].alternative_species});`;
@@ -170,11 +169,9 @@ exports.handler = async (event) => {
 					for (let d_alt in data[d].alternative_species) {
 						data[d].alternative_species[d_alt].images = await sqlConnection`SELECT * FROM images WHERE species_id = ${data[d].alternative_species[d_alt].species_id};`;
 					}
-				}
 
-				for (let i in data) {
 					// Get list of images
-					data[i].images = await sqlConnection`SELECT * FROM images WHERE species_id = ${data[i].species_id};`;
+					data[d].images = await sqlConnection`SELECT * FROM images WHERE species_id = ${data[d].species_id};`;
 				}
 
 				let totalCount = await sqlConnection` SELECT COUNT(*) FROM invasive_species;`;
@@ -246,7 +243,7 @@ exports.handler = async (event) => {
 							data[0].alternative_species[i].images = await sqlConnection`SELECT * FROM images WHERE species_id = ${data[0].alternative_species[i].species_id};`;
 						}
 
-						// Get list of images
+						// Get list of invasive images
 						data[0].images = await sqlConnection`SELECT * FROM images WHERE species_id = ${data[0].species_id};`;
 
 						response.body = JSON.stringify(data);
