@@ -185,6 +185,7 @@ function AlternativeSpeciesPage() {
         }
       })
       .then((response) => {
+        console.log("resp: ", response.data.species)
         const formattedData = response.data.species.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
@@ -461,9 +462,7 @@ function AlternativeSpeciesPage() {
 
           console.log("formattedData:", formattedData);
           if (formattedData.length > 0) {
-            const scientificNames = formattedData.flatMap((species) => `${species.scientific_name} (${species.common_name ? species.common_name.join(', ') : ''})`
-            );
-
+            const scientificNames = formattedData.flatMap((species) => `${species.scientific_name} (${species.common_name ? species.common_name.join(', ') : ''})`);
             setSearchDropdownOptions(scientificNames);
           }
         })
@@ -549,7 +548,7 @@ function AlternativeSpeciesPage() {
                 label={
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <SearchIcon sx={{ marginRight: '0.5rem' }} />
-                    {"Search alternative species (scientific or common name)"}
+                    {"Search alternative species"}
                   </div>
                 }
                 style={{ marginTop: "2rem", marginBottom: "1rem" }}

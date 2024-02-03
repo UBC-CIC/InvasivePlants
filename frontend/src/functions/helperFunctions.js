@@ -33,8 +33,17 @@ export function capitalizeEachWord(str) {
     const strSplitUnderscore = str.split("_");
     const words = strSplitUnderscore.flatMap(word => word.split(" "));
 
-    return words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    // Do not capitalize "of"
+    return words.map(word => {
+        const lowercaseWord = word.toLowerCase();
+        if (lowercaseWord !== "of") {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        } else {
+            return word;
+        }
+    }).join(' ');
 }
+
 
 // Formats a string by spliting it based on commas and spacces
 export function formatString(str) {

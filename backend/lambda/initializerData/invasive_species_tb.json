@@ -12,9 +12,7 @@
     ],
     "region_id": "BC",
     "common_name": ["baby's_breath"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Gypsophila_paniculata#/media/File:Gypsophila_paniculata_sl17.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Gypsophila_paniculata_sl17.jpg/1920px-Gypsophila_paniculata_sl17.jpg"]
   },
   {
     "scientific_name": ["centaurea_cyanus"],
@@ -29,9 +27,7 @@
     ],
     "region_id": "BC",
     "common_name": ["bachelor's_button"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Centaurea_cyanus#/media/File:Centaurea_cyanus_scan.jpg"
-    ]
+    "image_links": ["https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRDrNiPCH7ERod8tTz6QEZz6iGPmumNuYe-jIrOHSHE0rW809IQ"]
   },
   {
     "scientific_name": ["echium_vulgare"],
@@ -45,9 +41,7 @@
     ],
     "region_id": "BC",
     "common_name": ["blueweed"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Echium_vulgare#/media/File:Echium_vulgare_L.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Echium_vulgare_L.jpg/1024px-Echium_vulgare_L.jpg"]
   },
   {
     "scientific_name": ["reynoutria_x_bohemica"],
@@ -62,9 +56,7 @@
     ],
     "region_id": "BC",
     "common_name": ["bohemian_knotweed"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Bohemian_knotweed#/media/File:Reynoutria_%C3%97_bohemica_01.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/3/33/Reynoutria_%C3%97_bohemica_01.jpg"]
   },
   {
     "scientific_name": ["anthriscus_caucalis"],
@@ -73,9 +65,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["bur_chervil"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Anthriscus_caucalis#/media/File:Anthriscus_caucalis_2004-04-07.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/0/03/Anthriscus_caucalis_2004-04-07.jpg"]
   },
   {
     "scientific_name": ["buddleja_davidii"],
@@ -90,9 +80,7 @@
     ],
     "region_id": "BC",
     "common_name": ["butterfly_bush"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Buddleja_davidii#/media/File:BuddlejaDavidiiStrauch.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/BuddlejaDavidiiStrauch.jpg/1920px-BuddlejaDavidiiStrauch.jpg"]
   },
   {
     "scientific_name": ["cirsium_arvense"],
@@ -101,9 +89,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["canada_thistle"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Cirsium_arvense#/media/File:Cirsium_arvense_with_Bees_Richard_Bartz.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Cirsium_arvense_with_Bees_Richard_Bartz.jpg/1280px-Cirsium_arvense_with_Bees_Richard_Bartz.jpg"]
   },
   {
     "scientific_name": ["bromus_tectorum"],
@@ -112,9 +98,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["cheatgrass"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Bromus_tectorum#/media/File:Bromus_tectorum_%E2%80%94_Flora_Batava_%E2%80%94_Volume_v13.jpg"
-    ]
+    "image_links": ["https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ03WfkkZYdiCRBawybREOsq-U-u_6b-5NID3ad_VCwup-mGozw"]
   },
   {
     "scientific_name": ["anchusa_officinalis"],
@@ -123,9 +107,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["common_bugloss"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Anchusa_officinalis#/media/File:Anchusa_officinalis1.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/2/22/Anchusa_officinalis1.jpg"]
   },
   {
     "scientific_name": ["arctium_minus"],
@@ -134,9 +116,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["common_burdock"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Arctium_minus#/media/File:Arctium_minus_corimbo.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Arctium_minus_corimbo.jpg/440px-Arctium_minus_corimbo.jpg"]
   },
   {
     "scientific_name": ["symphytum_officinale"],
@@ -151,9 +131,7 @@
     ],
     "region_id": "BC",
     "common_name": ["common_comfrey"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Symphytum_officinale#/media/File:Symphytum_officinale_01.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Symphytum_officinale_01.jpg/1024px-Symphytum_officinale_01.jpg"]
   },
   {
     "scientific_name": ["vinca_minor"],
@@ -168,9 +146,7 @@
     ],
     "region_id": ["BC", "ON"],
     "common_name": ["common_periwinkle"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Vinca_minor#/media/File:Vinca_minor_Nashville.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/5/5b/Vinca_minor_Nashville.jpg"]
   },
   {
     "scientific_name": ["hypericum_perforatum"],
@@ -179,9 +155,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["common_st._john's-wort"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Hypericum_perforatum#/media/File:Saint_John's_wort_flowers.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/4/47/Saint_John%27s_wort_flowers.jpg"]
   },
   {
     "scientific_name": ["tanacetum_vulgare"],
@@ -190,9 +164,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["common_tansy"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Tansy#/media/File:Tanacetum_vulgare_-_harilik_soolikarohi_Keilas2.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Tanacetum_vulgare_-_harilik_soolikarohi_Keilas2.jpg/1024px-Tanacetum_vulgare_-_harilik_soolikarohi_Keilas2.jpg"]
   },
   {
     "scientific_name": ["euphorbia_cyparissias"],
@@ -208,9 +180,7 @@
     ],
     "region_id": "BC",
     "common_name": ["cypress_spurge"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Euphorbia_cyparissias#/media/File:Euphorbia_cyparissias_02_bgiu.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/d/d4/Euphorbia_cyparissias_02_bgiu.jpg"]
   },
   {
     "scientific_name": ["daphne_laureola"],
@@ -227,9 +197,7 @@
     ],
     "region_id": "BC",
     "common_name": ["daphne"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Daphne_laureola#/media/File:Daphne_laureola_8703.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/f/fc/Daphne_laureola_8703.jpg"]
   },
   {
     "scientific_name": ["centaurea_diffusa"],
@@ -238,9 +206,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["diffuse_knapweed"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Centaurea_diffusa#/media/File:Centaurea_diffusa1.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/b/bd/Centaurea_diffusa1.jpg"]
   },
   {
     "scientific_name": ["ilex_aquifolium"],
@@ -255,9 +221,7 @@
     ],
     "region_id": "BC",
     "common_name": ["english_holly"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Ilex_aquifolium#/media/File:Illustration_Ilex_aquifolium0.jpg"
-    ]
+    "image_links": ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmy0HjMwGSMvDF_1gxA0ojYsIOGhcLeB58_imaosAcL9yaXFwM"]
   },
   {
     "scientific_name": ["hedera_helix"],
@@ -272,9 +236,7 @@
     ],
     "region_id": "BC",
     "common_name": ["english_ivy"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Hedera_helix#/media/File:Hedera_helix_Dover.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hedera_helix_Dover.jpg/2560px-Hedera_helix_Dover.jpg"]
   },
   {
     "scientific_name": ["myriophyllum_spicatum"],
@@ -286,9 +248,7 @@
     "alternative_species": [],
     "region_id": ["BC", "ON"],
     "common_name": ["eurasian_watermilfoil"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Myriophyllum_spicatum#/media/File:Cleaned-Illustration_Myriophyllum_spicatum.jpg"
-    ]
+    "image_links": ["https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQHNxopuVUGrNhBStVUeW_89cAq5SbxBQmfzuGA0Abbvtp6fmVZ"]
   },
   {
     "scientific_name": ["nymphaea_alba"],
@@ -297,9 +257,7 @@
     "alternative_species": ["nuphar_lutea_subsp._polysepala"],
     "region_id": "BC",
     "common_name": ["european_waterlily"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Nymphaea_alba#/media/File:2016_Kwiat_grzybieni_bia%C5%82ych_2.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/2016_Kwiat_grzybieni_bia%C5%82ych_2.jpg/1920px-2016_Kwiat_grzybieni_bia%C5%82ych_2.jpg"]
   },
   {
     "scientific_name": ["knautia_arvensis"],
@@ -308,9 +266,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["field_scabious"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Knautia_arvensis#/media/File:Knautia_arvensis_flower_(side_view)_-_Keila.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Knautia_arvensis_flower_%28side_view%29_-_Keila.jpg/1024px-Knautia_arvensis_flower_%28side_view%29_-_Keila.jpg"]
   },
   {
     "scientific_name": ["butomus_umbellatus"],
@@ -335,9 +291,7 @@
     ],
     "region_id": ["BC", "ON"],
     "common_name": ["flowering_rush"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Butomus_umbellatus#/media/File:Butomus_umbellatus_-_harilik_luigelill_Keilas.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Butomus_umbellatus_-_harilik_luigelill_Keilas.jpg/1024px-Butomus_umbellatus_-_harilik_luigelill_Keilas.jpg"]
   },
   {
     "scientific_name": ["digitalis_purpurea"],
@@ -352,9 +306,7 @@
     ],
     "region_id": "BC",
     "common_name": ["foxglove"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Digitalis_purpurea#/media/File:Digitalis_purpurea_LC0101.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Digitalis_purpurea_LC0101.jpg/1024px-Digitalis_purpurea_LC0101.jpg"]
   },
   {
     "scientific_name": ["nymphaea_odorata"],
@@ -363,9 +315,7 @@
     "alternative_species": ["nuphar_lutea_subsp._polysepala"],
     "region_id": "BC",
     "common_name": ["fragrant_waterlily"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Nymphaea_odorata#/media/File:N.Odorata.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/N.Odorata.jpg/1920px-N.Odorata.jpg"]
   },
   {
     "scientific_name": ["alliaria_petiolata"],
@@ -377,9 +327,7 @@
     "alternative_species": [],
     "region_id": ["BC", "ON"],
     "common_name": ["garlic_mustard"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Alliaria_petiolata#/media/File:Alliaria_petiolata_marais-belloy-sur-somme_80_26042007_3.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Alliaria_petiolata_marais-belloy-sur-somme_80_26042007_3.jpg/1024px-Alliaria_petiolata_marais-belloy-sur-somme_80_26042007_3.jpg"]
   },
   {
     "scientific_name": ["heracleum_mantegazzianum"],
@@ -391,9 +339,7 @@
     "alternative_species": [],
     "region_id": ["BC", "ON"],
     "common_name": ["giant_hogweed"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Heracleum_mantegazzianum#/media/File:Herkulesstaude_fg01.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/a/ae/Herkulesstaude_fg01.jpg"]
   },
   {
     "scientific_name": ["reynoutria_sachalinensis"],
@@ -408,9 +354,7 @@
     ],
     "region_id": "BC",
     "common_name": ["giant_knotweed"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Reynoutria_sachalinensis#/media/File:GiantKnotweed053.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/GiantKnotweed053.jpg/1920px-GiantKnotweed053.jpg"]
   },
   {
     "scientific_name": ["sedum_acre"],
@@ -425,9 +369,7 @@
     ],
     "region_id": "BC",
     "common_name": ["goldmoss_stonecrop"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Sedum_acre#/media/File:Sedum_acre_single_-_Niitv%C3%A4lja.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Sedum_acre_single_-_Niitv%C3%A4lja.jpg/1024px-Sedum_acre_single_-_Niitv%C3%A4lja.jpg"]
   },
   {
     "scientific_name": ["ulex_europaeus"],
@@ -436,9 +378,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["gorse"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Ulex_europaeus#/media/File:Ulex_europaeus_flowers.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Ulex_europaeus_flowers.jpg/2560px-Ulex_europaeus_flowers.jpg"]
   },
   {
     "scientific_name": ["hypochaeris_radicata"],
@@ -447,9 +387,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["hairy_cat's-ear"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Hypochaeris_radicata#/media/File:Hypochaeris_radicata_3285.JPG"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Hypochaeris_radicata_3285.JPG/1024px-Hypochaeris_radicata_3285.JPG"]
   },
   {
     "scientific_name": ["impatiens_glandulifera"],
@@ -468,9 +406,7 @@
     ],
     "region_id": ["BC", "ON"],
     "common_name": ["himalayan_balsam"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Impatiens_glandulifera#/media/File:Impatiens_glandulifera_0004.JPG"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Impatiens_glandulifera_0004.JPG/1024px-Impatiens_glandulifera_0004.JPG"]
   },
   {
     "scientific_name": ["rubus_armeniacus"],
@@ -481,9 +417,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["himilayan_blackberry"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Rubus_armeniacus#/media/File:Himalayan_Blackberry_5_leaf_example.JPG"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/0/0d/Himalayan_Blackberry_5_leaf_example.JPG"]
   },
   {
     "scientific_name": ["persicaria_wallichii"],
@@ -498,9 +432,7 @@
     ],
     "region_id": "BC",
     "common_name": ["himalayan_knotweed"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Koenigia_polystachya#/media/File:Polygonum_polystachyum_pr%C3%A8s_Sizun_2010_Detail.JPG"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Polygonum_polystachyum_pr%C3%A8s_Sizun_2010_Detail.JPG/440px-Polygonum_polystachyum_pr%C3%A8s_Sizun_2010_Detail.JPG"]
   },
   {
     "scientific_name": ["berteroa_incana"],
@@ -509,9 +441,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["hoary_alyssum"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Berteroa_incana#/media/File:Berteroa_incana.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/6/6d/Berteroa_incana.jpg"]
   },
   {
     "scientific_name": ["lepidium_draba"],
@@ -520,9 +450,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["hoary_cress"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Lepidium_draba#/media/File:Cardaria_draba1.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/2/26/Cardaria_draba1.jpg"]
   },
   {
     "scientific_name": ["cynoglossum_officinale"],
@@ -531,9 +459,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["hound's_tongue"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Cynoglossum_officinale#/media/File:Cynoglossum_officinale_W.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/9/9c/Cynoglossum_officinale_W.jpg"]
   },
   {
     "scientific_name": ["reynoutria_japonica"],
@@ -548,9 +474,7 @@
     ],
     "region_id": "BC",
     "common_name": ["japanese_knotweed"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Reynoutria_japonica#/media/File:Reynoutria_japonica_in_Brastad_1.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Reynoutria_japonica_in_Brastad_1.jpg/2560px-Reynoutria_japonica_in_Brastad_1.jpg"]
   },
   {
     "scientific_name": ["euphorbia_esula"],
@@ -565,9 +489,7 @@
     ],
     "region_id": "BC",
     "common_name": ["leafy_spurge"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Euphorbia_esula#/media/File:Euphorbia_esula_-_kibe_piimalill.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Euphorbia_esula_-_kibe_piimalill.jpg/2560px-Euphorbia_esula_-_kibe_piimalill.jpg"]
   },
   {
     "scientific_name": ["cirsium_palustre"],
@@ -576,9 +498,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["marsh_plume_thistle"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Cirsium_palustre#/media/File:Cirsium_palustre_inflorescence_-_Niitv%C3%A4lja.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Cirsium_palustre_inflorescence_-_Niitv%C3%A4lja.jpg/2560px-Cirsium_palustre_inflorescence_-_Niitv%C3%A4lja.jpg"]
   },
   {
     "scientific_name": ["centaurea_montana"],
@@ -593,9 +513,7 @@
     ],
     "region_id": "BC",
     "common_name": ["mountain_bluet"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Centaurea_montana#/media/File:Centaurea_montana.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Centaurea_montana.jpg/1024px-Centaurea_montana.jpg"]
   },
   {
     "scientific_name": ["euphorbia_myrsinites"],
@@ -610,9 +528,7 @@
     ],
     "region_id": "BC",
     "common_name": ["myrtle_spurge"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Euphorbia_myrsinites#/media/File:MyrtleSpurge.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/MyrtleSpurge.jpg/2560px-MyrtleSpurge.jpg"]
   },
   {
     "scientific_name": ["pilosella_aurantiaca"],
@@ -621,9 +537,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["orange_hawkweed"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Pilosella_aurantiaca#/media/File:Hieracium_aurantiacum_LC0106.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Hieracium_aurantiacum_LC0106.jpg/1024px-Hieracium_aurantiacum_LC0106.jpg"]
   },
   {
     "scientific_name": ["leucanthemum_vulgare"],
@@ -638,9 +552,7 @@
     ],
     "region_id": "BC",
     "common_name": ["oxeye_daisy"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Leucanthemum_vulgare#/media/File:Leucanthemum_vulgare_'Filigran'_Flower_2200px.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Leucanthemum_vulgare_%27Filigran%27_Flower_2200px.jpg/1920px-Leucanthemum_vulgare_%27Filigran%27_Flower_2200px.jpg"]
   },
   {
     "scientific_name": ["lamium_purpureum"],
@@ -655,9 +567,7 @@
     ],
     "region_id": "BC",
     "common_name": ["purple_deadnettle"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Lamium_purpureum#/media/File:Lamium_purpureum_-_Tutermaa.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Lamium_purpureum_-_Tutermaa.jpg/440px-Lamium_purpureum_-_Tutermaa.jpg"]
   },
   {
     "scientific_name": ["lythrum_salicaria"],
@@ -674,9 +584,7 @@
     ],
     "region_id": ["BC", "ON"],
     "common_name": ["purple_loosestrife"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Lythrum_salicaria#/media/File:Lythrum_salicaria_-_harilik_kukesaba.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Lythrum_salicaria_-_harilik_kukesaba.jpg/1024px-Lythrum_salicaria_-_harilik_kukesaba.jpg"]
   },
   {
     "scientific_name": ["daucus_carota"],
@@ -685,9 +593,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["queen_annes'_lace"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Daucus_carota#/media/File:Daucus_carota_May_2008-1_edit.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Daucus_carota_May_2008-1_edit.jpg/440px-Daucus_carota_May_2008-1_edit.jpg"]
   },
   {
     "scientific_name": ["chondrilla_juncea"],
@@ -696,9 +602,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["rush_skeletonweed"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Chondrilla_juncea#/media/File:Chondrilla_juncea2.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/4/41/Chondrilla_juncea2.jpg"]
   },
   {
     "scientific_name": ["elaeagnus_angustifolia"],
@@ -713,9 +617,7 @@
     ],
     "region_id": "BC",
     "common_name": ["russian_olive"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Elaeagnus_angustifolia#/media/File:Korina_2012-05-15_Elaeagnus_angustifolia_1.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Korina_2012-05-15_Elaeagnus_angustifolia_1.jpg/440px-Korina_2012-05-15_Elaeagnus_angustifolia_1.jpg"]
   },
   {
     "scientific_name": ["tripleurospermum_inodorum"],
@@ -724,9 +626,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["scentless_chamomile"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Tripleurospermum_inodorum#/media/File:Tripleurospermum_Perforatum.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/c/cd/Tripleurospermum_Perforatum.jpg"]
   },
   {
     "scientific_name": ["cytisus_scoparius"],
@@ -735,9 +635,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["scotch_broom"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Cytisus_scoparius#/media/File:Cytisus_scoparius_by_Danny_S._-_001.JPG"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Cytisus_scoparius_by_Danny_S._-_001.JPG/1920px-Cytisus_scoparius_by_Danny_S._-_001.JPG"]
   },
   {
     "scientific_name": ["onopordum_acanthium"],
@@ -746,9 +644,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["scotch_thistle"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Onopordum_acanthium#/media/File:Onopordum_acanthium.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/5/54/Onopordum_acanthium.jpg"]
   },
   {
     "scientific_name": ["impatiens_parviflora"],
@@ -759,9 +655,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["smallflower_touch-me-not"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Impatiens_parviflora#/media/File:Impatiens_parviflora_-_plant_(aka).jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Impatiens_parviflora_-_plant_%28aka%29.jpg/1024px-Impatiens_parviflora_-_plant_%28aka%29.jpg"]
   },
   {
     "scientific_name": ["centaurea_stoebe"],
@@ -770,9 +664,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["spotted_knapweed"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Centaurea_stoebe#/media/File:Centaurea_maculosa_Bozeman.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Centaurea_maculosa_Bozeman.jpg/1024px-Centaurea_maculosa_Bozeman.jpg"]
   },
   {
     "scientific_name": ["potentilla_recta"],
@@ -781,9 +673,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["sulphur_cinquefoil"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Potentilla_recta#/media/File:Potentilla_recta_a1.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/6/69/Potentilla_recta_a1.jpg"]
   },
   {
     "scientific_name": ["tamarix_ramosissima", "tamarix_chinensis"],
@@ -798,9 +688,7 @@
     ],
     "region_id": "BC",
     "common_name": ["tamarisk"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Tamarix_ramosissima#/media/File:Tamarix_ramosissima_a2.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/4/40/Tamarix_ramosissima_a2.jpg"]
   },
   {
     "scientific_name": ["senecio_jacobaea"],
@@ -809,9 +697,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["tansy_ragwort"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Jacobaea_vulgaris#/media/File:Illustration_Senecio_jacobaea.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/b/bd/Illustration_Senecio_jacobaea.jpg"]
   },
   {
     "scientific_name": ["dipsacus_fullonum"],
@@ -820,9 +706,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["teasel"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Dipsacus_fullonum#/media/File:Dipsacus_fullonum1.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Dipsacus_fullonum1.jpg/1024px-Dipsacus_fullonum1.jpg"]
   },
   {
     "scientific_name": ["ailanthus_altissima"],
@@ -837,9 +721,7 @@
     ],
     "region_id": "BC",
     "common_name": ["tree_of_heaven"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Ailanthus_altissima#/media/File:G%C3%B6tterbaum_(Ailanthus_altissima).jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/e/eb/G%C3%B6tterbaum_%28Ailanthus_altissima%29.jpg"]
   },
   {
     "scientific_name": ["carum_carvi"],
@@ -848,9 +730,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["wild_caraway"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Caraway#/media/File:Carum_carvi_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-172.jpg"
-    ]
+    "image_links": ["https://bcinvasives.ca/wp-content/uploads/2021/01/Wild_caraway001_MEHarte_Bugwood.jpg"]
   },
   {
     "scientific_name": ["anthriscus_sylvestris"],
@@ -862,9 +742,7 @@
     "alternative_species": [],
     "region_id": ["BC", "ON"],
     "common_name": ["wild_chervil"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Anthriscus_sylvestris#/media/File:Anthriscus_sylvestris_TK_2021-05-16_2.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Anthriscus_sylvestris_TK_2021-05-16_2.jpg/440px-Anthriscus_sylvestris_TK_2021-05-16_2.jpg"]
   },
   {
     "scientific_name": ["lamium_galeobdolon"],
@@ -879,9 +757,7 @@
     ],
     "region_id": "BC",
     "common_name": ["yellow_archangel"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Lamium_galeobdolon#/media/File:Gele_dovenetel_DSCF3599.JPG"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Gele_dovenetel_DSCF3599.JPG/1920px-Gele_dovenetel_DSCF3599.JPG"]
   },
   {
     "scientific_name": ["iris_pseudacorus"],
@@ -902,9 +778,7 @@
     ],
     "region_id": ["BC", "ON"],
     "common_name": ["yellow_flag_iris"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Iris_pseudacorus#/media/File:Iris_pseudacorus_iris_des_marais.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Iris_pseudacorus_iris_des_marais.jpg/1024px-Iris_pseudacorus_iris_des_marais.jpg"]
   },
   {
     "scientific_name": ["nymphoides_peltata"],
@@ -919,9 +793,7 @@
     ],
     "region_id": ["BC", "ON"],
     "common_name": ["yellow_floating_heart"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Nymphoides_peltata#/media/File:NymphoidesPeltata-flower2-hr.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/NymphoidesPeltata-flower2-hr.jpg/1920px-NymphoidesPeltata-flower2-hr.jpg"]
   },
   {
     "scientific_name": ["lysimachia_punctata"],
@@ -930,9 +802,7 @@
     "alternative_species": [],
     "region_id": "BC",
     "common_name": ["yellow_loosestrife"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Lysimachia_punctata#/media/File:Lysimachia.punctata.1.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/a/a6/Lysimachia.punctata.1.jpg"]
   },
   {
     "scientific_name": ["linaria_vulgaris"],
@@ -949,9 +819,7 @@
     ],
     "region_id": "BC",
     "common_name": ["yellow_toadflax"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Linaria_vulgaris#/media/File:Linaria_vulgaris_flowers_-_Keila.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Linaria_vulgaris_flowers_-_Keila.jpg/1024px-Linaria_vulgaris_flowers_-_Keila.jpg"]
   },
   {
     "scientific_name": ["egeria_densa"],
@@ -962,9 +830,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["brazilian_elodea"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Egeria_densa#/media/File:Egeria_densa_iceland.JPG"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/2/28/Egeria_densa_iceland.JPG"]
   },
   {
     "scientific_name": ["hydrocharis_morsus-ranae"],
@@ -975,9 +841,7 @@
     "alternative_species": ["sagittaria_latifolia"],
     "region_id": "ON",
     "common_name": ["european_frog-bit"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Hydrocharis_morsus-ranae#/media/File:HydrocharisMorsus-ranae2.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/a/ad/HydrocharisMorsus-ranae2.jpg"]
   },
   {
     "scientific_name": ["trapa_natans"],
@@ -988,9 +852,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["european_water_chestnut"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Water_caltrop#/media/File:Illustration_Trapa_natans1.jpg"
-    ]
+    "image_links": ["https://www.invasivespeciescentre.ca/wp-content/uploads/2019/12/Water-chestnut.jpg"]
   },
   {
     "scientific_name": ["cabomba_caroliniana"],
@@ -1001,9 +863,7 @@
     "alternative_species": ["ceratophyllum_demersum"],
     "region_id": "ON",
     "common_name": ["fanwort"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Cabomba_caroliniana#/media/File:Cabomba_caroliniana_leaves.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Cabomba_caroliniana_leaves.jpg/2880px-Cabomba_caroliniana_leaves.jpg"]
   },
   {
     "scientific_name": ["hydrilla_verticillata"],
@@ -1014,9 +874,7 @@
     "alternative_species": ["vallisneria_americana"],
     "region_id": "ON",
     "common_name": ["hydrilla"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Hydrilla#/media/File:Hydrilla_USGS.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/a/ab/Hydrilla_USGS.jpg"]
   },
   {
     "scientific_name": ["myriophyllum_aquaticum"],
@@ -1027,9 +885,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["parrot_feather"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Myriophyllum_aquaticum#/media/File:Myriophyllum_aquaticum_-_side_(aka).jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Myriophyllum_aquaticum_-_side_%28aka%29.jpg/1024px-Myriophyllum_aquaticum_-_side_%28aka%29.jpg"]
   },
   {
     "scientific_name": ["nitellopsis_obtusa"],
@@ -1040,9 +896,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["starry_stonewort"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Nitellopsis_obtusa#/media/File:Nitellopsis_obtusa.jpeg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/0/09/Nitellopsis_obtusa.jpeg"]
   },
   {
     "scientific_name": ["eichhornia_crassipes"],
@@ -1053,9 +907,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["water_hyacinth"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Pontederia_crassipes#/media/File:Eichhornia_crassipes_C.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/c/c3/Eichhornia_crassipes_C.jpg"]
   },
   {
     "scientific_name": ["pistia_stratiotes"],
@@ -1066,9 +918,7 @@
     "alternative_species": ["pontederia_cordata"],
     "region_id": "ON",
     "common_name": ["water_lettuce"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Pistia#/media/File:Pistia_stratiotes0.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/9/97/Pistia_stratiotes0.jpg"]
   },
   {
     "scientific_name": ["stratiotes_aloides"],
@@ -1079,9 +929,7 @@
     "alternative_species": ["hippuris_vulgaris"],
     "region_id": "ON",
     "common_name": ["water_soldier"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Stratiotes_aloides#/media/File:Stratiotes_aloides_LC0258.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Stratiotes_aloides_LC0258.jpg/1920px-Stratiotes_aloides_LC0258.jpg"]
   },
   {
     "scientific_name": ["rhamnus_cathartica"],
@@ -1092,9 +940,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["common_buckthorn"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Rhamnus_cathartica#/media/File:Illustration_of_Rhamnus_catharticus_63-cropped.png"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/4/43/Illustration_of_Rhamnus_catharticus_63-cropped.png"]
   },
   {
     "scientific_name": ["vincetoxicum_rossicum", "vincetoxicum_nigrum"],
@@ -1105,9 +951,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["dog-strangling_vine"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Vincetoxicum_rossicum#/media/File:Vincetoxicum_rossicum1UME.JPG"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Vincetoxicum_rossicum1UME.JPG/1024px-Vincetoxicum_rossicum1UME.JPG"]
   },
   {
     "scientific_name": ["hedera_helix", "aegopodium_podagraria"],
@@ -1118,9 +962,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["english_ivy"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Hedera_helix#/media/File:Hedera_helix_Dover.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hedera_helix_Dover.jpg/2560px-Hedera_helix_Dover.jpg"]
   },
   {
     "scientific_name": ["lonicera_maackii", "lonicera_tatarica"],
@@ -1131,9 +973,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["invasive_honeysuckle"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Lonicera_maackii#/media/File:Lonicera_maackii_2.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Lonicera_maackii_2.jpg/1024px-Lonicera_maackii_2.jpg"]
   },
   {
     "scientific_name": ["phragmites_australis"],
@@ -1144,9 +984,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["invasive_phragmites"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Phragmites_australis#/media/File:Phragmites_australis_-_NASA_Tracks_an_Environmental_Invader_(48049936657).jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/8/86/Phragmites_australis_-_NASA_Tracks_an_Environmental_Invader_%2848049936657%29.jpg"]
   },
   {
     "scientific_name": ["berberis_thunbergii"],
@@ -1157,9 +995,7 @@
     "alternative_species": ["viburnum_lentago", "viburnum_lantanoides"],
     "region_id": "ON",
     "common_name": ["japanese_barberry"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Berberis_thunbergii#/media/File:Berberis_thunb_frt.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/e/ef/Berberis_thunb_frt.jpg"]
   },
   {
     "scientific_name": ["fallopia_japonica"],
@@ -1170,9 +1006,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["japanese_knotweed"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Reynoutria_japonica#/media/File:Reynoutria_japonica_in_Brastad_1.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Reynoutria_japonica_in_Brastad_1.jpg/2560px-Reynoutria_japonica_in_Brastad_1.jpg"]
   },
   {
     "scientific_name": ["microstegium_vimineum"],
@@ -1183,9 +1017,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["japanese_stiltgrass"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Microstegium_vimineum#/media/File:Microstegium_viminium_specimen.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/2/27/Microstegium_viminium_specimen.jpg"]
   },
   {
     "scientific_name": ["pueraria_montana"],
@@ -1196,9 +1028,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["kudzu"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Pueraria_montana#/media/File:Starr_021012-0015_Pueraria_montana_var._lobata.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/c/c4/Starr_021012-0015_Pueraria_montana_var._lobata.jpg"]
   },
   {
     "scientific_name": ["miscanthus_sacchariflorus"],
@@ -1209,9 +1039,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["miscanthus"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Miscanthus_sacchariflorus#/media/File:Miscanthus_sacchariflorus.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/f/f0/Miscanthus_sacchariflorus.jpg"]
   },
   {
     "scientific_name": ["pastinaca_sativa"],
@@ -1222,9 +1050,7 @@
     "alternative_species": [],
     "region_id": "ON",
     "common_name": ["wild_parsnip"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Parsnip#/media/File:PastinakePflanzegeerntet.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/PastinakePflanzegeerntet.jpg/440px-PastinakePflanzegeerntet.jpg"]
   },
   {
     "scientific_name": ["euonymus_alatus"],
@@ -1241,8 +1067,6 @@
     ],
     "region_id": "ON",
     "common_name": ["winged_euonymus"],
-    "image_links": [
-      "https://en.wikipedia.org/wiki/Euonymus_alatus#/media/File:Euonymous_alatus.jpg"
-    ]
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/7/73/Euonymous_alatus.jpg"]
   }
 ]

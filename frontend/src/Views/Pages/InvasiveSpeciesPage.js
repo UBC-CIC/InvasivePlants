@@ -108,7 +108,10 @@ function InvasiveSpeciesPage() {
 
               return {
                 ...item,
-                scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name))
+                scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
+                common_name: item.common_name.map(name => capitalizeEachWord(name)),
+                image_links: item.images.map(img => img.image_url),
+                s3_keys: item.images.map(img => img.s3_key)
               };
             });
 
@@ -161,7 +164,10 @@ function InvasiveSpeciesPage() {
           const formattedData = response.data.species.map((item, index) => {
             return {
               ...item,
-              scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name))
+              scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
+              common_name: item.common_name.map(name => capitalizeEachWord(name)),
+              image_links: item.images.map(img => img.image_url),
+              s3_keys: item.images.map(img => img.s3_key)
             };
           });
 
@@ -179,7 +185,8 @@ function InvasiveSpeciesPage() {
 
   // Fetches the invasive species that matches user search
   const handleGetInvasiveSpeciesAfterSearch = () => {
-    let formattedSearchInput = searchInput.toLowerCase().replace(/ /g, '_');
+    let formattedSearchInput = searchInput.toLowerCase().replace(/\([^)]*\)/g, '').trim().replace(/ /g, '_'); // only keep scientific name, and replace spaces with '_'
+    formattedSearchInput = formattedSearchInput.split(',')[0].trim(); // if multiple scientific names, just search up one
     setIsLoading(true);
 
     axios
@@ -194,6 +201,8 @@ function InvasiveSpeciesPage() {
         }
       })
       .then((response) => {
+        console.log("resp: ", response.data.species)
+
         const promises = response.data.species.flatMap(item =>
           item.region_id.map(regionId =>
             axios
@@ -222,7 +231,10 @@ function InvasiveSpeciesPage() {
 
               return {
                 ...item,
-                scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name))
+                scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
+                common_name: item.common_name.map(name => capitalizeEachWord(name)),
+                image_links: item.images.map(img => img.image_url),
+                s3_keys: item.images.map(img => img.s3_key)
               };
             });
 
@@ -434,6 +446,8 @@ function InvasiveSpeciesPage() {
 
   // Displays original data when search input is empty, otherwise updates dropdown
   const handleSearch = (searchInput) => {
+    console.log("search input: ", searchInput)
+
     if (searchInput === "") {
       setDisplayData(data);
       setShouldCalculate(true);
@@ -455,12 +469,16 @@ function InvasiveSpeciesPage() {
             return {
               ...item,
               scientific_name: capitalizedScientificNames,
+              common_name: item.common_name.map(name => capitalizeEachWord(name)),
+              image_links: item.images.map(img => img.image_url),
+              s3_keys: item.images.map(img => img.s3_key)
             };
           });
 
           // updates species search dropdown options
+          console.log("formattedData:", formattedData);
           if (formattedData.length > 0) {
-            const scientificNames = formattedData.flatMap((species) => species.scientific_name);
+            const scientificNames = formattedData.flatMap((species) => `${species.scientific_name} (${species.common_name ? species.common_name.join(', ') : ''})`);
             const uniqueScientificNames = [...new Set(scientificNames)];
             setSearchDropdownSpeciesOptions(uniqueScientificNames);
           }
@@ -579,6 +597,7 @@ function InvasiveSpeciesPage() {
 
       {/* location and search bars*/}
       <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
+
         {/* regions search bar */}
         <Box style={{ flex: 1, marginLeft: "10px" }}>
           <Autocomplete
@@ -618,7 +637,7 @@ function InvasiveSpeciesPage() {
                 label={
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <SearchIcon sx={{ marginRight: '0.5rem' }} />
-                    {"Search invasive species (scientific name)"}
+                    {"Search invasive species"}
                   </div>
                 }
                 style={{ marginTop: "2rem", marginBottom: "1rem" }}
@@ -737,7 +756,9 @@ function InvasiveSpeciesPage() {
                       </TableCell>
 
                       {/* description */}
-                      <TableCell>{boldText(row.species_description)}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                        {boldText(row.species_description)}
+                      </TableCell>
 
                       {/* alternative species */}
                       <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
@@ -776,7 +797,6 @@ function InvasiveSpeciesPage() {
                           : row.region_code_names}
                       </TableCell>
 
-                      {/* TODO images */}
                       {/* image links */}
                       <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                         {Array.isArray(row.image_links) ? (
