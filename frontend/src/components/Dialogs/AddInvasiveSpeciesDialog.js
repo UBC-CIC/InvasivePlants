@@ -17,7 +17,9 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         resource_links: [],
         species_description: "",
         alternative_species: [],
-        region_id: []
+        region_id: [],
+        image_links: [],
+        s3_keys: []
     };
     const [searchAlternativeDropdownOptions, setSearchAlternativeDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
     const [searchRegionsDropdownOptions, setSearchRegionsDropdownOptions] = useState([]); // dropdown options for regions search
@@ -110,7 +112,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
             axios
                 .get(`${API_BASE_URL}alternativeSpecies`, {
                     params: {
-                        scientific_name: searchInput,
+                        search_input: searchInput,
                     },
                     headers: {
                         'x-api-key': process.env.REACT_APP_X_API_KEY
@@ -161,54 +163,54 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
     }, []);
 
 
-  // Handles uploading image files to s3 bucket
-  const handleImageUpload = async (e) => {
-    const files = e.target.files;
+    // Handles uploading image files to s3 bucket
+    const handleImageUpload = async (e) => {
+        const files = e.target.files;
 
-    if (files) {
-      let s3Keys = []
+        if (files) {
+            let s3Keys = []
 
-      try {
-        for (let i = 0; i < files.length; i++) {
-          // modified from https://raz-levy.medium.com/how-to-upload-files-to-aws-s3-from-the-client-side-using-react-js-and-node-js-660252e61e0
-          const timestamp = new Date().getTime();
-          const file = e.target.files[i];
-          const filename = file.name.split('.')[0].replace(/[&/\\#,+()$~%'":*?<>{}]/g, '').toLowerCase() + `_${timestamp}`;
-          const fileExtension = file.name.split('.').pop();
+            try {
+                for (let i = 0; i < files.length; i++) {
+                    // modified from https://raz-levy.medium.com/how-to-upload-files-to-aws-s3-from-the-client-side-using-react-js-and-node-js-660252e61e0
+                    const timestamp = new Date().getTime();
+                    const file = e.target.files[i];
+                    const filename = file.name.split('.')[0].replace(/[&/\\#,+()$~%'":*?<>{}]/g, '').toLowerCase() + `_${timestamp}`;
+                    const fileExtension = file.name.split('.').pop();
 
-          // GET request to getS3SignedURL endpoint
-          const signedURLResponse = await axios
-            .get(`${API_BASE_URL}/getS3SignedURL`, {
-              params: {
-                contentType: files[i].type,
-                filename: `${filename}.${fileExtension}`
-              },
-              headers: {
-                'x-api-key': process.env.REACT_APP_X_API_KEY
-              }
-            });
+                    // GET request to getS3SignedURL endpoint
+                    const signedURLResponse = await axios
+                        .get(`${API_BASE_URL}/getS3SignedURL`, {
+                            params: {
+                                contentType: files[i].type,
+                                filename: `${filename}.${fileExtension}`
+                            },
+                            headers: {
+                                'x-api-key': process.env.REACT_APP_X_API_KEY
+                            }
+                        });
 
 
-          if (!signedURLResponse.data.uploadURL) {
-            continue;
-          }
+                    if (!signedURLResponse.data.uploadURL) {
+                        continue;
+                    }
 
-          const signedURLData = signedURLResponse.data;
+                    const signedURLData = signedURLResponse.data;
 
-          // Use the obtained signed URL to upload the image to S3 bucket
-          await axios.put(signedURLData.uploadURL, files[i])
+                    // Use the obtained signed URL to upload the image to S3 bucket
+                    await axios.put(signedURLData.uploadURL, files[i])
 
-          // Image uploaded successfully, add its s3 key to the list
-          if (signedURLData.key) {
-            s3Keys.push(signedURLData.key);
-          }
+                    // Image uploaded successfully, add its s3 key to the list
+                    if (signedURLData.key) {
+                        s3Keys.push(signedURLData.key);
+                    }
+                }
+                handleInputChange('s3_keys', s3Keys);
+            } catch (error) {
+                console.error('Error uploading images:', error);
+            }
         }
-        handleInputChange('s3_keys', s3Keys);
-      } catch (error) {
-        console.error('Error uploading images:', error);
-      }
-    }
-  };
+    };
 
     return (
         <div>
@@ -338,20 +340,20 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
 
                     <Box>
                         <TextField
-                        fullWidth
-                        label="Image links (separate with commas)"
-                        value={speciesData.image_links}
-                        onChange={(e) => handleInputChange("image_links", e.target.value)}
-                        sx={{ width: "100%", marginBottom: "1rem" }}
+                            fullWidth
+                            label="Image links (separate with commas)"
+                            value={speciesData.image_links}
+                            onChange={(e) => handleInputChange("image_links", e.target.value)}
+                            sx={{ width: "100%", marginBottom: "1rem" }}
                         />
                         <Typography variant="body1" sx={{ marginBottom: "3px" }}>
-                        Upload Images:
+                            Upload Images:
                         </Typography>
                         <input
-                        type="file"
-                        multiple
-                        onChange={handleImageUpload}
-                        sx={{ width: '100%', marginBottom: '1rem' }}
+                            type="file"
+                            multiple
+                            onChange={handleImageUpload}
+                            sx={{ width: '100%', marginBottom: '1rem' }}
                         />
                     </Box>
                 </DialogContent>

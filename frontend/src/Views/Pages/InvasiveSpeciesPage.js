@@ -475,10 +475,7 @@ function InvasiveSpeciesPage() {
               headers: {
                 'Authorization': `${jwtToken}`
               }
-            })
-            .then(() => {
-              console.log("added")
-            })
+            }).then(() => { })
             .catch((error) => {
               console.error("Error adding image", error);
             });

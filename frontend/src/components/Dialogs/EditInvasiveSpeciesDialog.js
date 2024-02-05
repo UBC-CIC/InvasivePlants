@@ -22,8 +22,8 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false); // confirmation before saving
     const [deleteImg, setDeleteImg] = useState(null); // sets image the delete
 
-     // Retrieves current authorized user
-     const retrieveUser = async () => {
+    // Retrieves current authorized user
+    const retrieveUser = async () => {
         try {
             const returnedUser = await Auth.currentAuthenticatedUser();
             setUser(returnedUser);
@@ -64,7 +64,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
             axios
                 .get(`${API_BASE_URL}alternativeSpecies`, {
                     params: {
-                        scientific_name: searchInput,
+                        search_input: searchInput,
                     },
                     headers: {
                         'x-api-key': process.env.REACT_APP_X_API_KEY
@@ -114,8 +114,8 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
             })
     }, []);
 
-     // Handles user uploaded image files
-     const handleImageUpload = async (e) => {
+    // Handles user uploaded image files
+    const handleImageUpload = async (e) => {
         const files = e.target.files;
 
         if (files) {
@@ -388,7 +388,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                     </Box>
                 </DialogContent>
 
-        
+
                 <DeleteDialog
                     open={showWarning}
                     handleClose={() => setShowWarning(false)}
