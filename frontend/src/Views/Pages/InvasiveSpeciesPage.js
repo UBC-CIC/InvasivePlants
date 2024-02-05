@@ -81,7 +81,6 @@ function InvasiveSpeciesPage() {
         }
       })
       .then((response) => {
-
         const promises = response.data.species.flatMap(item =>
           item.region_id.map(regionId =>
             axios.get(`${API_BASE_URL}region/${regionId}`, {
@@ -192,7 +191,7 @@ function InvasiveSpeciesPage() {
     axios
       .get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
-          scientific_name: formattedSearchInput,
+          search_input: formattedSearchInput,
           region_id: regionId,
           rows_per_page: speciesCount
         },
@@ -215,7 +214,7 @@ function InvasiveSpeciesPage() {
         );
 
         return Promise.all(promises)
-          .then(() => {
+          .then((response) => {
             // gets the species that match user search
             const formattedData = response.data.species.map((item) => {
               if (item.alternative_species) {
@@ -290,23 +289,27 @@ function InvasiveSpeciesPage() {
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
     if (confirmed) {
-      let scientificNames = [];
-      if (typeof tempEditingData.scientific_name === 'string') {
-        scientificNames = formatString(tempEditingData.scientific_name)
-          .map(name => {
-            const formattedName = name.toLowerCase().replace(/\s+/g, '_');
-            return capitalizeFirstWord(formattedName);
-          });
-      } else if (Array.isArray(tempEditingData.scientific_name)) {
-        scientificNames = tempEditingData.scientific_name.map(name => name.toLowerCase().replace(/\s+/g, '_'));
+      function formatNames(names) {
+        let formattedNames = [];
+        if (typeof names === 'string') {
+          formattedNames = formatString(names)
+            .map(name => name.toLowerCase().replace(/\s+/g, '_'));
+        } else if (Array.isArray(names)) {
+          formattedNames = names.map(name => name.toLowerCase().replace(/\s+/g, '_'));
+        }
+        return formattedNames;
       }
 
-      let updatedTempData = {
+      let scientificNames = formatNames(tempEditingData.scientific_name);
+      let commonNames = formatNames(tempEditingData.common_name);
+
+      let formattedData = {
         ...tempEditingData,
-        scientific_name: scientificNames
+        scientific_name: scientificNames,
+        common_name: commonNames
       };
 
-      const { region_code_name, alternative_species, ...rest } = updatedTempData;
+      const { region_code_name, alternative_species, ...rest } = formattedData;
 
       // Get just the ids of alternative species
       const alternativeSpeciesIds = alternative_species.map(species => species.species_id);
@@ -315,6 +318,56 @@ function InvasiveSpeciesPage() {
         ...rest,
         alternative_species: alternativeSpeciesIds,
       };
+
+
+      // Maps species_id to image_url if links exist and is not empty
+      const plantImages = (formattedData.image_links && formattedData.image_links.length > 0) ?
+        formattedData.image_links.map(link => ({ species_id: formattedData.species_id, image_url: link })) : null;
+
+      // Maps species_id to image s3_key if keys exist and is not empty
+      const imageS3Keys = (formattedData.s3_keys && formattedData.s3_keys.length > 0) ?
+        formattedData.s3_keys.map(key => ({ species_id: formattedData.species_id, s3_key: key })) : null;
+
+      // Add new image links only
+      const imagesToAdd = (plantImages && plantImages.length > 0) ?
+        plantImages.filter(img => !formattedData.images.some(existingImg => existingImg.image_url === img.image_url)) : [];
+
+      // Add new s3 keys only
+      const s3KeysToAdd = (imageS3Keys && imageS3Keys.length > 0) ?
+        imageS3Keys.filter(key => !formattedData.images.some(existingImg => existingImg.s3_key === key.s3_key)) : [];
+
+      // Combine imagesToAdd and s3KeysToAdd into a single images array
+      const images = [
+        ...(imagesToAdd),
+        ...(s3KeysToAdd)
+      ];
+
+      postImages(images);
+
+      // POST new images to the database
+      function postImages(images) {
+        if (images && images.length > 0) {
+          images.forEach(img => {
+            axios
+              .post(API_BASE_URL + "plantsImages", img, {
+                headers: {
+                  'Authorization': `${jwtToken}`
+                }
+              })
+              .then(() => {
+                if (start > rowsPerPage) {
+                  handleGetInvasiveSpeciesAfterSave();
+                } else {
+                  setShouldReset(true);
+                }
+              })
+              .catch(error => {
+                console.error("Error adding images", error);
+              });
+          });
+        }
+      }
+
 
       // Update invasive species table
       axios
@@ -394,12 +447,49 @@ function InvasiveSpeciesPage() {
             'Authorization': `${jwtToken}`
           }
         })
-      .then(() => {
-        setShouldReset(true);
-        setOpenAddSpeciesDialog(false);
+      .then((response) => {
+        // Maps species id to plant data with image links
+        let plantsWithImgLinks = [];
+        if (newSpeciesData.image_links && newSpeciesData.image_links.length > 0) {
+          plantsWithImgLinks = newSpeciesData.image_links.map((image_link) => ({
+            species_id: response.data[0].species_id,
+            image_url: image_link
+          }));
+        }
+
+        // Maps species id to plant data with image files
+        let plantsWithImgFiles = [];
+        if (newSpeciesData.s3_keys && newSpeciesData.s3_keys.length > 0) {
+          plantsWithImgFiles = newSpeciesData.s3_keys.map((key) => ({
+            species_id: response.data[0].species_id,
+            s3_key: key
+          }));
+        }
+
+        const allPlantImages = plantsWithImgLinks.concat(plantsWithImgFiles);
+
+        // Uploads all plant images 
+        allPlantImages.forEach((plantData) => {
+          axios
+            .post(API_BASE_URL + "plantsImages", plantData, {
+              headers: {
+                'Authorization': `${jwtToken}`
+              }
+            })
+            .then(() => {
+              console.log("added")
+            })
+            .catch((error) => {
+              console.error("Error adding image", error);
+            });
+        });
       })
       .catch((error) => {
         console.error("Error adding invasive species", error);
+      })
+      .finally(() => {
+        setShouldReset(true);
+        setOpenAddSpeciesDialog(false);
       });
   };
 
@@ -456,7 +546,7 @@ function InvasiveSpeciesPage() {
       axios
         .get(`${API_BASE_URL}invasiveSpecies`, {
           params: {
-            scientific_name: searchInput,
+            search_input: searchInput,
           },
           headers: {
             'x-api-key': process.env.REACT_APP_X_API_KEY
@@ -476,7 +566,6 @@ function InvasiveSpeciesPage() {
           });
 
           // updates species search dropdown options
-          console.log("formattedData:", formattedData);
           if (formattedData.length > 0) {
             const scientificNames = formattedData.flatMap((species) => `${species.scientific_name} (${species.common_name ? species.common_name.join(', ') : ''})`);
             const uniqueScientificNames = [...new Set(scientificNames)];
@@ -686,7 +775,7 @@ function InvasiveSpeciesPage() {
       </div>
 
       {/* table */}
-      <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
+      <div style={{ width: "90%", display: "flex", justifyContent: "center", alignItems: "center" }}>
         {isLoading ? (
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -696,12 +785,12 @@ function InvasiveSpeciesPage() {
             {/* table header */}
             <TableHead>
               <TableRow>
-                <TableCell style={{ width: "10%" }}>
+                <TableCell style={{ width: "8%" }}>
                   <Typography variant="subtitle1" fontWeight="bold">
                     Scientific Name(s)
                   </Typography>
                 </TableCell>
-                <TableCell style={{ width: "10%" }}>
+                <TableCell style={{ width: "7%" }}>
                   <Typography variant="subtitle1" fontWeight="bold">
                     Common Name(s)
                   </Typography>
@@ -711,31 +800,32 @@ function InvasiveSpeciesPage() {
                     Description
                   </Typography>
                 </TableCell>
-                <TableCell style={{ width: "13%" }}>
+                <TableCell style={{ width: "10%" }}>
                   <Typography variant="subtitle1" fontWeight="bold">
                     Alternative Species
                   </Typography>
                 </TableCell>
-                <TableCell style={{ width: "13%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                <TableCell style={{ width: "10%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
                   <Typography variant="subtitle1" fontWeight="bold">
                     Resource Links
                   </Typography>
                 </TableCell>
-                <TableCell style={{ width: "7%" }}>
+                <TableCell style={{ width: "6%" }}>
                   <Typography variant="subtitle1" fontWeight="bold">
                     Region(s)
                   </Typography>
                 </TableCell>
-                <TableCell style={{ width: "10%" }}>
+                <TableCell style={{ width: "8%" }}>
                   <Typography variant="subtitle1" fontWeight="bold">
                     Images
                   </Typography>
                 </TableCell>
-                <TableCell style={{ width: "6%" }}>
+                <TableCell style={{ width: "3%" }}>
                   <Typography variant="subtitle1" fontWeight="bold">
                     Actions
                   </Typography>
                 </TableCell>
+                <TableCell style={{ width: "1%" }}></TableCell>
               </TableRow>
             </TableHead>
 

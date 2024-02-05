@@ -178,7 +178,7 @@ function AlternativeSpeciesPage() {
     axios
       .get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
-          scientific_name: formattedSearchInput,
+          search_input: formattedSearchInput,
         },
         headers: {
           'x-api-key': process.env.REACT_APP_X_API_KEY
@@ -438,7 +438,7 @@ function AlternativeSpeciesPage() {
       axios
         .get(`${API_BASE_URL}alternativeSpecies`, {
           params: {
-            scientific_name: searchInput,
+            search_input: searchInput,
           },
           headers: {
             'x-api-key': process.env.REACT_APP_X_API_KEY
@@ -460,7 +460,6 @@ function AlternativeSpeciesPage() {
             };
           });
 
-          console.log("formattedData:", formattedData);
           if (formattedData.length > 0) {
             const scientificNames = formattedData.flatMap((species) => `${species.scientific_name} (${species.common_name ? species.common_name.join(', ') : ''})`);
             setSearchDropdownOptions(scientificNames);
