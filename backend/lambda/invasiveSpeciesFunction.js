@@ -36,7 +36,7 @@ exports.handler = async (event) => {
 				let curr_offset = (event.queryStringParameters != null && event.queryStringParameters.curr_offset) ? event.queryStringParameters.curr_offset : 0;
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
 
-				if (event.queryStringParameters != null && event.queryStringParameters.scientific_name && event.queryStringParameters.region_id) {
+				if (event.queryStringParameters != null && event.queryStringParameters.search_input && event.queryStringParameters.region_id) {
 					data = await sqlConnection`SELECT 
                                 i.*, 
                                 ARRAY_AGG(r.region_code_name) AS region_code_names,
@@ -57,21 +57,21 @@ exports.handler = async (event) => {
 								EXISTS (
 									SELECT 1
 									FROM unnest(i.scientific_name) AS name
-									WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+									WHERE name ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
 								) OR
 								EXISTS (
 									SELECT 1
 									FROM unnest(i.common_name) AS cname
-									WHERE cname ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+									WHERE cname ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
 								) OR
-								i.species_description ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+								i.species_description ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
 							) AND ${event.queryStringParameters.region_id} = ANY(i.region_id);								
                             GROUP BY 
                                 i.species_id
                             ORDER BY 
                                 i.scientific_name[1], i.species_id
                             LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
-				} else if (event.queryStringParameters != null && event.queryStringParameters.scientific_name) {
+				} else if (event.queryStringParameters != null && event.queryStringParameters.search_input) {
 					data = await sqlConnection`
 				        SELECT 
 				            DISTINCT ON (i.species_id) i.*, 
@@ -93,14 +93,14 @@ exports.handler = async (event) => {
 							EXISTS (
 								SELECT 1
 								FROM unnest(i.scientific_name) AS name
-								WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+								WHERE name ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
 							) OR
 							EXISTS (
 								SELECT 1
 								FROM unnest(i.common_name) AS cname
-								WHERE cname ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+								WHERE cname ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
 							) OR
-							i.species_description ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+							i.species_description ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
 						) 					
 				        ORDER BY 
 				            i.species_id, r.region_id  
