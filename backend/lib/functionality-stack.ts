@@ -108,33 +108,45 @@ export class FunctionalityStack extends cdk.Stack {
       default: "InvasivePlantsAPI",
     });
 
-
-    let apiKeyValue: string;
-
     // Check if the user provided an API key
-    if (apiKeyParam.value) {
-      apiKeyValue = apiKeyParam.value;
+    if (apiKey.value) {
+      this.secret = new secretsmanager.Secret(this, secretsName, {
+        secretName: secretsName,
+        description: "Cognito Secrets for authentication",
+        secretObjectValue: {
+          REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(
+            userpool.userPoolId
+          ),
+          REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(
+            appClient.userPoolClientId
+          ),
+          REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
+          REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(
+            apiKey.valueAsString
+          ),
+        },
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+      });
     } else {
       // User did not provide an API key, generate a random one
-      apiKeyValue = generateRandomString(32);
+      this.secret = new secretsmanager.Secret(this, secretsName, {
+        secretName: secretsName,
+        description: "Cognito Secrets for authentication",
+        secretObjectValue: {
+          REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(
+            userpool.userPoolId
+          ),
+          REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(
+            appClient.userPoolClientId
+          ),
+          REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
+          REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(
+            generateRandomString(32)
+          ),
+        },
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+      });
     }
-
-
-    this.secret = new secretsmanager.Secret(this, secretsName, {
-      secretName: secretsName,
-      description: "Cognito Secrets for authentication",
-      secretObjectValue: {
-        REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(
-          userpool.userPoolId
-        ),
-        REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(
-          appClient.userPoolClientId
-        ),
-        REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
-        REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(apiKeyValue.valueAsString),
-      },
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-    });
 
     /**
      *
