@@ -213,6 +213,7 @@ Then, use the command below and pass in the `prefixListID` value.
 ```bash
 cdk deploy --all \
   --parameters hostStack:prefixListID=<your-region-preFixListId> \
+  --parameters FunctionalityStack:apiKey=<custom-api-key> \ 
   --profile <aws-profile-name>
 ```
 
@@ -220,8 +221,9 @@ For example, the `prefixListID` for `ca-central-1` is `pl-38a64351`, so we have 
 
 ```bash
 cdk deploy --all \
-   --parameters hostStack:prefixListID=pl-38a64351 \
-   --profile AWSProfileSSO
+  --parameters hostStack:prefixListID=pl-38a64351 \
+  --parameters FunctionalityStack:apiKey=IQN8JSrycHj1nRi2IbBIwts54Gt \ 
+  --profile AWSProfileSSO
 ```
 
 

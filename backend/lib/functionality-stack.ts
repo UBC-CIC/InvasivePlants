@@ -108,6 +108,18 @@ export class FunctionalityStack extends cdk.Stack {
       default: "InvasivePlantsAPI",
     });
 
+
+    let apiKeyValue: string;
+
+    // Check if the user provided an API key
+    if (apiKeyParam.value) {
+      apiKeyValue = apiKeyParam.value;
+    } else {
+      // User did not provide an API key, generate a random one
+      apiKeyValue = generateRandomString(32);
+    }
+
+
     this.secret = new secretsmanager.Secret(this, secretsName, {
       secretName: secretsName,
       description: "Cognito Secrets for authentication",
@@ -119,9 +131,7 @@ export class FunctionalityStack extends cdk.Stack {
           appClient.userPoolClientId
         ),
         REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
-        REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(
-          generateRandomString(32)
-        ),
+        REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(apiKeyValue.valueAsString),
       },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
