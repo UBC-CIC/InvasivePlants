@@ -68,6 +68,7 @@ def handler(event, context):
             CREATE TABLE IF NOT EXISTS "invasive_species" (
                 "species_id" uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
                 "scientific_name" varchar[],
+                "common_name" varchar[],
                 "resource_links" varchar[],
                 "species_description" text,
                 "region_id" uuid[],
@@ -244,9 +245,11 @@ def handler(event, context):
 
             # Add invasive species into invasive_species table
             addInvasiveSpecies = """
-                INSERT INTO invasive_species (scientific_name, resource_links, species_description, region_id, alternative_species) 
-                VALUES (%s, %s, %s, %s, %s);
+                INSERT INTO invasive_species (scientific_name, common_name, resource_links, species_description, region_id, alternative_species) 
+                VALUES (%s, %s, %s, %s, %s, %s)
+                RETURNING species_id;
             """
+
             formatted_alternativeSpecies_id = (
                 "{" + ",".join(alternativeSpecies_id) + "}"
             )
@@ -256,25 +259,38 @@ def handler(event, context):
                     "{" + ",".join(regionIDs[invSpecies["region_id"]]) + "}"
                 )
             elif type(invSpecies["region_id"]) == list:
-                print("invspecies region id", invSpecies["region_id"])
                 arr = []
                 for x in invSpecies["region_id"]:
                     arr.append(regionIDs[x][0])
 
                 region_uuid_array = "{" + ",".join(arr) + "}"
-                print(region_uuid_array)
+
+            print("common_name: ", invSpecies["common_name"])
+            print("image links: ", invSpecies["image_links"])
 
             cursor.execute(
                 addInvasiveSpecies,
                 (
                     invSpecies["scientific_name"],
+                    invSpecies["common_name"],
                     invSpecies["resource_links"],
                     invSpecies["species_description"],
                     region_uuid_array,
                     formatted_alternativeSpecies_id,
                 ),
             )
+
+            invSpeciesId = cursor.fetchone()[0]
             connection.commit()
+
+            # Load images into images table
+            for image in invSpecies["image_links"]:
+                addImage = """
+                    INSERT INTO images (species_id, image_url) 
+                    VALUES (%s, %s);
+                """
+                cursor.execute(addImage, (invSpeciesId, image))
+                connection.commit()
 
         # Close cursor and connection
         cursor.close()

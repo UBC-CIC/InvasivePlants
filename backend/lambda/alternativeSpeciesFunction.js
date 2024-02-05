@@ -36,20 +36,21 @@ exports.handler = async (event) => {
 				let curr_offset = (event.queryStringParameters != null && event.queryStringParameters.curr_offset) ? event.queryStringParameters.curr_offset : 0;
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
 
-				if (event.queryStringParameters != null && event.queryStringParameters.scientific_name) {
+				if (event.queryStringParameters != null && event.queryStringParameters.search_input) {
 					data = await sqlConnection`	SELECT * FROM alternative_species 
 												WHERE 
 												  EXISTS (
 												    SELECT 1
 												    FROM unnest(scientific_name) AS name
-												    WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
+												    WHERE name ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
 												  )
 												  OR
 												  EXISTS (
 												    SELECT 1
 												    FROM unnest(common_name) AS cname
-												    WHERE cname ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
-												  )
+												    WHERE cname ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
+												  ) OR
+												  species_description ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
 												ORDER BY scientific_name[1], species_id 
 												LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else {

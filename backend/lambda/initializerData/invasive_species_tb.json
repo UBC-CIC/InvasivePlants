@@ -10,7 +10,9 @@
       "anaphalis_margaritacea",
       "limonium_latifolium"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["baby's_breath"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Gypsophila_paniculata_sl17.jpg/1920px-Gypsophila_paniculata_sl17.jpg"]
   },
   {
     "scientific_name": ["centaurea_cyanus"],
@@ -23,7 +25,9 @@
       "echinacea_purpurea",
       "erigeron_speciosus"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["bachelor's_button"],
+    "image_links": ["https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRDrNiPCH7ERod8tTz6QEZz6iGPmumNuYe-jIrOHSHE0rW809IQ"]
   },
   {
     "scientific_name": ["echium_vulgare"],
@@ -35,7 +39,9 @@
       "lupinus_polyphyllus",
       "erigeron_speciosus"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["blueweed"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Echium_vulgare_L.jpg/1024px-Echium_vulgare_L.jpg"]
   },
   {
     "scientific_name": ["reynoutria_x_bohemica"],
@@ -48,14 +54,18 @@
       "cornus_stolonifera",
       "amelanchier_alnifolia"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["bohemian_knotweed"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/3/33/Reynoutria_%C3%97_bohemica_01.jpg"]
   },
   {
     "scientific_name": ["anthriscus_caucalis"],
     "resource_links": ["https://bcinvasives.ca/invasives/bur-chervil/"],
     "species_description": "Bur chervil (Bur parsley) is an herbaceous plant with fern-like leaves and small white flowers. It can be found in most growing conditions, particularly in moist areas such as ditches and fields. Bur chervil easily out-grows native vegetation. Each flower produces two bur-like seeds that have a pronounced peak and are covered in bristles that easily stick to humans and animals to spread.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["bur_chervil"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/0/03/Anthriscus_caucalis_2004-04-07.jpg"]
   },
   {
     "scientific_name": ["buddleja_davidii"],
@@ -68,35 +78,45 @@
       "syringa_meyeri",
       "ribes_sanguineum"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["butterfly_bush"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/BuddlejaDavidiiStrauch.jpg/1920px-BuddlejaDavidiiStrauch.jpg"]
   },
   {
     "scientific_name": ["cirsium_arvense"],
     "resource_links": ["https://bcinvasives.ca/invasives/canada-thistle/"],
     "species_description": "Canada thistle (Creeping thistle, California thistle, Cursed thistle) is a shiny green, spiny herbaceous plant of variable height with purple flowers. Plants form thick infestations through creeping rhizomatous roots that crowd out forage grasses in pastures and rangelands, reducing crop yields and production. Canada thistle is commonly found growing on roadsides, cultivated fields, pastures, logged forests, riverbanks, and other disturbed areas where it also out-grows native species.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["canada_thistle"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Cirsium_arvense_with_Bees_Richard_Bartz.jpg/1280px-Cirsium_arvense_with_Bees_Richard_Bartz.jpg"]
   },
   {
     "scientific_name": ["bromus_tectorum"],
     "resource_links": ["https://bcinvasives.ca/invasives/cheatgrass/"],
     "species_description": "Cheatgrass (Downy brome, Drooping brome) is an annual grass introduced to North America in the late 1800’s with hairy leaves and drooping spikelets. It can be found alongside roads or disturbed areas, or in sagebrush ecosystems where it can form dense stands and outcompete native grasses. It can dramatically alter wildfire regimes, as well as injure livestock and animals' eyes and mouths by its sharp awns.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["cheatgrass"],
+    "image_links": ["https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ03WfkkZYdiCRBawybREOsq-U-u_6b-5NID3ad_VCwup-mGozw"]
   },
   {
     "scientific_name": ["anchusa_officinalis"],
     "resource_links": ["https://bcinvasives.ca/invasives/common-bugloss/"],
     "species_description": "Common bugloss (Alkanet) is a hairy, biennial plant of variable height with small, purple flowers. It invades disturbed, sunny areas such as roadsides, pastures, and hay fields, which reduces the yield of these crops. It spreads primarily through seed, but root fragments can propagate. Bugloss leaves include alkaloid compounds which are toxic if ingested by humans or livestock.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["common_bugloss"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/2/22/Anchusa_officinalis1.jpg"]
   },
   {
     "scientific_name": ["arctium_minus"],
     "resource_links": ["https://bcinvasives.ca/invasives/burdock/"],
     "species_description": "Common burdock (Lesser burdock, Louse-bur, Wild rhubarb) is a biennial plant that forms a basal rosette with large leaves it’s first year and a very tall flowering stem it’s second year. It’s known for its clinging burrs that attach and cling to wild and farm animals. This can cause health issues such as blindness to these animals and allows burdock to spread large distances from a single plant.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["common_burdock"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Arctium_minus_corimbo.jpg/440px-Arctium_minus_corimbo.jpg"]
   },
   {
     "scientific_name": ["symphytum_officinale"],
@@ -109,7 +129,9 @@
       "stachys_byzantina",
       "pulmonaria_officinalis"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["common_comfrey"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Symphytum_officinale_01.jpg/1024px-Symphytum_officinale_01.jpg"]
   },
   {
     "scientific_name": ["vinca_minor"],
@@ -122,21 +144,27 @@
       "cotoneaster_dammeri",
       "oxalis_oregana"
     ],
-    "region_id": ["BC", "ON"]
+    "region_id": ["BC", "ON"],
+    "common_name": ["common_periwinkle"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/5/5b/Vinca_minor_Nashville.jpg"]
   },
   {
     "scientific_name": ["hypericum_perforatum"],
     "resource_links": ["https://bcinvasives.ca/invasives/st-johns-wort/"],
     "species_description": "Common St. John’s-Wort is a perennial plant that with dark green, opposite leaves and bright yellow, 5 petalled, clustered flowers. It grows in dense patches which can crowd out natural plants and reduce the grasses that animals feed on. St. John’s wort spreads by lateral roots and can produce up to 100,000 seeds per plant.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["common_st._john's-wort"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/4/47/Saint_John%27s_wort_flowers.jpg"]
   },
   {
     "scientific_name": ["tanacetum_vulgare"],
     "resource_links": ["https://bcinvasives.ca/invasives/common-tansy/"],
     "species_description": "Common tansy (Bitter buttons, Cow bitter) is an herbaceous plant of variable height with fern-like leaves and yellow, flat-topped round flowers. It’s often found growing in sunny, disturbed areas such as roadsides or pastures where it can displace native vegetation. Infestations in rangeland can be toxic to livestock, and it’s reported that dairy cattle consuming the leaves often have unpleasant tasting milk.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["common_tansy"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Tanacetum_vulgare_-_harilik_soolikarohi_Keilas2.jpg/1024px-Tanacetum_vulgare_-_harilik_soolikarohi_Keilas2.jpg"]
   },
   {
     "scientific_name": ["euphorbia_cyparissias"],
@@ -150,7 +178,9 @@
       "euphorbia_amygdaloides",
       "delosperma_nubigenum"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["cypress_spurge"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/d/d4/Euphorbia_cyparissias_02_bgiu.jpg"]
   },
   {
     "scientific_name": ["daphne_laureola"],
@@ -165,14 +195,18 @@
       "berberis_aquifolium",
       "daphne_odora"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["daphne"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/f/fc/Daphne_laureola_8703.jpg"]
   },
   {
     "scientific_name": ["centaurea_diffusa"],
     "resource_links": ["https://bcinvasives.ca/invasives/diffuse-knapweed/"],
     "species_description": "Diffuse knapweed (White knapweed, Tumble knapweed) is a short flowering plant with white flowers, slender stems and leaves. It is often found growing in open areas and well-drained soils where they establish in grasslands, open forests, and along roadsides. They choke out desirable forage for livestock and wildlife and increase soil erosion. Seeds can be spread by wind, livestock, and people.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["diffuse_knapweed"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/b/bd/Centaurea_diffusa1.jpg"]
   },
   {
     "scientific_name": ["ilex_aquifolium"],
@@ -185,7 +219,9 @@
       "sambucus_racemosa_subsp._pubens",
       "ilex_x_aquipernyi_'san_jose'"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["english_holly"],
+    "image_links": ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmy0HjMwGSMvDF_1gxA0ojYsIOGhcLeB58_imaosAcL9yaXFwM"]
   },
   {
     "scientific_name": ["hedera_helix"],
@@ -198,7 +234,9 @@
       "gaultheria_shallon",
       "lonicera_ciliosa"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["english_ivy"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hedera_helix_Dover.jpg/2560px-Hedera_helix_Dover.jpg"]
   },
   {
     "scientific_name": ["myriophyllum_spicatum"],
@@ -208,21 +246,27 @@
     ],
     "species_description": "Eurasian watermilfoil (Spiked watermilfoil) is an aquatic plant with long slender stems, and thin feathery leaves. It has likely been let loose from aquariums. It can quickly take over waterways, causing sluggish water that attracts mosquitos and reduces the recreational potential of the waterway such as swimming and boating.",
     "alternative_species": [],
-    "region_id": ["BC", "ON"]
+    "region_id": ["BC", "ON"],
+    "common_name": ["eurasian_watermilfoil"],
+    "image_links": ["https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQHNxopuVUGrNhBStVUeW_89cAq5SbxBQmfzuGA0Abbvtp6fmVZ"]
   },
   {
     "scientific_name": ["nymphaea_alba"],
     "resource_links": ["https://bcinvasives.ca/invasives/european-waterlily/"],
     "species_description": "European waterlily (European white waterlily) is an aquatic plant with floating glossy green ‘lily pads’ on the water’s surface and large white flowers. It can be found in slow-moving water such as in lakes and ponds. This plant creates a swimming and recreational hazard by overtaking aquatic environments and choking out native species.",
     "alternative_species": ["nuphar_lutea_subsp._polysepala"],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["european_waterlily"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/2016_Kwiat_grzybieni_bia%C5%82ych_2.jpg/1920px-2016_Kwiat_grzybieni_bia%C5%82ych_2.jpg"]
   },
   {
     "scientific_name": ["knautia_arvensis"],
     "resource_links": ["https://bcinvasives.ca/invasives/field-scabious/"],
     "species_description": "Field scabious is a short perennial plant with large violet to pink clover-like flowers. It can found growing along roadside or in pastures. It crowds out forage and pasture plants, reducing food availability for grazing animals. A single plant can produce up to 2,000 seeds, which makes this plant difficult to remove once established.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["field_scabious"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Knautia_arvensis_flower_%28side_view%29_-_Keila.jpg/1024px-Knautia_arvensis_flower_%28side_view%29_-_Keila.jpg"]
   },
   {
     "scientific_name": ["butomus_umbellatus"],
@@ -245,7 +289,9 @@
       "eupatorium_perfoliatum",
       "caltha_palustris"
     ],
-    "region_id": ["BC", "ON"]
+    "region_id": ["BC", "ON"],
+    "common_name": ["flowering_rush"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Butomus_umbellatus_-_harilik_luigelill_Keilas.jpg/1024px-Butomus_umbellatus_-_harilik_luigelill_Keilas.jpg"]
   },
   {
     "scientific_name": ["digitalis_purpurea"],
@@ -258,14 +304,18 @@
       "delphinium_hybrids",
       "aconitum"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["foxglove"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Digitalis_purpurea_LC0101.jpg/1024px-Digitalis_purpurea_LC0101.jpg"]
   },
   {
     "scientific_name": ["nymphaea_odorata"],
     "resource_links": ["https://bcinvasives.ca/invasives/fragrant-waterlily/"],
     "species_description": "Fragrant waterlily (American white waterlily, Beaver root) is an aquatic perennial plant with round glossy green leaves that float on the water’s surface. This popular, fragrant aquatic perennial is still sold in garden and pond centers throughout the province despite its potential to invade and destroy our sensitive aquatic ecosystems.",
     "alternative_species": ["nuphar_lutea_subsp._polysepala"],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["fragrant_waterlily"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/N.Odorata.jpg/1920px-N.Odorata.jpg"]
   },
   {
     "scientific_name": ["alliaria_petiolata"],
@@ -275,7 +325,9 @@
     ],
     "species_description": "Garlic mustard is a biennial plant with triangular, toothed leaves and small white flowers. In can be found growing in disturbed ecosystems, or in forest understories as it is a shade-tolerant plant. It reproduces by seed only and is unpalatable for herbivore grazers.",
     "alternative_species": [],
-    "region_id": ["BC", "ON"]
+    "region_id": ["BC", "ON"],
+    "common_name": ["garlic_mustard"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Alliaria_petiolata_marais-belloy-sur-somme_80_26042007_3.jpg/1024px-Alliaria_petiolata_marais-belloy-sur-somme_80_26042007_3.jpg"]
   },
   {
     "scientific_name": ["heracleum_mantegazzianum"],
@@ -285,7 +337,9 @@
     ],
     "species_description": "Giant hogweed (Giant cow parsnip, Cartwheel flower) is an extremely toxic invasive plant that is unusually large with deeply incised and sharp toothed leaves. Its sap will cause burns, blisters and scars when touched by bare skin. It can be found in moist disturbed soils, or riparian areas such as streams. It can grow very quickly and dominate ravines and stream banks posing serious negative risks to human health and ecology.",
     "alternative_species": [],
-    "region_id": ["BC", "ON"]
+    "region_id": ["BC", "ON"],
+    "common_name": ["giant_hogweed"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/a/ae/Herkulesstaude_fg01.jpg"]
   },
   {
     "scientific_name": ["reynoutria_sachalinensis"],
@@ -298,7 +352,9 @@
       "cornus_stolonifera",
       "amelanchier_alnifolia"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["giant_knotweed"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/GiantKnotweed053.jpg/1920px-GiantKnotweed053.jpg"]
   },
   {
     "scientific_name": ["sedum_acre"],
@@ -311,21 +367,27 @@
       "sedum_oreganum",
       "helianthemum_nummularium"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["goldmoss_stonecrop"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Sedum_acre_single_-_Niitv%C3%A4lja.jpg/1024px-Sedum_acre_single_-_Niitv%C3%A4lja.jpg"]
   },
   {
     "scientific_name": ["ulex_europaeus"],
     "resource_links": ["https://bcinvasives.ca/invasives/gorse/"],
     "species_description": "Gorse (Furze, Whin) is a spiny, perennial evergreen shrub. A mature plant can disperse up to 18,000 seeds per plant, and their seeds are easily distributed by human, environmental, and animal transport. Gorse poses a fire hazard due to its volatile oils. It is considered a noxious weed throughout the province.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["gorse"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Ulex_europaeus_flowers.jpg/2560px-Ulex_europaeus_flowers.jpg"]
   },
   {
     "scientific_name": ["hypochaeris_radicata"],
     "resource_links": ["https://bcinvasives.ca/invasives/hairy-cats-ear/"],
     "species_description": "Hairy cat’s-ear (Common cat’s ear, False dandelion) is a short, yellow flowered perennial herbaceous plant that invades pastures, meadows, roadsides, riverbanks, lawns, and disturbed sites. This plant can grow in a wide range of conditions, but thrives the most in sunny, open areas. It displaces native plants and is a nuisance weed on lawns.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["hairy_cat's-ear"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Hypochaeris_radicata_3285.JPG/1024px-Hypochaeris_radicata_3285.JPG"]
   },
   {
     "scientific_name": ["impatiens_glandulifera"],
@@ -342,7 +404,9 @@
       "chelone_oblique",
       "aquilegia_formosa"
     ],
-    "region_id": ["BC", "ON"]
+    "region_id": ["BC", "ON"],
+    "common_name": ["himalayan_balsam"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Impatiens_glandulifera_0004.JPG/1024px-Impatiens_glandulifera_0004.JPG"]
   },
   {
     "scientific_name": ["rubus_armeniacus"],
@@ -351,7 +415,9 @@
     ],
     "species_description": "Himalayan blackberry (Armenian blackberry) is a large, thorny plant that grows from thick canes with small white flowers and producing large, shiny blackberries. It easily invades disturbed sites, pastures, roadsides, streambanks, and forest edges where it can create dense thorny thickets and crowd out low-growing vegetation. These thickets can produce 7,000–13,000 seeds per square metre.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["himilayan_blackberry"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/0/0d/Himalayan_Blackberry_5_leaf_example.JPG"]
   },
   {
     "scientific_name": ["persicaria_wallichii"],
@@ -364,28 +430,36 @@
       "cornus_stolonifera",
       "amelanchier_alnifolia"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["himalayan_knotweed"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Polygonum_polystachyum_pr%C3%A8s_Sizun_2010_Detail.JPG/440px-Polygonum_polystachyum_pr%C3%A8s_Sizun_2010_Detail.JPG"]
   },
   {
     "scientific_name": ["berteroa_incana"],
     "resource_links": ["https://bcinvasives.ca/invasives/hoary-alyssum/"],
     "species_description": "Hoary alyssum (False hoary madwort, Hoary berteroa) is a flowering plant with clusters of small white flowers with deeply notched petals. It spreads quickly through a long season of seed production. Seeds are dispersed by vehicles, equipment, footwear, wildlife, and birds.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["hoary_alyssum"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/6/6d/Berteroa_incana.jpg"]
   },
   {
     "scientific_name": ["lepidium_draba"],
     "resource_links": ["https://bcinvasives.ca/invasives/hoary-cress/"],
     "species_description": "Hoary cress (Heart-podded hoary cress, White top) is a perennial plant with numerous small, white flowers with 4 petals each. It invades open, sunny areas such as hayfields, meadows, and roadsides. It spreads by roots and seeds and crowds out native vegetation. It is considered a noxious weed in parts of BC.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["hoary_cress"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/2/26/Cardaria_draba1.jpg"]
   },
   {
     "scientific_name": ["cynoglossum_officinale"],
     "resource_links": ["https://bcinvasives.ca/invasives/hounds-tongue/"],
     "species_description": "Hound’s tongue (Houndstooth, Dog’s tongue) is an invasive plant with large dog’s tongue shaped leaves and red-purple, coiled flowers. It grows on dry, well-drained sites. Each plant can produce 2,000 -4,000 barbed seeds a year that cling to clothing, livestock, and wildlife.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["hound's_tongue"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/9/9c/Cynoglossum_officinale_W.jpg"]
   },
   {
     "scientific_name": ["reynoutria_japonica"],
@@ -398,7 +472,9 @@
       "cornus_stolonifera",
       "amelanchier_alnifolia"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["japanese_knotweed"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Reynoutria_japonica_in_Brastad_1.jpg/2560px-Reynoutria_japonica_in_Brastad_1.jpg"]
   },
   {
     "scientific_name": ["euphorbia_esula"],
@@ -411,14 +487,18 @@
       "euphorbia_x_martinii",
       "euphorbia_amygdaloides"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["leafy_spurge"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Euphorbia_esula_-_kibe_piimalill.jpg/2560px-Euphorbia_esula_-_kibe_piimalill.jpg"]
   },
   {
     "scientific_name": ["cirsium_palustre"],
     "resource_links": ["https://bcinvasives.ca/invasives/marsh-plume-thistle/"],
     "species_description": "Marsh plume thistle (Marsh thistle, European swamp thistle) is a biennial plant with purple flowers, and spiny, hairy leaves. It prefers moist to wet, naturally open or disturbed areas. Seeds are spread by wind, water, birds, vehicles, and equipment.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["marsh_plume_thistle"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Cirsium_palustre_inflorescence_-_Niitv%C3%A4lja.jpg/2560px-Cirsium_palustre_inflorescence_-_Niitv%C3%A4lja.jpg"]
   },
   {
     "scientific_name": ["centaurea_montana"],
@@ -431,7 +511,9 @@
       "limonium_latifolium",
       "monarda_fistulosa"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["mountain_bluet"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Centaurea_montana.jpg/1024px-Centaurea_montana.jpg"]
   },
   {
     "scientific_name": ["euphorbia_myrsinites"],
@@ -444,14 +526,18 @@
       "helianthemum_nummularium",
       "delosperma_nubigenum"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["myrtle_spurge"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/MyrtleSpurge.jpg/2560px-MyrtleSpurge.jpg"]
   },
   {
     "scientific_name": ["pilosella_aurantiaca"],
     "resource_links": ["https://bcinvasives.ca/invasives/orange-hawkweed/"],
     "species_description": "Orange hawkweed (Orange hawk bit, Fox-and-cubs) is a short flowering plant that can grow from 30–60 cm in height with bright orange-red flowers clustered on top. It can create dense mats that crowd out native plants. Hawkweeds spread quickly through above ground runners, horizontal roots, and seeds.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["orange_hawkweed"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Hieracium_aurantiacum_LC0106.jpg/1024px-Hieracium_aurantiacum_LC0106.jpg"]
   },
   {
     "scientific_name": ["leucanthemum_vulgare"],
@@ -464,7 +550,9 @@
       "erigeron_glabellus",
       "echinacea_purpurea_‘white_swan’"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["oxeye_daisy"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Leucanthemum_vulgare_%27Filigran%27_Flower_2200px.jpg/1920px-Leucanthemum_vulgare_%27Filigran%27_Flower_2200px.jpg"]
   },
   {
     "scientific_name": ["lamium_purpureum"],
@@ -477,7 +565,9 @@
       "cerastium_tomentosum",
       "asarum_caudatum"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["purple_deadnettle"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Lamium_purpureum_-_Tutermaa.jpg/440px-Lamium_purpureum_-_Tutermaa.jpg"]
   },
   {
     "scientific_name": ["lythrum_salicaria"],
@@ -492,21 +582,27 @@
       "spiraea_douglasii",
       "veronica_spicata"
     ],
-    "region_id": ["BC", "ON"]
+    "region_id": ["BC", "ON"],
+    "common_name": ["purple_loosestrife"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Lythrum_salicaria_-_harilik_kukesaba.jpg/1024px-Lythrum_salicaria_-_harilik_kukesaba.jpg"]
   },
   {
     "scientific_name": ["daucus_carota"],
     "resource_links": ["https://bcinvasives.ca/invasives/queen-annes-lace/"],
     "species_description": "Queen Annes’ lace (Wild carrot) is an herbaceous plant with an umbrella-shaped cluster of white flowers, hairy stem and finely dissected, hairy, fern like leaves. It is common to roadsides and other disturbed areas. This biennial plant persists in clay soils and can be a threat to recovering grasslands.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["queen_annes'_lace"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Daucus_carota_May_2008-1_edit.jpg/440px-Daucus_carota_May_2008-1_edit.jpg"]
   },
   {
     "scientific_name": ["chondrilla_juncea"],
     "resource_links": ["https://bcinvasives.ca/invasives/rush-skeletonweed/"],
     "species_description": "Rush skeletonweed (Gum succory, Devil’s grass, Nakedweed) is a perennial plant with numerous wiry, branched stems, extremely narrow leaves and small yellow flowers. It invades rangelands, roadsides and disturbed areas. It competes with other plants for soil moisture and nutrients.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["rush_skeletonweed"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/4/41/Chondrilla_juncea2.jpg"]
   },
   {
     "scientific_name": ["elaeagnus_angustifolia"],
@@ -519,28 +615,36 @@
       "salix_scouleriana",
       "elaeagnus_commutata"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["russian_olive"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Korina_2012-05-15_Elaeagnus_angustifolia_1.jpg/440px-Korina_2012-05-15_Elaeagnus_angustifolia_1.jpg"]
   },
   {
     "scientific_name": ["tripleurospermum_inodorum"],
     "resource_links": ["https://bcinvasives.ca/invasives/scentless-chamomile/"],
     "species_description": "Scentless chamomile (Scentless mayweed, Wild chamomile) is a plant of variable height with daisy-like flowers of white petals and yellow centres as well as thin, carrot like leaves. It can produce up to 1,000,000 seeds every year, and the seeds can survive in the soil for up to 15 years. It prefers moist soil conditions and can aggressively take over pastures, grasslands, and other agricultural areas.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["scentless_chamomile"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/c/cd/Tripleurospermum_Perforatum.jpg"]
   },
   {
     "scientific_name": ["cytisus_scoparius"],
     "resource_links": ["https://bcinvasives.ca/invasives/scotch-broom/"],
     "species_description": "Scotch broom (English broom) is a woody shrub with bright yellow flowers, and small three leaflet leaves. It easily invades sunny, disturbed sites such as rangelands, roadsides, and areas of recent logging. Scotch broom can increase the intensity of wildfires, obstruct sightlines along roads, and crowd out native plants that animals depend on.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["scotch_broom"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Cytisus_scoparius_by_Danny_S._-_001.JPG/1920px-Cytisus_scoparius_by_Danny_S._-_001.JPG"]
   },
   {
     "scientific_name": ["onopordum_acanthium"],
     "resource_links": ["https://bcinvasives.ca/invasives/scotch-thistle/"],
     "species_description": "Scotch thistle (Cotton thistle) is a biennial or perennial plant with grey-green, woolly, lobbed leaves and spiney stems. It reproduces through thousands of seeds that can survive in the soil for over 30 years. Seeds can spread with the wind, but also in hay and water, and by attaching to clothing or animal fur.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["scotch_thistle"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/5/54/Onopordum_acanthium.jpg"]
   },
   {
     "scientific_name": ["impatiens_parviflora"],
@@ -549,21 +653,27 @@
     ],
     "species_description": "Smallflower touch-me-not (Small balsam) is a twiggy, branching, fine-textured annual species with pale yellow flowers and serrated, glossy leaves. It is often found growing in moist soils such as those around rivers, streams, and wetlands ecosystems. Although this species prefers moist soils, it is tolerant to a range of sun exposures, soil types, and climates, making it difficult to eradicate.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["smallflower_touch-me-not"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Impatiens_parviflora_-_plant_%28aka%29.jpg/1024px-Impatiens_parviflora_-_plant_%28aka%29.jpg"]
   },
   {
     "scientific_name": ["centaurea_stoebe"],
     "resource_links": ["https://bcinvasives.ca/invasives/spotted-knapweed/"],
     "species_description": "Spotted knapweed (Panicled knapweed) is a biennial, herbaceous plant with several small, purple flowers with long, thin petals branching from the stem. It is a prolific seed producer, with individual plants producing up to 140,000 seeds per square metre. Seeds and plant fragments make their way into hay and the undercarriages of vehicles, allowing for new infestations over great distances.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["spotted_knapweed"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Centaurea_maculosa_Bozeman.jpg/1024px-Centaurea_maculosa_Bozeman.jpg"]
   },
   {
     "scientific_name": ["potentilla_recta"],
     "resource_links": ["https://bcinvasives.ca/invasives/sulphur-cinquefoil/"],
     "species_description": "Sulphur cinquefoil (Rough-fruited cinquefoil) is a long-lived perennial with a 5 petal, pale yellow flowers and a palm-like hairy leaf. It invades grasslands, dry open forests, and disturbed sites such as roadsides and rangelands. A single plant can produce up to 1,600 seeds, living up to 20 years as new shoots can emerge from the main root.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["sulphur_cinquefoil"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/6/69/Potentilla_recta_a1.jpg"]
   },
   {
     "scientific_name": ["tamarix_ramosissima", "tamarix_chinensis"],
@@ -576,21 +686,27 @@
       "syringa_x_prestoniae",
       "cotinus_coggygria"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["tamarisk"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/4/40/Tamarix_ramosissima_a2.jpg"]
   },
   {
     "scientific_name": ["senecio_jacobaea"],
     "resource_links": ["https://bcinvasives.ca/invasives/tansy-ragwort/"],
     "species_description": "Tansy ragwort (Common ragwort, Stinking willie, Staggerwort) is a biennial to short-lived perennial with dense clusters of bright yellow flowers and ruffled, dark green leaves. It grows in pasturelands and disturbed areas. Seeds are easily transported by wind, soils, human activity, and livestock.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["tansy_ragwort"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/b/bd/Illustration_Senecio_jacobaea.jpg"]
   },
   {
     "scientific_name": ["dipsacus_fullonum"],
     "resource_links": ["https://bcinvasives.ca/invasives/teasel/"],
     "species_description": "Teasel (Wild teasel) is a biennial plant with spiny, cone-shaped seed heads, small pink flowers and long thin leaves. It prefers sunny locations and can grow in a range of wet to dry soils. Spreading through seed dispersal, it typically invades meadows, pastures, roadsides, and disturbed areas.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["teasel"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Dipsacus_fullonum1.jpg/1024px-Dipsacus_fullonum1.jpg"]
   },
   {
     "scientific_name": ["ailanthus_altissima"],
@@ -603,14 +719,18 @@
       "rhus_glabra",
       "liriodendron_tulipifera"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["tree_of_heaven"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/e/eb/G%C3%B6tterbaum_%28Ailanthus_altissima%29.jpg"]
   },
   {
     "scientific_name": ["carum_carvi"],
     "resource_links": ["https://bcinvasives.ca/invasives/wild-caraway/"],
     "species_description": "Wild caraway (Meridian fennel, Persian cumin) is an herbaceous plant of variable height with fern-like leaves and white groups of lowers. It was introduced to Canada as a spice crop but has escaped cultivation. It is a biennial plant that can quickly outgrow native plants. It can grow in light shade, survive light frost and extra moisture in the soil.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["wild_caraway"],
+    "image_links": ["https://bcinvasives.ca/wp-content/uploads/2021/01/Wild_caraway001_MEHarte_Bugwood.jpg"]
   },
   {
     "scientific_name": ["anthriscus_sylvestris"],
@@ -620,7 +740,9 @@
     ],
     "species_description": "Wild chervil (Cow parsley, Wild beaked parsley) is a biennial to short-lived perennial with small white flowers in umbrella like clusters and fern like leaves. It is typically found along roadsides, fence lines, streambanks, in ditches and competing with pasture and hay crops. It has a thick taproot that spreads aggressively, as deep as 2 m into the soil, and is very difficult to remove.",
     "alternative_species": [],
-    "region_id": ["BC", "ON"]
+    "region_id": ["BC", "ON"],
+    "common_name": ["wild_chervil"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Anthriscus_sylvestris_TK_2021-05-16_2.jpg/440px-Anthriscus_sylvestris_TK_2021-05-16_2.jpg"]
   },
   {
     "scientific_name": ["lamium_galeobdolon"],
@@ -633,7 +755,9 @@
       "oxalis_oregana",
       "clinopodium_douglasii"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["yellow_archangel"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Gele_dovenetel_DSCF3599.JPG/1920px-Gele_dovenetel_DSCF3599.JPG"]
   },
   {
     "scientific_name": ["iris_pseudacorus"],
@@ -652,7 +776,9 @@
       "iris_versicolor",
       "acorus_calamus"
     ],
-    "region_id": ["BC", "ON"]
+    "region_id": ["BC", "ON"],
+    "common_name": ["yellow_flag_iris"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Iris_pseudacorus_iris_des_marais.jpg/1024px-Iris_pseudacorus_iris_des_marais.jpg"]
   },
   {
     "scientific_name": ["nymphoides_peltata"],
@@ -665,14 +791,18 @@
       "nuphar_lutea_subsp._polysepala",
       "nymphaea_odorata"
     ],
-    "region_id": ["BC", "ON"]
+    "region_id": ["BC", "ON"],
+    "common_name": ["yellow_floating_heart"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/NymphoidesPeltata-flower2-hr.jpg/1920px-NymphoidesPeltata-flower2-hr.jpg"]
   },
   {
     "scientific_name": ["lysimachia_punctata"],
     "resource_links": ["https://bcinvasives.ca/invasives/yellow-loosestrife/"],
     "species_description": "Yellow loosestrife is a tall, fast-spreading perennial plant with yellow flowers. It prefers to grow in wet soils and is typically found in wetlands, wet roadsides, ditches, and along shorelines. It can form dense clumps that spread out over large areas, crowding out native plants.",
     "alternative_species": [],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["yellow_loosestrife"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/a/a6/Lysimachia.punctata.1.jpg"]
   },
   {
     "scientific_name": ["linaria_vulgaris"],
@@ -687,7 +817,9 @@
       "penstemon_pinifolius",
       "antirrhinum_majus"
     ],
-    "region_id": "BC"
+    "region_id": "BC",
+    "common_name": ["yellow_toadflax"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Linaria_vulgaris_flowers_-_Keila.jpg/1024px-Linaria_vulgaris_flowers_-_Keila.jpg"]
   },
   {
     "scientific_name": ["egeria_densa"],
@@ -696,7 +828,9 @@
     ],
     "species_description": "Impacts of Brazilian Elodea\nOnce introduced, Brazilian elodea can have significant impacts on aquatic ecosystems, including:\n\nIt rapidly forms dense mats on the surface of the water that can restrict water movement, increase sedimentation, affect water quality, and crowd out native plant species.\nChanges water quality, such as lowering water temperature and reducing oxygen concentrations, reducing nutrient availability while growing, as well as eutrophication (nutrient overloading) when the plant decomposes.\nEcosystem impacts include the smothering of native plant seeds through sedimentation and changes to native fish populations through reduced habitat quality.\nThick mats of Brazilian elodea can also impede several recreational activities, such as boating, fishing, and swimming and can even clog infrastructure and water supply intakes.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["brazilian_elodea"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/2/28/Egeria_densa_iceland.JPG"]
   },
   {
     "scientific_name": ["hydrocharis_morsus-ranae"],
@@ -705,7 +839,9 @@
     ],
     "species_description": "Impacts of European Frog-bit\n\nThe fast-growing plant forms thick mats that reduce biodiversity by crowding out native plants and preventing sunlight from reaching submerged plants.\nWhen a large colony of the plant dies and decomposes, it removes oxygen from the water, which can affect fish communities and other aquatic life.\nDense masses of European frog-bit can hinder swimmers and boaters, prevent other recreational uses of waterways, and clog drainage canals and streams.\n",
     "alternative_species": ["sagittaria_latifolia"],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["european_frog-bit"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/a/ad/HydrocharisMorsus-ranae2.jpg"]
   },
   {
     "scientific_name": ["trapa_natans"],
@@ -714,16 +850,20 @@
     ],
     "species_description": "Impacts of European Water Chestnut\nWater chestnut populations in the Ottawa River, as well as neighbouring provinces and states, have become a serious nuisance causing a number of impacts, including:\n\nForms extremely dense floating mats of vegetation that shade out native vegetation, decreasing plant biodiversity and making recreational activities like swimming, angling, and boating almost impossible in the infested areas.\nThe hard nuts with sharp, barbed spines can accumulate on shore and cause injury when stepped on.\nReduced light penetration and plant growth beneath the water chestnut canopy, combined with a large amount of decomposing vegetation below, can lead to decreased dissolved oxygen levels, which can impact native species and cause fish deaths.\n\nSince water chestnut populations occur only in a few locations in Ontario, it is important that we put every effort towards removing this plant before it spreads to other locations. The Ministry of Natural Resources and Forestry, with support from partnering agencies, are working to eradicate water chestnut from the Ottawa River by pulling the plants by hand, with rakes, and mechanical harvesters. Efforts to control this new invader are ongoing.",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["european_water_chestnut"],
+    "image_links": ["https://www.invasivespeciescentre.ca/wp-content/uploads/2019/12/Water-chestnut.jpg"]
   },
   {
     "scientific_name": ["cabomba_caroliniana"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/fanwort-2/"
     ],
-    "species_description": "Impacts of Fanwort\nThe fanwort population growing in the Crowe River watershed is the only known wild population in Ontario. If fanwort spreads outside this area, it could disrupt the plant and animal life in other waterways and interfere with recreation. Other impacts, include:\n \n\nIt is a fast-growing plant, that forms thick mats that crowd out native plants, block sunlight to submerged plants, disrupt fish communities, and clog drainage canals and streams.\nDense stands of fanwort can hinder swimmers and boaters and prevent other recreational uses of waterways.\nBecause fanwort thrives in acidic water, it could spread to lakes on the Canadian Shield, which tend to be acidic.\n",
+    "species_description": "Impacts of Fanwort\nThe fanwort population growing in the Crowe River watershed is the only known wild population in Ontario. If fanwort spreads outside this area, it could disrupt the plant and animal life in other waterways and interfere with recreation. Other impacts, include:\n \n\nIt is a fast-growing plant, that forms thick mats that crowd out native plants, block sunlight to submerged plants, disrupt fish communities, and clog drainage canals and streams.\nDense stands of fanwort can hinder swimmers and boaters and prevent other recreational uses of waterways.\nBecause fanwort thrives in acidic water, it could spread to lakes on the Canadian Shield, which tend to be acidic.\n",
     "alternative_species": ["ceratophyllum_demersum"],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["fanwort"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Cabomba_caroliniana_leaves.jpg/2880px-Cabomba_caroliniana_leaves.jpg"]
   },
   {
     "scientific_name": ["hydrilla_verticillata"],
@@ -732,16 +872,20 @@
     ],
     "species_description": "Impacts of Hydrilla\n\nOnce established, hydrilla is able to grow aggressively, outcompeting native plants.\nIt forms dense mats that block sunlight from reaching other submerged plants, including native species.\nThe plant degrades water quality by raising pH levels, decreasing oxygen, and increasing water temperature.\nIt can hinder the flow of water, as well as recreational activities such as swimming, fishing, and boating.\nBy causing stagnant water, hydrilla may provide habitat that allows mosquitoes to breed.\n",
     "alternative_species": ["vallisneria_americana"],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["hydrilla"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/a/ab/Hydrilla_USGS.jpg"]
   },
   {
     "scientific_name": ["myriophyllum_aquaticum"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/parrot-feather-2/"
     ],
-    "species_description": "Impacts of Parrot Feather\nThe impacts of parrot feather are highly contributed to by the dense mats that are formed, including:\n \n\nClogs waterways.\nDisplaces native vegetation.\nAffects recreational activities such as boating, swimming, and fishing.\nCreates stagnant waters, increasing breeding grounds for mosquitoes.\n",
+    "species_description": "Impacts of Parrot Feather\nThe impacts of parrot feather are highly contributed to by the dense mats that are formed, including:\n \n\nClogs waterways.\nDisplaces native vegetation.\nAffects recreational activities such as boating, swimming, and fishing.\nCreates stagnant waters, increasing breeding grounds for mosquitoes.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["parrot_feather"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Myriophyllum_aquaticum_-_side_%28aka%29.jpg/1024px-Myriophyllum_aquaticum_-_side_%28aka%29.jpg"]
   },
   {
     "scientific_name": ["nitellopsis_obtusa"],
@@ -750,16 +894,20 @@
     ],
     "species_description": "Impacts of Starry Stonewort\n\nStarry stonewort reduces biodiversity by forming dense mats (sometimes referred to as “pillows”) and competes aggressively with native plants.\nDense mats of starry stonewort can impede movement of fish, spawning activity, water flow, and recreational activities such as swimming, boating, and fishing.\nOnce introduced to a new area, starry stonewort can establish and spread very quickly.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["starry_stonewort"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/0/09/Nitellopsis_obtusa.jpeg"]
   },
   {
     "scientific_name": ["eichhornia_crassipes"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/water-hyacinth-2/"
     ],
-    "species_description": "Impacts of Water Hyacinth\nWhere conditions are right, water hyacinth grows and spreads rapidly over large areas in a short period of time, forming continuous dense floating mats up to 2 m thick. These characteristics may lead to the following impacts:\n \n\nOut competes and/or displaces native species for space, light, and nutrients.\nReduces oxygen levels under water hyacinth mats, which can alter the composition of invertebrate and fish communities. This occurs because thick mats of water hyacinth block the air-water interface.\nSlow down water flow, blocks irrigation canals, and delays hydroelectric and water treatment plants.\nInterferes with recreational activities such as boating, swimming, and fishing.\nThreatens biodiversity and human health by creating prime habitat for disease vectors, such as mosquitoes.\n",
+    "species_description": "Impacts of Water Hyacinth\nWhere conditions are right, water hyacinth grows and spreads rapidly over large areas in a short period of time, forming continuous dense floating mats up to 2 m thick. These characteristics may lead to the following impacts:\n \n\nOut competes and/or displaces native species for space, light, and nutrients.\nReduces oxygen levels under water hyacinth mats, which can alter the composition of invertebrate and fish communities. This occurs because thick mats of water hyacinth block the air-water interface.\nSlow down water flow, blocks irrigation canals, and delays hydroelectric and water treatment plants.\nInterferes with recreational activities such as boating, swimming, and fishing.\nThreatens biodiversity and human health by creating prime habitat for disease vectors, such as mosquitoes.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["water_hyacinth"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/c/c3/Eichhornia_crassipes_C.jpg"]
   },
   {
     "scientific_name": ["pistia_stratiotes"],
@@ -768,16 +916,20 @@
     ],
     "species_description": "Impacts of Water Lettuce\n\nThe plant forms thick mats that block sunlight and slow or prevent the growth of native aquatic plants.\nAs the plant dies and decomposes, it removes oxygen from the water, which can disrupt and even kill fish communities.\nDense mats of water lettuce can hinder swimmers and boaters, prevent other recreational uses of waterways, and restrict water flow in irrigation and flood control canals.\n",
     "alternative_species": ["pontederia_cordata"],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["water_lettuce"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/9/97/Pistia_stratiotes0.jpg"]
   },
   {
     "scientific_name": ["stratiotes_aloides"],
     "resource_links": [
       "https://www.invadingspecies.com/invaders/aquatic-plants/water-soldier-2/"
     ],
-    "species_description": "Impacts of Water Soldier\n\nForms dense mats of floating vegetation, creating stagnant waters\nCrowds out native vegetation resulting in decreased plant biodiversity.\nHas the potential to alter surrounding water chemistry, which may harm phytoplankton and other important aquatic organisms.\nDense floating mats of water soldier can hinder recreational activities, such as boating, angling, and swimming.\nSharp serrated leaf edges can cut swimmers and individuals who handle water soldier plants. Caution should be taken if you come in contact with the plant.\n\nSince water soldier has been listed as a prohibited species under the Invasive Species Act, 2015, it is important to prevent the plant’s further introduction and spread to new locations. To prevent further spread, an inter-agency working group consisting of the Ontario Federation of Anglers and Hunters, Parks Canada, the Ministry of Natural Resources and Forestry, Ministry of Environment, Conservation and Parks, Trent University, Lower Trent Conservation authority are monitoring and tracking the spread of water soldier within Ontario waterbodies and undertaking a variety of control measures to prevent its spread.",
+    "species_description": "Impacts of Water Soldier\n\nForms dense mats of floating vegetation, creating stagnant waters\nCrowds out native vegetation resulting in decreased plant biodiversity.\nHas the potential to alter surrounding water chemistry, which may harm phytoplankton and other important aquatic organisms.\nDense floating mats of water soldier can hinder recreational activities, such as boating, angling, and swimming.\nSharp serrated leaf edges can cut swimmers and individuals who handle water soldier plants. Caution should be taken if you come in contact with the plant.\n\nSince water soldier has been listed as a prohibited species under the Invasive Species Act, 2015, it is important to prevent the plant’s further introduction and spread to new locations. To prevent further spread, an inter-agency working group consisting of the Ontario Federation of Anglers and Hunters, Parks Canada, the Ministry of Natural Resources and Forestry, Ministry of Environment, Conservation and Parks, Trent University, Lower Trent Conservation authority are monitoring and tracking the spread of water soldier within Ontario waterbodies and undertaking a variety of control measures to prevent its spread.",
     "alternative_species": ["hippuris_vulgaris"],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["water_soldier"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Stratiotes_aloides_LC0258.jpg/1920px-Stratiotes_aloides_LC0258.jpg"]
   },
   {
     "scientific_name": ["rhamnus_cathartica"],
@@ -786,7 +938,9 @@
     ],
     "species_description": "Impacts of Common Buckthorn\n\nBuckthorn thrives in a variety of habitats and forms dense thickets that crowd and shade out native plants. It can alter nitrogen levels in the soil, creating better conditions for its own growth and discouraging the growth of native species.\nIt produces large numbers of seeds that germinate quickly and prevent the natural growth of native trees and shrubs.\nThe shrub can host oat rust, a fungus that causes leaf and crown rust and affects the yield and quality of oats.\nThe soybean aphid, an insect that damages soybean crops, can use buckthorn as a host plant to survive the winter. Because it can affect agricultural crops, common buckthorn is listed as a noxious weed under Ontario’s Weed Control Act.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["common_buckthorn"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/4/43/Illustration_of_Rhamnus_catharticus_63-cropped.png"]
   },
   {
     "scientific_name": ["vincetoxicum_rossicum", "vincetoxicum_nigrum"],
@@ -795,7 +949,9 @@
     ],
     "species_description": "Impacts of Dog-Strangling Vine\n\nDog-strangling Vine forms dense stands that overwhelm and crowd out native plants and young trees, preventing forest regeneration.\nColonies form mats of interwoven vines that are difficult to walk through and interfere with forest management and recreational activities.\nLeaves and roots may be toxic to livestock. Deer and other browsing animals also avoid dog-strangling vine, which can increase grazing pressure on more palatable native plants.\nThe vine threatens the monarch butterfly, a species at risk in Ontario. The butterflies lay their eggs on the plant, but the larvae are unable to complete their life cycle and do not survive.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["dog-strangling_vine"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Vincetoxicum_rossicum1UME.JPG/1024px-Vincetoxicum_rossicum1UME.JPG"]
   },
   {
     "scientific_name": ["hedera_helix", "aegopodium_podagraria"],
@@ -804,7 +960,9 @@
     ],
     "species_description": "Impacts of Invasive Ground Covers\n\nCreate dense carpets of vegetation that limit the amount of sunlight available to other species, affecting overall plant diversity.\nPersist and spread vegetatively as well as through underground stems and roots.\nPlants are shade tolerant and once established, are highly competitive.\nPeriwinkle leaves are toxic to most grazers and seeds are too small for birds to consume.\nEnglish ivy climbs on other plants and objects in its area.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["english_ivy"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Hedera_helix_Dover.jpg/2560px-Hedera_helix_Dover.jpg"]
   },
   {
     "scientific_name": ["lonicera_maackii", "lonicera_tatarica"],
@@ -813,7 +971,9 @@
     ],
     "species_description": "Impacts of Invasive Honeysuckles\n\nRapidly invade areas, out-competing native plant species by forming dense patches.\nAffect light and nutrient availability to neighboring plants.\nProduce toxic chemicals that prevent other plants from growing in that area.\nFruit does not offer migrating birds the nutrients needed for long flights compared to native plant species.\nAttract more pollinators causing native species to reduce the amount of seeds they produce.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["invasive_honeysuckle"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Lonicera_maackii_2.jpg/1024px-Lonicera_maackii_2.jpg"]
   },
   {
     "scientific_name": ["phragmites_australis"],
@@ -822,7 +982,9 @@
     ],
     "species_description": "Impacts of Invasive Phragmites\n\nCrowds out native vegetation, thus resulting in decreased plant biodiversity.\nGenerally provides poor habitat and food supplies for wildlife, including several Species at Risk.\nGrows very quickly thereby causing lower water levels as water is transpired faster than it would be with native vegetation.\nIncreases fire hazards as stands are composed of a high percentage of dead stalks.\nCan affect agriculture, cause road safety hazard and impact recreational activities such as swimming, boating and angling.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["invasive_phragmites"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/8/86/Phragmites_australis_-_NASA_Tracks_an_Environmental_Invader_%2848049936657%29.jpg"]
   },
   {
     "scientific_name": ["berberis_thunbergii"],
@@ -831,7 +993,9 @@
     ],
     "species_description": "Impacts of Japanese Barberry\n\nForms dense thickets that reduce wildlife habitat, affect native plants and restrict recreational activities along trails.\nThe dense growth of Japanese barberry plants shade out native species in the forest understory.\nJapanese barberry is capable of invading undisturbed forests and hybridizing with the common barberry (Berberis vulgaris, another invasive species).\nCan impact agriculture, barberry species are the alternate hosts of black stem rust, a disease capable of causing major damage/loss to grain crops.\n",
     "alternative_species": ["viburnum_lentago", "viburnum_lantanoides"],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["japanese_barberry"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/e/ef/Berberis_thunb_frt.jpg"]
   },
   {
     "scientific_name": ["fallopia_japonica"],
@@ -840,7 +1004,9 @@
     ],
     "species_description": "Impacts of Japanese Knotweed\n\nSpreads quickly, creating dense thickets that degrade wildlife habitats.\nReduces plant biodiversity by competing with other native vegetation. Thick layers of decomposing stems and leaves on the ground make it difficult for native plant species to establish.\nAggressive plant with a strong root system that has been known to break through asphalt and concrete.\nPlant populations are extremely persistent. Plants are able to survive severe floods and recolonize areas.\nIt can establish along riverbanks, where pieces of roots can break off and float downstream to start new populations.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["japanese_knotweed"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Reynoutria_japonica_in_Brastad_1.jpg/2560px-Reynoutria_japonica_in_Brastad_1.jpg"]
   },
   {
     "scientific_name": ["microstegium_vimineum"],
@@ -849,7 +1015,9 @@
     ],
     "species_description": "Impacts of Japanese Stiltgrass\n\nCreate dense stands of vegetation that dominate habitats and out-compete native plants.\nProduce large amounts of seeds that are able to survive in the seed bank for long periods of time.\nSeeds are easily spread long distances by hikers or pets.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["japanese_stiltgrass"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/2/27/Microstegium_viminium_specimen.jpg"]
   },
   {
     "scientific_name": ["pueraria_montana"],
@@ -858,7 +1026,9 @@
     ],
     "species_description": "Impacts of Kudzu\nKudzu’s aggressive nature and ability to grow in a wide range of conditions can damage a variety of plants, ecosystems and structures.\n\nThe fast-growing vine can kill trees or shrubs by cutting off nutrient supplies, weighing down a tree or shrub until it breaks, or casting dense shade.\nKudzu reduces plant biodiversity by eliminating competing vegetation, including native species.\nThe vine can host Asian soybean rust, a fungus that infects soybeans and other members of the pea family.\nIts rapid growth allows it to blanket trees, fences, houses and road signs. Heavy kudzu growth on hydro poles has caused power outages.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["kudzu"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/c/c4/Starr_021012-0015_Pueraria_montana_var._lobata.jpg"]
   },
   {
     "scientific_name": ["miscanthus_sacchariflorus"],
@@ -867,7 +1037,9 @@
     ],
     "species_description": "Impacts of Miscanthus\n\nFast growing species that form thick bunches, displacing native plant communities.\nDense, dry stands are highly flammable and create fire hazards.\nReduce light availability to other plants at the soil surface.\nSlowly decomposes on the ground, limiting the amount of nutrients returned to the soil.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["miscanthus"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/f/f0/Miscanthus_sacchariflorus.jpg"]
   },
   {
     "scientific_name": ["pastinaca_sativa"],
@@ -876,7 +1048,9 @@
     ],
     "species_description": "Impacts of Wild Parsnip\n\nThe plant can form dense stands that outcompete native plants, reducing biodiversity.\nStem, leaves, and flowers contain chemicals that can increase skin sensitivity to sunlight and cause severe dermatitis.\nWild parsnip reduces the quality and saleability of agricultural forage crops such as hay, oats, and alfalfa.\nChemical compounds in the plant are known to reduce weight gain and fertility in livestock that eat it.\n",
     "alternative_species": [],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["wild_parsnip"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/PastinakePflanzegeerntet.jpg/440px-PastinakePflanzegeerntet.jpg"]
   },
   {
     "scientific_name": ["euonymus_alatus"],
@@ -891,6 +1065,8 @@
       "lindera_benzoin",
       "rhus_aromatica"
     ],
-    "region_id": "ON"
+    "region_id": "ON",
+    "common_name": ["winged_euonymus"],
+    "image_links": ["https://upload.wikimedia.org/wikipedia/commons/7/73/Euonymous_alatus.jpg"]
   }
 ]

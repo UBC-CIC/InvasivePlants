@@ -36,7 +36,7 @@ exports.handler = async (event) => {
 				let curr_offset = (event.queryStringParameters != null && event.queryStringParameters.curr_offset) ? event.queryStringParameters.curr_offset : 0;
 				let rows_per_page = (event.queryStringParameters != null && event.queryStringParameters.rows_per_page) ? event.queryStringParameters.rows_per_page : 20;
 
-				if (event.queryStringParameters != null && event.queryStringParameters.scientific_name && event.queryStringParameters.region_id) {
+				if (event.queryStringParameters != null && event.queryStringParameters.search_input && event.queryStringParameters.region_id) {
 					data = await sqlConnection`SELECT 
                                 i.*, 
                                 ARRAY_AGG(r.region_code_name) AS region_code_names,
@@ -53,19 +53,25 @@ exports.handler = async (event) => {
                                 invasive_species i
                             JOIN 
                                 regions r ON r.region_id = ANY(i.region_id)
-                            WHERE 
-                                EXISTS (
-                                    SELECT 1
-                                    FROM unnest(i.scientific_name) AS name
-                                    WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
-                                ) 
-                                AND ${event.queryStringParameters.region_id} = ANY(i.region_id)
+							WHERE (
+								EXISTS (
+									SELECT 1
+									FROM unnest(i.scientific_name) AS name
+									WHERE name ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
+								) OR
+								EXISTS (
+									SELECT 1
+									FROM unnest(i.common_name) AS cname
+									WHERE cname ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
+								) OR
+								i.species_description ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
+							) AND ${event.queryStringParameters.region_id} = ANY(i.region_id);								
                             GROUP BY 
                                 i.species_id
                             ORDER BY 
                                 i.scientific_name[1], i.species_id
                             LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
-				} else if (event.queryStringParameters != null && event.queryStringParameters.scientific_name) {
+				} else if (event.queryStringParameters != null && event.queryStringParameters.search_input) {
 					data = await sqlConnection`
 				        SELECT 
 				            DISTINCT ON (i.species_id) i.*, 
@@ -83,16 +89,22 @@ exports.handler = async (event) => {
 				            invasive_species i
 				        JOIN 
 				            regions r ON r.region_id = ANY(i.region_id)
-				        WHERE 
-				            EXISTS (
-				                SELECT 1
-				                FROM unnest(i.scientific_name) AS name
-				                WHERE name ILIKE '%' || ${event.queryStringParameters.scientific_name} || '%'
-				            )
+						WHERE (
+							EXISTS (
+								SELECT 1
+								FROM unnest(i.scientific_name) AS name
+								WHERE name ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
+							) OR
+							EXISTS (
+								SELECT 1
+								FROM unnest(i.common_name) AS cname
+								WHERE cname ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
+							) OR
+							i.species_description ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
+						) 					
 				        ORDER BY 
-				            i.species_id, r.region_id  -- Adjust ordering as necessary
-				        LIMIT ${rows_per_page} OFFSET ${curr_offset};
-				    `;
+				            i.species_id, r.region_id  
+				        LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				} else if (event.queryStringParameters != null && event.queryStringParameters.region_id) {
 					data = await sqlConnection`SELECT 
                                     i.*, 
@@ -161,7 +173,6 @@ exports.handler = async (event) => {
                                 LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
 				}
 
-
 				for (let d in data) {
 					// Get alternative species and images
 					data[d].alternative_species = await sqlConnection`SELECT * FROM alternative_species WHERE species_id = ANY(${data[d].alternative_species});`;
@@ -170,6 +181,9 @@ exports.handler = async (event) => {
 					for (let d_alt in data[d].alternative_species) {
 						data[d].alternative_species[d_alt].images = await sqlConnection`SELECT * FROM images WHERE species_id = ${data[d].alternative_species[d_alt].species_id};`;
 					}
+
+					// Get list of images
+					data[d].images = await sqlConnection`SELECT * FROM images WHERE species_id = ${data[d].species_id};`;
 				}
 
 				let totalCount = await sqlConnection` SELECT COUNT(*) FROM invasive_species;`;
@@ -204,14 +218,15 @@ exports.handler = async (event) => {
 							: [formatScientificName(bd.scientific_name)];
 
 						// Optional parameters
+						const common_name = (bd.common_name) ? bd.common_name : [];
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
 						const region_id = (bd.region_id) ? bd.region_id : [];
 						const alternative_species = (bd.alternative_species) ? bd.alternative_species : [];
 
 						data = await sqlConnection`
-							INSERT INTO invasive_species (scientific_name, resource_links, species_description, region_id, alternative_species)
-							VALUES (${formattedScientificNames}, ${resource_links}, ${species_description}, ${region_id}, ${alternative_species})
+							INSERT INTO invasive_species (scientific_name, common_name, resource_links, species_description, region_id, alternative_species)
+							VALUES (${formattedScientificNames}, ${common_name}, ${resource_links}, ${species_description}, ${region_id}, ${alternative_species})
 							RETURNING *;
 						`;
 
@@ -236,10 +251,13 @@ exports.handler = async (event) => {
 						// Get alternative species and images
 						data[0].alternative_species = await sqlConnection`SELECT * FROM alternative_species WHERE species_id = ANY(${data[0].alternative_species});`;
 
-						// Get images for each species
+						// Get images for each alternative species
 						for (let i in data[0].alternative_species) {
 							data[0].alternative_species[i].images = await sqlConnection`SELECT * FROM images WHERE species_id = ${data[0].alternative_species[i].species_id};`;
 						}
+
+						// Get list of invasive images
+						data[0].images = await sqlConnection`SELECT * FROM images WHERE species_id = ${data[0].species_id};`;
 
 						response.body = JSON.stringify(data);
 					} else {
@@ -263,6 +281,7 @@ exports.handler = async (event) => {
 							: [formatScientificName(bd.scientific_name)];
 
 						// Optional parameters
+						const common_name = (bd.common_name) ? bd.common_name : [];
 						const resource_links = (bd.resource_links) ? bd.resource_links : [];
 						const species_description = (bd.species_description) ? bd.species_description : "";
 						const region_id = (bd.region_id) ? bd.region_id : [];
@@ -271,6 +290,7 @@ exports.handler = async (event) => {
 						data = await sqlConnection`
 							UPDATE invasive_species
 							SET scientific_name = ${formattedScientificNames}, 
+								common_name = ${common_name},
 								resource_links = ${resource_links}, 
 								species_description = ${species_description},
 								region_id = ${region_id},
