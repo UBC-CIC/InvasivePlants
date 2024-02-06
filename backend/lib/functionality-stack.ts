@@ -105,7 +105,7 @@ export class FunctionalityStack extends cdk.Stack {
     const apiKey = new cdk.CfnParameter(this, "apiKey", {
       type: "String",
       description: "Custome apiKey for the API Gateway.",
-      default: "InvasivePlantsAPI",
+      default: generateRandomString(32),
     });
 
     // Check if the user provided an API key

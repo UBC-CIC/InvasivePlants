@@ -209,7 +209,7 @@ The deployment command for the `hostStack` requires a parameter calls `prefixLis
 | us-west-1       | pl-4ea04527  |
 | us-west-2       | pl-82a045eb  |
 
-Then, use the command below and pass in the `prefixListID` value.
+Then, use the command below and pass in the `prefixListID` value. Include the second parameter only on redeployment.
 ```bash
 cdk deploy --all \
   --parameters hostStack:prefixListID=<your-region-preFixListId> \
