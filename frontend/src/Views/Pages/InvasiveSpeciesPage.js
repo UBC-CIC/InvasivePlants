@@ -173,13 +173,11 @@ function InvasiveSpeciesPage() {
 
           setDisplayData(formattedData);
           setCurrOffset(response.data.nextOffset);
+          setShouldSave(false);
         })
         .catch((error) => {
           console.error("Error getting invasive species", error);
         })
-        .finally(() => {
-          setShouldSave(false);
-        });
     }
   }, [shouldSave]);
 
@@ -467,32 +465,27 @@ function InvasiveSpeciesPage() {
 
         const allPlantImages = plantsWithImgLinks.concat(plantsWithImgFiles);
 
-        // Uploads all plant images
-        const uploadPromises = allPlantImages.map((plantData) =>
-          axios.post(API_BASE_URL + "plantsImages", plantData, {
-            headers: {
-              Authorization: `${jwtToken}`,
-            },
-          })
-        );
-
-        // Wait for all image upload promises to be resolved
-        Promise.all(uploadPromises)
-          .then(() => {
-            setShouldReset(true);
-            setOpenAddSpeciesDialog(false);
-          })
-          .catch((error) => {
-            console.error("Error adding images", error);
-          });
+        // Uploads all plant images 
+        allPlantImages.forEach((plantData) => {
+          axios
+            .post(API_BASE_URL + "plantsImages", plantData, {
+              headers: {
+                'Authorization': `${jwtToken}`
+              }
+            })
+            .then(() => {
+              console.log("here 1")
+              setShouldReset(true);
+              setOpenAddSpeciesDialog(false);
+            })
+            .catch((error) => {
+              console.error("Error adding image", error);
+            });
+        });
       })
       .catch((error) => {
-        console.error("Error adding invasive species", error);
+        console.error("Error adding alternative species", error);
       })
-      .finally(() => {
-        setShouldReset(true);
-        setOpenAddSpeciesDialog(false);
-      });
   };
 
   // Call to handleGetAlternativeSpecies if shouldReset state is True

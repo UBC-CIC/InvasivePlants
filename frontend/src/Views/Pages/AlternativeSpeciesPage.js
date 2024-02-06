@@ -161,13 +161,11 @@ function AlternativeSpeciesPage() {
 
           setDisplayData(formattedData);
           setCurrOffset(response.data.nextOffset);
+          setShouldSave(false);
         })
         .catch((error) => {
           console.error("Error getting alternative species", error);
         })
-        .finally(() => {
-          setShouldSave(false);
-        });
     }
   }, [shouldSave]);
 
@@ -402,6 +400,7 @@ function AlternativeSpeciesPage() {
               }
             })
             .then(() => {
+              console.log("here 1")
               setShouldReset(true);
               setOpenAddSpeciesDialog(false);
             })
@@ -413,10 +412,6 @@ function AlternativeSpeciesPage() {
       .catch((error) => {
         console.error("Error adding alternative species", error);
       })
-      .finally(() => {
-        setShouldReset(true);
-        setOpenAddSpeciesDialog(false);
-      });
   };
 
   // Call to handleGetAlternativeSpecies if shouldReset state is True
