@@ -24,6 +24,7 @@ function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
+
   const [searchDropdownSpeciesOptions, setSearchDropdownSpeciesOptions] = useState([]); // dropdown options for invasive species search bar (scientific names)
   const [searchDropdownRegionsOptions, setSearchDropdownRegionsOptions] = useState([]); // dropdown options for regions search bar 
   const [speciesCount, setSpeciesCount] = useState(0); // number of invasive species
@@ -200,8 +201,6 @@ function InvasiveSpeciesPage() {
         }
       })
       .then((response) => {
-        console.log("resp: ", response.data.species)
-
         const promises = response.data.species.flatMap(item =>
           item.region_id.map(regionId =>
             axios
@@ -214,7 +213,7 @@ function InvasiveSpeciesPage() {
         );
 
         return Promise.all(promises)
-          .then((response) => {
+          .then(() => {
             // gets the species that match user search
             const formattedData = response.data.species.map((item) => {
               if (item.alternative_species) {
@@ -468,18 +467,24 @@ function InvasiveSpeciesPage() {
 
         const allPlantImages = plantsWithImgLinks.concat(plantsWithImgFiles);
 
-        // Uploads all plant images 
-        allPlantImages.forEach((plantData) => {
-          axios
-            .post(API_BASE_URL + "plantsImages", plantData, {
-              headers: {
-                'Authorization': `${jwtToken}`
-              }
-            }).then(() => { })
-            .catch((error) => {
-              console.error("Error adding image", error);
-            });
-        });
+        // Uploads all plant images
+        const uploadPromises = allPlantImages.map((plantData) =>
+          axios.post(API_BASE_URL + "plantsImages", plantData, {
+            headers: {
+              Authorization: `${jwtToken}`,
+            },
+          })
+        );
+
+        // Wait for all image upload promises to be resolved
+        Promise.all(uploadPromises)
+          .then(() => {
+            setShouldReset(true);
+            setOpenAddSpeciesDialog(false);
+          })
+          .catch((error) => {
+            console.error("Error adding images", error);
+          });
       })
       .catch((error) => {
         console.error("Error adding invasive species", error);
@@ -533,8 +538,6 @@ function InvasiveSpeciesPage() {
 
   // Displays original data when search input is empty, otherwise updates dropdown
   const handleSearch = (searchInput) => {
-    console.log("search input: ", searchInput)
-
     if (searchInput === "") {
       setDisplayData(data);
       setShouldCalculate(true);

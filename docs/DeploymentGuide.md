@@ -226,6 +226,8 @@ cdk deploy --all \
   --profile AWSProfileSSO
 ```
 
+If you have trouble running the above command, try removing all the `\` and run it in one line.
+
 
 ### Extra: Finding important values
 After deployment is completed, look for the following in the terminal:

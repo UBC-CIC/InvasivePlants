@@ -155,6 +155,10 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                         s3Keys.push(signedURLData.key);
                     }
                 }
+
+                s3Keys = s3Keys.filter(key => key !== "");
+                // console.log("image upload: ", s3Keys)
+            
                 handleInputChange('s3_keys', s3Keys);
             } catch (error) {
                 console.error('Error uploading images:', error);
@@ -373,6 +377,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                                     {/* Display image from S3 bucket if s3_key exists */}
                                     {img.s3_key && (
                                         <div>
+                                            {console.log("image from edit: ", `${S3_BASE_URL}${img.s3_key}`)}
                                             <img
                                                 src={`${S3_BASE_URL}${img.s3_key}`}
                                                 alt={`img.s3_key${index}`}

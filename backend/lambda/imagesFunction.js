@@ -84,7 +84,7 @@ exports.handler = async (event) => {
 							const result = await s3.deleteObject(s3Params).promise();
                     	}
                         data = await sqlConnection`DELETE FROM images WHERE image_id = ${bd.image_id};`;
-                        response.body = "Deleted an alternative species";
+                        response.body = "Deleted an image";
                     } else {
                         response.statusCode = 400;
                         response.body = "Invalid value";

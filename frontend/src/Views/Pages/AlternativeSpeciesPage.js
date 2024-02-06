@@ -26,6 +26,8 @@ function AlternativeSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
+  // console.log("s3: ", S3_BASE_URL)
+
   const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
   const [speciesCount, setSpeciesCount] = useState(0); // number of alternative species
   const [data, setData] = useState([]); // original data
@@ -62,6 +64,7 @@ function AlternativeSpeciesPage() {
     try {
       const returnedUser = await Auth.currentAuthenticatedUser();
       setUser(returnedUser);
+      console.log(returnedUser)
     } catch (e) {
       console.log("error getting user: ", e);
     }
@@ -185,7 +188,7 @@ function AlternativeSpeciesPage() {
         }
       })
       .then((response) => {
-        console.log("resp: ", response.data.species)
+        // console.log("resp: ", response.data.species)
         const formattedData = response.data.species.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
