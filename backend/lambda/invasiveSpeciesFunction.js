@@ -65,12 +65,12 @@ exports.handler = async (event) => {
 									WHERE cname ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
 								) OR
 								i.species_description ILIKE '%' || ${event.queryStringParameters.search_input} || '%'
-							) AND ${event.queryStringParameters.region_id} = ANY(i.region_id);								
+							) AND ${event.queryStringParameters.region_id} = ANY(i.region_id)							
                             GROUP BY 
                                 i.species_id
                             ORDER BY 
                                 i.scientific_name[1], i.species_id
-                            LIMIT ${rows_per_page} OFFSET ${curr_offset};`;
+                            LIMIT ${rows_per_page} OFFSET ${curr_offset}`;
 				} else if (event.queryStringParameters != null && event.queryStringParameters.search_input) {
 					data = await sqlConnection`
 				        SELECT 
