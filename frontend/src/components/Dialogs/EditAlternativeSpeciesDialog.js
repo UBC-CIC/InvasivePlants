@@ -119,13 +119,12 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                     handleInputChange("images", updatedImages);
                     handleInputChange("image_links", updatedImages.map((image) => image.image_url));
                     handleInputChange("s3_keys", updatedImages.map((image) => image.s3_key));
+                    setDeleteImg(null);
+                    setShowWarning(false);
                 })
                 .catch((error) => {
                     console.error("Error deleting image", error);
-                }).finally(() => {
-                    setDeleteImg(null);
-                    setShowWarning(false);
-                });
+                })
         } else {
             setShowWarning(false);
         }
@@ -149,12 +148,12 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                     <Typography
                         variant="h5"
                         component="div"
-                        style={{ fontStyle: "italic"}}
+                        style={{ fontStyle: "italic" }}
                     >
                         {Array.isArray(tempData.scientific_name) ? tempData.scientific_name.join(', ') : tempData.scientific_name}
                     </Typography>
                 </DialogTitle >
-                
+
 
                 <DialogContent style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <TextField

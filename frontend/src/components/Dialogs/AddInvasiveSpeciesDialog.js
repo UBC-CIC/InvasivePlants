@@ -87,7 +87,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
             s3_keys: typeof speciesData.s3_keys === 'string' ? splitByCommaWithSpaces(speciesData.s3_keys) : speciesData.s3_keys,
         };
 
-        console.log("mod speciesData:", modifiedSpeciesData)
+        // console.log("mod speciesData:", modifiedSpeciesData)
         handleAdd(modifiedSpeciesData);
         handleCancel();
     };

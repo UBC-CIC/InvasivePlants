@@ -158,7 +158,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
 
                 s3Keys = s3Keys.filter(key => key !== "");
                 // console.log("image upload: ", s3Keys)
-            
+
                 handleInputChange('s3_keys', s3Keys);
             } catch (error) {
                 console.error('Error uploading images:', error);
@@ -196,13 +196,12 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                     handleInputChange("images", updatedImages);
                     handleInputChange("image_links", updatedImages.map((image) => image.image_url));
                     handleInputChange("s3_keys", updatedImages.map((image) => image.s3_key));
+                    setDeleteImg(null);
+                    setShowWarning(false);
                 })
                 .catch((error) => {
                     console.error("Error deleting image", error);
-                }).finally(() => {
-                    setDeleteImg(null);
-                    setShowWarning(false);
-                });
+                })
         } else {
             setShowWarning(false);
         }

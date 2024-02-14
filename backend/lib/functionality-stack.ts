@@ -79,7 +79,6 @@ export class FunctionalityStack extends cdk.Stack {
     /**
      *
      * Create a random API key that will be use when creating an API key
-     * Inspired by ChatGPT
      */
     function generateRandomString(length: number): string {
       var result = "";

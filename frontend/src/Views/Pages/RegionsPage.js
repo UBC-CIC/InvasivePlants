@@ -146,13 +146,12 @@ function RegionsPage() {
 
                     setDisplayData(formattedData);
                     setCurrOffset(response.data.nextOffset);
+                    setShouldSave(false);
+
                 })
                 .catch((error) => {
                     console.error("Error getting regions", error);
                 })
-                .finally(() => {
-                    setShouldSave(false);
-                });
         }
     }, [shouldSave]);
 

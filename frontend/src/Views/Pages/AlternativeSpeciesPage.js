@@ -339,13 +339,11 @@ function AlternativeSpeciesPage() {
         .then(() => {
           setSpeciesCount(prevCount => prevCount - 1)
           setShouldReset(true);
+          setOpenDeleteConfirmation(false);
         })
         .catch((error) => {
           console.error("Error deleting alternative species", error);
         })
-        .finally(() => {
-          setOpenDeleteConfirmation(false);
-        });
     } else {
       setOpenDeleteConfirmation(false);
     }
@@ -400,7 +398,6 @@ function AlternativeSpeciesPage() {
               }
             })
             .then(() => {
-              console.log("here 1")
               setShouldReset(true);
               setOpenAddSpeciesDialog(false);
             })
