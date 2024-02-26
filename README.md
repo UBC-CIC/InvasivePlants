@@ -1,6 +1,6 @@
 # Invasive Plants
 
-This Invasive Plants identification prototype provides users with the capability to identify invasive plants based on their region and suggests alternative non-invasive plants to plant instead. The Invasive Plants Admin Page enables authorized users to expand and modify the database for comprehensive coverage. For more information, please visit the [CIC Website](https://cic.ubc.ca/).
+This Invasive Plants identification prototype provides users with the capability to identify invasive plants based on their region and suggests alternative non-invasive plants to plant instead. The Invasive Plants Admin Page enables authorized users to expand and modify the database for comprehensive coverage. Also checkout the [Invasive Plants Mobile App](https://github.com/UBC-CIC/InvasivePlantsFlutter) that allows users to identify invasive plants. For more information, please visit the [CIC Website](https://cic.ubc.ca/).
 
 | Index                                               | Description                                             |
 | :-------------------------------------------------- | :------------------------------------------------------ |
