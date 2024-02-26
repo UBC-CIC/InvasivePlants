@@ -63,6 +63,7 @@ function InvasiveSpeciesPage() {
     try {
       const returnedUser = await Auth.currentAuthenticatedUser();
       setUser(returnedUser);
+      // console.log("user:", returnedUser);
     } catch (e) {
       console.log("error getting user: ", e);
     }

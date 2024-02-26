@@ -9,12 +9,12 @@ let { SM_COGNITO_CREDENTIALS } = process.env;
 
 // Return response
 const responseStruct = {
-  "principalId": "yyyyyyyy", // The principal user identification associated with the token sent by the client.
-  "policyDocument": {
-    "Version": "2012-10-17",
-    "Statement": []
-  },
-  "context": {}
+    "principalId": "yyyyyyyy", // The principal user identification associated with the token sent by the client.
+    "policyDocument": {
+        "Version": "2012-10-17",
+        "Statement": []
+    },
+    "context": {}
 };
 
 // Create the verifier outside the Lambda handler (= during cold start),
@@ -23,12 +23,12 @@ const responseStruct = {
 let jwtVerifier;
 
 async function initializeConnection() {
-	// Retrieve the secret from AWS Secrets Manager
-	const secret = await secretsManager
-	.getSecretValue({ SecretId: SM_COGNITO_CREDENTIALS })
-	.promise();
+    // Retrieve the secret from AWS Secrets Manager
+    const secret = await secretsManager
+        .getSecretValue({ SecretId: SM_COGNITO_CREDENTIALS })
+        .promise();
 
-	const credentials = JSON.parse(secret.SecretString);
+    const credentials = JSON.parse(secret.SecretString);
 
     jwtVerifier = CognitoJwtVerifier.create({
         userPoolId: credentials.REACT_APP_USERPOOL_ID,
@@ -48,7 +48,7 @@ exports.handler = async (event) => {
     try {
         // If the token is not valid, an error is thrown:
         payload = await jwtVerifier.verify(accessToken);
-        
+
         // Modify the response output
         const parts = event.methodArn.split('/');
         const resource = parts.slice(0, 2).join('/') + '*';
@@ -59,11 +59,11 @@ exports.handler = async (event) => {
             "Resource": resource
         });
         responseStruct["context"] = {
-            "userId" : payload.sub
+            "userId": payload.sub
         };
-            
+
         return responseStruct;
-    } catch(e) {
+    } catch (e) {
         console.log(e);
         // API Gateway wants this *exact* error message, otherwise it returns 500 instead of 401:
         throw new Error("Unauthorized");

@@ -64,7 +64,7 @@ function AlternativeSpeciesPage() {
     try {
       const returnedUser = await Auth.currentAuthenticatedUser();
       setUser(returnedUser);
-      console.log(returnedUser)
+      // console.log(returnedUser)
     } catch (e) {
       console.log("error getting user: ", e);
     }

@@ -50,7 +50,7 @@ export class HostStack extends Stack {
         // For a region, create upto 2 AZ with a public subset each.
         const vpc = vpcStack.vpc;
 
-        // Retrieve a secrete from Secret Manager
+        // Retrieve a secret from Secret Manager
         // "Invasive_Plants_Cognito_Secrets" is consistent from functionality stack
         const secret = secretmanager.Secret.fromSecretNameV2(this, "ImportedSecrets", functionalityStack.secret.secretName);
 
