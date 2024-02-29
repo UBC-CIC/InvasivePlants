@@ -114,7 +114,6 @@ export class FunctionalityStack extends cdk.Stack {
         },
         "sts:AssumeRoleWithWebIdentity"
       ),
-      // Attach policies or permissions for authenticated users
     });
 
     const unauthenticatedRole = new iam.Role(this, "UnauthenticatedRole", {
@@ -130,8 +129,37 @@ export class FunctionalityStack extends cdk.Stack {
         },
         "sts:AssumeRoleWithWebIdentity"
       ),
-      // Attach policies or permissions for unauthenticated (guest) users
     });
+
+    // Attach policies to the authenticated role
+    authenticatedRole.attachInlinePolicy(
+      new iam.Policy(this, "AuthenticatedRolePolicy", {
+        statements: [
+          new iam.PolicyStatement({
+            effect: iam.Effect.ALLOW,
+            actions: ["execute-api:Invoke"],
+            resources: [
+              "arn:aws:execute-api:ca-central-1:529576108340:jiakeuvkzh/*/GET/*", //TODO
+            ],
+          }),
+        ],
+      })
+    );
+
+    // Attach policies to the unauthenticated role
+    unauthenticatedRole.attachInlinePolicy(
+      new iam.Policy(this, "UnauthenticatedRolePolicy", {
+        statements: [
+          new iam.PolicyStatement({
+            effect: iam.Effect.ALLOW,
+            actions: ["execute-api:Invoke"],
+            resources: [
+              "arn:aws:execute-api:ca-central-1:529576108340:jiakeuvkzh/*/GET/*", // TODO
+            ],
+          }),
+        ],
+      })
+    );
 
     // Attach roles to the identity pool
     new cognito.CfnIdentityPoolRoleAttachment(this, "IdentityPoolRoles", {

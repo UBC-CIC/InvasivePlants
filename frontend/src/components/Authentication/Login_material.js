@@ -266,7 +266,9 @@ function Login(props) {
                 setCurrentUser(user);
             } else {
                 // checks if user exists and belongs to the ADMIN USER group
-                if (user.signInUserSession.idToken.payload["cognito:groups"] !== undefined && user.signInUserSession.idToken.payload["cognito:groups"].some(element => element === "ADMIN_USER")) {
+                if (user.signInUserSession.idToken.payload["cognito:groups"] !== undefined &&
+                    user.signInUserSession.idToken.payload["cognito:groups"].some(element => element === "ADMIN_USER")
+                ) {
                     resetStates("signedIn");
                     setLoading(false);
                 } else {

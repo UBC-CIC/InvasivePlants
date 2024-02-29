@@ -283,7 +283,7 @@ paths:
         "500":
           description: Internal Server Error
       security:
-        - ApiKeyAuth: []
+        - cognitoAuthorizer: []
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambInvasiveSpecies.Arn}/invocations"
@@ -869,7 +869,7 @@ components:
       x-amazon-apigateway-authorizer:
         type: cognito_user_pools
         providerARNs:
-          - "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/ca-central-1_2vfJ8XCy2" # how to now hardcode the user pool?
+          - "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/ca-central-1_2vfJ8XCy2" # TODO: how to not hardcode the user pool?
     ApiKeyAuth:
       type: apiKey
       in: header

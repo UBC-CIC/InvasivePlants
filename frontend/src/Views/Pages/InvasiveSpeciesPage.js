@@ -24,7 +24,6 @@ function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
-
   const [searchDropdownSpeciesOptions, setSearchDropdownSpeciesOptions] = useState([]); // dropdown options for invasive species search bar (scientific names)
   const [searchDropdownRegionsOptions, setSearchDropdownRegionsOptions] = useState([]); // dropdown options for regions search bar 
   const [speciesCount, setSpeciesCount] = useState(0); // number of invasive species
@@ -52,25 +51,55 @@ function InvasiveSpeciesPage() {
 
   const [isLoading, setIsLoading] = useState(false); // loading data or not
   const [user, setUser] = useState(""); // authorized admin user
+  const [credentials, setCredentials] = useState(""); // authorized admin user
+
+  const AWS = require("aws-sdk");
 
   // Retrieves user on load
   useEffect(() => {
-    retrieveUser()
-  }, [])
+    AWS.config.update({
+      region: "ca-central-1"
+    });
+
+    // gets temporary credentials
+    const creds = new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: "ca-central-1:772913d0-fb27-4403-9336-2b72eb092f9d"
+    });
+
+    creds.refresh((error) => {
+      if (error) {
+        console.error('Error refreshing credentials:', error);
+      } else {
+        console.log('Credentials successfully obtained:', creds);
+        setCredentials(creds.sessionToken)
+      }
+    });
+  }, []);
+
+
+  useEffect(() => {
+    // Check if credentials have been set before making the API call
+    if (credentials) {
+      retrieveUser();
+      handleGetInvasiveSpecies();
+    }
+  }, [credentials]);
 
   // Gets current authorized user
   const retrieveUser = async () => {
     try {
       const returnedUser = await Auth.currentAuthenticatedUser();
       setUser(returnedUser);
-      console.log("user:", returnedUser);
+      console.log("user:", returnedUser)
     } catch (e) {
       console.log("error getting user: ", e);
     }
   }
 
+
   // Fetches rowsPerPage number of invasive species (pagination)
   const handleGetInvasiveSpecies = () => {
+    console.log("creds from get invasive:", credentials)
     setIsLoading(true);
     axios
       .get(`${API_BASE_URL}invasiveSpecies`, {
@@ -79,7 +108,8 @@ function InvasiveSpeciesPage() {
           rows_per_page: rowsPerPage // default 20
         },
         headers: {
-          'x-api-key': process.env.REACT_APP_X_API_KEY
+          // 'x-api-key': process.env.REACT_APP_X_API_KEY,
+          'Authorization': credentials
         }
       })
       .then((response) => {
