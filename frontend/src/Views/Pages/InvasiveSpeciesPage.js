@@ -3,6 +3,7 @@ import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, 
 import Theme from './Theme';
 import { Auth } from "aws-amplify";
 
+
 // components
 import PaginationComponent from '../../components/PaginationComponent';
 import EditInvasiveSpeciesDialog from "../../components/Dialogs/EditInvasiveSpeciesDialog";
@@ -51,46 +52,26 @@ function InvasiveSpeciesPage() {
 
   const [isLoading, setIsLoading] = useState(false); // loading data or not
   const [user, setUser] = useState(""); // authorized admin user
-  const [credentials, setCredentials] = useState(""); // authorized admin user
-
-  const AWS = require("aws-sdk");
-
-  // Retrieves user on load
-  useEffect(() => {
-    AWS.config.update({
-      region: "ca-central-1"
-    });
-
-    // gets temporary credentials
-    const creds = new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: "ca-central-1:772913d0-fb27-4403-9336-2b72eb092f9d"
-    });
-
-    creds.refresh((error) => {
-      if (error) {
-        console.error('Error refreshing credentials:', error);
-      } else {
-        console.log('Credentials successfully obtained:', creds);
-        setCredentials(creds.sessionToken)
-      }
-    });
-  }, []);
-
 
   useEffect(() => {
     // Check if credentials have been set before making the API call
-    if (credentials) {
-      retrieveUser();
+    retrieveUser();
+  }, []);
+
+  useEffect(() => {
+    // Check if credentials have been set before making the API call
+    if (user) {
       handleGetInvasiveSpecies();
     }
-  }, [credentials]);
+  }, [user]);
 
   // Gets current authorized user
   const retrieveUser = async () => {
     try {
       const returnedUser = await Auth.currentAuthenticatedUser();
-      setUser(returnedUser);
       console.log("user:", returnedUser)
+      setUser(returnedUser);
+
     } catch (e) {
       console.log("error getting user: ", e);
     }
@@ -98,8 +79,11 @@ function InvasiveSpeciesPage() {
 
 
   // Fetches rowsPerPage number of invasive species (pagination)
-  const handleGetInvasiveSpecies = () => {
-    console.log("creds from get invasive:", credentials)
+  const handleGetInvasiveSpecies = async () => {
+    var session = await Auth.currentSession()
+    var idToken = await session.getIdToken()
+    var jwtToken = await idToken.getJwtToken()
+
     setIsLoading(true);
     axios
       .get(`${API_BASE_URL}invasiveSpecies`, {
@@ -108,8 +92,7 @@ function InvasiveSpeciesPage() {
           rows_per_page: rowsPerPage // default 20
         },
         headers: {
-          // 'x-api-key': process.env.REACT_APP_X_API_KEY,
-          'Authorization': credentials
+          'Authorization': jwtToken
         }
       })
       .then((response) => {
@@ -189,7 +172,8 @@ function InvasiveSpeciesPage() {
             rows_per_page: rowsPerPage, // default 20
           },
           headers: {
-            'x-api-key': process.env.REACT_APP_X_API_KEY
+            // 'x-api-key': process.env.REACT_APP_X_API_KEY
+            // Authorization: jwtToken
           }
         })
         .then((response) => {
