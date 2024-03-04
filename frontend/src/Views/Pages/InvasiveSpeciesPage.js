@@ -51,9 +51,9 @@ function InvasiveSpeciesPage() {
   const [shouldCalculate, setShouldCalculate] = useState(true); // whether calculation of start and end should be made
 
   const [isLoading, setIsLoading] = useState(false); // loading data or not
-  const [firstLoad, setFirstLoad] = useState(true); // first time loading the page
+  const [firstLoad, setFirstLoad] = useState(true); // flag to indicate if it's the first time loading the page
   const [user, setUser] = useState(""); // authorized admin user
-  const [jwtToken, setJwtToken] = useState(""); // jwt token for authorizing get requests
+  const [jwtToken, setJwtToken] = useState(""); // jwtToken for authorizing get requests
 
   useEffect(() => {
     retrieveJwtToken();
@@ -85,7 +85,6 @@ function InvasiveSpeciesPage() {
   // Gets jwtToken for current session
   const retrieveJwtToken = async () => {
     try {
-      // setIsLoading(true);
       var session = await Auth.currentSession()
       var idToken = await session.getIdToken()
       var token = await idToken.getJwtToken()
@@ -97,10 +96,9 @@ function InvasiveSpeciesPage() {
 
 
   // Fetches rowsPerPage number of invasive species (pagination)
-  // Fetches rowsPerPage number of invasive species (pagination)
   const handleGetInvasiveSpecies = () => {
     setIsLoading(true);
-    console.log("get inv species, curr offset, shouldReset: ", currOffset, shouldReset);
+    // console.log("get inv species, curr offset, shouldReset: ", currOffset, shouldReset);
 
     try {
       axios.get(`${API_BASE_URL}invasiveSpecies`, {
@@ -142,15 +140,14 @@ function InvasiveSpeciesPage() {
             setStart(0);
             setEnd(0);
             setShouldCalculate(true);
-            // setShouldReset(false);
+            setShouldReset(false);
           }
 
-          console.log("formatted data, curr offset", formattedData, currOffset);
+          // console.log("formatted data, curr offset", formattedData, currOffset);
           setSpeciesCount(response.data.count[0].count);
           setDisplayData(formattedData);
           setData(formattedData);
           setCurrOffset(response.data.nextOffset);
-          setShouldReset(false)
           setShouldSave(false);
           setIsLoading(false);
         })
@@ -162,71 +159,11 @@ function InvasiveSpeciesPage() {
     }
   };
 
-  // const handleGetInvasiveSpecies = async () => {
-  //   setIsLoading(true);
-  //   console.log("get inv species, curr offset, shouldReset: ", currOffset, shouldReset);
-
-  //   try {
-  //     const response = await axios.get(`${API_BASE_URL}invasiveSpecies`, {
-  //       params: {
-  //         curr_offset: currOffset ? currOffset : 0,
-  //         rows_per_page: rowsPerPage // default 20
-  //       },
-  //       headers: {
-  //         'Authorization': jwtToken
-  //       }
-  //     });
-
-  //     const formattedData = response.data.species.map((item) => {
-  //       if (item.alternative_species) {
-  //         item.alternative_species.forEach(species => {
-  //           species.scientific_name = species.scientific_name.map(name =>
-  //             capitalizeFirstWord(name)
-  //           );
-  //           species.common_name = species.common_name.map(name =>
-  //             capitalizeEachWord(name)
-  //           );
-  //         });
-  //       }
-
-  //       return {
-  //         ...item,
-  //         scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
-  //         common_name: item.common_name.map(name => capitalizeEachWord(name)),
-  //         image_links: item.images.map(img => img.image_url),
-  //         s3_keys: item.images.map(img => img.s3_key)
-  //       };
-  //     });
-
-  //     // Resets pagination details
-  //     // This will clear the last species id history and display the first page
-  //     if (shouldReset) {
-  //       console.log("in here")
-  //       setCurrOffset(0);
-  //       setPage(0);
-  //       setStart(0);
-  //       setEnd(0);
-  //       setShouldCalculate(true);
-  //       setShouldReset(false);
-  //     }
-
-  //     console.log("formatted data, curr offset", formattedData, currOffset);
-  //     setSpeciesCount(response.data.count[0].count);
-  //     setDisplayData(formattedData);
-  //     setData(formattedData);
-  //     setCurrOffset(response.data.nextOffset);
-  //     setIsLoading(false);
-  //     setShouldSave(false);
-  //   } catch (error) {
-  //     console.error("Error retrieving invasive species", error);
-  //   }
-  // };
-
 
   // Maintains history of last species_id and currLastSpeciesId so that on GET, 
   // the current page is maintained instead of starting from page 1
   const handleGetInvasiveSpeciesAfterSave = () => {
-    console.log("got here:", currOffset)
+    // console.log("got here:", currOffset)
     setCurrOffset(curr => curr - rowsPerPage);
     setShouldSave(true); // useEffect listens for this state to change and will GET invasive species when True
   };
@@ -234,40 +171,8 @@ function InvasiveSpeciesPage() {
   // Request to GET invasive species (same page) after editing a row to see the updated data when shouldSave state changes
   useEffect(() => {
     if (shouldSave) {
-      console.log("saving..., calling get invasive species again")
+      // console.log("saving..., calling get invasive species again")
       handleGetInvasiveSpecies();
-      //   console.log("saving, curroffset: ", currOffset)
-      //   axios
-      //     .get(`${API_BASE_URL}invasiveSpecies`, {
-      //       params: {
-      //         curr_offset: currOffset ? currOffset : 0, // default first page
-      //         rows_per_page: rowsPerPage, // default 20
-      //       },
-      //       headers: {
-      //         "Authorization": jwtToken
-      //       }
-      //     })
-      //     .then((response) => {
-      //       const formattedData = response.data.species.map((item, index) => {
-      //         return {
-      //           ...item,
-      //           scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
-      //           common_name: item.common_name.map(name => capitalizeEachWord(name)),
-      //           image_links: item.images.map(img => img.image_url),
-      //           s3_keys: item.images.map(img => img.s3_key)
-      //         };
-      //       });
-
-      //       console.log("after save: ", formattedData)
-
-      //       setDisplayData(formattedData);
-      //       setCurrOffset(response.data.nextOffset);
-      //       setShouldSave(false);
-      //       setIsLoading(false);
-      //     })
-      //     .catch((error) => {
-      //       console.error("Error getting invasive species", error);
-      //     })
     }
   }, [shouldSave]);
 
@@ -373,7 +278,7 @@ function InvasiveSpeciesPage() {
   // Updates changes to the database on save
   const handleSave = (confirmed) => {
     retrieveUser();
-    const token = user.signInUserSession.accessToken.jwtToken
+    const jwtToken = user.signInUserSession.accessToken.jwtToken
 
     if (confirmed) {
       function formatNames(names) {
@@ -438,16 +343,12 @@ function InvasiveSpeciesPage() {
             axios
               .post(API_BASE_URL + "plantsImages", img, {
                 headers: {
-                  'Authorization': `${token}`
+                  'Authorization': jwtToken
                 }
               })
               .then(() => {
-                console.log("got into post images...")
-                // if (start > rowsPerPage) {
-                //   handleGetInvasiveSpeciesAfterSave();
-                // } else {
-                //   setShouldReset(true);
-                // }
+                // console.log("got into post images...")
+                handleGetInvasiveSpeciesAfterSave();
               })
               .catch(error => {
                 console.error("Error adding images", error);
@@ -456,25 +357,18 @@ function InvasiveSpeciesPage() {
         }
       }
 
-
       // Update invasive species table
       axios
         .put(`${API_BASE_URL}invasiveSpecies/${tempEditingData.species_id}`,
           updatedTempDataWithoutRegionCode,
           {
             headers: {
-              'Authorization': `${token}`
+              'Authorization': jwtToken
             }
           })
         .then(() => {
-          // if (start > rowsPerPage) {
-          console.log("got here, should save")
+          // console.log("got here, should save")
           handleGetInvasiveSpeciesAfterSave();
-          // } else {
-          //   console.log("got here, should reset")
-          //   setCurrOffset(0);
-          //   setShouldReset(true);
-          // }
           handleFinishEditingRow();
         })
         .catch((error) => {
@@ -492,14 +386,14 @@ function InvasiveSpeciesPage() {
   // Deletes invasive species from the table
   const handleConfirmDelete = () => {
     retrieveUser();
-    const token = user.signInUserSession.accessToken.jwtToken
+    const jwtToken = user.signInUserSession.accessToken.jwtToken
 
     if (deleteId) {
       axios
         .delete(`${API_BASE_URL}invasiveSpecies/${deleteId}`,
           {
             headers: {
-              'Authorization': `${token}`
+              'Authorization': `${jwtToken}`
             }
           })
         .then(() => {
@@ -587,8 +481,7 @@ function InvasiveSpeciesPage() {
   // Call to handleGetInvasiveSpecies if shouldReset state is True
   useEffect(() => {
     if (shouldReset) {
-      setCurrOffset(0);
-      console.log("should reset: curr offset: ", currOffset)
+      // console.log("should reset: curr offset: ", currOffset)
       handleGetInvasiveSpecies();
     }
   }, [shouldReset]);
@@ -640,7 +533,6 @@ function InvasiveSpeciesPage() {
             search_input: searchInput,
           },
           headers: {
-            // 'x-api-key': process.env.REACT_APP_X_API_KEY
             "Authorization": jwtToken
           }
         })
@@ -739,7 +631,7 @@ function InvasiveSpeciesPage() {
   // Resets if rowsPerPage changes 
   useEffect(() => {
     if (!firstLoad) {
-      console.log("rows per page changed")
+      // console.log("rows per page changed")
       setShouldReset(true);
     }
   }, [rowsPerPage]);
@@ -747,7 +639,7 @@ function InvasiveSpeciesPage() {
   // Call to get next/previous rowsPerPage number of species on page change
   useEffect(() => {
     if (!firstLoad) {
-      console.log("page changed...")
+      // console.log("page changed...")
       handleGetInvasiveSpecies();
     }
   }, [page]);

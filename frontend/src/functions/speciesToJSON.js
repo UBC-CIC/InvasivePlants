@@ -27,7 +27,6 @@ const speciesDataToJSON = async (commonName, scientificName, speciesScore, userL
             location: RegionMap[userLocation.toLowerCase()]
         };
     } else {
-        // TODO: get from database if invasive
         speciesInfo = {
             commonName: commonName,
             scientificName: scientificName,
