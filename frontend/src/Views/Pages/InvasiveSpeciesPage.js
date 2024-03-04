@@ -95,79 +95,142 @@ function InvasiveSpeciesPage() {
 
 
   // Fetches rowsPerPage number of invasive species (pagination)
-  const handleGetInvasiveSpecies = () => {
-    console.log("curr offset from get inv species:", currOffset)
-    axios
-      .get(`${API_BASE_URL}invasiveSpecies`, {
+  const handleGetInvasiveSpecies = async () => {
+    setIsLoading(true);
+    console.log("get inv species, curr offset, shouldReset: ", currOffset, shouldReset);
+
+    try {
+      const response = await axios.get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
-          curr_offset: shouldReset ? null : currOffset,
+          curr_offset: currOffset ? currOffset : 0,
           rows_per_page: rowsPerPage // default 20
         },
         headers: {
           'Authorization': jwtToken
         }
-      })
-      .then((response) => {
-        const promises = response.data.species.flatMap(item =>
-          item.region_id.map(regionId =>
-            axios.get(`${API_BASE_URL}region/${regionId}`, {
-              headers: {
-                'x-api-key': process.env.REACT_APP_X_API_KEY
-              }
-            })
-          )
-        );
+      });
 
-        return Promise.all(promises)
-          .then(() => {
-            const formattedData = response.data.species.map((item) => {
-              if (item.alternative_species) {
-                item.alternative_species.forEach(species => {
-                  species.scientific_name = species.scientific_name.map(name =>
-                    capitalizeFirstWord(name)
-                  );
-                  species.common_name = species.common_name.map(name =>
-                    capitalizeEachWord(name)
-                  );
-                });
-              }
-
-              return {
-                ...item,
-                scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
-                common_name: item.common_name.map(name => capitalizeEachWord(name)),
-                image_links: item.images.map(img => img.image_url),
-                s3_keys: item.images.map(img => img.s3_key)
-              };
-            });
-
-            // Resets pagination details
-            // This will clear the last species id history and display the first page
-            if (shouldReset) {
-              setCurrOffset(0);
-              setPage(0);
-              setStart(0);
-              setEnd(0);
-              setShouldCalculate(true);
-              setShouldReset(false);
-            }
-
-            setSpeciesCount(response.data.count[0].count);
-            setDisplayData(formattedData);
-            setData(formattedData);
-            setCurrOffset(response.data.nextOffset);
-            setIsLoading(false);
+      const formattedData = response.data.species.map((item) => {
+        if (item.alternative_species) {
+          item.alternative_species.forEach(species => {
+            species.scientific_name = species.scientific_name.map(name =>
+              capitalizeFirstWord(name)
+            );
+            species.common_name = species.common_name.map(name =>
+              capitalizeEachWord(name)
+            );
           });
-      })
-      .catch((error) => {
-        console.error("Error retrieving invasive species", error);
-      })
+        }
+
+        return {
+          ...item,
+          scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
+          common_name: item.common_name.map(name => capitalizeEachWord(name)),
+          image_links: item.images.map(img => img.image_url),
+          s3_keys: item.images.map(img => img.s3_key)
+        };
+      });
+
+      // Resets pagination details
+      // This will clear the last species id history and display the first page
+      if (shouldReset) {
+        console.log("in here")
+        setCurrOffset(0);
+        setPage(0);
+        setStart(0);
+        setEnd(0);
+        setShouldCalculate(true);
+        setShouldReset(false);
+      }
+
+      console.log("formatted data, curr offset", formattedData, currOffset);
+      setSpeciesCount(response.data.count[0].count);
+      setDisplayData(formattedData);
+      setData(formattedData);
+      setCurrOffset(response.data.nextOffset);
+      setIsLoading(false);
+      setShouldSave(false);
+    } catch (error) {
+      console.error("Error retrieving invasive species", error);
+    }
   };
+
+  // const handleGetInvasiveSpecies = () => {
+  //   setIsLoading(true);
+  //   console.log("get inv species, curr offset, shouldReset: ", currOffset, shouldReset)
+
+  //   axios
+  //     .get(`${API_BASE_URL}invasiveSpecies`, {
+  //       params: {
+  //         curr_offset: shouldReset ? 0 : currOffset,
+  //         rows_per_page: rowsPerPage // default 20
+  //       },
+  //       headers: {
+  //         'Authorization': jwtToken
+  //       }
+  //     })
+  //     .then((response) => {
+  //       const promises = response.data.species.flatMap(item =>
+  //         item.region_id.map(regionId =>
+  //           axios.get(`${API_BASE_URL}region/${regionId}`, {
+  //             headers: {
+  //               'x-api-key': process.env.REACT_APP_X_API_KEY
+  //             }
+  //           })
+  //         )
+  //       );
+
+  //       return Promise.all(promises)
+  //         .then(() => {
+  //           const formattedData = response.data.species.map((item) => {
+  //             if (item.alternative_species) {
+  //               item.alternative_species.forEach(species => {
+  //                 species.scientific_name = species.scientific_name.map(name =>
+  //                   capitalizeFirstWord(name)
+  //                 );
+  //                 species.common_name = species.common_name.map(name =>
+  //                   capitalizeEachWord(name)
+  //                 );
+  //               });
+  //             }
+
+  //             return {
+  //               ...item,
+  //               scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
+  //               common_name: item.common_name.map(name => capitalizeEachWord(name)),
+  //               image_links: item.images.map(img => img.image_url),
+  //               s3_keys: item.images.map(img => img.s3_key)
+  //             };
+  //           });
+
+  //           // Resets pagination details
+  //           // This will clear the last species id history and display the first page
+  //           if (shouldReset) {
+  //             setCurrOffset(0);
+  //             setPage(0);
+  //             setStart(0);
+  //             setEnd(0);
+  //             setShouldCalculate(true);
+  //             setShouldReset(false);
+  //           }
+
+  //           console.log("formatted data, curr offset", formattedData, currOffset)
+  //           setSpeciesCount(response.data.count[0].count);
+  //           setDisplayData(formattedData);
+  //           setData(formattedData);
+  //           setCurrOffset(response.data.nextOffset);
+  //           setIsLoading(false);
+  //         });
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error retrieving invasive species", error);
+  //     })
+  // };
 
   // Maintains history of last species_id and currLastSpeciesId so that on GET, 
   // the current page is maintained instead of starting from page 1
   const handleGetInvasiveSpeciesAfterSave = () => {
-    console.log("got here:")
+    console.log("got here:", currOffset)
     setCurrOffset(curr => curr - rowsPerPage);
     setShouldSave(true); // useEffect listens for this state to change and will GET invasive species when True
   };
@@ -175,36 +238,39 @@ function InvasiveSpeciesPage() {
   // Request to GET invasive species (same page) after editing a row to see the updated data when shouldSave state changes
   useEffect(() => {
     if (shouldSave) {
-      console.log("saving, curroffset: ", currOffset)
-      axios
-        .get(`${API_BASE_URL}invasiveSpecies`, {
-          params: {
-            curr_offset: currOffset ? currOffset : null, // default first page
-            rows_per_page: rowsPerPage, // default 20
-          },
-          headers: {
-            "Authorization": jwtToken
-          }
-        })
-        .then((response) => {
-          const formattedData = response.data.species.map((item, index) => {
-            return {
-              ...item,
-              scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
-              common_name: item.common_name.map(name => capitalizeEachWord(name)),
-              image_links: item.images.map(img => img.image_url),
-              s3_keys: item.images.map(img => img.s3_key)
-            };
-          });
+      handleGetInvasiveSpecies();
+      //   console.log("saving, curroffset: ", currOffset)
+      //   axios
+      //     .get(`${API_BASE_URL}invasiveSpecies`, {
+      //       params: {
+      //         curr_offset: currOffset ? currOffset : 0, // default first page
+      //         rows_per_page: rowsPerPage, // default 20
+      //       },
+      //       headers: {
+      //         "Authorization": jwtToken
+      //       }
+      //     })
+      //     .then((response) => {
+      //       const formattedData = response.data.species.map((item, index) => {
+      //         return {
+      //           ...item,
+      //           scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
+      //           common_name: item.common_name.map(name => capitalizeEachWord(name)),
+      //           image_links: item.images.map(img => img.image_url),
+      //           s3_keys: item.images.map(img => img.s3_key)
+      //         };
+      //       });
 
-          setDisplayData(formattedData);
-          setCurrOffset(response.data.nextOffset);
-          setShouldSave(false);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error getting invasive species", error);
-        })
+      //       console.log("after save: ", formattedData)
+
+      //       setDisplayData(formattedData);
+      //       setCurrOffset(response.data.nextOffset);
+      //       setShouldSave(false);
+      //       setIsLoading(false);
+      //     })
+      //     .catch((error) => {
+      //       console.error("Error getting invasive species", error);
+      //     })
     }
   }, [shouldSave]);
 
@@ -378,13 +444,13 @@ function InvasiveSpeciesPage() {
                   'Authorization': `${jwtToken}`
                 }
               })
-              .then(() => {
-                if (start > rowsPerPage) {
-                  handleGetInvasiveSpeciesAfterSave();
-                } else {
-                  setShouldReset(true);
-                }
-              })
+              // .then(() => {
+              //   if (start > rowsPerPage) {
+              //     handleGetInvasiveSpeciesAfterSave();
+              //   } else {
+              //     setShouldReset(true);
+              //   }
+              // })
               .catch(error => {
                 console.error("Error adding images", error);
               });
@@ -404,8 +470,11 @@ function InvasiveSpeciesPage() {
           })
         .then(() => {
           if (start > rowsPerPage) {
+            console.log("got here 1, should save")
             handleGetInvasiveSpeciesAfterSave();
           } else {
+            console.log("got here, should reset")
+            setCurrOffset(0);
             setShouldReset(true);
           }
           handleFinishEditingRow();
@@ -437,6 +506,7 @@ function InvasiveSpeciesPage() {
           })
         .then(() => {
           setSpeciesCount(prevCount => prevCount - 1)
+          setCurrOffset(0)
           setShouldReset(true);
           setOpenDeleteConfirmation(false);
         })
@@ -506,6 +576,10 @@ function InvasiveSpeciesPage() {
               console.error("Error adding image", error);
             });
         });
+
+        setCurrOffset(0)
+        setShouldReset(true);
+        setOpenAddSpeciesDialog(false);
       })
       .catch((error) => {
         console.error("Error adding alternative species", error);
@@ -515,8 +589,8 @@ function InvasiveSpeciesPage() {
   // Call to handleGetAlternativeSpecies if shouldReset state is True
   useEffect(() => {
     if (shouldReset) {
-      console.log("should reset")
-      setIsLoading(true);
+      setCurrOffset(0);
+      console.log("should reset: curr offset: ", currOffset)
       handleGetInvasiveSpecies();
     }
   }, [shouldReset]);
@@ -795,6 +869,7 @@ function InvasiveSpeciesPage() {
       </div>
 
       {/* table */}
+      {/* {console.log("table: ", displayData)} */}
       <div style={{ width: "90%", display: "flex", justifyContent: "center", alignItems: "center" }}>
         {isLoading ? (
           <Spinner animation="border" role="status">
