@@ -52,14 +52,19 @@ function InvasiveSpeciesPage() {
 
   const [isLoading, setIsLoading] = useState(false); // loading data or not
   const [user, setUser] = useState(""); // authorized admin user
+  const [jwtToken, setJwtToken] = useState(""); // jwt token for authorizing get requests
 
   useEffect(() => {
-    // Check if credentials have been set before making the API call
-    retrieveUser();
+    retrieveJwtToken();
   }, []);
 
   useEffect(() => {
-    // Check if credentials have been set before making the API call
+    if (jwtToken) {
+      retrieveUser();
+    }
+  }, [jwtToken]);
+
+  useEffect(() => {
     if (user) {
       handleGetInvasiveSpecies();
     }
@@ -69,22 +74,29 @@ function InvasiveSpeciesPage() {
   const retrieveUser = async () => {
     try {
       const returnedUser = await Auth.currentAuthenticatedUser();
-      console.log("user:", returnedUser)
       setUser(returnedUser);
-
     } catch (e) {
       console.log("error getting user: ", e);
     }
   }
 
+  // Gets jwtToken for current session
+  const retrieveJwtToken = async () => {
+    try {
+      setIsLoading(true);
+      var session = await Auth.currentSession()
+      var idToken = await session.getIdToken()
+      var token = await idToken.getJwtToken()
+      setJwtToken(token);
+    } catch (e) {
+      console.log("error getting token: ", e);
+    }
+  }
+
 
   // Fetches rowsPerPage number of invasive species (pagination)
-  const handleGetInvasiveSpecies = async () => {
-    var session = await Auth.currentSession()
-    var idToken = await session.getIdToken()
-    var jwtToken = await idToken.getJwtToken()
-
-    setIsLoading(true);
+  const handleGetInvasiveSpecies = () => {
+    console.log("curr offset from get inv species:", currOffset)
     axios
       .get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
@@ -144,20 +156,18 @@ function InvasiveSpeciesPage() {
             setDisplayData(formattedData);
             setData(formattedData);
             setCurrOffset(response.data.nextOffset);
+            setIsLoading(false);
           });
       })
       .catch((error) => {
         console.error("Error retrieving invasive species", error);
       })
-      .finally(() => {
-        setIsLoading(false);
-      });
   };
 
   // Maintains history of last species_id and currLastSpeciesId so that on GET, 
   // the current page is maintained instead of starting from page 1
   const handleGetInvasiveSpeciesAfterSave = () => {
-    // console.log("got here:")
+    console.log("got here:")
     setCurrOffset(curr => curr - rowsPerPage);
     setShouldSave(true); // useEffect listens for this state to change and will GET invasive species when True
   };
@@ -165,6 +175,7 @@ function InvasiveSpeciesPage() {
   // Request to GET invasive species (same page) after editing a row to see the updated data when shouldSave state changes
   useEffect(() => {
     if (shouldSave) {
+      console.log("saving, curroffset: ", currOffset)
       axios
         .get(`${API_BASE_URL}invasiveSpecies`, {
           params: {
@@ -172,8 +183,7 @@ function InvasiveSpeciesPage() {
             rows_per_page: rowsPerPage, // default 20
           },
           headers: {
-            // 'x-api-key': process.env.REACT_APP_X_API_KEY
-            // Authorization: jwtToken
+            "Authorization": jwtToken
           }
         })
         .then((response) => {
@@ -190,6 +200,7 @@ function InvasiveSpeciesPage() {
           setDisplayData(formattedData);
           setCurrOffset(response.data.nextOffset);
           setShouldSave(false);
+          setIsLoading(false);
         })
         .catch((error) => {
           console.error("Error getting invasive species", error);
@@ -211,7 +222,7 @@ function InvasiveSpeciesPage() {
           rows_per_page: speciesCount
         },
         headers: {
-          'x-api-key': process.env.REACT_APP_X_API_KEY
+          "Authorization": jwtToken
         }
       })
       .then((response) => {
@@ -504,6 +515,8 @@ function InvasiveSpeciesPage() {
   // Call to handleGetAlternativeSpecies if shouldReset state is True
   useEffect(() => {
     if (shouldReset) {
+      console.log("should reset")
+      setIsLoading(true);
       handleGetInvasiveSpecies();
     }
   }, [shouldReset]);
@@ -555,7 +568,8 @@ function InvasiveSpeciesPage() {
             search_input: searchInput,
           },
           headers: {
-            'x-api-key': process.env.REACT_APP_X_API_KEY
+            // 'x-api-key': process.env.REACT_APP_X_API_KEY
+            "Authorization": jwtToken
           }
         })
         .then((response) => {
