@@ -11,6 +11,9 @@ import * as iam from "aws-cdk-lib/aws-iam";
 export class FunctionalityStack extends cdk.Stack {
   public readonly secret: secretsmanager.ISecret;
   public readonly bucketName: string;
+  public readonly appClient: cognito.UserPoolClient;
+  public readonly userpool: cognito.UserPool;
+
   public readonly s3_Object_baseURL: string;
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -23,7 +26,7 @@ export class FunctionalityStack extends cdk.Stack {
      */
     const userPoolName = "invasivePlantsUserPool";
 
-    const userpool = new cognito.UserPool(this, "invasive-plants-pool", {
+    this.userpool = new cognito.UserPool(this, "invasive-plants-pool", {
       userPoolName: userPoolName,
       signInAliases: {
         email: true,
@@ -54,7 +57,7 @@ export class FunctionalityStack extends cdk.Stack {
      * Create Cognito Client
      * An entity that allows your application to interact with the AWS Cognito User Pool service
      */
-    const appClient = userpool.addClient("invasive-plants-pool", {
+    this.appClient = this.userpool.addClient("invasive-plants-pool", {
       userPoolClientName: userPoolName,
       authFlows: {
         userPassword: true,
@@ -69,7 +72,7 @@ export class FunctionalityStack extends cdk.Stack {
       this,
       "cognito-userGroup",
       {
-        userPoolId: userpool.userPoolId,
+        userPoolId: this.userpool.userPoolId,
 
         // the properties below are optional
         description: "Admin usergroup to perform data manipulation",
@@ -78,97 +81,14 @@ export class FunctionalityStack extends cdk.Stack {
       }
     );
 
-    /**
-     * Create Cognito Identity Pool
-     * An identity pool is a store of user identity information that is specific to your AWS account
-     */
-    const identityPool = new cognito.CfnIdentityPool(
-      this,
-      "invasive-plants-identity-pool",
-      {
-        allowUnauthenticatedIdentities: true, // Set to true to allow unauthenticated (guest) users (mobile app)
-        identityPoolName: "invasivePlantsIdentityPool",
-        cognitoIdentityProviders: [
-          {
-            clientId: appClient.userPoolClientId,
-            providerName: userpool.userPoolProviderName,
-          },
-        ],
-      }
-    );
-
-    /**
-     * Attach roles for authenticated and unauthenticated users
-     * Define and attach roles that will be assumed by users in the identity pool
-     */
-    const authenticatedRole = new iam.Role(this, "AuthenticatedRole", {
-      assumedBy: new iam.FederatedPrincipal(
-        "cognito-identity.amazonaws.com",
-        {
-          StringEquals: {
-            "cognito-identity.amazonaws.com:aud": identityPool.ref,
-          },
-          "ForAnyValue:StringLike": {
-            "cognito-identity.amazonaws.com:amr": "authenticated",
-          },
-        },
-        "sts:AssumeRoleWithWebIdentity"
-      ),
+    // Outputs section to export the userPoolId
+    new cdk.CfnOutput(this, "UserPoolIdOutput", {
+      value: this.userpool.userPoolId,
+      description: "Cognito User Pool ID",
+      exportName: "userPoolId", 
     });
 
-    const unauthenticatedRole = new iam.Role(this, "UnauthenticatedRole", {
-      assumedBy: new iam.FederatedPrincipal(
-        "cognito-identity.amazonaws.com",
-        {
-          StringEquals: {
-            "cognito-identity.amazonaws.com:aud": identityPool.ref,
-          },
-          "ForAnyValue:StringLike": {
-            "cognito-identity.amazonaws.com:amr": "unauthenticated",
-          },
-        },
-        "sts:AssumeRoleWithWebIdentity"
-      ),
-    });
-
-    // Attach policies to the authenticated role
-    authenticatedRole.attachInlinePolicy(
-      new iam.Policy(this, "AuthenticatedRolePolicy", {
-        statements: [
-          new iam.PolicyStatement({
-            effect: iam.Effect.ALLOW,
-            actions: ["execute-api:Invoke"],
-            resources: [
-              "arn:aws:execute-api:ca-central-1:529576108340:jiakeuvkzh/*/GET/*", //TODO
-            ],
-          }),
-        ],
-      })
-    );
-
-    // Attach policies to the unauthenticated role
-    unauthenticatedRole.attachInlinePolicy(
-      new iam.Policy(this, "UnauthenticatedRolePolicy", {
-        statements: [
-          new iam.PolicyStatement({
-            effect: iam.Effect.ALLOW,
-            actions: ["execute-api:Invoke"],
-            resources: [
-              "arn:aws:execute-api:ca-central-1:529576108340:jiakeuvkzh/*/GET/*", // TODO
-            ],
-          }),
-        ],
-      })
-    );
-
-    // Attach roles to the identity pool
-    new cognito.CfnIdentityPoolRoleAttachment(this, "IdentityPoolRoles", {
-      identityPoolId: identityPool.ref,
-      roles: {
-        authenticated: authenticatedRole.roleArn,
-        unauthenticated: unauthenticatedRole.roleArn,
-      },
-    });
+    // created identity pool and roles in api-stack so have parameters for the resource
 
     /**
      *
@@ -197,21 +117,21 @@ export class FunctionalityStack extends cdk.Stack {
     // Read parameter from user
     const apiKey = new cdk.CfnParameter(this, "apiKey", {
       type: "String",
-      description: "Custome apiKey for the API Gateway.",
+      description: "Custom apiKey for the API Gateway.",
       default: generateRandomString(32),
     });
 
-    // Check if the user provided an API key
+    // Check if the user provided an API key and store in secrets manager
     if (apiKey.value) {
       this.secret = new secretsmanager.Secret(this, secretsName, {
         secretName: secretsName,
         description: "Cognito Secrets for authentication",
         secretObjectValue: {
           REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(
-            userpool.userPoolId
+            this.userpool.userPoolId
           ),
           REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(
-            appClient.userPoolClientId
+            this.appClient.userPoolClientId
           ),
           REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
           REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(
@@ -221,16 +141,16 @@ export class FunctionalityStack extends cdk.Stack {
         removalPolicy: cdk.RemovalPolicy.DESTROY,
       });
     } else {
-      // User did not provide an API key, generate a random one
+      // User did not provide an API key, generate a random one and store in secrets manager
       this.secret = new secretsmanager.Secret(this, secretsName, {
         secretName: secretsName,
         description: "Cognito Secrets for authentication",
         secretObjectValue: {
           REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(
-            userpool.userPoolId
+            this.userpool.userPoolId
           ),
           REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(
-            appClient.userPoolClientId
+            this.appClient.userPoolClientId
           ),
           REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
           REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(

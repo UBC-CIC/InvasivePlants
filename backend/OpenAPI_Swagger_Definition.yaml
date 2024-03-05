@@ -97,7 +97,7 @@ paths:
         "500":
           description: Internal Server Error
       security:
-        - ApiKeyAuth: []
+        - cognitoAuthorizer: []
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambRegion.Arn}/invocations"
@@ -160,7 +160,7 @@ paths:
         "500":
           description: Internal Server Error
       security:
-        - ApiKeyAuth: []
+        - cognitoAuthorizer: []
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambRegion.Arn}/invocations"
@@ -432,7 +432,7 @@ paths:
         "500":
           description: Internal Server Error
       security:
-        - ApiKeyAuth: []
+        - cognitoAuthorizer: []
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambAlternativeSpecies.Arn}/invocations"
@@ -566,7 +566,7 @@ paths:
         "500":
           description: Internal Server Error
       security:
-        - ApiKeyAuth: []
+        - cognitoAuthorizer: []
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambImages.Arn}/invocations"
@@ -869,7 +869,11 @@ components:
       x-amazon-apigateway-authorizer:
         type: cognito_user_pools
         providerARNs:
+          # - FN::Sub: "${CognitoUserPool.Arn}"
           - "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/ca-central-1_2vfJ8XCy2" # TODO: how to not hardcode the user pool?
+          # - Fn::Sub:
+          #     - "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${UserPoolId}"
+          #     - UserPoolId: !ImportValue userPoolId
     ApiKeyAuth:
       type: apiKey
       in: header

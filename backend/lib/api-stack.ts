@@ -5,6 +5,7 @@ import { Fn } from "aws-cdk-lib";
 import { Duration } from "aws-cdk-lib";
 
 // Service files import
+import * as cognito from "aws-cdk-lib/aws-cognito";
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as iam from "aws-cdk-lib/aws-iam";
@@ -148,6 +149,98 @@ export class APIStack extends Stack {
         resources: ["arn:aws:logs:*:*:*"],
       })
     );
+
+    /**
+     * Create Cognito Identity Pool
+     * An identity pool is a store of user identity information that is specific to your AWS account
+     */
+    const identityPool = new cognito.CfnIdentityPool(
+      this,
+      "invasive-plants-identity-pool",
+      {
+        allowUnauthenticatedIdentities: true, // Set to true to allow unauthenticated (guest) users (mobile app)
+        identityPoolName: "invasivePlantsIdentityPool",
+        cognitoIdentityProviders: [
+          {
+            clientId: functionalityStack.appClient.userPoolClientId,
+            providerName: functionalityStack.userpool.userPoolProviderName,
+          },
+        ],
+      }
+    );
+
+    /**
+     * Attach roles for authenticated and unauthenticated users
+     * Define and attach roles that will be assumed by users in the identity pool
+     */
+    const authenticatedRole = new iam.Role(this, "AuthenticatedRole", {
+      assumedBy: new iam.FederatedPrincipal(
+        "cognito-identity.amazonaws.com",
+        {
+          StringEquals: {
+            "cognito-identity.amazonaws.com:aud": identityPool.ref,
+          },
+          "ForAnyValue:StringLike": {
+            "cognito-identity.amazonaws.com:amr": "authenticated",
+          },
+        },
+        "sts:AssumeRoleWithWebIdentity"
+      ),
+    });
+
+    const unauthenticatedRole = new iam.Role(this, "UnauthenticatedRole", {
+      assumedBy: new iam.FederatedPrincipal(
+        "cognito-identity.amazonaws.com",
+        {
+          StringEquals: {
+            "cognito-identity.amazonaws.com:aud": identityPool.ref,
+          },
+          "ForAnyValue:StringLike": {
+            "cognito-identity.amazonaws.com:amr": "unauthenticated",
+          },
+        },
+        "sts:AssumeRoleWithWebIdentity"
+      ),
+    });
+
+    // Attach policies to the authenticated role
+    authenticatedRole.attachInlinePolicy(
+      new iam.Policy(this, "AuthenticatedRolePolicy", {
+        statements: [
+          new iam.PolicyStatement({
+            effect: iam.Effect.ALLOW,
+            actions: ["execute-api:Invoke"],
+            resources: [
+              `arn:aws:execute-api:${this.region}:${this.account}:${api.restApiId}/*/GET/*`,
+            ],
+          }),
+        ],
+      })
+    );
+
+    // Attach policies to the unauthenticated role
+    unauthenticatedRole.attachInlinePolicy(
+      new iam.Policy(this, "UnauthenticatedRolePolicy", {
+        statements: [
+          new iam.PolicyStatement({
+            effect: iam.Effect.ALLOW,
+            actions: ["execute-api:Invoke"],
+            resources: [
+              `arn:aws:execute-api:${this.region}:${this.account}:${api.restApiId}/*/GET/*`,
+            ],
+          }),
+        ],
+      })
+    );
+
+    // Attach roles to the identity pool
+    new cognito.CfnIdentityPoolRoleAttachment(this, "IdentityPoolRoles", {
+      identityPoolId: identityPool.ref,
+      roles: {
+        authenticated: authenticatedRole.roleArn,
+        unauthenticated: unauthenticatedRole.roleArn,
+      },
+    });
 
     /**
      *

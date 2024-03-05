@@ -199,7 +199,8 @@ function InvasiveSpeciesPage() {
             axios
               .get(`${API_BASE_URL}region/${regionId}`, {
                 headers: {
-                  'x-api-key': process.env.REACT_APP_X_API_KEY
+                  // 'x-api-key': process.env.REACT_APP_X_API_KEY
+                  "Authorization": jwtToken
                 }
               })
           )
@@ -504,7 +505,8 @@ function InvasiveSpeciesPage() {
         axios
           .get(`${API_BASE_URL}region/${region_id}`, {
             headers: {
-              'x-api-key': process.env.REACT_APP_X_API_KEY
+              // 'x-api-key': process.env.REACT_APP_X_API_KEY
+              "Authorization": jwtToken
             }
           })
           .then((response) => {
@@ -584,7 +586,8 @@ function InvasiveSpeciesPage() {
             region_fullname: locationInput,
           },
           headers: {
-            'x-api-key': process.env.REACT_APP_X_API_KEY
+            // 'x-api-key': process.env.REACT_APP_X_API_KEY
+            "Authorization": jwtToken
           }
         })
         .then((response) => {
