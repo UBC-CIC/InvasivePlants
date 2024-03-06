@@ -869,9 +869,10 @@ components:
       x-amazon-apigateway-authorizer:
         type: cognito_user_pools
         providerARNs:
-          # - FN::Sub: "${CognitoUserPool.Arn}"
+          # - FN::Sub: "${CognitoUserPool.Arn}" # didnt work
+          # - !Ref CognitoUserPoolArn # didnt work
           - "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/ca-central-1_2vfJ8XCy2" # TODO: how to not hardcode the user pool?
-          # - Fn::Sub:
+          # - Fn::Sub: # didnt work
           #     - "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${UserPoolId}"
           #     - UserPoolId: !ImportValue userPoolId
     ApiKeyAuth:

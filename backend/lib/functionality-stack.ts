@@ -85,10 +85,8 @@ export class FunctionalityStack extends cdk.Stack {
     new cdk.CfnOutput(this, "UserPoolIdOutput", {
       value: this.userpool.userPoolId,
       description: "Cognito User Pool ID",
-      exportName: "userPoolId", 
+      exportName: "userPoolId",
     });
-
-    // created identity pool and roles in api-stack so have parameters for the resource
 
     /**
      *
