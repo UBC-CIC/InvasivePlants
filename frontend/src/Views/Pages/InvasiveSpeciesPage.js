@@ -89,6 +89,17 @@ function InvasiveSpeciesPage() {
       var idToken = await session.getIdToken()
       var token = await idToken.getJwtToken()
       setJwtToken(token);
+
+      // Check if the token is close to expiration
+      const expirationTime = idToken.getExpiration() * 1000; // Milliseconds
+      const currentTime = new Date().getTime();
+
+      if (expirationTime - currentTime < 2700000) { // 45 minutes
+        await Auth.currentSession();
+        idToken = await session.getIdToken()
+        token = await idToken.getJwtToken()
+        setJwtToken(token);
+      }
     } catch (e) {
       console.log("error getting token: ", e);
     }
@@ -964,6 +975,7 @@ function InvasiveSpeciesPage() {
         handleClose={() => setOpenAddSpeciesDialog(false)}
         handleAdd={handleAddSpecies}
         data={displayData}
+        jwtToken={jwtToken}
       />
 
       <EditInvasiveSpeciesDialog
@@ -972,6 +984,7 @@ function InvasiveSpeciesPage() {
         handleInputChange={handleInputChange}
         handleFinishEditingRow={handleFinishEditingRow}
         handleSave={handleSave}
+        jwtToken={jwtToken}
       />
 
       <DeleteDialog

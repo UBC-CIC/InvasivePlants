@@ -8,7 +8,7 @@ import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperF
 import axios from "axios";
 
 // Dialog for adding an invasive species
-const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
+const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, jwtToken }) => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
     const initialSpeciesData = {
@@ -115,7 +115,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                         search_input: searchInput,
                     },
                     headers: {
-                        'x-api-key': process.env.REACT_APP_X_API_KEY
+                        'Authorization': jwtToken
                     }
                 })
                 .then((response) => {
@@ -138,29 +138,37 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
         }
     };
 
+
     // Gets regions to update region search dropdown 
-    useEffect(() => {
-        axios
-            .get(`${API_BASE_URL}region`, {
-                headers: {
-                    'x-api-key': process.env.REACT_APP_X_API_KEY
-                }
-            })
-            .then((response) => {
-                const regionData = response.data.regions.map(item => {
-                    return {
-                        ...item,
-                        region_fullname: capitalizeEachWord(item.region_fullname),
-                        region_code_name: item.region_code_name.toUpperCase(),
-                        country_fullname: capitalizeEachWord(item.country_fullname)
-                    };
-                });
-                setSearchRegionsDropdownOptions(regionData);
-            })
-            .catch((error) => {
-                console.error("Error searching up region", error);
-            })
-    }, []);
+    const handleSearchRegion = (searchInput) => {
+        if (searchInput === "") {
+            setSearchAlternativeDropdownOptions([]);
+        } else {
+            axios
+                .get(`${API_BASE_URL}region`, {
+                    params: {
+                        search_input: searchInput,
+                    },
+                    headers: {
+                        'Authorization': jwtToken
+                    }
+                })
+                .then((response) => {
+                    const regionData = response.data.regions.map(item => {
+                        return {
+                            ...item,
+                            region_fullname: capitalizeEachWord(item.region_fullname),
+                            region_code_name: item.region_code_name.toUpperCase(),
+                            country_fullname: capitalizeEachWord(item.country_fullname)
+                        };
+                    });
+                    setSearchRegionsDropdownOptions(regionData);
+                })
+                .catch((error) => {
+                    console.error("Error searching up region", error);
+                })
+        }
+    };
 
 
     // Handles uploading image files to s3 bucket
@@ -186,7 +194,8 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                                 filename: `${filename}.${fileExtension}`
                             },
                             headers: {
-                                'x-api-key': process.env.REACT_APP_X_API_KEY
+                                'Authorization': jwtToken
+                                // 'x-api-key': process.env.REACT_APP_X_API_KEY
                             }
                         });
 
@@ -318,6 +327,9 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data }) => {
                                     }))
                                     : []
                             }
+                            onInputChange={(e, input) => {
+                                handleSearchRegion(input);
+                            }}
                             onChange={(e, input) => {
                                 handleInputChange("all_regions", input)
                             }}
