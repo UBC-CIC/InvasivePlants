@@ -144,7 +144,6 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                             },
                             headers: {
                                 'Authorization': jwtToken
-                                // 'x-api-key': process.env.REACT_APP_X_API_KEY
                             }
                         });
 
@@ -164,7 +163,6 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                 }
 
                 s3Keys = s3Keys.filter(key => key !== "");
-                // console.log("image upload: ", s3Keys)
 
                 handleInputChange('s3_keys', s3Keys);
             } catch (error) {

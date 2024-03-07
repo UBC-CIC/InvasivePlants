@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from "../SnackbarComponent";
@@ -195,7 +195,6 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, jwtToken
                             },
                             headers: {
                                 'Authorization': jwtToken
-                                // 'x-api-key': process.env.REACT_APP_X_API_KEY
                             }
                         });
 

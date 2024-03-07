@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography, ThemeProvider } from '@mui/material';
+import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 import SnackbarOnSuccess from '../SnackbarComponent';
 import CustomAlert from '../AlertComponent';
 import DeleteDialog from './ConfirmDeleteDialog';
 import { Auth } from "aws-amplify";
 import axios from "axios";
-import Theme from '../../Views/Pages/Theme'
 
 // Dialog for editing an alternative species
-const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave }) => {
+const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave, jwtToken }) => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
@@ -64,7 +63,7 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                                 filename: `${filename}.${fileExtension}`
                             },
                             headers: {
-                                'x-api-key': process.env.REACT_APP_X_API_KEY
+                                'Authorization': jwtToken
                             }
                         });
 

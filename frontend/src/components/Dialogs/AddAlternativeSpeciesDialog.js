@@ -6,7 +6,7 @@ import CustomWarning from '../WarningComponent';
 import axios from "axios";
 
 // Dialog for adding an alternative species
-const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
+const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd, jwtToken }) => {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const initialSpeciesData = {
@@ -14,6 +14,8 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
     common_name: [],
     species_description: "",
     resource_links: [],
+    image_links: [],
+    s3_keys: []
   };
 
   const [showSnackbar, setShowSnackbar] = useState(false);
@@ -98,7 +100,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
                 filename: `${filename}.${fileExtension}`
               },
               headers: {
-                'x-api-key': process.env.REACT_APP_X_API_KEY
+                'Authorization': jwtToken
               }
             });
 
@@ -117,6 +119,7 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => 
             s3Keys.push(signedURLData.key);
           }
         }
+
         handleInputChange('s3_keys', s3Keys);
       } catch (error) {
         console.error('Error uploading images:', error);

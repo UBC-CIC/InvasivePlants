@@ -210,7 +210,6 @@ function InvasiveSpeciesPage() {
             axios
               .get(`${API_BASE_URL}region/${regionId}`, {
                 headers: {
-                  // 'x-api-key': process.env.REACT_APP_X_API_KEY
                   "Authorization": jwtToken
                 }
               })
@@ -359,7 +358,6 @@ function InvasiveSpeciesPage() {
                 }
               })
               .then(() => {
-                // console.log("got into post images...")
                 handleGetInvasiveSpeciesAfterSave();
               })
               .catch(error => {
@@ -473,6 +471,7 @@ function InvasiveSpeciesPage() {
               }
             })
             .then(() => {
+              setCurrOffset(0)
               setShouldReset(true);
               setOpenAddSpeciesDialog(false);
             })
@@ -481,9 +480,11 @@ function InvasiveSpeciesPage() {
             });
         });
 
-        setCurrOffset(0)
-        setShouldReset(true);
-        setOpenAddSpeciesDialog(false);
+        if (allPlantImages.length === 0) {
+          setCurrOffset(0)
+          setShouldReset(true);
+          setOpenAddSpeciesDialog(false);
+        }
       })
       .catch((error) => {
         console.error("Error adding alternative species", error);
@@ -493,7 +494,6 @@ function InvasiveSpeciesPage() {
   // Call to handleGetInvasiveSpecies if shouldReset state is True
   useEffect(() => {
     if (shouldReset) {
-      // console.log("should reset: curr offset: ", currOffset)
       handleGetInvasiveSpecies();
     }
   }, [shouldReset]);
@@ -516,7 +516,6 @@ function InvasiveSpeciesPage() {
         axios
           .get(`${API_BASE_URL}region/${region_id}`, {
             headers: {
-              // 'x-api-key': process.env.REACT_APP_X_API_KEY
               "Authorization": jwtToken
             }
           })
@@ -597,7 +596,6 @@ function InvasiveSpeciesPage() {
             region_fullname: locationInput,
           },
           headers: {
-            // 'x-api-key': process.env.REACT_APP_X_API_KEY
             "Authorization": jwtToken
           }
         })
@@ -645,7 +643,6 @@ function InvasiveSpeciesPage() {
   // Resets if rowsPerPage changes 
   useEffect(() => {
     if (!firstLoad) {
-      // console.log("rows per page changed")
       setShouldReset(true);
     }
   }, [rowsPerPage]);
@@ -653,7 +650,6 @@ function InvasiveSpeciesPage() {
   // Call to get next/previous rowsPerPage number of species on page change
   useEffect(() => {
     if (!firstLoad) {
-      // console.log("page changed...")
       handleGetInvasiveSpecies();
     }
   }, [page]);
@@ -779,183 +775,186 @@ function InvasiveSpeciesPage() {
       </div>
 
       {/* table */}
-      {/* {console.log("table: ", displayData)} */}
       <div style={{ width: "90%", display: "flex", justifyContent: "center", alignItems: "center" }}>
         {isLoading ? (
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
           </Spinner>
         ) : (
-          <Table style={{ width: "100%", tableLayout: "fixed" }}>
-            {/* table header */}
-            <TableHead>
-              <TableRow>
-                <TableCell style={{ width: "8%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Scientific Name(s)
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "7%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Common Name(s)
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "35%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Description
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "10%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Alternative Species
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "10%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Resource Links
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "6%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Region(s)
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "8%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Images
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "3%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Actions
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "1%" }}></TableCell>
-              </TableRow>
-            </TableHead>
+          (displayData && displayData.length > 0 ? (
+            <Table style={{ width: "100%", tableLayout: "fixed" }}>
+              {/* table header */}
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ width: "8%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Scientific Name(s)
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "7%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Common Name(s)
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "35%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Description
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "10%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Alternative Species
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "10%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Resource Links
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "6%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Region(s)
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "8%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Images
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "3%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Actions
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "1%" }}></TableCell>
+                </TableRow>
+              </TableHead>
 
-            {/* table body: display species */}
-            <TableBody>
-              {(displayData && displayData.length > 0 ? displayData : [])
-                .map((row) => (
-                  <TableRow key={row.species_id}>
-                    <>
-                      {/* scientific names */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
-                      </TableCell>
+              {/* table body: display species */}
+              <TableBody>
+                {(displayData && displayData.length > 0 ? displayData : [])
+                  .map((row) => (
+                    <TableRow key={row.species_id}>
+                      <>
+                        {/* scientific names */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
+                        </TableCell>
 
-                      {/* common names */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.common_name) ? row.common_name.join(", ") : row.common_name}
-                      </TableCell>
+                        {/* common names */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {Array.isArray(row.common_name) ? row.common_name.join(", ") : row.common_name}
+                        </TableCell>
 
-                      {/* description */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {boldText(row.species_description)}
-                      </TableCell>
+                        {/* description */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {boldText(row.species_description)}
+                        </TableCell>
 
-                      {/* alternative species */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.alternative_species)
-                          ? row.alternative_species.map((item) => item.scientific_name).join(", ")
-                          : row.alternative_species}
-                      </TableCell>
+                        {/* alternative species */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {Array.isArray(row.alternative_species)
+                            ? row.alternative_species.map((item) => item.scientific_name).join(", ")
+                            : row.alternative_species}
+                        </TableCell>
 
-                      {/* resource links */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.resource_links) ? (
-                          row.resource_links.map((link, index) => (
-                            <span key={index}>
-                              <a href={link} target="_blank" rel="noopener noreferrer">
-                                {link}
+                        {/* resource links */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {Array.isArray(row.resource_links) ? (
+                            row.resource_links.map((link, index) => (
+                              <span key={index}>
+                                <a href={link} target="_blank" rel="noopener noreferrer">
+                                  {link}
+                                </a>
+                                <br />
+                                <br />
+                              </span>
+                            ))
+                          ) : (
+                            <span>
+                              <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
+                                {row.resource_links}
                               </a>
                               <br />
                               <br />
                             </span>
-                          ))
-                        ) : (
-                          <span>
-                            <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
-                              {row.resource_links}
-                            </a>
-                            <br />
-                            <br />
-                          </span>
-                        )}
-                      </TableCell>
+                          )}
+                        </TableCell>
 
-                      {/* regions */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.region_code_names) //region_code_names
-                          ? row.region_code_names.join(", ")
-                          : row.region_code_names}
-                      </TableCell>
+                        {/* regions */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {Array.isArray(row.region_code_names) //region_code_names
+                            ? row.region_code_names.join(", ")
+                            : row.region_code_names}
+                        </TableCell>
 
-                      {/* image links */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.image_links) ? (
-                          row.image_links.map((link, index) => (
-                            <span key={index}>
-                              <img
-                                src={link}
-                                alt={`${link}`}
-                                style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
-                              />
-                              {row.s3_keys && row.s3_keys[index] && (
-                                <span>
-                                  <img
-                                    src={`${S3_BASE_URL}${row.s3_keys[index]}`}
-                                    alt={`${row.s3_keys[index]}`}
-                                    style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
-                                  />
-                                </span>
-                              )}
-                              <br />
-                            </span>
-                          ))
-                        ) : (
-                          <span>
-                            <a href={row.image_links} target="_blank" rel="noopener noreferrer">
-                              {row.image_links}
-                            </a>
-                            <br />
-                            {row.s3_keys && row.s3_keys.map((key, index) => (
+                        {/* image links */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {Array.isArray(row.image_links) ? (
+                            row.image_links.map((link, index) => (
                               <span key={index}>
-                                <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
-                                  {row.s3_keys[index]}
-                                </a>
+                                <img
+                                  src={link}
+                                  alt={`${link}`}
+                                  style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                />
+                                {row.s3_keys && row.s3_keys[index] && (
+                                  <span>
+                                    <img
+                                      src={`${S3_BASE_URL}${row.s3_keys[index]}`}
+                                      alt={`${row.s3_keys[index]}`}
+                                      style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                    />
+                                  </span>
+                                )}
                                 <br />
                               </span>
-                            ))}
-                            <br />
-                          </span>
-                        )}
-                      </TableCell>
+                            ))
+                          ) : (
+                            <span>
+                              <a href={row.image_links} target="_blank" rel="noopener noreferrer">
+                                {row.image_links}
+                              </a>
+                              <br />
+                              {row.s3_keys && row.s3_keys.map((key, index) => (
+                                <span key={index}>
+                                  <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
+                                    {row.s3_keys[index]}
+                                  </a>
+                                  <br />
+                                </span>
+                              ))}
+                              <br />
+                            </span>
+                          )}
+                        </TableCell>
 
 
-                      {/* actions: edit/delete */}
-                      <TableCell>
-                        <Tooltip title="Edit"
-                          onClick={() => startEdit(row)}>
-                          <IconButton>
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip
-                          title="Delete"
-                          onClick={() => handleDeleteRow(row.species_id, row)}>
-                          <IconButton>
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                    </>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        )}
+                        {/* actions: edit/delete */}
+                        <TableCell>
+                          <Tooltip title="Edit"
+                            onClick={() => startEdit(row)}>
+                            <IconButton>
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip
+                            title="Delete"
+                            onClick={() => handleDeleteRow(row.species_id, row)}>
+                            <IconButton>
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      </>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          ) : (
+            // no display data
+            <Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>
+          )))}
       </div >
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "78%" }}>

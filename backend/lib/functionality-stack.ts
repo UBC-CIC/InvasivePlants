@@ -6,7 +6,7 @@ import * as cognito from "aws-cdk-lib/aws-cognito";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
-import * as iam from "aws-cdk-lib/aws-iam";
+import * as SSM from "aws-cdk-lib/aws-ssm";
 
 export class FunctionalityStack extends cdk.Stack {
   public readonly secret: secretsmanager.ISecret;
@@ -52,6 +52,13 @@ export class FunctionalityStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
+    // store userPoolArn in parameter store
+    new SSM.StringParameter(this, "Parameter", {
+      parameterName: "/userPoolArn",
+      description: "Description for your parameter",
+      stringValue: this.userpool.userPoolArn,
+    });
+
     /**
      *
      * Create Cognito Client
@@ -81,11 +88,11 @@ export class FunctionalityStack extends cdk.Stack {
       }
     );
 
-    // Outputs section to export the userPoolId
-    new cdk.CfnOutput(this, "UserPoolIdOutput", {
-      value: this.userpool.userPoolId,
-      description: "Cognito User Pool ID",
-      exportName: "userPoolId",
+    // Outputs section to export the userPoolArn
+    new cdk.CfnOutput(this, "UserPoolArnOutput", {
+      value: this.userpool.userPoolArn,
+      description: "Cognito User Pool ARN",
+      exportName: "userPoolARN",
     });
 
     /**
