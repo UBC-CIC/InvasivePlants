@@ -9,11 +9,14 @@ import * as cognito from "aws-cdk-lib/aws-cognito";
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as iam from "aws-cdk-lib/aws-iam";
+import * as ssm from "aws-cdk-lib/aws-ssm";
 
 // Stack import
 import { VpcStack } from "./vpc-stack";
 import { DBStack } from "./database-stack";
 import { FunctionalityStack } from "./functionality-stack";
+import * as fs from "fs";
+import { parse, stringify } from "yaml";
 
 export class APIStack extends Stack {
   public readonly stageARN_APIGW: string;
@@ -32,9 +35,31 @@ export class APIStack extends Stack {
      *
      * Load OpenAPI file into API Gateway using REST API
      */
+
+    // get userPoolARN from parameter store
+    const userPoolArnParameter = ssm.StringParameter.valueFromLookup(
+      this,
+      "/userPoolArn"
+    );
+
+    // replace providerARN with actual userPoolARN
+    const file = fs.readFileSync("OpenAPI_Swagger_Definition.yaml", "utf8");
+    let parsedYaml = parse(file);
+
+    parsedYaml.components.securitySchemes.cognitoAuthorizer[
+      "x-amazon-apigateway-authorizer"
+    ].providerARNs[0] = userPoolArnParameter;
+
+    const updatedYaml = stringify(parsedYaml);
+    fs.writeFileSync(
+      "OpenAPI_Swagger_Definition_Updated.yaml",
+      updatedYaml,
+      "utf-8"
+    );
+
     // Read OpenAPI file and load file to S3
     const asset = new Asset(this, "SampleAsset", {
-      path: "OpenAPI_Swagger_Definition.yaml",
+      path: "OpenAPI_Swagger_Definition_Updated.yaml",
     });
 
     // Perform transformation on the file from the S3 location
@@ -64,6 +89,9 @@ export class APIStack extends Stack {
     this.stageARN_APIGW = api.deploymentStage.stageArn;
     this.apiGW_basedURL = api.urlForPath();
 
+    // delete updated file after use
+    fs.unlinkSync("OpenAPI_Swagger_Definition_Updated.yaml");
+    //
     // Attach API Key to the api
     const secretJsonValue = functionalityStack.secret
       .secretValueFromJson("REACT_APP_X_API_KEY")
