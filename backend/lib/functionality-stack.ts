@@ -6,10 +6,14 @@ import * as cognito from "aws-cdk-lib/aws-cognito";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
+import * as SSM from "aws-cdk-lib/aws-ssm";
 
 export class FunctionalityStack extends cdk.Stack {
   public readonly secret: secretsmanager.ISecret;
   public readonly bucketName: string;
+  public readonly appClient: cognito.UserPoolClient;
+  public readonly userpool: cognito.UserPool;
+
   public readonly s3_Object_baseURL: string;
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -21,7 +25,8 @@ export class FunctionalityStack extends cdk.Stack {
      * Inspiration from http://buraktas.com/create-cognito-user-pool-aws-cdk/
      */
     const userPoolName = "invasivePlantsUserPool";
-    const userpool = new cognito.UserPool(this, "invasive-plants-pool", {
+
+    this.userpool = new cognito.UserPool(this, "invasive-plants-pool", {
       userPoolName: userPoolName,
       signInAliases: {
         email: true,
@@ -47,12 +52,19 @@ export class FunctionalityStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
+    // store userPoolArn in parameter store
+    new SSM.StringParameter(this, "Parameter", {
+      parameterName: "/userPoolArn",
+      description: "Description for your parameter",
+      stringValue: this.userpool.userPoolArn,
+    });
+
     /**
      *
      * Create Cognito Client
      * An entity that allows your application to interact with the AWS Cognito User Pool service
      */
-    const appClient = userpool.addClient("invasive-plants-pool", {
+    this.appClient = this.userpool.addClient("invasive-plants-pool", {
       userPoolClientName: userPoolName,
       authFlows: {
         userPassword: true,
@@ -67,7 +79,7 @@ export class FunctionalityStack extends cdk.Stack {
       this,
       "cognito-userGroup",
       {
-        userPoolId: userpool.userPoolId,
+        userPoolId: this.userpool.userPoolId,
 
         // the properties below are optional
         description: "Admin usergroup to perform data manipulation",
@@ -75,6 +87,13 @@ export class FunctionalityStack extends cdk.Stack {
         precedence: 1,
       }
     );
+
+    // Outputs section to export the userPoolArn
+    new cdk.CfnOutput(this, "UserPoolArnOutput", {
+      value: this.userpool.userPoolArn,
+      description: "Cognito User Pool ARN",
+      exportName: "userPoolARN",
+    });
 
     /**
      *
@@ -103,21 +122,21 @@ export class FunctionalityStack extends cdk.Stack {
     // Read parameter from user
     const apiKey = new cdk.CfnParameter(this, "apiKey", {
       type: "String",
-      description: "Custome apiKey for the API Gateway.",
+      description: "Custom apiKey for the API Gateway.",
       default: generateRandomString(32),
     });
 
-    // Check if the user provided an API key
+    // Check if the user provided an API key and store in secrets manager
     if (apiKey.value) {
       this.secret = new secretsmanager.Secret(this, secretsName, {
         secretName: secretsName,
         description: "Cognito Secrets for authentication",
         secretObjectValue: {
           REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(
-            userpool.userPoolId
+            this.userpool.userPoolId
           ),
           REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(
-            appClient.userPoolClientId
+            this.appClient.userPoolClientId
           ),
           REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
           REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(
@@ -127,16 +146,16 @@ export class FunctionalityStack extends cdk.Stack {
         removalPolicy: cdk.RemovalPolicy.DESTROY,
       });
     } else {
-      // User did not provide an API key, generate a random one
+      // User did not provide an API key, generate a random one and store in secrets manager
       this.secret = new secretsmanager.Secret(this, secretsName, {
         secretName: secretsName,
         description: "Cognito Secrets for authentication",
         secretObjectValue: {
           REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(
-            userpool.userPoolId
+            this.userpool.userPoolId
           ),
           REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(
-            appClient.userPoolClientId
+            this.appClient.userPoolClientId
           ),
           REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
           REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(

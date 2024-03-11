@@ -9,8 +9,7 @@ import axios from "axios";
 import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperFunctions';
 
 // Dialog for editing an invasive species
-const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave }) => {
-    // console.log("data to edit: ", tempData)
+const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave, jwtToken }) => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
@@ -67,7 +66,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                         search_input: searchInput,
                     },
                     headers: {
-                        'x-api-key': process.env.REACT_APP_X_API_KEY
+                        'Authorization': jwtToken
                     }
                 })
                 .then((response) => {
@@ -91,28 +90,35 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
     };
 
     // Gets regions to update region search dropdown 
-    useEffect(() => {
-        axios
-            .get(`${API_BASE_URL}region`, {
-                headers: {
-                    'x-api-key': process.env.REACT_APP_X_API_KEY
-                }
-            })
-            .then((response) => {
-                const regionData = response.data.regions.map(item => {
-                    return {
-                        ...item,
-                        region_fullname: capitalizeEachWord(item.region_fullname),
-                        region_code_name: item.region_code_name.toUpperCase(),
-                        country_fullname: capitalizeEachWord(item.country_fullname)
-                    };
-                });
-                setSearchRegionsDropdownOptions(regionData);
-            })
-            .catch((error) => {
-                console.error("Error searching up region", error);
-            })
-    }, []);
+    const handleSearchRegion = (searchInput) => {
+        if (searchInput === "") {
+            setSearchAlternativeDropdownOptions([]);
+        } else {
+            axios
+                .get(`${API_BASE_URL}region`, {
+                    params: {
+                        search_input: searchInput,
+                    },
+                    headers: {
+                        'Authorization': jwtToken
+                    }
+                })
+                .then((response) => {
+                    const regionData = response.data.regions.map(item => {
+                        return {
+                            ...item,
+                            region_fullname: capitalizeEachWord(item.region_fullname),
+                            region_code_name: item.region_code_name.toUpperCase(),
+                            country_fullname: capitalizeEachWord(item.country_fullname)
+                        };
+                    });
+                    setSearchRegionsDropdownOptions(regionData);
+                })
+                .catch((error) => {
+                    console.error("Error searching up region", error);
+                })
+        }
+    };
 
     // Handles user uploaded image files
     const handleImageUpload = async (e) => {
@@ -137,7 +143,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                                 filename: `${filename}.${fileExtension}`
                             },
                             headers: {
-                                'x-api-key': process.env.REACT_APP_X_API_KEY
+                                'Authorization': jwtToken
                             }
                         });
 
@@ -157,7 +163,6 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                 }
 
                 s3Keys = s3Keys.filter(key => key !== "");
-                // console.log("image upload: ", s3Keys)
 
                 handleInputChange('s3_keys', s3Keys);
             } catch (error) {
@@ -318,6 +323,9 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                                     }))
                                     : []
                             }
+                            onInputChange={(e, input) => {
+                                handleSearchRegion(input);
+                            }}
                             onChange={(e, input) => {
                                 handleInputChange("all_regions", input)
                             }}

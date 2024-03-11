@@ -50,13 +50,29 @@ function RegionsPage() {
     const [shouldCalculate, setShouldCalculate] = useState(true); // whether calculation of start and end should be made
 
     const [isLoading, setIsLoading] = useState(false); // loading data or not
+    const [firstLoad, setFirstLoad] = useState(true); // flag to indicate if it's the first time loading the page
     const [user, setUser] = useState("");
+    const [jwtToken, setJwtToken] = useState(""); // jwtToken for authorizing get requests
+
+
 
     // Retrieves user on load
     useEffect(() => {
-        retrieveUser()
-    }, [])
+        retrieveJwtToken();
+    }, []);
 
+    useEffect(() => {
+        if (jwtToken && firstLoad) {
+            retrieveUser();
+        }
+    }, [jwtToken]);
+
+    useEffect(() => {
+        if (user && firstLoad) {
+            handleGetRegions();
+            setFirstLoad(false)
+        }
+    }, [user]);
 
     // Gets current authorized user
     const retrieveUser = async () => {
@@ -65,6 +81,29 @@ function RegionsPage() {
             setUser(returnedUser);
         } catch (e) {
             console.log("error getting user: ", e);
+        }
+    }
+
+    // Gets jwtToken for current session
+    const retrieveJwtToken = async () => {
+        try {
+            var session = await Auth.currentSession()
+            var idToken = await session.getIdToken()
+            var token = await idToken.getJwtToken()
+            setJwtToken(token);
+
+            // Check if the token is close to expiration
+            const expirationTime = idToken.getExpiration() * 1000; // Milliseconds
+            const currentTime = new Date().getTime();
+
+            if (expirationTime - currentTime < 2700000) { // 45 minutes
+                await Auth.currentSession();
+                idToken = await session.getIdToken()
+                token = await idToken.getJwtToken()
+                setJwtToken(token);
+            }
+        } catch (e) {
+            console.log("error getting token: ", e);
         }
     }
 
@@ -78,7 +117,7 @@ function RegionsPage() {
                     rows_per_page: rowsPerPage  // default 20
                 },
                 headers: {
-                    'x-api-key': process.env.REACT_APP_X_API_KEY
+                    'Authorization': jwtToken
                 }
             })
             .then((response) => {
@@ -105,13 +144,12 @@ function RegionsPage() {
                 setDisplayData(formattedData);
                 setData(formattedData);
                 setCurrOffset(response.data.nextOffset);
+                setShouldSave(false);
+                setIsLoading(false);
             })
             .catch((error) => {
                 console.error("Error retrieving region", error);
             })
-            .finally(() => {
-                setIsLoading(false);
-            });
     };
 
     // Maintains history of last region_id and currLastRegionId so that on GET, 
@@ -124,34 +162,7 @@ function RegionsPage() {
     // Request to GET region (same page) after editing a row to see the updated data when shouldSave state changes
     useEffect(() => {
         if (shouldSave) {
-            axios
-                .get(`${API_BASE_URL}region`, {
-                    params: {
-                        curr_offset: currOffset ? currOffset : null, // default first page
-                        rows_per_page: rowsPerPage  // default 20
-                    },
-                    headers: {
-                        'x-api-key': process.env.REACT_APP_X_API_KEY
-                    }
-                })
-                .then((response) => {
-                    const formattedData = response.data.regions.map(item => {
-                        return {
-                            ...item,
-                            region_fullname: capitalizeEachWord(item.region_fullname),
-                            region_code_name: item.region_code_name.toUpperCase(),
-                            country_fullname: capitalizeEachWord(item.country_fullname)
-                        };
-                    });
-
-                    setDisplayData(formattedData);
-                    setCurrOffset(response.data.nextOffset);
-                    setShouldSave(false);
-
-                })
-                .catch((error) => {
-                    console.error("Error getting regions", error);
-                })
+            handleGetRegions();
         }
     }, [shouldSave]);
 
@@ -170,7 +181,7 @@ function RegionsPage() {
                     region_fullname: formattedSearchInput,
                 },
                 headers: {
-                    'x-api-key': process.env.REACT_APP_X_API_KEY
+                    'Authorization': jwtToken
                 }
             })
             .then((response) => {
@@ -230,11 +241,7 @@ function RegionsPage() {
                         }
                     })
                 .then(() => {
-                    if (start > rowsPerPage) {
-                        handleGetRegionsAfterSave();
-                    } else {
-                        setShouldReset(true);
-                    }
+                    handleGetRegionsAfterSave();
                     handleFinishEditingRow();
                 })
                 .catch((error) => {
@@ -342,7 +349,7 @@ function RegionsPage() {
                         region_fullname: searchInput,
                     },
                     headers: {
-                        'x-api-key': process.env.REACT_APP_X_API_KEY
+                        'Authorization': jwtToken
                     }
                 })
                 .then((response) => {
@@ -399,12 +406,16 @@ function RegionsPage() {
 
     // Resets if rowsPerPage changes 
     useEffect(() => {
-        setShouldReset(true);
+        if (!firstLoad) {
+            setShouldReset(true);
+        }
     }, [rowsPerPage]);
 
     // Call to get next/previous rowsPerPage number of regions on page change
     useEffect(() => {
-        handleGetRegions();
+        if (!firstLoad) {
+            handleGetRegions();
+        }
     }, [page]);
 
     // Increments the page count by 1 
@@ -534,67 +545,71 @@ function RegionsPage() {
                         <span className="visually-hidden">Loading...</span>
                     </Spinner>
                 ) : (
-                    <Table style={{ width: "100%", tableLayout: "fixed" }}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell style={{ width: "10%" }}>
-                                    <Typography variant="subtitle1" fontWeight="bold">
-                                        Region
-                                    </Typography>
-                                </TableCell>
-                                <TableCell style={{ width: "10%" }}>
-                                    <Typography variant="subtitle1" fontWeight="bold">
-                                        Region Code
-                                    </Typography>
-                                </TableCell>
-                                <TableCell style={{ width: "10%" }}>
-                                    <Typography variant="subtitle1" fontWeight="bold">
-                                        Country
-                                    </Typography>
-                                </TableCell>
-                                <TableCell style={{ width: "15%" }}>
-                                    <Typography variant="subtitle1" fontWeight="bold">
-                                        Geographic Coordinates (latitude, longitude)
-                                    </Typography>
-                                </TableCell>
-                                <TableCell style={{ width: "5%" }}>
-                                    <Typography variant="subtitle1" fontWeight="bold">
-                                        Actions
-                                    </Typography>
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
+                    (displayData && displayData.length > 0 ? (
+                        <Table style={{ width: "100%", tableLayout: "fixed" }}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell style={{ width: "10%" }}>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Region
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell style={{ width: "10%" }}>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Region Code
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell style={{ width: "10%" }}>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Country
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell style={{ width: "15%" }}>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Geographic Coordinates (latitude, longitude)
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell style={{ width: "5%" }}>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Actions
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
 
-                        <TableBody>
-                            {(displayData && displayData.length > 0 ? displayData : [])
-                                .map((row) => (
-                                    <TableRow key={row.region_id}>
-                                        <>
-                                            <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.region_fullname}</TableCell>
-                                            <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}> {row.region_code_name} </TableCell>
-                                            <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.country_fullname}</TableCell>
-                                            <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.geographic_coordinate}</TableCell>
-                                            <TableCell >
-                                                <Tooltip title="Edit"
-                                                    onClick={() => startEdit(row)}>
-                                                    <IconButton>
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip
-                                                    title="Delete"
-                                                    onClick={() => handleDeleteRow(row.region_id, row)}>
-                                                    <IconButton>
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </TableCell>
-                                        </>
-                                    </TableRow>
-                                ))}
-                        </TableBody>
-                    </Table>
-                )}
+                            <TableBody>
+                                {(displayData && displayData.length > 0 ? displayData : [])
+                                    .map((row) => (
+                                        <TableRow key={row.region_id}>
+                                            <>
+                                                <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.region_fullname}</TableCell>
+                                                <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}> {row.region_code_name} </TableCell>
+                                                <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.country_fullname}</TableCell>
+                                                <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.geographic_coordinate}</TableCell>
+                                                <TableCell >
+                                                    <Tooltip title="Edit"
+                                                        onClick={() => startEdit(row)}>
+                                                        <IconButton>
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    <Tooltip
+                                                        title="Delete"
+                                                        onClick={() => handleDeleteRow(row.region_id, row)}>
+                                                        <IconButton>
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </TableCell>
+                                            </>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    ) : (
+                        // no display data
+                        <Box style={{ margin: 'auto', textAlign: 'center' }}>No regions found</Box>
+                    )))}
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginLeft: "79%" }}>

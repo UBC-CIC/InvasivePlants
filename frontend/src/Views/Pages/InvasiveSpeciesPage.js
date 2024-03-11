@@ -3,6 +3,7 @@ import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, 
 import Theme from './Theme';
 import { Auth } from "aws-amplify";
 
+
 // components
 import PaginationComponent from '../../components/PaginationComponent';
 import EditInvasiveSpeciesDialog from "../../components/Dialogs/EditInvasiveSpeciesDialog";
@@ -23,7 +24,6 @@ import { boldText, formatString, capitalizeFirstWord, capitalizeEachWord } from 
 function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
-
 
   const [searchDropdownSpeciesOptions, setSearchDropdownSpeciesOptions] = useState([]); // dropdown options for invasive species search bar (scientific names)
   const [searchDropdownRegionsOptions, setSearchDropdownRegionsOptions] = useState([]); // dropdown options for regions search bar 
@@ -51,119 +51,89 @@ function InvasiveSpeciesPage() {
   const [shouldCalculate, setShouldCalculate] = useState(true); // whether calculation of start and end should be made
 
   const [isLoading, setIsLoading] = useState(false); // loading data or not
+  const [firstLoad, setFirstLoad] = useState(true); // flag to indicate if it's the first time loading the page
   const [user, setUser] = useState(""); // authorized admin user
+  const [jwtToken, setJwtToken] = useState(""); // jwtToken for authorizing get requests
 
-  // Retrieves user on load
   useEffect(() => {
-    retrieveUser()
-  }, [])
+    retrieveJwtToken();
+  }, []);
+
+  useEffect(() => {
+    if (jwtToken && firstLoad) {
+      retrieveUser();
+    }
+  }, [jwtToken]);
+
+  useEffect(() => {
+    if (user && firstLoad) {
+      handleGetInvasiveSpecies();
+      setFirstLoad(false)
+    }
+  }, [user]);
 
   // Gets current authorized user
   const retrieveUser = async () => {
     try {
       const returnedUser = await Auth.currentAuthenticatedUser();
       setUser(returnedUser);
-      // console.log("user:", returnedUser);
     } catch (e) {
       console.log("error getting user: ", e);
     }
   }
 
+  // Gets jwtToken for current session
+  const retrieveJwtToken = async () => {
+    try {
+      var session = await Auth.currentSession()
+      var idToken = await session.getIdToken()
+      var token = await idToken.getJwtToken()
+      setJwtToken(token);
+
+      // Check if the token is close to expiration
+      const expirationTime = idToken.getExpiration() * 1000; // Milliseconds
+      const currentTime = new Date().getTime();
+
+      if (expirationTime - currentTime < 2700000) { // 45 minutes
+        await Auth.currentSession();
+        idToken = await session.getIdToken()
+        token = await idToken.getJwtToken()
+        setJwtToken(token);
+      }
+    } catch (e) {
+      console.log("error getting token: ", e);
+    }
+  }
+
+
   // Fetches rowsPerPage number of invasive species (pagination)
   const handleGetInvasiveSpecies = () => {
     setIsLoading(true);
-    axios
-      .get(`${API_BASE_URL}invasiveSpecies`, {
+    // console.log("get inv species, curr offset, shouldReset: ", currOffset, shouldReset);
+
+    try {
+      axios.get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
-          curr_offset: shouldReset ? null : currOffset,
+          curr_offset: currOffset ? currOffset : 0,
           rows_per_page: rowsPerPage // default 20
         },
         headers: {
-          'x-api-key': process.env.REACT_APP_X_API_KEY
+          'Authorization': jwtToken
         }
       })
-      .then((response) => {
-        const promises = response.data.species.flatMap(item =>
-          item.region_id.map(regionId =>
-            axios.get(`${API_BASE_URL}region/${regionId}`, {
-              headers: {
-                'x-api-key': process.env.REACT_APP_X_API_KEY
-              }
-            })
-          )
-        );
-
-        return Promise.all(promises)
-          .then(() => {
-            const formattedData = response.data.species.map((item) => {
-              if (item.alternative_species) {
-                item.alternative_species.forEach(species => {
-                  species.scientific_name = species.scientific_name.map(name =>
-                    capitalizeFirstWord(name)
-                  );
-                  species.common_name = species.common_name.map(name =>
-                    capitalizeEachWord(name)
-                  );
-                });
-              }
-
-              return {
-                ...item,
-                scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
-                common_name: item.common_name.map(name => capitalizeEachWord(name)),
-                image_links: item.images.map(img => img.image_url),
-                s3_keys: item.images.map(img => img.s3_key)
-              };
-            });
-
-            // Resets pagination details
-            // This will clear the last species id history and display the first page
-            if (shouldReset) {
-              setCurrOffset(0);
-              setPage(0);
-              setStart(0);
-              setEnd(0);
-              setShouldCalculate(true);
-              setShouldReset(false);
+        .then(response => {
+          const formattedData = response.data.species.map((item) => {
+            if (item.alternative_species) {
+              item.alternative_species.forEach(species => {
+                species.scientific_name = species.scientific_name.map(name =>
+                  capitalizeFirstWord(name)
+                );
+                species.common_name = species.common_name.map(name =>
+                  capitalizeEachWord(name)
+                );
+              });
             }
 
-            setSpeciesCount(response.data.count[0].count);
-            setDisplayData(formattedData);
-            setData(formattedData);
-            setCurrOffset(response.data.nextOffset);
-          });
-      })
-      .catch((error) => {
-        console.error("Error retrieving invasive species", error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
-
-  // Maintains history of last species_id and currLastSpeciesId so that on GET, 
-  // the current page is maintained instead of starting from page 1
-  const handleGetInvasiveSpeciesAfterSave = () => {
-    // console.log("got here:")
-    setCurrOffset(curr => curr - rowsPerPage);
-    setShouldSave(true); // useEffect listens for this state to change and will GET invasive species when True
-  };
-
-  // Request to GET invasive species (same page) after editing a row to see the updated data when shouldSave state changes
-  useEffect(() => {
-    if (shouldSave) {
-      axios
-        .get(`${API_BASE_URL}invasiveSpecies`, {
-          params: {
-            curr_offset: currOffset ? currOffset : null, // default first page
-            rows_per_page: rowsPerPage, // default 20
-          },
-          headers: {
-            'x-api-key': process.env.REACT_APP_X_API_KEY
-          }
-        })
-        .then((response) => {
-          const formattedData = response.data.species.map((item, index) => {
             return {
               ...item,
               scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
@@ -173,13 +143,47 @@ function InvasiveSpeciesPage() {
             };
           });
 
+          // Resets pagination details
+          // This will clear the last species id history and display the first page
+          if (shouldReset) {
+            setCurrOffset(0);
+            setPage(0);
+            setStart(0);
+            setEnd(0);
+            setShouldCalculate(true);
+            setShouldReset(false);
+          }
+
+          // console.log("formatted data, curr offset", formattedData, currOffset);
+          setSpeciesCount(response.data.count[0].count);
           setDisplayData(formattedData);
+          setData(formattedData);
           setCurrOffset(response.data.nextOffset);
           setShouldSave(false);
+          setIsLoading(false);
         })
-        .catch((error) => {
-          console.error("Error getting invasive species", error);
-        })
+        .catch(error => {
+          console.error("Error retrieving invasive species", error);
+        });
+    } catch (error) {
+      console.error("Unexpected error", error);
+    }
+  };
+
+
+  // Maintains history of last species_id and currLastSpeciesId so that on GET, 
+  // the current page is maintained instead of starting from page 1
+  const handleGetInvasiveSpeciesAfterSave = () => {
+    // console.log("got here:", currOffset)
+    setCurrOffset(curr => curr - rowsPerPage);
+    setShouldSave(true); // useEffect listens for this state to change and will GET invasive species when True
+  };
+
+  // Request to GET invasive species (same page) after editing a row to see the updated data when shouldSave state changes
+  useEffect(() => {
+    if (shouldSave) {
+      // console.log("saving..., calling get invasive species again")
+      handleGetInvasiveSpecies();
     }
   }, [shouldSave]);
 
@@ -197,7 +201,7 @@ function InvasiveSpeciesPage() {
           rows_per_page: speciesCount
         },
         headers: {
-          'x-api-key': process.env.REACT_APP_X_API_KEY
+          "Authorization": jwtToken
         }
       })
       .then((response) => {
@@ -206,7 +210,7 @@ function InvasiveSpeciesPage() {
             axios
               .get(`${API_BASE_URL}region/${regionId}`, {
                 headers: {
-                  'x-api-key': process.env.REACT_APP_X_API_KEY
+                  "Authorization": jwtToken
                 }
               })
           )
@@ -350,15 +354,11 @@ function InvasiveSpeciesPage() {
             axios
               .post(API_BASE_URL + "plantsImages", img, {
                 headers: {
-                  'Authorization': `${jwtToken}`
+                  'Authorization': jwtToken
                 }
               })
               .then(() => {
-                if (start > rowsPerPage) {
-                  handleGetInvasiveSpeciesAfterSave();
-                } else {
-                  setShouldReset(true);
-                }
+                handleGetInvasiveSpeciesAfterSave();
               })
               .catch(error => {
                 console.error("Error adding images", error);
@@ -367,22 +367,18 @@ function InvasiveSpeciesPage() {
         }
       }
 
-
       // Update invasive species table
       axios
         .put(`${API_BASE_URL}invasiveSpecies/${tempEditingData.species_id}`,
           updatedTempDataWithoutRegionCode,
           {
             headers: {
-              'Authorization': `${jwtToken}`
+              'Authorization': jwtToken
             }
           })
         .then(() => {
-          if (start > rowsPerPage) {
-            handleGetInvasiveSpeciesAfterSave();
-          } else {
-            setShouldReset(true);
-          }
+          // console.log("got here, should save")
+          handleGetInvasiveSpeciesAfterSave();
           handleFinishEditingRow();
         })
         .catch((error) => {
@@ -412,6 +408,7 @@ function InvasiveSpeciesPage() {
           })
         .then(() => {
           setSpeciesCount(prevCount => prevCount - 1)
+          setCurrOffset(0)
           setShouldReset(true);
           setOpenDeleteConfirmation(false);
         })
@@ -474,6 +471,7 @@ function InvasiveSpeciesPage() {
               }
             })
             .then(() => {
+              setCurrOffset(0)
               setShouldReset(true);
               setOpenAddSpeciesDialog(false);
             })
@@ -481,13 +479,19 @@ function InvasiveSpeciesPage() {
               console.error("Error adding image", error);
             });
         });
+
+        if (allPlantImages.length === 0) {
+          setCurrOffset(0)
+          setShouldReset(true);
+          setOpenAddSpeciesDialog(false);
+        }
       })
       .catch((error) => {
         console.error("Error adding alternative species", error);
       })
   };
 
-  // Call to handleGetAlternativeSpecies if shouldReset state is True
+  // Call to handleGetInvasiveSpecies if shouldReset state is True
   useEffect(() => {
     if (shouldReset) {
       handleGetInvasiveSpecies();
@@ -512,7 +516,7 @@ function InvasiveSpeciesPage() {
         axios
           .get(`${API_BASE_URL}region/${region_id}`, {
             headers: {
-              'x-api-key': process.env.REACT_APP_X_API_KEY
+              "Authorization": jwtToken
             }
           })
           .then((response) => {
@@ -541,7 +545,7 @@ function InvasiveSpeciesPage() {
             search_input: searchInput,
           },
           headers: {
-            'x-api-key': process.env.REACT_APP_X_API_KEY
+            "Authorization": jwtToken
           }
         })
         .then((response) => {
@@ -592,7 +596,7 @@ function InvasiveSpeciesPage() {
             region_fullname: locationInput,
           },
           headers: {
-            'x-api-key': process.env.REACT_APP_X_API_KEY
+            "Authorization": jwtToken
           }
         })
         .then((response) => {
@@ -638,12 +642,16 @@ function InvasiveSpeciesPage() {
 
   // Resets if rowsPerPage changes 
   useEffect(() => {
-    setShouldReset(true);
+    if (!firstLoad) {
+      setShouldReset(true);
+    }
   }, [rowsPerPage]);
 
   // Call to get next/previous rowsPerPage number of species on page change
   useEffect(() => {
-    handleGetInvasiveSpecies();
+    if (!firstLoad) {
+      handleGetInvasiveSpecies();
+    }
   }, [page]);
 
   // Increments the page count by 1 
@@ -773,176 +781,180 @@ function InvasiveSpeciesPage() {
             <span className="visually-hidden">Loading...</span>
           </Spinner>
         ) : (
-          <Table style={{ width: "100%", tableLayout: "fixed" }}>
-            {/* table header */}
-            <TableHead>
-              <TableRow>
-                <TableCell style={{ width: "8%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Scientific Name(s)
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "7%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Common Name(s)
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "35%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Description
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "10%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Alternative Species
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "10%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Resource Links
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "6%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Region(s)
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "8%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Images
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "3%" }}>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    Actions
-                  </Typography>
-                </TableCell>
-                <TableCell style={{ width: "1%" }}></TableCell>
-              </TableRow>
-            </TableHead>
+          (displayData && displayData.length > 0 ? (
+            <Table style={{ width: "100%", tableLayout: "fixed" }}>
+              {/* table header */}
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ width: "8%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Scientific Name(s)
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "7%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Common Name(s)
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "35%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Description
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "10%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Alternative Species
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "10%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Resource Links
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "6%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Region(s)
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "8%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Images
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "3%" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      Actions
+                    </Typography>
+                  </TableCell>
+                  <TableCell style={{ width: "1%" }}></TableCell>
+                </TableRow>
+              </TableHead>
 
-            {/* table body: display species */}
-            <TableBody>
-              {(displayData && displayData.length > 0 ? displayData : [])
-                .map((row) => (
-                  <TableRow key={row.species_id}>
-                    <>
-                      {/* scientific names */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
-                      </TableCell>
+              {/* table body: display species */}
+              <TableBody>
+                {(displayData && displayData.length > 0 ? displayData : [])
+                  .map((row) => (
+                    <TableRow key={row.species_id}>
+                      <>
+                        {/* scientific names */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
+                        </TableCell>
 
-                      {/* common names */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.common_name) ? row.common_name.join(", ") : row.common_name}
-                      </TableCell>
+                        {/* common names */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {Array.isArray(row.common_name) ? row.common_name.join(", ") : row.common_name}
+                        </TableCell>
 
-                      {/* description */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {boldText(row.species_description)}
-                      </TableCell>
+                        {/* description */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {boldText(row.species_description)}
+                        </TableCell>
 
-                      {/* alternative species */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.alternative_species)
-                          ? row.alternative_species.map((item) => item.scientific_name).join(", ")
-                          : row.alternative_species}
-                      </TableCell>
+                        {/* alternative species */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {Array.isArray(row.alternative_species)
+                            ? row.alternative_species.map((item) => item.scientific_name).join(", ")
+                            : row.alternative_species}
+                        </TableCell>
 
-                      {/* resource links */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.resource_links) ? (
-                          row.resource_links.map((link, index) => (
-                            <span key={index}>
-                              <a href={link} target="_blank" rel="noopener noreferrer">
-                                {link}
+                        {/* resource links */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {Array.isArray(row.resource_links) ? (
+                            row.resource_links.map((link, index) => (
+                              <span key={index}>
+                                <a href={link} target="_blank" rel="noopener noreferrer">
+                                  {link}
+                                </a>
+                                <br />
+                                <br />
+                              </span>
+                            ))
+                          ) : (
+                            <span>
+                              <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
+                                {row.resource_links}
                               </a>
                               <br />
                               <br />
                             </span>
-                          ))
-                        ) : (
-                          <span>
-                            <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
-                              {row.resource_links}
-                            </a>
-                            <br />
-                            <br />
-                          </span>
-                        )}
-                      </TableCell>
+                          )}
+                        </TableCell>
 
-                      {/* regions */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.region_code_names) //region_code_names
-                          ? row.region_code_names.join(", ")
-                          : row.region_code_names}
-                      </TableCell>
+                        {/* regions */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {Array.isArray(row.region_code_names) //region_code_names
+                            ? row.region_code_names.join(", ")
+                            : row.region_code_names}
+                        </TableCell>
 
-                      {/* image links */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.image_links) ? (
-                          row.image_links.map((link, index) => (
-                            <span key={index}>
-                              <img
-                                src={link}
-                                alt={`${link}`}
-                                style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
-                              />
-                              {row.s3_keys && row.s3_keys[index] && (
-                                <span>
-                                  <img
-                                    src={`${S3_BASE_URL}${row.s3_keys[index]}`}
-                                    alt={`${row.s3_keys[index]}`}
-                                    style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
-                                  />
-                                </span>
-                              )}
-                              <br />
-                            </span>
-                          ))
-                        ) : (
-                          <span>
-                            <a href={row.image_links} target="_blank" rel="noopener noreferrer">
-                              {row.image_links}
-                            </a>
-                            <br />
-                            {row.s3_keys && row.s3_keys.map((key, index) => (
+                        {/* image links */}
+                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
+                          {Array.isArray(row.image_links) ? (
+                            row.image_links.map((link, index) => (
                               <span key={index}>
-                                <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
-                                  {row.s3_keys[index]}
-                                </a>
+                                <img
+                                  src={link}
+                                  alt={`${link}`}
+                                  style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                />
+                                {row.s3_keys && row.s3_keys[index] && (
+                                  <span>
+                                    <img
+                                      src={`${S3_BASE_URL}${row.s3_keys[index]}`}
+                                      alt={`${row.s3_keys[index]}`}
+                                      style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+                                    />
+                                  </span>
+                                )}
                                 <br />
                               </span>
-                            ))}
-                            <br />
-                          </span>
-                        )}
-                      </TableCell>
+                            ))
+                          ) : (
+                            <span>
+                              <a href={row.image_links} target="_blank" rel="noopener noreferrer">
+                                {row.image_links}
+                              </a>
+                              <br />
+                              {row.s3_keys && row.s3_keys.map((key, index) => (
+                                <span key={index}>
+                                  <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
+                                    {row.s3_keys[index]}
+                                  </a>
+                                  <br />
+                                </span>
+                              ))}
+                              <br />
+                            </span>
+                          )}
+                        </TableCell>
 
 
-                      {/* actions: edit/delete */}
-                      <TableCell>
-                        <Tooltip title="Edit"
-                          onClick={() => startEdit(row)}>
-                          <IconButton>
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip
-                          title="Delete"
-                          onClick={() => handleDeleteRow(row.species_id, row)}>
-                          <IconButton>
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                    </>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        )}
+                        {/* actions: edit/delete */}
+                        <TableCell>
+                          <Tooltip title="Edit"
+                            onClick={() => startEdit(row)}>
+                            <IconButton>
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip
+                            title="Delete"
+                            onClick={() => handleDeleteRow(row.species_id, row)}>
+                            <IconButton>
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      </>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          ) : (
+            // no display data
+            <Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>
+          )))}
       </div >
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "78%" }}>
@@ -962,6 +974,7 @@ function InvasiveSpeciesPage() {
         handleClose={() => setOpenAddSpeciesDialog(false)}
         handleAdd={handleAddSpecies}
         data={displayData}
+        jwtToken={jwtToken}
       />
 
       <EditInvasiveSpeciesDialog
@@ -970,6 +983,7 @@ function InvasiveSpeciesPage() {
         handleInputChange={handleInputChange}
         handleFinishEditingRow={handleFinishEditingRow}
         handleSave={handleSave}
+        jwtToken={jwtToken}
       />
 
       <DeleteDialog
