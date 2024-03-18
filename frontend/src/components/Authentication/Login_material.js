@@ -537,9 +537,9 @@ function Login(props) {
                                     />
                                     {!!forgotPasswordError &&
                                         <Grid container item xs={12} className={classes.errorMessage}>
-                                            <span>Please enter a valid email or create an account&nbsp;
-                                                <span className={`${classes.cursor} ${classes.underlineText}`} onClick={() => updateLoginState("signUp")}><strong>here</strong></span>
-                                                <span>.</span>
+                                            <span>Please enter a valid email
+                                                {/* <span className={`${classes.cursor} ${classes.underlineText}`} onClick={() => updateLoginState("signUp")}><strong>here</strong></span> */}
+                                                {/* <span>.</span> */}
                                             </span>
                                         </Grid>
                                     }
