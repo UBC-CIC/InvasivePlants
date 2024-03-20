@@ -208,11 +208,17 @@ The deployment command for the `hostStack` requires a parameter calls `prefixLis
 | us-west-1       | pl-4ea04527  |
 | us-west-2       | pl-82a045eb  |
 
-Then, use the command below and pass in the `prefixListID` value. Include the second parameter only on redeployment.
+Then, use the following command below and pass in the `prefixListID` value. 
+
+```bash
+cdk deploy FunctionalityStack \
+  --parameters hostStack:prefixListID=<your-region-preFixListId> \
+  --profile <aws-profile-name>
+```
+
 ```bash
 cdk deploy --all \
   --parameters hostStack:prefixListID=<your-region-preFixListId> \
-  --parameters FunctionalityStack:apiKey=<custom-api-key> \ 
   --profile <aws-profile-name>
 ```
 
@@ -221,7 +227,6 @@ For example, the `prefixListID` for `ca-central-1` is `pl-38a64351`, so we have 
 ```bash
 cdk deploy --all \
   --parameters hostStack:prefixListID=pl-38a64351 \
-  --parameters FunctionalityStack:apiKey=IQN8JSrycHj1nRi2IbBIwts54Gt \ 
   --profile AWSProfileSSO
 ```
 
@@ -230,17 +235,13 @@ If you have trouble running the above command, try removing all the `\` and run 
 
 ### Extra: Finding important values
 After deployment is completed, look for the following in the terminal:
-- `Hosted Website URL` - this is the hosted admin page URL which can be acces through a browser
+- `Hosted Website URL` - this is the hosted admin page URL which can be accessed through a browser
 
 ![API Gateway Screen](./images/depGuide/api_gateway.png)
 
 To get api base url:
 1. Go to API Gateway in the AWS Console and click on the project api
 2. Go to `Stages` and look for `Invoke URL`
-
-To get api key:
-1. Go to `API Keys`
-2. Look for key with the name `InvasivePlantsCustomizedAPIKey` or something similiar
 
 ### Extra: Taking down the deployed stacks
 
