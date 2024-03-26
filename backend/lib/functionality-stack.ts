@@ -7,6 +7,7 @@ import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as SSM from "aws-cdk-lib/aws-ssm";
+import * as iam from "aws-cdk-lib/aws-iam";
 
 export class FunctionalityStack extends cdk.Stack {
   public readonly secret: secretsmanager.ISecret;
@@ -139,9 +140,9 @@ export class FunctionalityStack extends cdk.Stack {
             this.appClient.userPoolClientId
           ),
           REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
-          REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(
-            apiKey.valueAsString
-          ),
+          // REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(
+          //   apiKey.valueAsString
+          // ),
         },
         removalPolicy: cdk.RemovalPolicy.DESTROY,
       });
@@ -158,9 +159,9 @@ export class FunctionalityStack extends cdk.Stack {
             this.appClient.userPoolClientId
           ),
           REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
-          REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(
-            generateRandomString(32)
-          ),
+          // REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(
+          //   generateRandomString(32)
+          // ),
         },
         removalPolicy: cdk.RemovalPolicy.DESTROY,
       });
@@ -187,6 +188,20 @@ export class FunctionalityStack extends cdk.Stack {
         },
       ],
     });
+
+    // Attach a bucket policy for access logs
+    s3bucket.addToResourcePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        principals: [
+          new iam.ServicePrincipal(
+            "logdelivery.elasticloadbalancing.amazonaws.com"
+          ),
+        ],
+        actions: ["s3:PutObject"],
+        resources: [`${s3bucket.bucketArn}/AWSLogs/${cdk.Aws.ACCOUNT_ID}/*`],
+      })
+    );
 
     this.bucketName = s3bucket.bucketName;
 
