@@ -184,17 +184,6 @@ export class APIStack extends Stack {
       },
     });
 
-    // Attach API Key to the api
-    // const secretJsonValue = functionalityStack.secret
-    //   .secretValueFromJson("REACT_APP_X_API_KEY")
-    //   .unsafeUnwrap()
-    //   .toString();
-    // const apiKey = api.addApiKey("APIKey", {
-    //   apiKeyName: "InvasivePlantsCustomizedAPIKey",
-    //   description: "This is a customized api key using randomization.",
-    //   value: secretJsonValue,
-    // });
-
     // API Usage Plan
     const APIPlan = api.addUsagePlan("API-Usage-Plan");
 

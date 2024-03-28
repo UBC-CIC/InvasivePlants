@@ -96,22 +96,6 @@ export class FunctionalityStack extends cdk.Stack {
       exportName: "userPoolARN",
     });
 
-    /**
-     *
-     * Create a random API key that will be use when creating an API key
-     */
-    function generateRandomString(length: number): string {
-      var result = "";
-      var characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      var charactersLength = characters.length;
-      for (var i = 0; i < length; i++) {
-        result += characters.charAt(
-          Math.floor(Math.random() * charactersLength)
-        );
-      }
-      return result;
-    }
 
     /**
      *
@@ -120,52 +104,20 @@ export class FunctionalityStack extends cdk.Stack {
      */
     const secretsName = "Invasive_Plants_Cognito_Secrets"; //"Invasive_Plants_Setup_Secrets";
 
-    // Read parameter from user
-    const apiKey = new cdk.CfnParameter(this, "apiKey", {
-      type: "String",
-      description: "Custom apiKey for the API Gateway.",
-      default: generateRandomString(32),
+    this.secret = new secretsmanager.Secret(this, secretsName, {
+      secretName: secretsName,
+      description: "Cognito Secrets for authentication",
+      secretObjectValue: {
+        REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(
+          this.userpool.userPoolId
+        ),
+        REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(
+          this.appClient.userPoolClientId
+        ),
+        REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
+      },
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
-
-    // Check if the user provided an API key and store in secrets manager
-    if (apiKey.value) {
-      this.secret = new secretsmanager.Secret(this, secretsName, {
-        secretName: secretsName,
-        description: "Cognito Secrets for authentication",
-        secretObjectValue: {
-          REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(
-            this.userpool.userPoolId
-          ),
-          REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(
-            this.appClient.userPoolClientId
-          ),
-          REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
-          // REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(
-          //   apiKey.valueAsString
-          // ),
-        },
-        removalPolicy: cdk.RemovalPolicy.DESTROY,
-      });
-    } else {
-      // User did not provide an API key, generate a random one and store in secrets manager
-      this.secret = new secretsmanager.Secret(this, secretsName, {
-        secretName: secretsName,
-        description: "Cognito Secrets for authentication",
-        secretObjectValue: {
-          REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(
-            this.userpool.userPoolId
-          ),
-          REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(
-            this.appClient.userPoolClientId
-          ),
-          REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
-          // REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(
-          //   generateRandomString(32)
-          // ),
-        },
-        removalPolicy: cdk.RemovalPolicy.DESTROY,
-      });
-    }
 
     /**
      *
