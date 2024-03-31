@@ -97,7 +97,7 @@ paths:
         "500":
           description: Internal Server Error
       security:
-        - cognitoAuthorizer: []
+        - iamAuthorizer: []
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambRegion.Arn}/invocations"
@@ -160,7 +160,7 @@ paths:
         "500":
           description: Internal Server Error
       security:
-        - cognitoAuthorizer: []
+        - iamAuthorizer: []
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambRegion.Arn}/invocations"
@@ -283,7 +283,7 @@ paths:
         "500":
           description: Internal Server Error
       security:
-        - cognitoAuthorizer: []
+        - iamAuthorizer: []
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambInvasiveSpecies.Arn}/invocations"
@@ -432,7 +432,7 @@ paths:
         "500":
           description: Internal Server Error
       security:
-        - cognitoAuthorizer: []
+        - iamAuthorizer: []
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambAlternativeSpecies.Arn}/invocations"
@@ -566,7 +566,7 @@ paths:
         "500":
           description: Internal Server Error
       security:
-        - cognitoAuthorizer: []
+        - iamAuthorizer: []
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${IntegLambImages.Arn}/invocations"
@@ -861,15 +861,20 @@ components:
         authorizerUri:
           Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${userLambdaAuthorizer.Arn}/invocations"
         identitySource: method.request.header.Authorization
-    cognitoAuthorizer: # for authenticated and unauthenticated users
+    # cognitoAuthorizer: 
+    #   type: "apiKey"
+    #   name: "Authorization"
+    #   in: "header"
+    #   x-amazon-apigateway-authtype: "cognito_user_pools"
+    #   x-amazon-apigateway-authorizer:
+    #     type: cognito_user_pools
+    #     providerARNs:
+    #       - "dummyUserPoolARN" # will be replaced in api-stack
+    iamAuthorizer: # for authenticated and unauthenticated users
       type: "apiKey"
       name: "Authorization"
       in: "header"
-      x-amazon-apigateway-authtype: "cognito_user_pools"
-      x-amazon-apigateway-authorizer:
-        type: cognito_user_pools
-        providerARNs:
-          - "dummyUserPoolARN" # will be replaced in api-stack
+      x-amazon-apigateway-authtype: "awsSigv4"
     # ApiKeyAuth:
     #   type: apiKey
     #   in: header

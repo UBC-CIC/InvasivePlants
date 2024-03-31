@@ -35,20 +35,20 @@ export class APIStack extends Stack {
      * Create Cognito Identity Pool
      * An identity pool is a store of user identity information that is specific to your AWS account
      */
-    const identityPool = new cognito.CfnIdentityPool(
-      this,
-      "invasive-plants-identity-pool",
-      {
-        allowUnauthenticatedIdentities: true, // Set to true to allow unauthenticated (guest) users (mobile app)
-        identityPoolName: "invasivePlantsIdentityPool",
-        cognitoIdentityProviders: [
-          {
-            clientId: functionalityStack.appClient.userPoolClientId,
-            providerName: functionalityStack.userpool.userPoolProviderName,
-          },
-        ],
-      }
-    );
+    // const identityPool = new cognito.CfnIdentityPool(
+    //   this,
+    //   "invasive-plants-identity-pool",
+    //   {
+    //     allowUnauthenticatedIdentities: true, // Set to true to allow unauthenticated (guest) users (mobile app)
+    //     identityPoolName: "invasivePlantsIdentityPool",
+    //     cognitoIdentityProviders: [
+    //       {
+    //         clientId: functionalityStack.appClient.userPoolClientId,
+    //         providerName: functionalityStack.userpool.userPoolProviderName,
+    //       },
+    //     ],
+    //   }
+    // );
 
     /**
      * Attach roles for authenticated and unauthenticated users
@@ -59,7 +59,8 @@ export class APIStack extends Stack {
         "cognito-identity.amazonaws.com",
         {
           StringEquals: {
-            "cognito-identity.amazonaws.com:aud": identityPool.ref,
+            "cognito-identity.amazonaws.com:aud":
+              functionalityStack.identityPool.ref,
           },
           "ForAnyValue:StringLike": {
             "cognito-identity.amazonaws.com:amr": "authenticated",
@@ -74,7 +75,8 @@ export class APIStack extends Stack {
         "cognito-identity.amazonaws.com",
         {
           StringEquals: {
-            "cognito-identity.amazonaws.com:aud": identityPool.ref,
+            "cognito-identity.amazonaws.com:aud":
+              functionalityStack.identityPool.ref,
           },
           "ForAnyValue:StringLike": {
             "cognito-identity.amazonaws.com:amr": "unauthenticated",
@@ -90,29 +92,29 @@ export class APIStack extends Stack {
      */
 
     // get userPoolARN from parameter store
-    const userPoolArnParameter = ssm.StringParameter.valueFromLookup(
-      this,
-      "/userPoolArn"
-    );
+    // const userPoolArnParameter = ssm.StringParameter.valueFromLookup(
+    //   this,
+    //   "/userPoolArn"
+    // );
 
-    // replace providerARN with actual userPoolARN
-    const file = fs.readFileSync("OpenAPI_Swagger_Definition.yaml", "utf8");
-    let parsedYaml = parse(file);
+    // // replace providerARN with actual userPoolARN
+    // const file = fs.readFileSync("OpenAPI_Swagger_Definition.yaml", "utf8");
+    // let parsedYaml = parse(file);
 
-    parsedYaml.components.securitySchemes.cognitoAuthorizer[
-      "x-amazon-apigateway-authorizer"
-    ].providerARNs[0] = userPoolArnParameter;
+    // parsedYaml.components.securitySchemes.cognitoAuthorizer[
+    //   "x-amazon-apigateway-authorizer"
+    // ].providerARNs[0] = userPoolArnParameter;
 
-    const updatedYaml = stringify(parsedYaml);
-    fs.writeFileSync(
-      "OpenAPI_Swagger_Definition_Updated.yaml",
-      updatedYaml,
-      "utf-8"
-    );
+    // const updatedYaml = stringify(parsedYaml);
+    // fs.writeFileSync(
+    //   "OpenAPI_Swagger_Definition_Updated.yaml",
+    //   updatedYaml,
+    //   "utf-8"
+    // );
 
     // Read OpenAPI file and load file to S3
     const asset = new Asset(this, "SampleAsset", {
-      path: "OpenAPI_Swagger_Definition_Updated.yaml",
+      path: "OpenAPI_Swagger_Definition.yaml",
     });
 
     // Perform transformation on the file from the S3 location
@@ -143,7 +145,7 @@ export class APIStack extends Stack {
     this.apiGW_basedURL = api.urlForPath();
 
     // delete updated file after use
-    fs.unlinkSync("OpenAPI_Swagger_Definition_Updated.yaml");
+    // fs.unlinkSync("OpenAPI_Swagger_Definition_Updated.yaml");
 
     // Attach policies to the authenticated role
     authenticatedRole.attachInlinePolicy(
@@ -177,7 +179,7 @@ export class APIStack extends Stack {
 
     // Attach roles to the identity pool
     new cognito.CfnIdentityPoolRoleAttachment(this, "IdentityPoolRoles", {
-      identityPoolId: identityPool.ref,
+      identityPoolId: functionalityStack.identityPool.ref,
       roles: {
         authenticated: authenticatedRole.roleArn,
         unauthenticated: unauthenticatedRole.roleArn,

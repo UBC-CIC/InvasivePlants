@@ -24,6 +24,7 @@ import { boldText, formatString, capitalizeFirstWord, capitalizeEachWord } from 
 function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
+  const AWS = require("aws-sdk");
 
   const [searchDropdownSpeciesOptions, setSearchDropdownSpeciesOptions] = useState([]); // dropdown options for invasive species search bar (scientific names)
   const [searchDropdownRegionsOptions, setSearchDropdownRegionsOptions] = useState([]); // dropdown options for regions search bar 
@@ -53,39 +54,90 @@ function InvasiveSpeciesPage() {
   const [isLoading, setIsLoading] = useState(false); // loading data or not
   const [firstLoad, setFirstLoad] = useState(true); // flag to indicate if it's the first time loading the page
   const [user, setUser] = useState(""); // authorized admin user
-  const [jwtToken, setJwtToken] = useState(""); // jwtToken for authorizing get requests
+  const [jwtToken, setJwtToken] = useState(""); // TODO: remove jwtToken for authorizing get requests
+  // const [token, setSessionToken] = useState(""); 
+  // const [accessKey, setAccessKey] = useState("");
+  // const [secretAccessKey, setSecretAccessKey] = useState("");
+  const [credentials, setCredentials] = useState();
+
+  // useEffect(() => {
+  //   initializeAWS();
+  //   retrieveJwtToken(); // TODO: delete
+  // }, []);
+
+  // useEffect(() => {
+  //   if (jwtToken && credentials && firstLoad) { // TODO: remove creds/jwtoken eventually
+  //     retrieveUser();
+  //     console.log("jwttoken: ", jwtToken)
+  //   }
+  // }, [jwtToken, credentials]);
 
   useEffect(() => {
     retrieveJwtToken();
+    retrieveUser();
   }, []);
 
   useEffect(() => {
-    if (jwtToken && firstLoad) {
-      retrieveUser();
+    if (user && jwtToken && firstLoad) { // TODO: remove creds/jwtoken eventually
+      getIdentityCredentials()
+      // retrieveJwtToken();
     }
-  }, [jwtToken]);
+  }, [user, jwtToken]);
+
 
   useEffect(() => {
-    if (user && firstLoad) {
+    if (credentials && firstLoad) {
       handleGetInvasiveSpecies();
       setFirstLoad(false)
     }
-  }, [user]);
+  }, [credentials]);
 
   // Gets current authorized user
   const retrieveUser = async () => {
     try {
       const returnedUser = await Auth.currentAuthenticatedUser();
+      console.log("user: ", returnedUser);
       setUser(returnedUser);
     } catch (e) {
       console.log("error getting user: ", e);
     }
   }
 
+  // gets temporary AWS credentials
+  function getIdentityCredentials() {
+    const creds = new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID, 
+      Logins: {
+        'cognito-idp.ca-central-1.amazonaws.com/ca-central-1_2vfJ8XCy2': jwtToken // TODO: remove hardcoded value 
+      }
+    });
+
+    console.log("creds: ", creds)
+
+    AWS.config.update({
+      region: 'ca-central-1',
+      credentials: creds
+    });
+
+    AWS.config.credentials.get(function () {
+      // Credentials will be available when this function is called.
+      const accessKeyId = AWS.config.credentials.accessKeyId;
+      const secretAccessKey = AWS.config.credentials.secretAccessKey;
+      const sessionToken = AWS.config.credentials.sessionToken;
+      const identityId = AWS.config.credentials.identityId;
+
+      console.log("identityid: ", identityId)
+      console.log("key: ", accessKeyId)
+      console.log("creds: ", creds)
+      setCredentials(creds);
+    });
+  }
+
   // Gets jwtToken for current session
   const retrieveJwtToken = async () => {
     try {
       var session = await Auth.currentSession()
+      console.log("session: ", session)
       var idToken = await session.getIdToken()
       var token = await idToken.getJwtToken()
       setJwtToken(token);
@@ -110,6 +162,7 @@ function InvasiveSpeciesPage() {
   const handleGetInvasiveSpecies = () => {
     setIsLoading(true);
     // console.log("get inv species, curr offset, shouldReset: ", currOffset, shouldReset);
+    console.log("id: ", credentials.accessKeyId, "key: ", credentials.secretAccessKey, "token: ", credentials.sessionToken);
 
     try {
       axios.get(`${API_BASE_URL}invasiveSpecies`, {
@@ -118,7 +171,8 @@ function InvasiveSpeciesPage() {
           rows_per_page: rowsPerPage // default 20
         },
         headers: {
-          'Authorization': jwtToken
+          'Authorization': jwtToken // TODO: figure out authorization
+          // "X-Amz-Security-Token": credentials.sessionToken
         }
       })
         .then(response => {

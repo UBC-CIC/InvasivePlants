@@ -14,6 +14,7 @@ export class FunctionalityStack extends cdk.Stack {
   public readonly bucketName: string;
   public readonly appClient: cognito.UserPoolClient;
   public readonly userpool: cognito.UserPool;
+  public readonly identityPool: cognito.CfnIdentityPool;
 
   public readonly s3_Object_baseURL: string;
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -54,11 +55,11 @@ export class FunctionalityStack extends cdk.Stack {
     });
 
     // store userPoolArn in parameter store
-    new SSM.StringParameter(this, "Parameter", {
-      parameterName: "/userPoolArn",
-      description: "Description for your parameter",
-      stringValue: this.userpool.userPoolArn,
-    });
+    // new SSM.StringParameter(this, "Parameter", {
+    //   parameterName: "/userPoolArn",
+    //   description: "Description for your parameter",
+    //   stringValue: this.userpool.userPoolArn,
+    // });
 
     /**
      *
@@ -90,11 +91,30 @@ export class FunctionalityStack extends cdk.Stack {
     );
 
     // Outputs section to export the userPoolArn
-    new cdk.CfnOutput(this, "UserPoolArnOutput", {
-      value: this.userpool.userPoolArn,
-      description: "Cognito User Pool ARN",
-      exportName: "userPoolARN",
-    });
+    // new cdk.CfnOutput(this, "UserPoolArnOutput", {
+    //   value: this.userpool.userPoolArn,
+    //   description: "Cognito User Pool ARN",
+    //   exportName: "userPoolARN",
+    // });
+
+    /**
+     * Create Cognito Identity Pool
+     * An identity pool is a store of user identity information that is specific to your AWS account
+     */
+    this.identityPool = new cognito.CfnIdentityPool(
+      this,
+      "invasive-plants-identity-pool",
+      {
+        allowUnauthenticatedIdentities: true, // Set to true to allow unauthenticated (guest) users (mobile app)
+        identityPoolName: "invasivePlantsIdentityPool",
+        cognitoIdentityProviders: [
+          {
+            clientId: this.appClient.userPoolClientId,
+            providerName: this.userpool.userPoolProviderName,
+          },
+        ],
+      }
+    );
 
 
     /**
@@ -115,6 +135,7 @@ export class FunctionalityStack extends cdk.Stack {
           this.appClient.userPoolClientId
         ),
         REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
+        REACT_APP_IDENTITY_POOL_ID: cdk.SecretValue.unsafePlainText(this.identityPool.ref),
       },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
