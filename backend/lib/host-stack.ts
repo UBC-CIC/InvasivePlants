@@ -280,6 +280,10 @@ export class HostStack extends Stack {
           secret,
           "REACT_APP_REGION"
         ),
+        REACT_APP_IDENTITY_POOL_ID: ecs.Secret.fromSecretsManager(
+          secret,
+          "REACT_APP_IDENTITY_POOL_ID"
+        ),
       },
       environment: {
         REACT_APP_API_BASE_URL: apiStack.apiGW_basedURL,

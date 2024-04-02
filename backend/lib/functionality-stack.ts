@@ -54,13 +54,6 @@ export class FunctionalityStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // store userPoolArn in parameter store
-    // new SSM.StringParameter(this, "Parameter", {
-    //   parameterName: "/userPoolArn",
-    //   description: "Description for your parameter",
-    //   stringValue: this.userpool.userPoolArn,
-    // });
-
     /**
      *
      * Create Cognito Client
@@ -89,13 +82,6 @@ export class FunctionalityStack extends cdk.Stack {
         precedence: 1,
       }
     );
-
-    // Outputs section to export the userPoolArn
-    // new cdk.CfnOutput(this, "UserPoolArnOutput", {
-    //   value: this.userpool.userPoolArn,
-    //   description: "Cognito User Pool ARN",
-    //   exportName: "userPoolARN",
-    // });
 
     /**
      * Create Cognito Identity Pool
