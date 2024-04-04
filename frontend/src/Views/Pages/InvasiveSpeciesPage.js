@@ -167,7 +167,7 @@ function InvasiveSpeciesPage() {
     try {
       axios.get(`${API_BASE_URL}invasiveSpecies`, {
         params: {
-          curr_offset: currOffset ? currOffset : 0,
+          curr_offset: shouldReset ? null : Math.max(0, currOffset),
           rows_per_page: rowsPerPage // default 20
         },
         headers: {
@@ -228,7 +228,6 @@ function InvasiveSpeciesPage() {
   // Maintains history of last species_id and currLastSpeciesId so that on GET, 
   // the current page is maintained instead of starting from page 1
   const handleGetInvasiveSpeciesAfterSave = () => {
-    // console.log("got here:", currOffset)
     setCurrOffset(curr => curr - rowsPerPage);
     setShouldSave(true); // useEffect listens for this state to change and will GET invasive species when True
   };
@@ -236,7 +235,6 @@ function InvasiveSpeciesPage() {
   // Request to GET invasive species (same page) after editing a row to see the updated data when shouldSave state changes
   useEffect(() => {
     if (shouldSave) {
-      // console.log("saving..., calling get invasive species again")
       handleGetInvasiveSpecies();
     }
   }, [shouldSave]);

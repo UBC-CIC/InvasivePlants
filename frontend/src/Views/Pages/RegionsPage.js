@@ -113,7 +113,7 @@ function RegionsPage() {
         axios
             .get(`${API_BASE_URL}region`, {
                 params: {
-                    curr_offset: shouldReset ? null : currOffset,
+                    curr_offset: shouldReset ? null : Math.max(0, currOffset),
                     rows_per_page: rowsPerPage  // default 20
                 },
                 headers: {
