@@ -76,7 +76,7 @@ function AlternativeSpeciesPage() {
     axios
       .get(`${API_BASE_URL}alternativeSpecies`, {
         params: {
-          curr_offset: shouldReset ? null : currOffset,
+          curr_offset: shouldReset ? null :  Math.max(currOffset, 0),
           rows_per_page: rowsPerPage  // default 20
         },
         headers: {
@@ -114,13 +114,15 @@ function AlternativeSpeciesPage() {
         setDisplayData(formattedData);
         setData(formattedData);
         setCurrOffset(response.data.nextOffset);
+        setShouldSave(false);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error getting alternative species", error);
       })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    // .finally(() => {
+    //   setIsLoading(false);
+    // });
   };
 
   // Maintains history of last species_id and currLastSpeciesId so that on GET, 
@@ -133,39 +135,7 @@ function AlternativeSpeciesPage() {
   // Request to GET alternative species (same page) after editing a row to see the updated data when shouldSave state changes
   useEffect(() => {
     if (shouldSave) {
-      axios
-        .get(`${API_BASE_URL}alternativeSpecies`, {
-          params: {
-            curr_offset: currOffset ? currOffset : null, // default first page
-            rows_per_page: rowsPerPage  // default 20
-          },
-          headers: {
-            'x-api-key': process.env.REACT_APP_X_API_KEY
-          }
-        })
-        .then((response) => {
-          const formattedData = response.data.species.map(item => {
-            const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
-            const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
-            const image_links = item.images.map(img => img.image_url);
-            const s3_keys = item.images.map(img => img.s3_key);
-
-            return {
-              ...item,
-              scientific_name: capitalizedScientificNames,
-              common_name: capitalizedCommonNames,
-              image_links: image_links,
-              s3_keys: s3_keys
-            };
-          });
-
-          setDisplayData(formattedData);
-          setCurrOffset(response.data.nextOffset);
-          setShouldSave(false);
-        })
-        .catch((error) => {
-          console.error("Error getting alternative species", error);
-        })
+      handleGetAlternativeSpecies();
     }
   }, [shouldSave]);
 
@@ -281,11 +251,11 @@ function AlternativeSpeciesPage() {
                 }
               })
               .then(() => {
-                if (start > rowsPerPage) {
-                  handleGetAlternativeSpeciesAfterSave();
-                } else {
-                  setShouldReset(true);
-                }
+                // if (start > rowsPerPage) {
+                handleGetAlternativeSpeciesAfterSave();
+                // } else {
+                //   setShouldReset(true);
+                // }
               })
               .catch(error => {
                 console.error("Error adding images", error);
@@ -305,11 +275,11 @@ function AlternativeSpeciesPage() {
           }
         })
         .then(() => {
-          if (start > rowsPerPage) {
-            handleGetAlternativeSpeciesAfterSave();
-          } else {
-            setShouldReset(true);
-          }
+          // if (start > rowsPerPage) {
+          handleGetAlternativeSpeciesAfterSave();
+          // } else {
+          //   setShouldReset(true);
+          // }
           handleFinishEditingRow();
         })
         .catch((error) => {
@@ -398,6 +368,7 @@ function AlternativeSpeciesPage() {
               }
             })
             .then(() => {
+              setCurrOffset(0)
               setShouldReset(true);
               setOpenAddSpeciesDialog(false);
             })
@@ -405,6 +376,13 @@ function AlternativeSpeciesPage() {
               console.error("Error adding image", error);
             });
         });
+
+        if (allPlantImages.length === 0) {
+          setCurrOffset(0)
+          setShouldReset(true);
+          setOpenAddSpeciesDialog(false);
+        }
+
       })
       .catch((error) => {
         console.error("Error adding alternative species", error);

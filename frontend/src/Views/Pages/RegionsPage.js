@@ -74,7 +74,7 @@ function RegionsPage() {
         axios
             .get(`${API_BASE_URL}region`, {
                 params: {
-                    curr_offset: shouldReset ? null : currOffset,
+                    curr_offset: shouldReset ? null : Math.max(currOffset, 0),
                     rows_per_page: rowsPerPage  // default 20
                 },
                 headers: {
@@ -105,53 +105,25 @@ function RegionsPage() {
                 setDisplayData(formattedData);
                 setData(formattedData);
                 setCurrOffset(response.data.nextOffset);
+                setShouldSave(false);
+                setIsLoading(false);
             })
             .catch((error) => {
                 console.error("Error retrieving region", error);
             })
-            .finally(() => {
-                setIsLoading(false);
-            });
     };
 
     // Maintains history of last region_id and currLastRegionId so that on GET, 
     // the current page is maintained instead of starting from page 1
     const handleGetRegionsAfterSave = () => {
         setCurrOffset(curr => curr - rowsPerPage);
-        setShouldSave(true) // useEffect listens for this state to change and will GET regions when True
+        setShouldSave(true); // useEffect listens for this state to change and will GET regions when True
     };
 
     // Request to GET region (same page) after editing a row to see the updated data when shouldSave state changes
     useEffect(() => {
         if (shouldSave) {
-            axios
-                .get(`${API_BASE_URL}region`, {
-                    params: {
-                        curr_offset: currOffset ? currOffset : null, // default first page
-                        rows_per_page: rowsPerPage  // default 20
-                    },
-                    headers: {
-                        'x-api-key': process.env.REACT_APP_X_API_KEY
-                    }
-                })
-                .then((response) => {
-                    const formattedData = response.data.regions.map(item => {
-                        return {
-                            ...item,
-                            region_fullname: capitalizeEachWord(item.region_fullname),
-                            region_code_name: item.region_code_name.toUpperCase(),
-                            country_fullname: capitalizeEachWord(item.country_fullname)
-                        };
-                    });
-
-                    setDisplayData(formattedData);
-                    setCurrOffset(response.data.nextOffset);
-                    setShouldSave(false);
-
-                })
-                .catch((error) => {
-                    console.error("Error getting regions", error);
-                })
+            handleGetRegions();
         }
     }, [shouldSave]);
 
@@ -230,11 +202,7 @@ function RegionsPage() {
                         }
                     })
                 .then(() => {
-                    if (start > rowsPerPage) {
-                        handleGetRegionsAfterSave();
-                    } else {
-                        setShouldReset(true);
-                    }
+                    handleGetRegionsAfterSave();
                     handleFinishEditingRow();
                 })
                 .catch((error) => {
@@ -534,67 +502,71 @@ function RegionsPage() {
                         <span className="visually-hidden">Loading...</span>
                     </Spinner>
                 ) : (
-                    <Table style={{ width: "100%", tableLayout: "fixed" }}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell style={{ width: "10%" }}>
-                                    <Typography variant="subtitle1" fontWeight="bold">
-                                        Region
-                                    </Typography>
-                                </TableCell>
-                                <TableCell style={{ width: "10%" }}>
-                                    <Typography variant="subtitle1" fontWeight="bold">
-                                        Region Code
-                                    </Typography>
-                                </TableCell>
-                                <TableCell style={{ width: "10%" }}>
-                                    <Typography variant="subtitle1" fontWeight="bold">
-                                        Country
-                                    </Typography>
-                                </TableCell>
-                                <TableCell style={{ width: "15%" }}>
-                                    <Typography variant="subtitle1" fontWeight="bold">
-                                        Geographic Coordinates (latitude, longitude)
-                                    </Typography>
-                                </TableCell>
-                                <TableCell style={{ width: "5%" }}>
-                                    <Typography variant="subtitle1" fontWeight="bold">
-                                        Actions
-                                    </Typography>
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
+                    (displayData && displayData.length > 0 ? (
+                        <Table style={{ width: "100%", tableLayout: "fixed" }}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell style={{ width: "10%" }}>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Region
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell style={{ width: "10%" }}>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Region Code
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell style={{ width: "10%" }}>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Country
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell style={{ width: "15%" }}>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Geographic Coordinates (latitude, longitude)
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell style={{ width: "5%" }}>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Actions
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
 
-                        <TableBody>
-                            {(displayData && displayData.length > 0 ? displayData : [])
-                                .map((row) => (
-                                    <TableRow key={row.region_id}>
-                                        <>
-                                            <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.region_fullname}</TableCell>
-                                            <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}> {row.region_code_name} </TableCell>
-                                            <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.country_fullname}</TableCell>
-                                            <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.geographic_coordinate}</TableCell>
-                                            <TableCell >
-                                                <Tooltip title="Edit"
-                                                    onClick={() => startEdit(row)}>
-                                                    <IconButton>
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip
-                                                    title="Delete"
-                                                    onClick={() => handleDeleteRow(row.region_id, row)}>
-                                                    <IconButton>
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </TableCell>
-                                        </>
-                                    </TableRow>
-                                ))}
-                        </TableBody>
-                    </Table>
-                )}
+                            <TableBody>
+                                {(displayData && displayData.length > 0 ? displayData : [])
+                                    .map((row) => (
+                                        <TableRow key={row.region_id}>
+                                            <>
+                                                <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.region_fullname}</TableCell>
+                                                <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}> {row.region_code_name} </TableCell>
+                                                <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.country_fullname}</TableCell>
+                                                <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.geographic_coordinate}</TableCell>
+                                                <TableCell >
+                                                    <Tooltip title="Edit"
+                                                        onClick={() => startEdit(row)}>
+                                                        <IconButton>
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    <Tooltip
+                                                        title="Delete"
+                                                        onClick={() => handleDeleteRow(row.region_id, row)}>
+                                                        <IconButton>
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </TableCell>
+                                            </>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    ) : (
+                        // no display data
+                        <Box style={{ margin: 'auto', textAlign: 'center' }}>No regions found</Box>
+                    )))}
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginLeft: "79%" }}>
