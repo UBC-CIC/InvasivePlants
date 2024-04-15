@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography, ThemeProvider, Box, Autocomplete, TextField } from "@mui/material";
 import Theme from './Theme';
 import { Auth } from "aws-amplify";
-import sigV4Client from "../../functions/sigV4Client";
 
 // components
 import PaginationComponent from '../../components/PaginationComponent';
@@ -20,6 +19,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import axios from "axios";
 import { boldText, formatString, capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperFunctions';
+import sigV4Client from "../../functions/sigV4Client";
 
 function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -58,8 +58,8 @@ function InvasiveSpeciesPage() {
   const [isLoading, setIsLoading] = useState(false); // loading data or not
   const [firstLoad, setFirstLoad] = useState(true); // flag to indicate if it's the first time loading the page
   const [user, setUser] = useState(""); // authorized admin user
-  const [jwtToken, setJwtToken] = useState("");
-  const [credentials, setCredentials] = useState();
+  const [jwtToken, setJwtToken] = useState(""); // jwtToken from current session
+  const [credentials, setCredentials] = useState(); // temporary credentials
 
   useEffect(() => {
     retrieveJwtToken();
@@ -91,7 +91,7 @@ function InvasiveSpeciesPage() {
     }
   }
 
-  // gets temporary AWS credentials
+  // Gets temporary AWS credentials
   function getIdentityCredentials() {
     const creds = new AWS.CognitoIdentityCredentials({
       IdentityPoolId: IDENTITY_POOL_ID,
@@ -140,7 +140,6 @@ function InvasiveSpeciesPage() {
 
     try {
       // Create a new sigV4Client instance
-
       const signedRequest = sigV4Client
         .newClient({
           accessKey: credentials.accessKeyId,
@@ -150,22 +149,20 @@ function InvasiveSpeciesPage() {
           endpoint: API_BASE_URL
         })
         .signRequest({
-          method: 'GET', // Specify the HTTP method
+          method: 'GET',
           path: 'invasiveSpecies',
           headers: {},
           queryParams: {
             curr_offset: shouldReset ? 0 : Math.max(0, currOffset),
-            rows_per_page: rowsPerPage // default 20
+            rows_per_page: rowsPerPage
           }
         });
 
-      // Make the HTTP request using fetch
       const response = await fetch(signedRequest.url, {
         headers: signedRequest.headers,
         method: 'GET'
       });
 
-      // Process response
       if (response.ok) {
         const responseData = await response.json();
 
@@ -191,7 +188,7 @@ function InvasiveSpeciesPage() {
           };
         });
 
-        // Resets pagination details if shouldReset is true
+        // Resets pagination details 
         if (shouldReset) {
           setCurrOffset(0);
           setPage(0);
@@ -201,7 +198,6 @@ function InvasiveSpeciesPage() {
           setShouldReset(false);
         }
 
-        // Set state with the formatted data
         setSpeciesCount(responseData.count[0].count);
         setDisplayData(formattedData);
         setData(formattedData);
@@ -212,7 +208,7 @@ function InvasiveSpeciesPage() {
         console.error('Failed to retrieve invasive species:', response.statusText);
       }
     } catch (error) {
-      console.error('Unexpected error:', error);
+      console.error('Unexpected error retrieving invasive species:', error);
     }
   };
 
@@ -220,7 +216,7 @@ function InvasiveSpeciesPage() {
   // the current page is maintained instead of starting from page 1
   const handleGetInvasiveSpeciesAfterSave = () => {
     setCurrOffset(curr => curr - rowsPerPage);
-    setShouldSave(true); // useEffect listens for this state to change and will GET invasive species when True
+    setShouldSave(true);
   };
 
   // Request to GET invasive species (same page) after editing a row to see the updated data when shouldSave state changes
@@ -329,7 +325,7 @@ function InvasiveSpeciesPage() {
         console.error('Failed to search invasive species:', response.statusText);
       }
     } catch (error) {
-      console.error('Unexpected error:', error);
+      console.error('Unexpected error searching invasive species:', error);
     } finally {
       setIsLoading(false);
     }
@@ -607,7 +603,7 @@ function InvasiveSpeciesPage() {
               console.error('Failed to get region:', response.statusText);
             }
           } catch (error) {
-            console.error("Error getting region", error);
+            console.error("Unexpected error retrieving region:", error);
           }
         }));
         setTempEditingData((prev) => ({ ...prev, region_id: value, region_code_name: selectedRegionCodes }));
@@ -615,7 +611,7 @@ function InvasiveSpeciesPage() {
         setTempEditingData((prev) => ({ ...prev, [field]: value }));
       }
     } catch (error) {
-      console.error('Unexpected error:', error);
+      console.error("Error: ", error);
     }
   };
 
@@ -896,7 +892,6 @@ function InvasiveSpeciesPage() {
         ) : (
           (displayData && displayData.length > 0 ? (
             <Table style={{ width: "100%", tableLayout: "fixed" }}>
-              {/* table header */}
               <TableHead>
                 <TableRow>
                   <TableCell style={{ width: "8%" }}>
@@ -943,7 +938,6 @@ function InvasiveSpeciesPage() {
                 </TableRow>
               </TableHead>
 
-              {/* table body: display species */}
               <TableBody>
                 {(displayData && displayData.length > 0 ? displayData : [])
                   .map((row) => (
@@ -996,7 +990,7 @@ function InvasiveSpeciesPage() {
 
                         {/* regions */}
                         <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                          {Array.isArray(row.region_code_names) //region_code_names
+                          {Array.isArray(row.region_code_names)
                             ? row.region_code_names.join(", ")
                             : row.region_code_names}
                         </TableCell>
@@ -1065,7 +1059,7 @@ function InvasiveSpeciesPage() {
               </TableBody>
             </Table>
           ) : (
-            // no display data
+            // No data exists
             <Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>
           )))}
       </div >

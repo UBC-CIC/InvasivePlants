@@ -7,11 +7,13 @@ import DeleteDialog from './ConfirmDeleteDialog';
 import { Auth } from "aws-amplify";
 import axios from "axios";
 import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperFunctions';
+import sigV4Client from "../../functions/sigV4Client";
 
 // Dialog for editing an invasive species
-const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave, jwtToken }) => {
+const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave, credentials }) => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
+    const REGION = process.env.REACT_APP_REGION;
 
     const [user, setUser] = useState("");  // current user
     const [searchAlternativeDropdownOptions, setSearchAlternativeDropdownOptions] = useState([]); // dropdown options for alternative species search
@@ -55,22 +57,37 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
         setShowSaveConfirmation(false);
     };
 
-    // Updates search dropdown on user input change
-    const handleSearchAlternative = (searchInput) => {
+    // Updates alternative species search dropdown on user input change
+    const handleSearchAlternative = async (searchInput) => {
         if (searchInput === "") {
             setSearchAlternativeDropdownOptions([]);
         } else {
-            axios
-                .get(`${API_BASE_URL}alternativeSpecies`, {
-                    params: {
-                        search_input: searchInput,
-                    },
-                    headers: {
-                        'Authorization': jwtToken
-                    }
-                })
-                .then((response) => {
-                    const formattedData = response.data.species.map(item => {
+            try {
+                const signedRequest = sigV4Client
+                    .newClient({
+                        accessKey: credentials.accessKeyId,
+                        secretKey: credentials.secretAccessKey,
+                        sessionToken: credentials.sessionToken,
+                        region: REGION,
+                        endpoint: API_BASE_URL
+                    })
+                    .signRequest({
+                        method: 'GET',
+                        path: 'alternativeSpecies',
+                        headers: {},
+                        queryParams: {
+                            search_input: searchInput,
+                        }
+                    });
+
+                const response = await fetch(signedRequest.url, {
+                    headers: signedRequest.headers,
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    const formattedData = responseData.species.map(item => {
                         const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
                         const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
 
@@ -82,29 +99,46 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                     });
 
                     setSearchAlternativeDropdownOptions(formattedData);
-                })
-                .catch((error) => {
-                    console.error("Error searching up alternative species", error);
-                })
-        }
+                } else {
+                    console.error('Failed to search alternative species:', response.statusText);
+                }
+            } catch (error) {
+                console.error("Unexpected error searching up alternative species", error);
+            }
+        };
     };
 
     // Gets regions to update region search dropdown 
-    const handleSearchRegion = (searchInput) => {
+    const handleSearchRegion = async (searchInput) => {
         if (searchInput === "") {
             setSearchAlternativeDropdownOptions([]);
         } else {
-            axios
-                .get(`${API_BASE_URL}region`, {
-                    params: {
-                        search_input: searchInput,
-                    },
-                    headers: {
-                        'Authorization': jwtToken
-                    }
-                })
-                .then((response) => {
-                    const regionData = response.data.regions.map(item => {
+            try {
+                const signedRequest = sigV4Client
+                    .newClient({
+                        accessKey: credentials.accessKeyId,
+                        secretKey: credentials.secretAccessKey,
+                        sessionToken: credentials.sessionToken,
+                        region: REGION,
+                        endpoint: API_BASE_URL
+                    })
+                    .signRequest({
+                        method: 'GET',
+                        path: 'region',
+                        headers: {},
+                        queryParams: {
+                            search_input: searchInput,
+                        }
+                    });
+
+                const response = await fetch(signedRequest.url, {
+                    headers: signedRequest.headers,
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    const regionData = responseData.regions.map(item => {
                         return {
                             ...item,
                             region_fullname: capitalizeEachWord(item.region_fullname),
@@ -113,10 +147,12 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                         };
                     });
                     setSearchRegionsDropdownOptions(regionData);
-                })
-                .catch((error) => {
-                    console.error("Error searching up region", error);
-                })
+                } else {
+                    console.error('Failed to search region:', response.statusText);
+                }
+            } catch (error) {
+                console.error("Unexpected error searching region", error);
+            }
         }
     };
 
@@ -141,9 +177,6 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                             params: {
                                 contentType: files[i].type,
                                 filename: `${filename}.${fileExtension}`
-                            },
-                            headers: {
-                                'Authorization': jwtToken
                             }
                         });
 
