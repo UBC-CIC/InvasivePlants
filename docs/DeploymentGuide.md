@@ -3,7 +3,6 @@
 Before you deploy, you must have the following installed on your device:
 
 - [git](https://git-scm.com/downloads)
-- [git lfs](https://git-lfs.com/)
 - [AWS Account](https://aws.amazon.com/account/)
 - [GitHub Account](https://github.com/)
 - [AWS CLI](https://aws.amazon.com/cli/)
@@ -180,7 +179,7 @@ This is a sample of the `View push commands`:
 \*Note: in Step 1 of the instructions, you can specify which profile to use by specifying in the following:
 
 ```bash
-aws ecr get-login-password --region ca-central-1 --profile <aws-profile-name>| docker login --username AWS --password-stdin <link-to-ecr>
+aws ecr get-login-password --region ca-central-1 --profile <aws-profile-name> | docker login --username AWS --password-stdin <link-to-ecr>
 ```
 
 #### 3. Deploy all stacks
@@ -257,6 +256,8 @@ To get api base url:
 
 ### Extra: Taking down the deployed stacks
 
-To take down the deployed stack for a fresh redeployment in the future, navigate to AWS Cloudformation, click on the stack(s), and hit Delete. Please wait for the stacks in each step to be properly deleted before deleting the stack downstream.
+To take down the deployed stack for a fresh redeployment in the future, navigate to AWS Cloudformation, click on the stack(s), and hit Delete. If any stack fails to delete, this is because deletion protection has been enabled for the resource. If you want to delete the resource, click on the resource in Events and disable deletion protection.
+
+Please wait for the stacks in each step to be properly deleted before deleting the stack downstream.
 
 Also make sure to delete secrets in Secrets Manager and a stack in `us-east-1`.
