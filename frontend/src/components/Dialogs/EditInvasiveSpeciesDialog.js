@@ -127,7 +127,7 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                         path: 'region',
                         headers: {},
                         queryParams: {
-                            search_input: searchInput,
+                            region_fullname: searchInput,
                         }
                     });
 

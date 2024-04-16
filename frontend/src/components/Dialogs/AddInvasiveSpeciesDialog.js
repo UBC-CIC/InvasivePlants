@@ -177,7 +177,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, credenti
                         path: 'region',
                         headers: {},
                         queryParams: {
-                            search_input: searchInput,
+                            region_fullname: searchInput,
                         }
                     });
 

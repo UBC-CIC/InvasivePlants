@@ -21,10 +21,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import axios from "axios";
 import { boldText, capitalizeFirstWord, capitalizeEachWord, formatString } from '../../functions/helperFunctions';
+import sigV4Client from "../../functions/sigV4Client";
 
 function AlternativeSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
+  const USER_POOL_ID = process.env.REACT_APP_USERPOOL_ID;
+  const IDENTITY_POOL_ID = process.env.REACT_APP_IDENTITY_POOL_ID;
+  const REGION = process.env.REACT_APP_REGION;
+
+  const AWS = require("aws-sdk");
 
   const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
   const [speciesCount, setSpeciesCount] = useState(0); // number of alternative species
@@ -52,26 +58,27 @@ function AlternativeSpeciesPage() {
   const [isLoading, setIsLoading] = useState(false); // loading data or not
   const [firstLoad, setFirstLoad] = useState(true); // flag to indicate if it's the first time loading the page
   const [user, setUser] = useState(""); // authorized admin user
-  const [jwtToken, setJwtToken] = useState(""); // jwtToken for authorizing get requests
+  const [jwtToken, setJwtToken] = useState(""); // jwtToken from current session
+  const [credentials, setCredentials] = useState(); // temporary credentials
 
-
-  // Retrieves user on load
   useEffect(() => {
     retrieveJwtToken();
+    retrieveUser();
   }, []);
 
   useEffect(() => {
-    if (jwtToken && firstLoad) {
-      retrieveUser();
+    if (user && jwtToken && firstLoad) {
+      getIdentityCredentials();
     }
-  }, [jwtToken]);
+  }, [user, jwtToken]);
+
 
   useEffect(() => {
-    if (user && firstLoad) {
+    if (credentials && firstLoad) {
       handleGetAlternativeSpecies();
-      setFirstLoad(false)
+      setFirstLoad(false);
     }
-  }, [user]);
+  }, [credentials]);
 
   // Gets current authorized user
   const retrieveUser = async () => {
@@ -81,6 +88,26 @@ function AlternativeSpeciesPage() {
     } catch (e) {
       console.log("error getting user: ", e);
     }
+  }
+
+  // Gets temporary AWS credentials
+  function getIdentityCredentials() {
+    const creds = new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: IDENTITY_POOL_ID,
+      Logins: {
+        [`cognito-idp.ca-central-1.amazonaws.com/${USER_POOL_ID}`]: jwtToken
+      }
+    });
+
+
+    AWS.config.update({
+      region: 'ca-central-1',
+      credentials: creds
+    });
+
+    AWS.config.credentials.get(function () {
+      setCredentials(creds);
+    });
   }
 
   // Gets jwtToken for current session
@@ -107,20 +134,39 @@ function AlternativeSpeciesPage() {
   }
 
   // Fetches rowsPerPage number of alternative species (pagination)
-  const handleGetAlternativeSpecies = () => {
+  const handleGetAlternativeSpecies = async () => {
     setIsLoading(true);
-    axios
-      .get(`${API_BASE_URL}alternativeSpecies`, {
-        params: {
-          curr_offset: shouldReset ? null : Math.max(0, currOffset),
-          rows_per_page: rowsPerPage  // default 20
-        },
-        headers: {
-          'Authorization': jwtToken
-        }
-      })
-      .then((response) => {
-        const formattedData = response.data.species.map(item => {
+
+    try {
+      // Create a new sigV4Client instance
+      const signedRequest = sigV4Client
+        .newClient({
+          accessKey: credentials.accessKeyId,
+          secretKey: credentials.secretAccessKey,
+          sessionToken: credentials.sessionToken,
+          region: REGION,
+          endpoint: API_BASE_URL
+        })
+        .signRequest({
+          method: 'GET',
+          path: 'alternativeSpecies',
+          headers: {},
+          queryParams: {
+            curr_offset: shouldReset ? 0 : Math.max(0, currOffset),
+            rows_per_page: rowsPerPage
+          }
+        });
+
+      const response = await fetch(signedRequest.url, {
+        headers: signedRequest.headers,
+        method: 'GET'
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+
+
+        const formattedData = responseData.species.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
           const image_links = item.images.map(img => img.image_url);
@@ -146,16 +192,18 @@ function AlternativeSpeciesPage() {
           setShouldReset(false);
         }
 
-        setSpeciesCount(response.data.count[0].count);
+        setSpeciesCount(responseData.count[0].count);
         setDisplayData(formattedData);
         setData(formattedData);
-        setCurrOffset(response.data.nextOffset);
+        setCurrOffset(responseData.nextOffset);
         setShouldSave(false);
         setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error getting alternative species", error);
-      })
+      } else {
+        console.error('Failed to retrieve alternative species:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Unexpected error retrieving alternative species:', error);
+    }
   };
 
   // Maintains history of last species_id and currLastSpeciesId so that on GET, 
@@ -173,24 +221,39 @@ function AlternativeSpeciesPage() {
   }, [shouldSave]);
 
   // Fetches the alternative species that matches user search
-  const handleGetAlternativeSpeciesAfterSearch = () => {
+  const handleGetAlternativeSpeciesAfterSearch = async () => {
     // formats search
     let formattedSearchInput = searchInput.toLowerCase().replace(/\([^)]*\)/g, '').trim().replace(/ /g, '_'); // only keep scientific name, and replace spaces with '_'
     formattedSearchInput = formattedSearchInput.split(',')[0].trim(); // if multiple scientific names, just search up one
     setIsLoading(true);
 
-    axios
-      .get(`${API_BASE_URL}alternativeSpecies`, {
-        params: {
-          search_input: formattedSearchInput,
-        },
-        headers: {
-          'Authorization': jwtToken
-        }
-      })
-      .then((response) => {
-        // console.log("resp: ", response.data.species)
-        const formattedData = response.data.species.map(item => {
+    try {
+      const signedRequest = sigV4Client
+        .newClient({
+          accessKey: credentials.accessKeyId,
+          secretKey: credentials.secretAccessKey,
+          sessionToken: credentials.sessionToken,
+          region: REGION,
+          endpoint: API_BASE_URL
+        })
+        .signRequest({
+          method: 'GET',
+          path: 'alternativeSpecies',
+          headers: {},
+          queryParams: {
+            search_input: formattedSearchInput
+          }
+        });
+
+      const response = await fetch(signedRequest.url, {
+        headers: signedRequest.headers,
+        method: 'GET'
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+
+        const formattedData = responseData.species.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
           const image_links = item.images.map(img => img.image_url);
@@ -209,14 +272,15 @@ function AlternativeSpeciesPage() {
         setShouldCalculate(false);
         setDisplayData(formattedData);
         formattedData.length > 0 ? setStart(1) : setStart(0);
-        setEnd(response.data.species.length);
-      })
-      .catch((error) => {
-        console.error("Error searching up alternative species", error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+        setEnd(responseData.species.length);
+      } else {
+        console.error('Failed to search alternative species:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Unexpected error searching alternative species:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Updates editing states when editing a species
@@ -346,7 +410,8 @@ function AlternativeSpeciesPage() {
 
   // Adds a new alternative species
   const handleAddSpecies = (newSpeciesData) => {
-    console.log("data: ", newSpeciesData)
+    setIsLoading(true);
+    
     newSpeciesData = {
       ...newSpeciesData,
       scientific_name: newSpeciesData.scientific_name.map(name =>
@@ -385,7 +450,6 @@ function AlternativeSpeciesPage() {
 
         const allPlantImages = plantsWithImgLinks.concat(plantsWithImgFiles);
 
-        console.log("all plant images: ", allPlantImages)
 
         // Uploads all plant images 
         allPlantImages.forEach((plantData) => {
@@ -396,7 +460,6 @@ function AlternativeSpeciesPage() {
               }
             })
             .then(() => {
-              console.log("got here")
               setCurrOffset(0)
               setShouldReset(true);
               setOpenAddSpeciesDialog(false);
@@ -430,48 +493,63 @@ function AlternativeSpeciesPage() {
   };
 
   // Updates search dropdown
-  const handleSearch = (searchInput) => {
+  const handleSearch = async (searchInput) => {
     if (searchInput === "") {
       setDisplayData(data);
       setShouldCalculate(true);
       setSearchDropdownOptions([]);
     } else {
-      axios
-        .get(`${API_BASE_URL}alternativeSpecies`, {
-          params: {
-            search_input: searchInput,
-          },
-          headers: {
-            'Authorization': jwtToken
+      try {
+        const signedRequest = sigV4Client
+        .newClient({
+          accessKey: credentials.accessKeyId,
+          secretKey: credentials.secretAccessKey,
+          sessionToken: credentials.sessionToken,
+          region: REGION,
+          endpoint: API_BASE_URL
+        })
+        .signRequest({
+          method: 'GET',
+          path: 'alternativeSpecies',
+          headers: {},
+          queryParams: {
+            search_input: searchInput
           }
-        })
-        .then((response) => {
-          const formattedData = response.data.species.map(item => {
-            const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
-            const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
-            const image_links = item.images.map(img => img.image_url);
-            const s3_keys = item.images.map(img => img.s3_key);
-
-            return {
-              ...item,
-              scientific_name: capitalizedScientificNames,
-              common_name: capitalizedCommonNames,
-              image_links: image_links,
-              s3_keys: s3_keys
-            };
-          });
-
-          if (formattedData.length > 0) {
-            const scientificNames = formattedData.flatMap((species) => `${species.scientific_name} (${species.common_name ? species.common_name.join(', ') : ''})`);
-            setSearchDropdownOptions(scientificNames);
-          }
-        })
-        .catch((error) => {
-          console.error("Error searching up alternative species", error);
-        })
-        .finally(() => {
-          setIsLoading(false);
         });
+
+      const response = await fetch(signedRequest.url, {
+        headers: signedRequest.headers,
+        method: 'GET'
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+
+        const formattedData = responseData.species.map(item => {
+          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
+          const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
+          const image_links = item.images.map(img => img.image_url);
+          const s3_keys = item.images.map(img => img.s3_key);
+
+          return {
+            ...item,
+            scientific_name: capitalizedScientificNames,
+            common_name: capitalizedCommonNames,
+            image_links: image_links,
+            s3_keys: s3_keys
+          };
+        });
+
+        if (formattedData.length > 0) {
+          const scientificNames = formattedData.flatMap((species) => `${species.scientific_name} (${species.common_name ? species.common_name.join(', ') : ''})`);
+          setSearchDropdownOptions(scientificNames);
+        }
+       } else {
+          console.error('Failed to search alternative species:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Unexpected error searching alternative species:', error);
+      }
     }
   };
 
@@ -753,8 +831,8 @@ function AlternativeSpeciesPage() {
               </TableBody>
             </Table>
           ) : (
-            // no display data
-            <Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>
+            // no data available
+            !firstLoad && (<Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>)
           )))}
       </div >
 

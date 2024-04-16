@@ -68,7 +68,7 @@ function InvasiveSpeciesPage() {
 
   useEffect(() => {
     if (user && jwtToken && firstLoad) {
-      getIdentityCredentials()
+      getIdentityCredentials();
     }
   }, [user, jwtToken]);
 
@@ -76,7 +76,7 @@ function InvasiveSpeciesPage() {
   useEffect(() => {
     if (credentials && firstLoad) {
       handleGetInvasiveSpecies();
-      setFirstLoad(false)
+      setFirstLoad(false);
     }
   }, [credentials]);
 
@@ -84,7 +84,6 @@ function InvasiveSpeciesPage() {
   const retrieveUser = async () => {
     try {
       const returnedUser = await Auth.currentAuthenticatedUser();
-      // console.log("user: ", returnedUser);
       setUser(returnedUser);
     } catch (e) {
       console.log("error getting user: ", e);
@@ -477,7 +476,7 @@ function InvasiveSpeciesPage() {
 
   // Adds a new invasive species
   const handleAddSpecies = (newSpeciesData) => {
-    // console.log("new species: ", newSpeciesData);
+    setIsLoading(true);
 
     newSpeciesData = {
       ...newSpeciesData,
@@ -532,7 +531,6 @@ function InvasiveSpeciesPage() {
               setCurrOffset(0)
               setShouldReset(true);
               setOpenAddSpeciesDialog(false);
-              // console.log("got here add species with images")
             })
             .catch((error) => {
               console.error("Error adding image", error);
@@ -543,8 +541,6 @@ function InvasiveSpeciesPage() {
           setCurrOffset(0)
           setShouldReset(true);
           setOpenAddSpeciesDialog(false);
-          // console.log("got here add species no images")
-
         }
       })
       .catch((error) => {
@@ -668,7 +664,7 @@ function InvasiveSpeciesPage() {
           console.error('Failed to search invasive species:', response.statusText);
         }
       } catch (error) {
-        console.error('Unexpected error:', error);
+        console.error('Unexpected error searching invasive species:', error);
       }
     }
   };
@@ -1060,7 +1056,7 @@ function InvasiveSpeciesPage() {
             </Table>
           ) : (
             // No data exists
-            <Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>
+            !firstLoad && (<Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>)
           )))}
       </div >
 
