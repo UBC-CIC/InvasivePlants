@@ -98,9 +98,6 @@ const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd, jwtTo
               params: {
                 contentType: files[i].type,
                 filename: `${filename}.${fileExtension}`
-              },
-              headers: {
-                'Authorization': jwtToken
               }
             });
 

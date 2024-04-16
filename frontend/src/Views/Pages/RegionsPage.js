@@ -20,10 +20,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { capitalizeEachWord } from '../../functions/helperFunctions';
 import axios from "axios";
+import sigV4Client from "../../functions/sigV4Client";
 
 // displays regions
 function RegionsPage() {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+    const USER_POOL_ID = process.env.REACT_APP_USERPOOL_ID;
+    const IDENTITY_POOL_ID = process.env.REACT_APP_IDENTITY_POOL_ID;
+    const REGION = process.env.REACT_APP_REGION;
+
+    const AWS = require("aws-sdk");
 
     const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
     const [regionCount, setRegionCount] = useState(0); // number of regions
@@ -52,27 +58,27 @@ function RegionsPage() {
     const [isLoading, setIsLoading] = useState(false); // loading data or not
     const [firstLoad, setFirstLoad] = useState(true); // flag to indicate if it's the first time loading the page
     const [user, setUser] = useState("");
-    const [jwtToken, setJwtToken] = useState(""); // jwtToken for authorizing get requests
+    const [jwtToken, setJwtToken] = useState(""); // jwtToken from current session
+    const [credentials, setCredentials] = useState(); // temporary credentials
 
-
-
-    // Retrieves user on load
     useEffect(() => {
         retrieveJwtToken();
+        retrieveUser();
     }, []);
 
     useEffect(() => {
-        if (jwtToken && firstLoad) {
-            retrieveUser();
+        if (user && jwtToken && firstLoad) {
+            getIdentityCredentials();
         }
-    }, [jwtToken]);
+    }, [user, jwtToken]);
+
 
     useEffect(() => {
-        if (user && firstLoad) {
+        if (credentials && firstLoad) {
             handleGetRegions();
-            setFirstLoad(false)
+            setFirstLoad(false);
         }
-    }, [user]);
+    }, [credentials]);
 
     // Gets current authorized user
     const retrieveUser = async () => {
@@ -82,6 +88,26 @@ function RegionsPage() {
         } catch (e) {
             console.log("error getting user: ", e);
         }
+    }
+
+    // Gets temporary AWS credentials
+    function getIdentityCredentials() {
+        const creds = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: IDENTITY_POOL_ID,
+            Logins: {
+                [`cognito-idp.ca-central-1.amazonaws.com/${USER_POOL_ID}`]: jwtToken
+            }
+        });
+
+
+        AWS.config.update({
+            region: 'ca-central-1',
+            credentials: creds
+        });
+
+        AWS.config.credentials.get(function () {
+            setCredentials(creds);
+        });
     }
 
     // Gets jwtToken for current session
@@ -108,19 +134,36 @@ function RegionsPage() {
     }
 
     // Fetches rowsPerPage number of regions (pagination)
-    const handleGetRegions = () => {
+    const handleGetRegions = async () => {
         setIsLoading(true);
-        axios
-            .get(`${API_BASE_URL}region`, {
-                params: {
-                    curr_offset: shouldReset ? null : currOffset,
-                    rows_per_page: rowsPerPage  // default 20
-                },
-                headers: {
-                    'Authorization': jwtToken
-                }
-            })
-            .then((response) => {
+        try {
+            // Create a new sigV4Client instance
+            const signedRequest = sigV4Client
+                .newClient({
+                    accessKey: credentials.accessKeyId,
+                    secretKey: credentials.secretAccessKey,
+                    sessionToken: credentials.sessionToken,
+                    region: REGION,
+                    endpoint: API_BASE_URL
+                })
+                .signRequest({
+                    method: 'GET',
+                    path: 'region',
+                    headers: {},
+                    queryParams: {
+                        curr_offset: shouldReset ? 0 : Math.max(0, currOffset),
+                        rows_per_page: rowsPerPage
+                    }
+                });
+
+            const response = await fetch(signedRequest.url, {
+                headers: signedRequest.headers,
+                method: 'GET'
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+
                 // Resets pagination details
                 // This will clear the last region id history and display the first page
                 if (shouldReset) {
@@ -131,7 +174,7 @@ function RegionsPage() {
                     setShouldReset(false);
                 }
 
-                const formattedData = response.data.regions.map(item => {
+                const formattedData = responseData.regions.map(item => {
                     return {
                         ...item,
                         region_fullname: capitalizeEachWord(item.region_fullname),
@@ -140,17 +183,20 @@ function RegionsPage() {
                     };
                 });
 
-                setRegionCount(response.data.count[0].count);
+                setRegionCount(responseData.count[0].count);
                 setDisplayData(formattedData);
                 setData(formattedData);
-                setCurrOffset(response.data.nextOffset);
+                setCurrOffset(responseData.nextOffset);
                 setShouldSave(false);
                 setIsLoading(false);
-            })
-            .catch((error) => {
-                console.error("Error retrieving region", error);
-            })
+            } else {
+                console.error('Failed to retrieve regions:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Unexpected error retrieving regions:', error);
+        }
     };
+
 
     // Maintains history of last region_id and currLastRegionId so that on GET, 
     // the current page is maintained instead of starting from page 1
@@ -167,7 +213,7 @@ function RegionsPage() {
     }, [shouldSave]);
 
     // Fetches the regions that matches user search
-    const handleGetRegionsAfterSearch = () => {
+    const handleGetRegionsAfterSearch = async () => {
         const formattedSearchInput = searchInput.replace(/\s*\([^)]*\)\s*/, '') // Remove the region code within parentheses
             .trim() // Trim trailing spaces
             .toLowerCase() // Convert to lowercase
@@ -175,17 +221,33 @@ function RegionsPage() {
 
         setIsLoading(true);
 
-        axios
-            .get(`${API_BASE_URL}region`, {
-                params: {
-                    region_fullname: formattedSearchInput,
-                },
-                headers: {
-                    'Authorization': jwtToken
-                }
-            })
-            .then((response) => {
-                const formattedData = response.data.regions.map(item => {
+        try {
+            const signedRequest = sigV4Client
+                .newClient({
+                    accessKey: credentials.accessKeyId,
+                    secretKey: credentials.secretAccessKey,
+                    sessionToken: credentials.sessionToken,
+                    region: REGION,
+                    endpoint: API_BASE_URL
+                })
+                .signRequest({
+                    method: 'GET',
+                    path: 'region',
+                    headers: {},
+                    queryParams: {
+                        region_fullname: formattedSearchInput
+                    }
+                });
+
+            const response = await fetch(signedRequest.url, {
+                headers: signedRequest.headers,
+                method: 'GET'
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+
+                const formattedData = responseData.regions.map(item => {
                     return {
                         ...item,
                         region_fullname: capitalizeEachWord(item.region_fullname),
@@ -198,14 +260,15 @@ function RegionsPage() {
                 setShouldCalculate(false);
                 setDisplayData(formattedData);
                 formattedData.length > 0 ? setStart(1) : setStart(0);
-                setEnd(response.data.regions.length);
-            })
-            .catch((error) => {
-                console.error("Error searching up region", error);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
+                setEnd(responseData.regions.length);
+            } else {
+                console.error('Failed to search region: ', response.statusText);
+            }
+        } catch (error) {
+            console.error('Unexpected error searching region:', error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     // Updates editing states when editing a region
@@ -283,6 +346,7 @@ function RegionsPage() {
 
     // Adds a new region
     const handleAddRegion = (newRegionData) => {
+        setIsLoading(true);
         retrieveUser();
         const jwtToken = user.signInUserSession.accessToken.jwtToken
 
@@ -337,23 +401,38 @@ function RegionsPage() {
     };
 
     // Displays original data when search input is empty
-    const handleSearch = (searchInput) => {
+    const handleSearch = async (searchInput) => {
         if (searchInput === "") {
             setDisplayData(data);
             setShouldCalculate(true);
             setSearchDropdownOptions([]);
         } else {
-            axios
-                .get(`${API_BASE_URL}region`, {
-                    params: {
-                        region_fullname: searchInput,
-                    },
-                    headers: {
-                        'Authorization': jwtToken
-                    }
-                })
-                .then((response) => {
-                    const formattedData = response.data.regions.map(item => {
+            try {
+                const signedRequest = sigV4Client
+                    .newClient({
+                        accessKey: credentials.accessKeyId,
+                        secretKey: credentials.secretAccessKey,
+                        sessionToken: credentials.sessionToken,
+                        region: REGION,
+                        endpoint: API_BASE_URL
+                    })
+                    .signRequest({
+                        method: 'GET',
+                        path: 'region',
+                        headers: {},
+                        queryParams: {
+                            region_fullname: searchInput
+                        }
+                    });
+
+                const response = await fetch(signedRequest.url, {
+                    headers: signedRequest.headers,
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    const formattedData = responseData.regions.map(item => {
                         return {
                             ...item,
                             region_fullname: capitalizeEachWord(item.region_fullname),
@@ -366,13 +445,12 @@ function RegionsPage() {
                         const regionNames = formattedData.map((region) => `${region.region_fullname} (${region.region_code_name})`);
                         setSearchDropdownOptions(regionNames);
                     }
-                })
-                .catch((error) => {
-                    console.error("Error searching up alternative species", error);
-                })
-                .finally(() => {
-                    setIsLoading(false);
-                });
+                } else {
+                    console.error('Failed to search region:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Unexpected error searching region:', error);
+            }
         }
     };
 
@@ -608,7 +686,7 @@ function RegionsPage() {
                         </Table>
                     ) : (
                         // no display data
-                        <Box style={{ margin: 'auto', textAlign: 'center' }}>No regions found</Box>
+                        !firstLoad && (<Box style={{ margin: 'auto', textAlign: 'center' }}>No regions found</Box>)
                     )))}
             </div>
 

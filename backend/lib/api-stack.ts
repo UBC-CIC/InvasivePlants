@@ -31,35 +31,51 @@ export class APIStack extends Stack {
   ) {
     super(scope, id, props);
 
+  
+    /**
+     * Attach roles for authenticated and unauthenticated users
+     * Define and attach roles that will be assumed by users in the identity pool
+     */
+    const authenticatedRole = new iam.Role(this, "AuthenticatedRole", {
+      assumedBy: new iam.FederatedPrincipal(
+        "cognito-identity.amazonaws.com",
+        {
+          StringEquals: {
+            "cognito-identity.amazonaws.com:aud":
+              functionalityStack.identityPool.ref,
+          },
+          "ForAnyValue:StringLike": {
+            "cognito-identity.amazonaws.com:amr": "authenticated",
+          },
+        },
+        "sts:AssumeRoleWithWebIdentity"
+      ),
+    });
+
+    const unauthenticatedRole = new iam.Role(this, "UnauthenticatedRole", {
+      assumedBy: new iam.FederatedPrincipal(
+        "cognito-identity.amazonaws.com",
+        {
+          StringEquals: {
+            "cognito-identity.amazonaws.com:aud":
+              functionalityStack.identityPool.ref,
+          },
+          "ForAnyValue:StringLike": {
+            "cognito-identity.amazonaws.com:amr": "unauthenticated",
+          },
+        },
+        "sts:AssumeRoleWithWebIdentity"
+      ),
+    });
+
     /**
      *
      * Load OpenAPI file into API Gateway using REST API
      */
 
-    // get userPoolARN from parameter store
-    const userPoolArnParameter = ssm.StringParameter.valueFromLookup(
-      this,
-      "/userPoolArn"
-    );
-
-    // replace providerARN with actual userPoolARN
-    const file = fs.readFileSync("OpenAPI_Swagger_Definition.yaml", "utf8");
-    let parsedYaml = parse(file);
-
-    parsedYaml.components.securitySchemes.cognitoAuthorizer[
-      "x-amazon-apigateway-authorizer"
-    ].providerARNs[0] = userPoolArnParameter;
-
-    const updatedYaml = stringify(parsedYaml);
-    fs.writeFileSync(
-      "OpenAPI_Swagger_Definition_Updated.yaml",
-      updatedYaml,
-      "utf-8"
-    );
-
     // Read OpenAPI file and load file to S3
     const asset = new Asset(this, "SampleAsset", {
-      path: "OpenAPI_Swagger_Definition_Updated.yaml",
+      path: "OpenAPI_Swagger_Definition.yaml",
     });
 
     // Perform transformation on the file from the S3 location
@@ -89,25 +105,49 @@ export class APIStack extends Stack {
     this.stageARN_APIGW = api.deploymentStage.stageArn;
     this.apiGW_basedURL = api.urlForPath();
 
-    // delete updated file after use
-    fs.unlinkSync("OpenAPI_Swagger_Definition_Updated.yaml");
-    //
-    // Attach API Key to the api
-    const secretJsonValue = functionalityStack.secret
-      .secretValueFromJson("REACT_APP_X_API_KEY")
-      .unsafeUnwrap()
-      .toString();
-    const apiKey = api.addApiKey("APIKey", {
-      apiKeyName: "InvasivePlantsCustomizedAPIKey",
-      description: "This is a customized api key using randomization.",
-      value: secretJsonValue,
+    // Attach policies to the authenticated role
+    authenticatedRole.attachInlinePolicy(
+      new iam.Policy(this, "AuthenticatedRolePolicy", {
+        statements: [
+          new iam.PolicyStatement({
+            effect: iam.Effect.ALLOW,
+            actions: ["execute-api:Invoke"],
+            resources: [
+              `arn:aws:execute-api:${this.region}:${this.account}:${api.restApiId}/*/GET/*`,
+            ],
+          }),
+        ],
+      })
+    );
+
+    // Attach policies to the unauthenticated role
+    unauthenticatedRole.attachInlinePolicy(
+      new iam.Policy(this, "UnauthenticatedRolePolicy", {
+        statements: [
+          new iam.PolicyStatement({
+            effect: iam.Effect.ALLOW,
+            actions: ["execute-api:Invoke"],
+            resources: [
+              `arn:aws:execute-api:${this.region}:${this.account}:${api.restApiId}/*/GET/*`,
+            ],
+          }),
+        ],
+      })
+    );
+
+    // Attach roles to the identity pool
+    new cognito.CfnIdentityPoolRoleAttachment(this, "IdentityPoolRoles", {
+      identityPoolId: functionalityStack.identityPool.ref,
+      roles: {
+        authenticated: authenticatedRole.roleArn,
+        unauthenticated: unauthenticatedRole.roleArn,
+      },
     });
 
     // API Usage Plan
     const APIPlan = api.addUsagePlan("API-Usage-Plan");
 
     APIPlan.addApiStage({ stage: api.deploymentStage });
-    APIPlan.addApiKey(apiKey);
 
     // Create a deafult CORS Policy
     api.root.addCorsPreflight({
@@ -177,98 +217,6 @@ export class APIStack extends Stack {
         resources: ["arn:aws:logs:*:*:*"],
       })
     );
-
-    /**
-     * Create Cognito Identity Pool
-     * An identity pool is a store of user identity information that is specific to your AWS account
-     */
-    const identityPool = new cognito.CfnIdentityPool(
-      this,
-      "invasive-plants-identity-pool",
-      {
-        allowUnauthenticatedIdentities: true, // Set to true to allow unauthenticated (guest) users (mobile app)
-        identityPoolName: "invasivePlantsIdentityPool",
-        cognitoIdentityProviders: [
-          {
-            clientId: functionalityStack.appClient.userPoolClientId,
-            providerName: functionalityStack.userpool.userPoolProviderName,
-          },
-        ],
-      }
-    );
-
-    /**
-     * Attach roles for authenticated and unauthenticated users
-     * Define and attach roles that will be assumed by users in the identity pool
-     */
-    const authenticatedRole = new iam.Role(this, "AuthenticatedRole", {
-      assumedBy: new iam.FederatedPrincipal(
-        "cognito-identity.amazonaws.com",
-        {
-          StringEquals: {
-            "cognito-identity.amazonaws.com:aud": identityPool.ref,
-          },
-          "ForAnyValue:StringLike": {
-            "cognito-identity.amazonaws.com:amr": "authenticated",
-          },
-        },
-        "sts:AssumeRoleWithWebIdentity"
-      ),
-    });
-
-    const unauthenticatedRole = new iam.Role(this, "UnauthenticatedRole", {
-      assumedBy: new iam.FederatedPrincipal(
-        "cognito-identity.amazonaws.com",
-        {
-          StringEquals: {
-            "cognito-identity.amazonaws.com:aud": identityPool.ref,
-          },
-          "ForAnyValue:StringLike": {
-            "cognito-identity.amazonaws.com:amr": "unauthenticated",
-          },
-        },
-        "sts:AssumeRoleWithWebIdentity"
-      ),
-    });
-
-    // Attach policies to the authenticated role
-    authenticatedRole.attachInlinePolicy(
-      new iam.Policy(this, "AuthenticatedRolePolicy", {
-        statements: [
-          new iam.PolicyStatement({
-            effect: iam.Effect.ALLOW,
-            actions: ["execute-api:Invoke"],
-            resources: [
-              `arn:aws:execute-api:${this.region}:${this.account}:${api.restApiId}/*/GET/*`,
-            ],
-          }),
-        ],
-      })
-    );
-
-    // Attach policies to the unauthenticated role
-    unauthenticatedRole.attachInlinePolicy(
-      new iam.Policy(this, "UnauthenticatedRolePolicy", {
-        statements: [
-          new iam.PolicyStatement({
-            effect: iam.Effect.ALLOW,
-            actions: ["execute-api:Invoke"],
-            resources: [
-              `arn:aws:execute-api:${this.region}:${this.account}:${api.restApiId}/*/GET/*`,
-            ],
-          }),
-        ],
-      })
-    );
-
-    // Attach roles to the identity pool
-    new cognito.CfnIdentityPoolRoleAttachment(this, "IdentityPoolRoles", {
-      identityPoolId: identityPool.ref,
-      roles: {
-        authenticated: authenticatedRole.roleArn,
-        unauthenticated: unauthenticatedRole.roleArn,
-      },
-    });
 
     /**
      *

@@ -20,8 +20,8 @@ import Error404 from '../Pages/error404';
 import InvasiveSpeciesPage from '../Pages/InvasiveSpeciesPage';
 import AlternativeSpeciesPage from '../Pages/AlternativeSpeciesPage';
 import RegionsPage from '../Pages/RegionsPage';
-import { PlantNet } from '../Unused/pl@ntNet';
-import DownloadWebscrap from '../Unused/downloadWebscrap';
+// import { PlantNet } from '../Unused/pl@ntNet';
+// import DownloadWebscrap from '../Unused/downloadWebscrap';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -106,8 +106,8 @@ function PageContainer(props) {
                 <Route path="/alternativeSpecies" element={<AlternativeSpeciesPage />} />
                 <Route path="/regions" element={<RegionsPage />} />
 
-                <Route path="/test" element={<PlantNet />} />
-                <Route path="/download" element={<DownloadWebscrap />} />
+                {/* <Route path="/test" element={<PlantNet />} /> */}
+                {/* <Route path="/download" element={<DownloadWebscrap />} /> */}
                 <Route path="*" element={<Error404 />} />
             </Routes>
         </main>

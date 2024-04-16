@@ -7,12 +7,14 @@ import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as SSM from "aws-cdk-lib/aws-ssm";
+import * as iam from "aws-cdk-lib/aws-iam";
 
 export class FunctionalityStack extends cdk.Stack {
   public readonly secret: secretsmanager.ISecret;
   public readonly bucketName: string;
   public readonly appClient: cognito.UserPoolClient;
   public readonly userpool: cognito.UserPool;
+  public readonly identityPool: cognito.CfnIdentityPool;
 
   public readonly s3_Object_baseURL: string;
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -52,13 +54,6 @@ export class FunctionalityStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // store userPoolArn in parameter store
-    new SSM.StringParameter(this, "Parameter", {
-      parameterName: "/userPoolArn",
-      description: "Description for your parameter",
-      stringValue: this.userpool.userPoolArn,
-    });
-
     /**
      *
      * Create Cognito Client
@@ -88,29 +83,25 @@ export class FunctionalityStack extends cdk.Stack {
       }
     );
 
-    // Outputs section to export the userPoolArn
-    new cdk.CfnOutput(this, "UserPoolArnOutput", {
-      value: this.userpool.userPoolArn,
-      description: "Cognito User Pool ARN",
-      exportName: "userPoolARN",
-    });
-
     /**
-     *
-     * Create a random API key that will be use when creating an API key
+     * Create Cognito Identity Pool
+     * An identity pool is a store of user identity information that is specific to your AWS account
      */
-    function generateRandomString(length: number): string {
-      var result = "";
-      var characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      var charactersLength = characters.length;
-      for (var i = 0; i < length; i++) {
-        result += characters.charAt(
-          Math.floor(Math.random() * charactersLength)
-        );
+    this.identityPool = new cognito.CfnIdentityPool(
+      this,
+      "invasive-plants-identity-pool",
+      {
+        allowUnauthenticatedIdentities: true, // Set to true to allow unauthenticated (guest) users (mobile app)
+        identityPoolName: "invasivePlantsIdentityPool",
+        cognitoIdentityProviders: [
+          {
+            clientId: this.appClient.userPoolClientId,
+            providerName: this.userpool.userPoolProviderName,
+          },
+        ],
       }
-      return result;
-    }
+    );
+
 
     /**
      *
@@ -119,52 +110,21 @@ export class FunctionalityStack extends cdk.Stack {
      */
     const secretsName = "Invasive_Plants_Cognito_Secrets"; //"Invasive_Plants_Setup_Secrets";
 
-    // Read parameter from user
-    const apiKey = new cdk.CfnParameter(this, "apiKey", {
-      type: "String",
-      description: "Custom apiKey for the API Gateway.",
-      default: generateRandomString(32),
+    this.secret = new secretsmanager.Secret(this, secretsName, {
+      secretName: secretsName,
+      description: "Cognito Secrets for authentication",
+      secretObjectValue: {
+        REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(
+          this.userpool.userPoolId
+        ),
+        REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(
+          this.appClient.userPoolClientId
+        ),
+        REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
+        REACT_APP_IDENTITY_POOL_ID: cdk.SecretValue.unsafePlainText(this.identityPool.ref),
+      },
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
-
-    // Check if the user provided an API key and store in secrets manager
-    if (apiKey.value) {
-      this.secret = new secretsmanager.Secret(this, secretsName, {
-        secretName: secretsName,
-        description: "Cognito Secrets for authentication",
-        secretObjectValue: {
-          REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(
-            this.userpool.userPoolId
-          ),
-          REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(
-            this.appClient.userPoolClientId
-          ),
-          REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
-          REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(
-            apiKey.valueAsString
-          ),
-        },
-        removalPolicy: cdk.RemovalPolicy.DESTROY,
-      });
-    } else {
-      // User did not provide an API key, generate a random one and store in secrets manager
-      this.secret = new secretsmanager.Secret(this, secretsName, {
-        secretName: secretsName,
-        description: "Cognito Secrets for authentication",
-        secretObjectValue: {
-          REACT_APP_USERPOOL_ID: cdk.SecretValue.unsafePlainText(
-            this.userpool.userPoolId
-          ),
-          REACT_APP_USERPOOL_WEB_CLIENT_ID: cdk.SecretValue.unsafePlainText(
-            this.appClient.userPoolClientId
-          ),
-          REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
-          REACT_APP_X_API_KEY: cdk.SecretValue.unsafePlainText(
-            generateRandomString(32)
-          ),
-        },
-        removalPolicy: cdk.RemovalPolicy.DESTROY,
-      });
-    }
 
     /**
      *
@@ -187,6 +147,20 @@ export class FunctionalityStack extends cdk.Stack {
         },
       ],
     });
+
+    // Attach a bucket policy for access logs
+    s3bucket.addToResourcePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        principals: [
+          new iam.ServicePrincipal(
+            "logdelivery.elasticloadbalancing.amazonaws.com"
+          ),
+        ],
+        actions: ["s3:PutObject"],
+        resources: [`${s3bucket.bucketArn}/AWSLogs/${cdk.Aws.ACCOUNT_ID}/*`],
+      })
+    );
 
     this.bucketName = s3bucket.bucketName;
 

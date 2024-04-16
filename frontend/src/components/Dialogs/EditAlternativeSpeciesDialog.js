@@ -61,9 +61,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
                             params: {
                                 contentType: files[i].type,
                                 filename: `${filename}.${fileExtension}`
-                            },
-                            headers: {
-                                'Authorization': jwtToken
                             }
                         });
 
