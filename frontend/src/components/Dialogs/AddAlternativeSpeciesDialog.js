@@ -6,7 +6,7 @@ import CustomWarning from '../WarningComponent';
 import axios from "axios";
 
 // Dialog for adding an alternative species
-const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd, jwtToken }) => {
+const AddAlternativeSpeciesDialog = ({ open, handleClose, data, handleAdd }) => {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const initialSpeciesData = {

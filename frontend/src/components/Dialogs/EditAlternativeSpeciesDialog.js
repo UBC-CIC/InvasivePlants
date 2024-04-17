@@ -3,11 +3,12 @@ import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTit
 import SnackbarOnSuccess from '../SnackbarComponent';
 import CustomAlert from '../AlertComponent';
 import DeleteDialog from './ConfirmDeleteDialog';
-import { Auth } from "aws-amplify";
 import axios from "axios";
+import { retrieveUser } from '../../functions/authenticationUtils';
+
 
 // Dialog for editing an alternative species
-const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave, jwtToken }) => {
+const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave }) => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
@@ -17,19 +18,9 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
     const [showWarning, setShowWarning] = useState(false); // warning alert for duplicates
     const [showAlert, setShowAlert] = useState(false); // alert when a field is missing
 
-    // Retrieves current authorized user
-    const retrieveUser = async () => {
-        try {
-            const returnedUser = await Auth.currentAuthenticatedUser();
-            setUser(returnedUser);
-        } catch (e) {
-            console.log("error getting user: ", e);
-        }
-    }
-
     // Retrieves user on load
     useEffect(() => {
-        retrieveUser()
+        retrieveUser(setUser)
     }, [])
 
     // Closes save confirmation on clickaway

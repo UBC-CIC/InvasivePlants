@@ -4,7 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from "../SnackbarComponent";
 import CustomAlert from "../AlertComponent";
 import CustomWarning from '../WarningComponent';
-import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperFunctions';
+import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/textFormattingUtils';
 import axios from "axios";
 import sigV4Client from "../../functions/sigV4Client";
 

@@ -1,5 +1,3 @@
-/***************** HELPER FUNCTIONS *****************/
-
 // Bolds text between two asterisks (ex. **BOLDED**)
 export function boldText(text) {
     const regex = /\*\*(.*?)\*\*/g;
@@ -49,3 +47,5 @@ export function capitalizeEachWord(str) {
 export function formatString(str) {
     return str.split(/,\s*|\s*,\s*/)
 }
+
+

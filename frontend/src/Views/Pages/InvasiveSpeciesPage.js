@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography, ThemeProvider, Box, Autocomplete, TextField } from "@mui/material";
 import Theme from './Theme';
-import { Auth } from "aws-amplify";
 
 // components
 import PaginationComponent from '../../components/PaginationComponent';
@@ -18,17 +17,14 @@ import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import axios from "axios";
-import { boldText, formatString, capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperFunctions';
+import { boldText, formatString, capitalizeFirstWord, capitalizeEachWord } from '../../functions/textFormattingUtils';
+import { useAuthentication } from '../../functions/useAuthentication';
 import sigV4Client from "../../functions/sigV4Client";
 
 function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
-  const USER_POOL_ID = process.env.REACT_APP_USERPOOL_ID;
-  const IDENTITY_POOL_ID = process.env.REACT_APP_IDENTITY_POOL_ID;
   const REGION = process.env.REACT_APP_REGION;
-
-  const AWS = require("aws-sdk");
 
   const [searchDropdownSpeciesOptions, setSearchDropdownSpeciesOptions] = useState([]); // dropdown options for invasive species search bar (scientific names)
   const [searchDropdownRegionsOptions, setSearchDropdownRegionsOptions] = useState([]); // dropdown options for regions search bar 
@@ -55,83 +51,15 @@ function InvasiveSpeciesPage() {
   const [shouldSave, setShouldSave] = useState(false); // reset above values
   const [shouldCalculate, setShouldCalculate] = useState(true); // whether calculation of start and end should be made
 
-  const [isLoading, setIsLoading] = useState(false); // loading data or not
-  const [firstLoad, setFirstLoad] = useState(true); // flag to indicate if it's the first time loading the page
-  const [user, setUser] = useState(""); // authorized admin user
-  const [jwtToken, setJwtToken] = useState(""); // jwtToken from current session
-  const [credentials, setCredentials] = useState(); // temporary credentials
+  const [isLoading, setIsLoading] = useState(false); // loading data or not  
+  const { user, credentials } = useAuthentication();
 
   useEffect(() => {
-    retrieveJwtToken();
-    retrieveUser();
-  }, []);
-
-  useEffect(() => {
-    if (user && jwtToken && firstLoad) {
-      getIdentityCredentials();
-    }
-  }, [user, jwtToken]);
-
-
-  useEffect(() => {
-    if (credentials && firstLoad) {
+    if (credentials) {
       handleGetInvasiveSpecies();
-      setFirstLoad(false);
     }
   }, [credentials]);
 
-  // Gets current authorized user
-  const retrieveUser = async () => {
-    try {
-      const returnedUser = await Auth.currentAuthenticatedUser();
-      setUser(returnedUser);
-    } catch (e) {
-      console.log("error getting user: ", e);
-    }
-  }
-
-  // Gets temporary AWS credentials
-  function getIdentityCredentials() {
-    const creds = new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: IDENTITY_POOL_ID,
-      Logins: {
-        [`cognito-idp.ca-central-1.amazonaws.com/${USER_POOL_ID}`]: jwtToken
-      }
-    });
-
-
-    AWS.config.update({
-      region: 'ca-central-1',
-      credentials: creds
-    });
-
-    AWS.config.credentials.get(function () {
-      setCredentials(creds);
-    });
-  }
-
-  // Gets jwtToken for current session 
-  const retrieveJwtToken = async () => {
-    try {
-      var session = await Auth.currentSession()
-      var idToken = await session.getIdToken()
-      var token = await idToken.getJwtToken()
-      setJwtToken(token);
-
-      // Check if the token is close to expiration
-      const expirationTime = idToken.getExpiration() * 1000; // Milliseconds
-      const currentTime = new Date().getTime();
-
-      if (expirationTime - currentTime < 2700000) { // 45 minutes
-        await Auth.currentSession();
-        idToken = await session.getIdToken()
-        token = await idToken.getJwtToken()
-        setJwtToken(token);
-      }
-    } catch (e) {
-      console.log("error getting token: ", e);
-    }
-  }
 
   // Fetches rowsPerPage number of invasive species (pagination)
   const handleGetInvasiveSpecies = async () => {
@@ -343,7 +271,6 @@ function InvasiveSpeciesPage() {
 
   // Updates changes to the database on save
   const handleSave = (confirmed) => {
-    retrieveUser();
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
     if (confirmed) {
@@ -449,7 +376,6 @@ function InvasiveSpeciesPage() {
 
   // Deletes invasive species from the table
   const handleConfirmDelete = () => {
-    retrieveUser();
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
     if (deleteId) {
@@ -486,7 +412,6 @@ function InvasiveSpeciesPage() {
       region_id: newSpeciesData.all_regions.map(region => region.region_id),
     }
 
-    retrieveUser();
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
     // Request to POST new invasive species to the database
@@ -747,16 +672,12 @@ function InvasiveSpeciesPage() {
 
   // Resets if rowsPerPage changes 
   useEffect(() => {
-    if (!firstLoad) {
-      setShouldReset(true);
-    }
+    setShouldReset(true);
   }, [rowsPerPage]);
 
   // Call to get next/previous rowsPerPage number of species on page change
   useEffect(() => {
-    if (!firstLoad) {
-      handleGetInvasiveSpecies();
-    }
+    handleGetInvasiveSpecies();
   }, [page]);
 
   // Increments the page count by 1 
@@ -1032,7 +953,6 @@ function InvasiveSpeciesPage() {
                           )}
                         </TableCell>
 
-
                         {/* actions: edit/delete */}
                         <TableCell>
                           <Tooltip title="Edit"
@@ -1049,6 +969,7 @@ function InvasiveSpeciesPage() {
                             </IconButton>
                           </Tooltip>
                         </TableCell>
+
                       </>
                     </TableRow>
                   ))}
@@ -1056,7 +977,7 @@ function InvasiveSpeciesPage() {
             </Table>
           ) : (
             // No data exists
-            !firstLoad && (<Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>)
+            <Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>
           )))}
       </div >
 

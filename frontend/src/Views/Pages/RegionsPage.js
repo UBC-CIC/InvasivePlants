@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Autocomplete, Box, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, TextField, Typography, ThemeProvider } from "@mui/material";
 import Theme from './Theme';
-import { Auth } from "aws-amplify";
 
 // components
 import PaginationComponent from '../../components/PaginationComponent';
@@ -18,18 +17,15 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { capitalizeEachWord } from '../../functions/helperFunctions';
+import { capitalizeEachWord } from '../../functions/textFormattingUtils';
+import { useAuthentication } from '../../functions/useAuthentication';
 import axios from "axios";
 import sigV4Client from "../../functions/sigV4Client";
 
 // displays regions
 function RegionsPage() {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-    const USER_POOL_ID = process.env.REACT_APP_USERPOOL_ID;
-    const IDENTITY_POOL_ID = process.env.REACT_APP_IDENTITY_POOL_ID;
     const REGION = process.env.REACT_APP_REGION;
-
-    const AWS = require("aws-sdk");
 
     const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
     const [regionCount, setRegionCount] = useState(0); // number of regions
@@ -56,82 +52,15 @@ function RegionsPage() {
     const [shouldCalculate, setShouldCalculate] = useState(true); // whether calculation of start and end should be made
 
     const [isLoading, setIsLoading] = useState(false); // loading data or not
-    const [firstLoad, setFirstLoad] = useState(true); // flag to indicate if it's the first time loading the page
-    const [user, setUser] = useState("");
-    const [jwtToken, setJwtToken] = useState(""); // jwtToken from current session
-    const [credentials, setCredentials] = useState(); // temporary credentials
-
-    useEffect(() => {
-        retrieveJwtToken();
-        retrieveUser();
-    }, []);
-
-    useEffect(() => {
-        if (user && jwtToken && firstLoad) {
-            getIdentityCredentials();
-        }
-    }, [user, jwtToken]);
+    const { user, credentials } = useAuthentication();
 
 
     useEffect(() => {
-        if (credentials && firstLoad) {
+        if (credentials) {
             handleGetRegions();
-            setFirstLoad(false);
         }
     }, [credentials]);
 
-    // Gets current authorized user
-    const retrieveUser = async () => {
-        try {
-            const returnedUser = await Auth.currentAuthenticatedUser();
-            setUser(returnedUser);
-        } catch (e) {
-            console.log("error getting user: ", e);
-        }
-    }
-
-    // Gets temporary AWS credentials
-    function getIdentityCredentials() {
-        const creds = new AWS.CognitoIdentityCredentials({
-            IdentityPoolId: IDENTITY_POOL_ID,
-            Logins: {
-                [`cognito-idp.ca-central-1.amazonaws.com/${USER_POOL_ID}`]: jwtToken
-            }
-        });
-
-
-        AWS.config.update({
-            region: 'ca-central-1',
-            credentials: creds
-        });
-
-        AWS.config.credentials.get(function () {
-            setCredentials(creds);
-        });
-    }
-
-    // Gets jwtToken for current session
-    const retrieveJwtToken = async () => {
-        try {
-            var session = await Auth.currentSession()
-            var idToken = await session.getIdToken()
-            var token = await idToken.getJwtToken()
-            setJwtToken(token);
-
-            // Check if the token is close to expiration
-            const expirationTime = idToken.getExpiration() * 1000; // Milliseconds
-            const currentTime = new Date().getTime();
-
-            if (expirationTime - currentTime < 2700000) { // 45 minutes
-                await Auth.currentSession();
-                idToken = await session.getIdToken()
-                token = await idToken.getJwtToken()
-                setJwtToken(token);
-            }
-        } catch (e) {
-            console.log("error getting token: ", e);
-        }
-    }
 
     // Fetches rowsPerPage number of regions (pagination)
     const handleGetRegions = async () => {
@@ -284,7 +213,6 @@ function RegionsPage() {
 
     // Updates changes to the database on save
     const handleSave = (confirmed) => {
-        retrieveUser();
         const jwtToken = user.signInUserSession.accessToken.jwtToken
 
         const formattedData = {
@@ -321,7 +249,6 @@ function RegionsPage() {
 
     // Deletes region from the table
     const handleConfirmDelete = () => {
-        retrieveUser();
         const jwtToken = user.signInUserSession.accessToken.jwtToken
 
         if (deleteId) {
@@ -347,7 +274,6 @@ function RegionsPage() {
     // Adds a new region
     const handleAddRegion = (newRegionData) => {
         setIsLoading(true);
-        retrieveUser();
         const jwtToken = user.signInUserSession.accessToken.jwtToken
 
         const formattedData = {
@@ -484,16 +410,12 @@ function RegionsPage() {
 
     // Resets if rowsPerPage changes 
     useEffect(() => {
-        if (!firstLoad) {
-            setShouldReset(true);
-        }
+        setShouldReset(true);
     }, [rowsPerPage]);
 
     // Call to get next/previous rowsPerPage number of regions on page change
     useEffect(() => {
-        if (!firstLoad) {
-            handleGetRegions();
-        }
+        handleGetRegions();
     }, [page]);
 
     // Increments the page count by 1 
@@ -686,7 +608,7 @@ function RegionsPage() {
                         </Table>
                     ) : (
                         // no display data
-                        !firstLoad && (<Box style={{ margin: 'auto', textAlign: 'center' }}>No regions found</Box>)
+                        <Box style={{ margin: 'auto', textAlign: 'center' }}>No regions found</Box>
                     )))}
             </div>
 

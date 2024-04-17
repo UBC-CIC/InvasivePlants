@@ -4,9 +4,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from '../SnackbarComponent';
 import CustomAlert from '../AlertComponent';
 import DeleteDialog from './ConfirmDeleteDialog';
-import { Auth } from "aws-amplify";
 import axios from "axios";
-import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/helperFunctions';
+import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/textFormattingUtils';
+import { retrieveUser } from '../../functions/authenticationUtils';
 import sigV4Client from "../../functions/sigV4Client";
 
 // Dialog for editing an invasive species
@@ -23,19 +23,9 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false); // confirmation before saving
     const [deleteImg, setDeleteImg] = useState(null); // sets image the delete
 
-    // Retrieves current authorized user
-    const retrieveUser = async () => {
-        try {
-            const returnedUser = await Auth.currentAuthenticatedUser();
-            setUser(returnedUser);
-        } catch (e) {
-            console.log("error getting user: ", e);
-        }
-    }
-
     // Retrieves user on load
     useEffect(() => {
-        retrieveUser()
+        retrieveUser(setUser)
     }, [])
 
     // Ensures all required fields are present before editing invasive species

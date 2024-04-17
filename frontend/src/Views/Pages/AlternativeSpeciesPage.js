@@ -3,7 +3,6 @@ import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, 
 import { Autocomplete, Box, TextField } from '@mui/material';
 
 import Theme from './Theme';
-import { Auth } from "aws-amplify";
 
 // components
 import PaginationComponent from '../../components/PaginationComponent';
@@ -20,17 +19,15 @@ import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import axios from "axios";
-import { boldText, capitalizeFirstWord, capitalizeEachWord, formatString } from '../../functions/helperFunctions';
+import { boldText, capitalizeFirstWord, capitalizeEachWord, formatString } from '../../functions/textFormattingUtils';
+import { useAuthentication } from '../../functions/useAuthentication';
+
 import sigV4Client from "../../functions/sigV4Client";
 
 function AlternativeSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
-  const USER_POOL_ID = process.env.REACT_APP_USERPOOL_ID;
-  const IDENTITY_POOL_ID = process.env.REACT_APP_IDENTITY_POOL_ID;
   const REGION = process.env.REACT_APP_REGION;
-
-  const AWS = require("aws-sdk");
 
   const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
   const [speciesCount, setSpeciesCount] = useState(0); // number of alternative species
@@ -56,82 +53,14 @@ function AlternativeSpeciesPage() {
   const [shouldCalculate, setShouldCalculate] = useState(true); // whether calculation of start and end should be made
 
   const [isLoading, setIsLoading] = useState(false); // loading data or not
-  const [firstLoad, setFirstLoad] = useState(true); // flag to indicate if it's the first time loading the page
-  const [user, setUser] = useState(""); // authorized admin user
-  const [jwtToken, setJwtToken] = useState(""); // jwtToken from current session
-  const [credentials, setCredentials] = useState(); // temporary credentials
+  const { user, credentials } = useAuthentication();
 
   useEffect(() => {
-    retrieveJwtToken();
-    retrieveUser();
-  }, []);
-
-  useEffect(() => {
-    if (user && jwtToken && firstLoad) {
-      getIdentityCredentials();
-    }
-  }, [user, jwtToken]);
-
-
-  useEffect(() => {
-    if (credentials && firstLoad) {
+    if (credentials) {
       handleGetAlternativeSpecies();
-      setFirstLoad(false);
     }
   }, [credentials]);
 
-  // Gets current authorized user
-  const retrieveUser = async () => {
-    try {
-      const returnedUser = await Auth.currentAuthenticatedUser();
-      setUser(returnedUser);
-    } catch (e) {
-      console.log("error getting user: ", e);
-    }
-  }
-
-  // Gets temporary AWS credentials
-  function getIdentityCredentials() {
-    const creds = new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: IDENTITY_POOL_ID,
-      Logins: {
-        [`cognito-idp.ca-central-1.amazonaws.com/${USER_POOL_ID}`]: jwtToken
-      }
-    });
-
-
-    AWS.config.update({
-      region: 'ca-central-1',
-      credentials: creds
-    });
-
-    AWS.config.credentials.get(function () {
-      setCredentials(creds);
-    });
-  }
-
-  // Gets jwtToken for current session
-  const retrieveJwtToken = async () => {
-    try {
-      var session = await Auth.currentSession()
-      var idToken = await session.getIdToken()
-      var token = await idToken.getJwtToken()
-      setJwtToken(token);
-
-      // Check if the token is close to expiration
-      const expirationTime = idToken.getExpiration() * 1000; // Milliseconds
-      const currentTime = new Date().getTime();
-
-      if (expirationTime - currentTime < 2700000) { // 45 minutes
-        await Auth.currentSession();
-        idToken = await session.getIdToken()
-        token = await idToken.getJwtToken()
-        setJwtToken(token);
-      }
-    } catch (e) {
-      console.log("error getting token: ", e);
-    }
-  }
 
   // Fetches rowsPerPage number of alternative species (pagination)
   const handleGetAlternativeSpecies = async () => {
@@ -296,7 +225,6 @@ function AlternativeSpeciesPage() {
 
   // Updates changes to the database on save
   const handleSave = (confirmed) => {
-    retrieveUser();
     const jwtToken = user.signInUserSession.accessToken.jwtToken;
 
     if (confirmed) {
@@ -385,7 +313,6 @@ function AlternativeSpeciesPage() {
 
   // Deletes alternative species from the table
   const handleConfirmDelete = () => {
-    retrieveUser();
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
     if (deleteId) {
@@ -411,7 +338,7 @@ function AlternativeSpeciesPage() {
   // Adds a new alternative species
   const handleAddSpecies = (newSpeciesData) => {
     setIsLoading(true);
-    
+
     newSpeciesData = {
       ...newSpeciesData,
       scientific_name: newSpeciesData.scientific_name.map(name =>
@@ -419,7 +346,6 @@ function AlternativeSpeciesPage() {
       )
     }
 
-    retrieveUser();
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
     // Request to POST new alternative species to the database
@@ -501,50 +427,50 @@ function AlternativeSpeciesPage() {
     } else {
       try {
         const signedRequest = sigV4Client
-        .newClient({
-          accessKey: credentials.accessKeyId,
-          secretKey: credentials.secretAccessKey,
-          sessionToken: credentials.sessionToken,
-          region: REGION,
-          endpoint: API_BASE_URL
-        })
-        .signRequest({
-          method: 'GET',
-          path: 'alternativeSpecies',
-          headers: {},
-          queryParams: {
-            search_input: searchInput
+          .newClient({
+            accessKey: credentials.accessKeyId,
+            secretKey: credentials.secretAccessKey,
+            sessionToken: credentials.sessionToken,
+            region: REGION,
+            endpoint: API_BASE_URL
+          })
+          .signRequest({
+            method: 'GET',
+            path: 'alternativeSpecies',
+            headers: {},
+            queryParams: {
+              search_input: searchInput
+            }
+          });
+
+        const response = await fetch(signedRequest.url, {
+          headers: signedRequest.headers,
+          method: 'GET'
+        });
+
+        if (response.ok) {
+          const responseData = await response.json();
+
+          const formattedData = responseData.species.map(item => {
+            const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
+            const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
+            const image_links = item.images.map(img => img.image_url);
+            const s3_keys = item.images.map(img => img.s3_key);
+
+            return {
+              ...item,
+              scientific_name: capitalizedScientificNames,
+              common_name: capitalizedCommonNames,
+              image_links: image_links,
+              s3_keys: s3_keys
+            };
+          });
+
+          if (formattedData.length > 0) {
+            const scientificNames = formattedData.flatMap((species) => `${species.scientific_name} (${species.common_name ? species.common_name.join(', ') : ''})`);
+            setSearchDropdownOptions(scientificNames);
           }
-        });
-
-      const response = await fetch(signedRequest.url, {
-        headers: signedRequest.headers,
-        method: 'GET'
-      });
-
-      if (response.ok) {
-        const responseData = await response.json();
-
-        const formattedData = responseData.species.map(item => {
-          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
-          const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
-          const image_links = item.images.map(img => img.image_url);
-          const s3_keys = item.images.map(img => img.s3_key);
-
-          return {
-            ...item,
-            scientific_name: capitalizedScientificNames,
-            common_name: capitalizedCommonNames,
-            image_links: image_links,
-            s3_keys: s3_keys
-          };
-        });
-
-        if (formattedData.length > 0) {
-          const scientificNames = formattedData.flatMap((species) => `${species.scientific_name} (${species.common_name ? species.common_name.join(', ') : ''})`);
-          setSearchDropdownOptions(scientificNames);
-        }
-       } else {
+        } else {
           console.error('Failed to search alternative species:', response.statusText);
         }
       } catch (error) {
@@ -572,16 +498,12 @@ function AlternativeSpeciesPage() {
 
   // Resets if rowsPerPage changes 
   useEffect(() => {
-    if (!firstLoad) {
-      setShouldReset(true);
-    }
+    setShouldReset(true);
   }, [rowsPerPage]);
 
   // Call to get next/previous rowsPerPage number of species on page change
   useEffect(() => {
-    if (!firstLoad) {
-      handleGetAlternativeSpecies();
-    }
+    handleGetAlternativeSpecies();
   }, [page]);
 
   // Increments the page count by 1 
@@ -731,9 +653,7 @@ function AlternativeSpeciesPage() {
                   <TableRow key={row.species_id}>
                     <>
                       {/* scientific names */}
-                      <TableCell sx={{
-                        whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top'
-                      }}>
+                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
                         {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
                       </TableCell>
 
@@ -832,7 +752,7 @@ function AlternativeSpeciesPage() {
             </Table>
           ) : (
             // no data available
-            !firstLoad && (<Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>)
+            <Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>
           )))}
       </div >
 
@@ -853,7 +773,6 @@ function AlternativeSpeciesPage() {
         handleClose={() => setOpenAddSpeciesDialog(false)}
         handleAdd={handleAddSpecies}
         data={displayData}
-        jwtToken={jwtToken}
       />
 
       <EditAlternativeSpeciesDialog
@@ -862,7 +781,6 @@ function AlternativeSpeciesPage() {
         handleInputChange={handleInputChange}
         handleFinishEditingRow={handleFinishEditingRow}
         handleSave={handleSave}
-        jwtToken={jwtToken}
       />
 
       <DeleteDialog
