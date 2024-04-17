@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext } from "react";
 import Grid from '@material-ui/core/Grid';
 import { Route, Routes, useNavigate, Navigate } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -20,8 +20,12 @@ import Error404 from '../Pages/error404';
 import InvasiveSpeciesPage from '../Pages/InvasiveSpeciesPage';
 import AlternativeSpeciesPage from '../Pages/AlternativeSpeciesPage';
 import RegionsPage from '../Pages/RegionsPage';
+
+import { useAuthentication } from '../../functions/useAuthentication';
 // import { PlantNet } from '../Unused/pl@ntNet';
 // import DownloadWebscrap from '../Unused/downloadWebscrap';
+
+export const AuthContext = createContext("user");
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -54,6 +58,7 @@ function PageContainer(props) {
     const { menuEnabled, updateMenuState } = props;
     const classes = useStyles();
     const history = useNavigate();
+    const { user, credentials } = useAuthentication();
 
     /*
     * Handles closing side menu if an event occurs
@@ -99,17 +104,20 @@ function PageContainer(props) {
         <Navbar showSideMenuButton={true} />
 
         <main className={classes.content}>
-            <Routes>
-                <Route path="/" element={<Navigate to="/invasiveSpecies" />} />
-                <Route path="/login" element={<Navigate to="/invasiveSpecies" />} />
-                <Route path="/invasiveSpecies" element={<InvasiveSpeciesPage />} />
-                <Route path="/alternativeSpecies" element={<AlternativeSpeciesPage />} />
-                <Route path="/regions" element={<RegionsPage />} />
+            <AuthContext.Provider value={{ user, credentials }}>
+                <Routes>
+                    <Route path="/" element={<Navigate to="/invasiveSpecies" />} />
+                    <Route path="/login" element={<Navigate to="/invasiveSpecies" />} />
+                    <Route path="/invasiveSpecies" element={<InvasiveSpeciesPage />} />
+                    <Route path="/alternativeSpecies" element={<AlternativeSpeciesPage />} />
+                    <Route path="/regions" element={<RegionsPage />} />
 
-                {/* <Route path="/test" element={<PlantNet />} /> */}
-                {/* <Route path="/download" element={<DownloadWebscrap />} /> */}
-                <Route path="*" element={<Error404 />} />
-            </Routes>
+                    {/* <Route path="/test" element={<PlantNet />} /> */}
+                    {/* <Route path="/download" element={<DownloadWebscrap />} /> */}
+                    <Route path="*" element={<Error404 />} />
+                </Routes>
+            </AuthContext.Provider>
+
         </main>
     </Grid>)
 }

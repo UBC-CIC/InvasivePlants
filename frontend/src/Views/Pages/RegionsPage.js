@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Autocomplete, Box, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, TextField, Typography, ThemeProvider } from "@mui/material";
 import Theme from './Theme';
+import axios from "axios";
 
 // components
 import PaginationComponent from '../../components/PaginationComponent';
@@ -17,10 +18,11 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+//functions
 import { capitalizeEachWord } from '../../functions/textFormattingUtils';
-import { useAuthentication } from '../../functions/useAuthentication';
-import axios from "axios";
 import sigV4Client from "../../functions/sigV4Client";
+import { AuthContext } from "../PageContainer/PageContainer";
+
 
 // displays regions
 function RegionsPage() {
@@ -52,7 +54,7 @@ function RegionsPage() {
     const [shouldCalculate, setShouldCalculate] = useState(true); // whether calculation of start and end should be made
 
     const [isLoading, setIsLoading] = useState(false); // loading data or not
-    const { user, credentials } = useAuthentication();
+    const { user, credentials } = useContext(AuthContext);
 
 
     useEffect(() => {

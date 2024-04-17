@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography, ThemeProvider, Box, Autocomplete, TextField } from "@mui/material";
 import Theme from './Theme';
+import axios from "axios";
 
 // components
 import PaginationComponent from '../../components/PaginationComponent';
@@ -16,10 +17,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import axios from "axios";
+// functions
 import { boldText, formatString, capitalizeFirstWord, capitalizeEachWord } from '../../functions/textFormattingUtils';
-import { useAuthentication } from '../../functions/useAuthentication';
 import sigV4Client from "../../functions/sigV4Client";
+import { AuthContext } from "../PageContainer/PageContainer";
 
 function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -52,7 +53,8 @@ function InvasiveSpeciesPage() {
   const [shouldCalculate, setShouldCalculate] = useState(true); // whether calculation of start and end should be made
 
   const [isLoading, setIsLoading] = useState(false); // loading data or not  
-  const { user, credentials } = useAuthentication();
+  const { user, credentials } = useContext(AuthContext);
+
 
   useEffect(() => {
     if (credentials) {
