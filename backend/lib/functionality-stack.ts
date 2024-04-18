@@ -33,7 +33,7 @@ export class FunctionalityStack extends cdk.Stack {
       signInAliases: {
         email: true,
       },
-      selfSignUpEnabled: false,
+      selfSignUpEnabled: true, // Enabled to allow mobile user sign up
       autoVerify: {
         email: true,
       },
@@ -102,7 +102,6 @@ export class FunctionalityStack extends cdk.Stack {
       }
     );
 
-
     /**
      *
      * Store secrets to Secret Manager
@@ -121,7 +120,9 @@ export class FunctionalityStack extends cdk.Stack {
           this.appClient.userPoolClientId
         ),
         REACT_APP_REGION: cdk.SecretValue.unsafePlainText(this.region),
-        REACT_APP_IDENTITY_POOL_ID: cdk.SecretValue.unsafePlainText(this.identityPool.ref),
+        REACT_APP_IDENTITY_POOL_ID: cdk.SecretValue.unsafePlainText(
+          this.identityPool.ref
+        ),
       },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });

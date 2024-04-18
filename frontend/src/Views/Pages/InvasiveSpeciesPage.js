@@ -19,13 +19,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 // functions
 import { boldText, formatString, capitalizeFirstWord, capitalizeEachWord } from '../../functions/textFormattingUtils';
-import sigV4Client from "../../functions/sigV4Client";
+import { handleKeyPress, resetStates, updateData } from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
+import { getSignedRequest } from "../../functions/getSignedRequest";
 
 function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
-  const REGION = process.env.REACT_APP_REGION;
 
   const [searchDropdownSpeciesOptions, setSearchDropdownSpeciesOptions] = useState([]); // dropdown options for invasive species search bar (scientific names)
   const [searchDropdownRegionsOptions, setSearchDropdownRegionsOptions] = useState([]); // dropdown options for regions search bar 
@@ -65,32 +65,21 @@ function InvasiveSpeciesPage() {
 
   // Fetches rowsPerPage number of invasive species (pagination)
   const handleGetInvasiveSpecies = async () => {
+    if (!credentials) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // Create a new sigV4Client instance
-      const signedRequest = sigV4Client
-        .newClient({
-          accessKey: credentials.accessKeyId,
-          secretKey: credentials.secretAccessKey,
-          sessionToken: credentials.sessionToken,
-          region: REGION,
-          endpoint: API_BASE_URL
-        })
-        .signRequest({
-          method: 'GET',
-          path: 'invasiveSpecies',
-          headers: {},
-          queryParams: {
-            curr_offset: shouldReset ? 0 : Math.max(0, currOffset),
-            rows_per_page: rowsPerPage
-          }
-        });
-
-      const response = await fetch(signedRequest.url, {
-        headers: signedRequest.headers,
-        method: 'GET'
-      });
+      const response = await getSignedRequest(
+        "invasiveSpecies",
+        {
+          curr_offset: shouldReset ? 0 : Math.max(0, currOffset),
+          rows_per_page: rowsPerPage
+        },
+        credentials
+      )
 
       if (response.ok) {
         const responseData = await response.json();
@@ -99,12 +88,8 @@ function InvasiveSpeciesPage() {
         const formattedData = responseData.species.map((item) => {
           if (item.alternative_species) {
             item.alternative_species.forEach(species => {
-              species.scientific_name = species.scientific_name.map(name =>
-                capitalizeFirstWord(name)
-              );
-              species.common_name = species.common_name.map(name =>
-                capitalizeEachWord(name)
-              );
+              species.scientific_name = species.scientific_name.map(name => capitalizeFirstWord(name));
+              species.common_name = species.common_name.map(name => capitalizeEachWord(name));
             });
           }
 
@@ -117,29 +102,17 @@ function InvasiveSpeciesPage() {
           };
         });
 
-        // Resets pagination details 
-        if (shouldReset) {
-          setCurrOffset(0);
-          setPage(0);
-          setStart(0);
-          setEnd(0);
-          setShouldCalculate(true);
-          setShouldReset(false);
-        }
-
-        setSpeciesCount(responseData.count[0].count);
-        setDisplayData(formattedData);
-        setData(formattedData);
-        setCurrOffset(responseData.nextOffset);
-        setShouldSave(false);
+        updateData(setSpeciesCount, setDisplayData, setData, setCurrOffset, responseData, formattedData);
         setIsLoading(false);
       } else {
-        console.error('Failed to retrieve invasive species:', response.statusText);
+        console.log('Failed to retrieve invasive species:', response.statusText);
       }
     } catch (error) {
-      console.error('Unexpected error retrieving invasive species:', error);
+      console.log('Unexpected error retrieving invasive species:', error);
     }
   };
+
+
 
   // Maintains history of last species_id and currLastSpeciesId so that on GET, 
   // the current page is maintained instead of starting from page 1
@@ -152,6 +125,7 @@ function InvasiveSpeciesPage() {
   useEffect(() => {
     if (shouldSave) {
       handleGetInvasiveSpecies();
+      setShouldSave(false);
     }
   }, [shouldSave]);
 
@@ -159,50 +133,32 @@ function InvasiveSpeciesPage() {
   const handleGetInvasiveSpeciesAfterSearch = async () => {
     let formattedSearchInput = searchInput.toLowerCase().replace(/\([^)]*\)/g, '').trim().replace(/ /g, '_'); // only keep scientific name, and replace spaces with '_'
     formattedSearchInput = formattedSearchInput.split(',')[0].trim(); // if multiple scientific names, just search up one
+
     setIsLoading(true);
 
     try {
-      const signedRequest = sigV4Client
-        .newClient({
-          accessKey: credentials.accessKeyId,
-          secretKey: credentials.secretAccessKey,
-          sessionToken: credentials.sessionToken,
-          region: REGION,
-          endpoint: API_BASE_URL
-        })
-        .signRequest({
-          method: 'GET',
-          path: 'invasiveSpecies',
-          headers: {},
-          queryParams: {
-            search_input: formattedSearchInput,
-            region_id: regionId,
-            rows_per_page: speciesCount
-          }
-        });
-
-      const response = await fetch(signedRequest.url, {
-        headers: signedRequest.headers,
-        method: 'GET'
-      });
+      const response = await getSignedRequest(
+        "invasiveSpecies",
+        {
+          search_input: formattedSearchInput,
+          region_id: regionId,
+          rows_per_page: speciesCount
+        },
+        credentials
+      )
 
       if (response.ok) {
         const responseData = await response.json();
-        const promises = responseData.species.flatMap(item =>
-          item.region_id.map(regionId =>
-            sigV4Client.newClient({
-              accessKey: credentials.accessKeyId,
-              secretKey: credentials.secretAccessKey,
-              sessionToken: credentials.sessionToken,
-              region: REGION,
-              endpoint: API_BASE_URL
-            }).signRequest({
-              method: 'GET',
-              path: `region/${regionId}`,
-              headers: {}
-            }).url
-          )
-        );
+        const promises = responseData.species.flatMap(async item => {
+          const regionPromises = item.region_id.map(async regionId =>
+            await getSignedRequest(
+              `region/${regionId}`,
+              {},
+              credentials
+            ).url
+          );
+          return Promise.all(regionPromises);
+        });
 
         await Promise.all(promises);
 
@@ -276,6 +232,7 @@ function InvasiveSpeciesPage() {
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
     if (confirmed) {
+      // TODO: refactor this function
       function formatNames(names) {
         let formattedNames = [];
         if (typeof names === 'string') {
@@ -479,7 +436,9 @@ function InvasiveSpeciesPage() {
   useEffect(() => {
     if (shouldReset) {
       setIsLoading(true);
+      resetStates(setCurrOffset, setPage, setStart, setEnd, setShouldCalculate);
       handleGetInvasiveSpecies();
+      setShouldReset(false);
     }
   }, [shouldReset]);
 
@@ -500,24 +459,11 @@ function InvasiveSpeciesPage() {
       if (field === "region_code_name") {
         const selectedRegionCodes = await Promise.all(value.map(async (region_id) => {
           try {
-            const signedRequest = sigV4Client
-              .newClient({
-                accessKey: credentials.accessKeyId,
-                secretKey: credentials.secretAccessKey,
-                sessionToken: credentials.sessionToken,
-                region: REGION,
-                endpoint: API_BASE_URL
-              })
-              .signRequest({
-                method: 'GET',
-                path: `region/${region_id}`,
-                headers: {}
-              });
-
-            const response = await fetch(signedRequest.url, {
-              headers: signedRequest.headers,
-              method: 'GET'
-            });
+            const response = await getSignedRequest(
+              `region/${region_id}`,
+              {},
+              credentials
+            )
 
             if (response.ok) {
               const responseData = await response.json();
@@ -544,29 +490,15 @@ function InvasiveSpeciesPage() {
       setDisplayData(data);
       setShouldCalculate(true);
       setSearchDropdownSpeciesOptions([]);
+    } else if (searchInput.includes('(')) {
+      // no need to search
     } else {
       try {
-        const signedRequest = sigV4Client
-          .newClient({
-            accessKey: credentials.accessKeyId,
-            secretKey: credentials.secretAccessKey,
-            sessionToken: credentials.sessionToken,
-            region: REGION,
-            endpoint: API_BASE_URL
-          })
-          .signRequest({
-            method: 'GET',
-            path: 'invasiveSpecies',
-            headers: {},
-            queryParams: {
-              search_input: searchInput
-            }
-          });
-
-        const response = await fetch(signedRequest.url, {
-          headers: signedRequest.headers,
-          method: 'GET'
-        });
+        const response = await getSignedRequest(
+          "invasiveSpecies",
+          { search_input: searchInput },
+          credentials
+        )
 
         if (response.ok) {
           const responseData = await response.json();
@@ -609,27 +541,11 @@ function InvasiveSpeciesPage() {
         setDisplayData(data);
         setRegionId("");
       } else {
-        const signedRequest = sigV4Client
-          .newClient({
-            accessKey: credentials.accessKeyId,
-            secretKey: credentials.secretAccessKey,
-            sessionToken: credentials.sessionToken,
-            region: REGION,
-            endpoint: API_BASE_URL
-          })
-          .signRequest({
-            method: 'GET',
-            path: 'region',
-            headers: {},
-            queryParams: {
-              region_fullname: locationInput,
-            }
-          });
-
-        const response = await fetch(signedRequest.url, {
-          headers: signedRequest.headers,
-          method: 'GET'
-        });
+        const response = await getSignedRequest(
+          "region",
+          { region_fullname: locationInput },
+          credentials
+        )
 
         if (response.ok) {
           const responseData = await response.json();
@@ -655,7 +571,6 @@ function InvasiveSpeciesPage() {
       console.error('Unexpected error:', error);
     }
   };
-
 
   // Calculates start and end species indices of the current page of displayed data
   const calculateStartAndEnd = () => {
@@ -702,13 +617,6 @@ function InvasiveSpeciesPage() {
     }
   }, [displayData, rowsPerPage, regionId]);
 
-  // search species on "enter" key
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleGetInvasiveSpeciesAfterSearch();
-    }
-  };
-
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
 
@@ -747,7 +655,7 @@ function InvasiveSpeciesPage() {
               handleSearch(newInputValue);
             }}
             clearOnBlur={false}
-            onKeyDown={handleKeyPress}
+            onKeyDown={(event) => handleKeyPress(event, handleGetInvasiveSpeciesAfterSearch)}
             renderInput={(params) => (
               <TextField
                 {...params}

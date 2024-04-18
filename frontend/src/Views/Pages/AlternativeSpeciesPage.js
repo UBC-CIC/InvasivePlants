@@ -20,13 +20,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 // functions
 import { boldText, capitalizeFirstWord, capitalizeEachWord, formatString } from '../../functions/textFormattingUtils';
-import sigV4Client from "../../functions/sigV4Client";
+import { handleKeyPress, resetStates, updateData } from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
+import { getSignedRequest } from "../../functions/getSignedRequest";
 
 function AlternativeSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
-  const REGION = process.env.REACT_APP_REGION;
 
   const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
   const [speciesCount, setSpeciesCount] = useState(0); // number of alternative species
@@ -63,37 +63,24 @@ function AlternativeSpeciesPage() {
 
   // Fetches rowsPerPage number of alternative species (pagination)
   const handleGetAlternativeSpecies = async () => {
+    if (!credentials) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // Create a new sigV4Client instance
-      const signedRequest = sigV4Client
-        .newClient({
-          accessKey: credentials.accessKeyId,
-          secretKey: credentials.secretAccessKey,
-          sessionToken: credentials.sessionToken,
-          region: REGION,
-          endpoint: API_BASE_URL
-        })
-        .signRequest({
-          method: 'GET',
-          path: 'alternativeSpecies',
-          headers: {},
-          queryParams: {
-            curr_offset: shouldReset ? 0 : Math.max(0, currOffset),
-            rows_per_page: rowsPerPage
-          }
-        });
-
-      const response = await fetch(signedRequest.url, {
-        headers: signedRequest.headers,
-        method: 'GET'
-      });
+      const response = await getSignedRequest(
+        "alternativeSpecies",
+        {
+          curr_offset: shouldReset ? 0 : Math.max(0, currOffset),
+          rows_per_page: rowsPerPage
+        },
+        credentials
+      )
 
       if (response.ok) {
         const responseData = await response.json();
-
-
         const formattedData = responseData.species.map(item => {
           const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name));
           const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
@@ -109,22 +96,7 @@ function AlternativeSpeciesPage() {
           };
         });
 
-        // Resets pagination details
-        // This will clear the last species id history and display the first page
-        if (shouldReset) {
-          setCurrOffset(0);
-          setPage(0);
-          setStart(0);
-          setEnd(0);
-          setShouldCalculate(true);
-          setShouldReset(false);
-        }
-
-        setSpeciesCount(responseData.count[0].count);
-        setDisplayData(formattedData);
-        setData(formattedData);
-        setCurrOffset(responseData.nextOffset);
-        setShouldSave(false);
+        updateData(setSpeciesCount, setDisplayData, setData, setCurrOffset, responseData, formattedData);
         setIsLoading(false);
       } else {
         console.error('Failed to retrieve alternative species:', response.statusText);
@@ -145,6 +117,7 @@ function AlternativeSpeciesPage() {
   useEffect(() => {
     if (shouldSave) {
       handleGetAlternativeSpecies();
+      setShouldSave(false);
     }
   }, [shouldSave]);
 
@@ -156,27 +129,13 @@ function AlternativeSpeciesPage() {
     setIsLoading(true);
 
     try {
-      const signedRequest = sigV4Client
-        .newClient({
-          accessKey: credentials.accessKeyId,
-          secretKey: credentials.secretAccessKey,
-          sessionToken: credentials.sessionToken,
-          region: REGION,
-          endpoint: API_BASE_URL
-        })
-        .signRequest({
-          method: 'GET',
-          path: 'alternativeSpecies',
-          headers: {},
-          queryParams: {
-            search_input: formattedSearchInput
-          }
-        });
-
-      const response = await fetch(signedRequest.url, {
-        headers: signedRequest.headers,
-        method: 'GET'
-      });
+      const response = await getSignedRequest(
+        "alternativeSpecies",
+        {
+          search_input: formattedSearchInput
+        },
+        credentials
+      )
 
       if (response.ok) {
         const responseData = await response.json();
@@ -227,7 +186,7 @@ function AlternativeSpeciesPage() {
     const jwtToken = user.signInUserSession.accessToken.jwtToken;
 
     if (confirmed) {
-      // Helper function that ensure scientific and common names are of array data type
+      // TODO: refactor Helper function that ensure scientific and common names are of array data type
       function formatNames(names) {
         let formattedNames = [];
         if (typeof names === 'string') {
@@ -405,10 +364,13 @@ function AlternativeSpeciesPage() {
       })
   };
 
-  // Call to handleGetAlternativeSpecies if shouldReset state is True
+  // Reset states
   useEffect(() => {
     if (shouldReset) {
+      setIsLoading(true);
+      resetStates(setCurrOffset, setPage, setStart, setEnd, setShouldCalculate);
       handleGetAlternativeSpecies();
+      setShouldReset(false);
     }
   }, [shouldReset]);
 
@@ -423,29 +385,17 @@ function AlternativeSpeciesPage() {
       setDisplayData(data);
       setShouldCalculate(true);
       setSearchDropdownOptions([]);
+    } else if (searchInput.includes('(')) {
+      // no need to search when includes scientific and common name
     } else {
       try {
-        const signedRequest = sigV4Client
-          .newClient({
-            accessKey: credentials.accessKeyId,
-            secretKey: credentials.secretAccessKey,
-            sessionToken: credentials.sessionToken,
-            region: REGION,
-            endpoint: API_BASE_URL
-          })
-          .signRequest({
-            method: 'GET',
-            path: 'alternativeSpecies',
-            headers: {},
-            queryParams: {
-              search_input: searchInput
-            }
-          });
-
-        const response = await fetch(signedRequest.url, {
-          headers: signedRequest.headers,
-          method: 'GET'
-        });
+        const response = await getSignedRequest(
+          "alternativeSpecies",
+          {
+            search_input: searchInput
+          },
+          credentials
+        )
 
         if (response.ok) {
           const responseData = await response.json();
@@ -509,6 +459,7 @@ function AlternativeSpeciesPage() {
   const handleNextPage = () => {
     setPage(page + 1);
   };
+
   // Decrements page count by 1 and removes last id in seen species history 
   const handlePreviousPage = () => {
     setCurrOffset(curr => curr - rowsPerPage * 2);
@@ -525,12 +476,6 @@ function AlternativeSpeciesPage() {
   }, [displayData, rowsPerPage]);
 
 
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleGetAlternativeSpeciesAfterSearch();
-    }
-  };
-
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
 
@@ -544,7 +489,7 @@ function AlternativeSpeciesPage() {
               handleSearch(newInputValue);
             }}
             clearOnBlur={false}
-            onKeyDown={handleKeyPress}
+            onKeyDown={(event) => handleKeyPress(event, handleGetAlternativeSpeciesAfterSearch)}
             renderInput={(params) => (
               <TextField
                 {...params}

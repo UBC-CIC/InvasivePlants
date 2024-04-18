@@ -1,12 +1,12 @@
 // import React, { useState, useCallback, useEffect, useRef } from 'react';
 // import axios from 'axios';
 // import { saveAs } from 'file-saver';
-// import { webscrapeBCInvasive, webscrapeONInvasive } from '../../functions/webscrape';
-// import { webscrapeWikipedia } from '../../functions/webscrapeWiki';
-// import { webscrapeInvasiveSpecies, flagedSpeciesToPlanetAPI, fullIntegrationOfFlaggingSpecies, dataPipelineForDB } from '../../functions/pipeline';
+// import { webscrapeBCInvasive, webscrapeONInvasive } from '../../functions/data/webscrape';
+// import { webscrapeWikipedia } from '../../functions/data/webscrapeWiki';
+// import { webscrapeInvasiveSpecies, flagedSpeciesToPlanetAPI, fullIntegrationOfFlaggingSpecies, dataPipelineForDB } from '../../functions/data/pipeline';
 
 // // const FormData = require('form-data');
-// import { speciesDataToJSON } from '../../functions/speciesToJSON';
+// import { speciesDataToJSON } from '../../functions/data/speciesToJSON';
 
 // function PlantNet() {
 //     const [selectedLanguage, setSelectedLanguage] = useState('en');

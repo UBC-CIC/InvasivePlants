@@ -6,12 +6,10 @@ import CustomAlert from "../AlertComponent";
 import CustomWarning from '../WarningComponent';
 import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/textFormattingUtils';
 import axios from "axios";
-import sigV4Client from "../../functions/sigV4Client";
-
+import { getSignedRequest } from "../../functions/getSignedRequest";
 // Dialog for adding an invasive species
 const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, credentials }) => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-    const REGION = process.env.REACT_APP_REGION;
 
     const initialSpeciesData = {
         scientific_name: [],
@@ -112,27 +110,13 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, credenti
             setSearchAlternativeDropdownOptions([]);
         } else {
             try {
-                const signedRequest = sigV4Client
-                    .newClient({
-                        accessKey: credentials.accessKeyId,
-                        secretKey: credentials.secretAccessKey,
-                        sessionToken: credentials.sessionToken,
-                        region: REGION,
-                        endpoint: API_BASE_URL
-                    })
-                    .signRequest({
-                        method: 'GET',
-                        path: 'alternativeSpecies',
-                        headers: {},
-                        queryParams: {
-                            search_input: searchInput,
-                        }
-                    });
-
-                const response = await fetch(signedRequest.url, {
-                    headers: signedRequest.headers,
-                    method: 'GET'
-                });
+                const response = await getSignedRequest(
+                    "alternativeSpecies",
+                    {
+                        search_input: searchInput
+                    },
+                    credentials
+                )
 
                 if (response.ok) {
                     const responseData = await response.json();
@@ -164,27 +148,13 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, credenti
             setSearchAlternativeDropdownOptions([]);
         } else {
             try {
-                const signedRequest = sigV4Client
-                    .newClient({
-                        accessKey: credentials.accessKeyId,
-                        secretKey: credentials.secretAccessKey,
-                        sessionToken: credentials.sessionToken,
-                        region: REGION,
-                        endpoint: API_BASE_URL
-                    })
-                    .signRequest({
-                        method: 'GET',
-                        path: 'region',
-                        headers: {},
-                        queryParams: {
-                            region_fullname: searchInput,
-                        }
-                    });
-
-                const response = await fetch(signedRequest.url, {
-                    headers: signedRequest.headers,
-                    method: 'GET'
-                });
+                const response = await getSignedRequest(
+                    "region",
+                    {
+                        region_fullname: searchInput
+                    },
+                    credentials
+                )
 
                 if (response.ok) {
                     const responseData = await response.json();

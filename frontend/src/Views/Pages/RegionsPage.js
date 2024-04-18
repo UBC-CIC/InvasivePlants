@@ -20,14 +20,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 //functions
 import { capitalizeEachWord } from '../../functions/textFormattingUtils';
-import sigV4Client from "../../functions/sigV4Client";
+import { handleKeyPress, resetStates, updateData } from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
-
+import { getSignedRequest } from "../../functions/getSignedRequest";
 
 // displays regions
 function RegionsPage() {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-    const REGION = process.env.REACT_APP_REGION;
 
     const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
     const [regionCount, setRegionCount] = useState(0); // number of regions
@@ -66,45 +65,23 @@ function RegionsPage() {
 
     // Fetches rowsPerPage number of regions (pagination)
     const handleGetRegions = async () => {
+        if (!credentials) {
+            return;
+        }
+
         setIsLoading(true);
         try {
-            // Create a new sigV4Client instance
-            const signedRequest = sigV4Client
-                .newClient({
-                    accessKey: credentials.accessKeyId,
-                    secretKey: credentials.secretAccessKey,
-                    sessionToken: credentials.sessionToken,
-                    region: REGION,
-                    endpoint: API_BASE_URL
-                })
-                .signRequest({
-                    method: 'GET',
-                    path: 'region',
-                    headers: {},
-                    queryParams: {
-                        curr_offset: shouldReset ? 0 : Math.max(0, currOffset),
-                        rows_per_page: rowsPerPage
-                    }
-                });
-
-            const response = await fetch(signedRequest.url, {
-                headers: signedRequest.headers,
-                method: 'GET'
-            });
+            const response = await getSignedRequest(
+                "region",
+                {
+                    curr_offset: shouldReset ? 0 : Math.max(0, currOffset),
+                    rows_per_page: rowsPerPage
+                },
+                credentials
+            )
 
             if (response.ok) {
                 const responseData = await response.json();
-
-                // Resets pagination details
-                // This will clear the last region id history and display the first page
-                if (shouldReset) {
-                    setCurrOffset(0);
-                    setPage(0);
-                    setStart(0);
-                    setEnd(0);
-                    setShouldReset(false);
-                }
-
                 const formattedData = responseData.regions.map(item => {
                     return {
                         ...item,
@@ -114,11 +91,7 @@ function RegionsPage() {
                     };
                 });
 
-                setRegionCount(responseData.count[0].count);
-                setDisplayData(formattedData);
-                setData(formattedData);
-                setCurrOffset(responseData.nextOffset);
-                setShouldSave(false);
+                updateData(setRegionCount, setDisplayData, setData, setCurrOffset, responseData, formattedData);
                 setIsLoading(false);
             } else {
                 console.error('Failed to retrieve regions:', response.statusText);
@@ -140,6 +113,7 @@ function RegionsPage() {
     useEffect(() => {
         if (shouldSave) {
             handleGetRegions();
+            setShouldSave(false);
         }
     }, [shouldSave]);
 
@@ -153,27 +127,13 @@ function RegionsPage() {
         setIsLoading(true);
 
         try {
-            const signedRequest = sigV4Client
-                .newClient({
-                    accessKey: credentials.accessKeyId,
-                    secretKey: credentials.secretAccessKey,
-                    sessionToken: credentials.sessionToken,
-                    region: REGION,
-                    endpoint: API_BASE_URL
-                })
-                .signRequest({
-                    method: 'GET',
-                    path: 'region',
-                    headers: {},
-                    queryParams: {
-                        region_fullname: formattedSearchInput
-                    }
-                });
-
-            const response = await fetch(signedRequest.url, {
-                headers: signedRequest.headers,
-                method: 'GET'
-            });
+            const response = await getSignedRequest(
+                "region",
+                {
+                    region_fullname: formattedSearchInput
+                },
+                credentials
+            )
 
             if (response.ok) {
                 const responseData = await response.json();
@@ -262,6 +222,7 @@ function RegionsPage() {
                 })
                 .then(() => {
                     setRegionCount(prevCount => prevCount - 1)
+                    setIsLoading(true);
                     setShouldReset(true);
                     setOpenDeleteConfirmation(false);
                 })
@@ -306,7 +267,10 @@ function RegionsPage() {
     // Call to handleGetRegions if shouldReset state is True
     useEffect(() => {
         if (shouldReset) {
+            setIsLoading(true);
+            resetStates(setCurrOffset, setPage, setStart, setEnd, setShouldCalculate);
             handleGetRegions();
+            setShouldReset(false);
         }
     }, [shouldReset]);
 
@@ -328,35 +292,23 @@ function RegionsPage() {
 
     };
 
-    // Displays original data when search input is empty
+    // Displays original data when search input is empty, updates dropdown
     const handleSearch = async (searchInput) => {
         if (searchInput === "") {
             setDisplayData(data);
             setShouldCalculate(true);
             setSearchDropdownOptions([]);
+        } else if (searchInput.includes('(')) {
+            // no need to search
         } else {
             try {
-                const signedRequest = sigV4Client
-                    .newClient({
-                        accessKey: credentials.accessKeyId,
-                        secretKey: credentials.secretAccessKey,
-                        sessionToken: credentials.sessionToken,
-                        region: REGION,
-                        endpoint: API_BASE_URL
-                    })
-                    .signRequest({
-                        method: 'GET',
-                        path: 'region',
-                        headers: {},
-                        queryParams: {
-                            region_fullname: searchInput
-                        }
-                    });
-
-                const response = await fetch(signedRequest.url, {
-                    headers: signedRequest.headers,
-                    method: 'GET'
-                });
+                const response = await getSignedRequest(
+                    "region",
+                    {
+                        region_fullname: searchInput
+                    },
+                    credentials
+                )
 
                 if (response.ok) {
                     const responseData = await response.json();
@@ -440,13 +392,6 @@ function RegionsPage() {
         }
     }, [displayData, rowsPerPage]);
 
-
-    const handleKeyPress = (event) => {
-        if (event.key === 'Enter') {
-            handleGetRegionsAfterSearch();
-        }
-    };
-
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
 
@@ -487,7 +432,7 @@ function RegionsPage() {
                             handleSearch(newInputValue);
                         }}
                         clearOnBlur={false}
-                        onKeyDown={handleKeyPress}
+                        onKeyDown={(event) => handleKeyPress(event, handleGetRegionsAfterSearch)}
                         renderInput={(params) => (
                             <TextField
                                 {...params}

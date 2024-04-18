@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { retrieveJwtToken, retrieveUser, getIdentityCredentials } from "./authenticationUtils"
 
-// Custom hook that retrieves temporary credentials for user
+// Retrieves temporary credentials for user
 export function useAuthentication() {
     const [user, setUser] = useState("");
     const [jwtToken, setJwtToken] = useState("");
