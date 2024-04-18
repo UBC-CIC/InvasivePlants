@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography, ThemeProvider, Box, Autocomplete, TextField } from "@mui/material";
+import { Table, TableBody, TableRow, Button, ThemeProvider, Box, Autocomplete, TextField } from "@mui/material";
 import Theme from './Theme';
 import axios from "axios";
 
@@ -8,24 +8,31 @@ import PaginationComponent from '../../components/PaginationComponent';
 import EditInvasiveSpeciesDialog from "../../components/Dialogs/EditInvasiveSpeciesDialog";
 import AddInvasiveSpeciesDialog from "../../components/Dialogs/AddInvasiveSpeciesDialog";
 import DeleteDialog from "../../components/Dialogs/ConfirmDeleteDialog";
+import { ActionButtons } from "../../components/Table/ActionButtons";
+import { ResourceLinksCell } from "../../components/Table/ResourceLinksTableCell";
+import { ImagesTableCell } from "../../components/Table/ImagesTableCell";
+import { NamesTableCell } from "../../components/Table/NamesTableCell";
+import { DescriptionTableCell } from "../../components/Table/DescriptionTableCell";
+import { InvasivePageTableHeader } from "../../components/Table/InvasivePageTableHeader";
+import { RowsPerPageDropdown } from "../../components/RowsPerPageDropdown";
+import { AddDataButton } from "../../components/AddDataButton";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { NoDataBox } from "../../components/Table/NoDataBox";
 
 // icons
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SearchIcon from '@mui/icons-material/Search';
-import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // functions
-import { boldText, formatString, capitalizeFirstWord, capitalizeEachWord } from '../../functions/textFormattingUtils';
+import { formatNames, capitalizeFirstWord, capitalizeEachWord, removeTextInParentheses } from '../../functions/textFormattingUtils';
 import { handleKeyPress, resetStates, updateData } from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
 import { getSignedRequest } from "../../functions/getSignedRequest";
+import { RegionsTableCell } from "../../components/Table/RegionsTableCell";
+import { AlternativeSpeciesTableCell } from "../../components/Table/AlternativeSpeciesTableCell";
 
 function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-  const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
   const [searchDropdownSpeciesOptions, setSearchDropdownSpeciesOptions] = useState([]); // dropdown options for invasive species search bar (scientific names)
   const [searchDropdownRegionsOptions, setSearchDropdownRegionsOptions] = useState([]); // dropdown options for regions search bar 
@@ -217,7 +224,7 @@ function InvasiveSpeciesPage() {
   };
 
   // Updates editing states when editing a species
-  const startEdit = (rowData) => {
+  const handleEditRow = (rowData) => {
     setTempEditingData(rowData);
     setOpenEditSpeciesDialog(true);
   };
@@ -232,18 +239,6 @@ function InvasiveSpeciesPage() {
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
     if (confirmed) {
-      // TODO: refactor this function
-      function formatNames(names) {
-        let formattedNames = [];
-        if (typeof names === 'string') {
-          formattedNames = formatString(names)
-            .map(name => name.toLowerCase().replace(/\s+/g, '_'));
-        } else if (Array.isArray(names)) {
-          formattedNames = names.map(name => name.toLowerCase().replace(/\s+/g, '_'));
-        }
-        return formattedNames;
-      }
-
       let scientificNames = formatNames(tempEditingData.scientific_name);
       let commonNames = formatNames(tempEditingData.common_name);
 
@@ -370,6 +365,7 @@ function InvasiveSpeciesPage() {
       ),
       region_id: newSpeciesData.all_regions.map(region => region.region_id),
     }
+    console.log("data: ", newSpeciesData);
 
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
@@ -530,11 +526,7 @@ function InvasiveSpeciesPage() {
 
   // Searches location and updates displayed data accordingly
   const handleLocationSearch = async (locationInput) => {
-    // gets only region full name
-    locationInput = locationInput.replace(/\s*\([^)]*\)\s*/, '') // Remove the region code within parentheses
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, '_'); // Replace spaces with underscores 
+    locationInput = removeTextInParentheses(locationInput);
 
     try {
       if (locationInput === "") {
@@ -678,26 +670,16 @@ function InvasiveSpeciesPage() {
         </ThemeProvider>
       </div>
 
-      {/* button to add species */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <ThemeProvider theme={Theme}>
-          <Button variant="contained" onClick={() => setOpenAddSpeciesDialog(true)} startIcon={<AddCircleOutlineIcon />}>
-            Add Invasive Species
-          </Button>
-        </ThemeProvider>
-      </div>
+      <AddDataButton setOpenDialog={setOpenAddSpeciesDialog} text={"Add Invasive Species"} />
 
       {/* pagination selections*/}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "67%" }}>
-        {/* Dropdown for selecting rows per page */}
-        <span style={{ marginRight: '10px' }}>Rows per page:</span>
-        <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>
-          {rowsPerPageOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+        <RowsPerPageDropdown
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={rowsPerPageOptions}
+          setRowsPerPage={setRowsPerPage}
+          dataCount={speciesCount}
+        />
 
         <PaginationComponent
           start={start}
@@ -713,181 +695,32 @@ function InvasiveSpeciesPage() {
       {/* table */}
       <div style={{ width: "90%", display: "flex", justifyContent: "center", alignItems: "center" }}>
         {isLoading ? (
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
+          <LoadingSpinner />
         ) : (
           (displayData && displayData.length > 0 ? (
             <Table style={{ width: "100%", tableLayout: "fixed" }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell style={{ width: "8%" }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Scientific Name(s)
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: "7%" }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Common Name(s)
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: "35%" }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Description
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: "10%" }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Alternative Species
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: "10%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Resource Links
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: "6%" }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Region(s)
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: "8%" }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Images
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: "3%" }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Actions
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: "1%" }}></TableCell>
-                </TableRow>
-              </TableHead>
+              <InvasivePageTableHeader />
 
               <TableBody>
                 {(displayData && displayData.length > 0 ? displayData : [])
                   .map((row) => (
                     <TableRow key={row.species_id}>
                       <>
-                        {/* scientific names */}
-                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                          {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
-                        </TableCell>
-
-                        {/* common names */}
-                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                          {Array.isArray(row.common_name) ? row.common_name.join(", ") : row.common_name}
-                        </TableCell>
-
-                        {/* description */}
-                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                          {boldText(row.species_description)}
-                        </TableCell>
-
-                        {/* alternative species */}
-                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                          {Array.isArray(row.alternative_species)
-                            ? row.alternative_species.map((item) => item.scientific_name).join(", ")
-                            : row.alternative_species}
-                        </TableCell>
-
-                        {/* resource links */}
-                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                          {Array.isArray(row.resource_links) ? (
-                            row.resource_links.map((link, index) => (
-                              <span key={index}>
-                                <a href={link} target="_blank" rel="noopener noreferrer">
-                                  {link}
-                                </a>
-                                <br />
-                                <br />
-                              </span>
-                            ))
-                          ) : (
-                            <span>
-                              <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
-                                {row.resource_links}
-                              </a>
-                              <br />
-                              <br />
-                            </span>
-                          )}
-                        </TableCell>
-
-                        {/* regions */}
-                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                          {Array.isArray(row.region_code_names)
-                            ? row.region_code_names.join(", ")
-                            : row.region_code_names}
-                        </TableCell>
-
-                        {/* image links */}
-                        <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                          {Array.isArray(row.image_links) ? (
-                            row.image_links.map((link, index) => (
-                              <span key={index}>
-                                <img
-                                  src={link}
-                                  alt={`${link}`}
-                                  style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
-                                />
-                                {row.s3_keys && row.s3_keys[index] && (
-                                  <span>
-                                    <img
-                                      src={`${S3_BASE_URL}${row.s3_keys[index]}`}
-                                      alt={`${row.s3_keys[index]}`}
-                                      style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
-                                    />
-                                  </span>
-                                )}
-                                <br />
-                              </span>
-                            ))
-                          ) : (
-                            <span>
-                              <a href={row.image_links} target="_blank" rel="noopener noreferrer">
-                                {row.image_links}
-                              </a>
-                              <br />
-                              {row.s3_keys && row.s3_keys.map((key, index) => (
-                                <span key={index}>
-                                  <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
-                                    {row.s3_keys[index]}
-                                  </a>
-                                  <br />
-                                </span>
-                              ))}
-                              <br />
-                            </span>
-                          )}
-                        </TableCell>
-
-                        {/* actions: edit/delete */}
-                        <TableCell>
-                          <Tooltip title="Edit"
-                            onClick={() => startEdit(row)}>
-                            <IconButton>
-                              <EditIcon />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip
-                            title="Delete"
-                            onClick={() => handleDeleteRow(row.species_id, row)}>
-                            <IconButton>
-                              <DeleteIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </TableCell>
-
+                        <NamesTableCell name={row.scientific_name} />
+                        <NamesTableCell name={row.common_name} />
+                        <DescriptionTableCell row={row} />
+                        <AlternativeSpeciesTableCell row={row} />
+                        <ResourceLinksCell row={row} />
+                        <RegionsTableCell row={row} />
+                        <ImagesTableCell row={row} />
+                        <ActionButtons editRow={handleEditRow} deleteRow={handleDeleteRow} row={row} />
                       </>
                     </TableRow>
                   ))}
               </TableBody>
             </Table>
           ) : (
-            // No data exists
-            <Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>
+            <NoDataBox data={"species"} />
           )))}
       </div >
 
@@ -925,11 +758,8 @@ function InvasiveSpeciesPage() {
         handleClose={() => setOpenDeleteConfirmation(false)}
         handleDelete={handleConfirmDelete}
       />
-
-
     </div >
   );
 }
-
 
 export default InvasiveSpeciesPage;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Box, Autocomplete, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from '../SnackbarComponent';
@@ -6,28 +6,23 @@ import CustomAlert from '../AlertComponent';
 import DeleteDialog from './ConfirmDeleteDialog';
 import axios from "axios";
 import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/textFormattingUtils';
-import { retrieveUser } from '../../functions/authenticationUtils';
-import sigV4Client from "../../functions/sigV4Client";
+import { AuthContext } from '../../Views/PageContainer/PageContainer';
 import { getSignedRequest } from "../../functions/getSignedRequest";
 
 // Dialog for editing an invasive species
 const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFinishEditingRow, handleSave, credentials }) => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
-    const REGION = process.env.REACT_APP_REGION;
 
-    const [user, setUser] = useState("");  // current user
     const [searchAlternativeDropdownOptions, setSearchAlternativeDropdownOptions] = useState([]); // dropdown options for alternative species search
     const [searchRegionsDropdownOptions, setSearchRegionsDropdownOptions] = useState([]); // dropdown options for regions search
     const [showWarning, setShowWarning] = useState(false); // warning alert for duplicates
     const [showAlert, setShowAlert] = useState(false); // alert for missing field
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false); // confirmation before saving
     const [deleteImg, setDeleteImg] = useState(null); // sets image the delete
+    const { user } = useContext(AuthContext);
 
-    // Retrieves user on load
-    useEffect(() => {
-        retrieveUser(setUser)
-    }, [])
+  
 
     // Ensures all required fields are present before editing invasive species
     const handleConfirmEditInvasiveSpecies = () => {
@@ -179,7 +174,6 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
         setShowWarning(false)
 
         if (deleteImg) {
-            retrieveUser();
             const jwtToken = user.signInUserSession.accessToken.jwtToken;
 
             axios

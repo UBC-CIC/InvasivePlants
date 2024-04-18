@@ -17,7 +17,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 /** Import Pages **/
 import Navbar from "../../components/Navbar/Navbar";
 import Error404 from '../Pages/error404';
-import InvasiveSpeciesPage from '../Pages/InvasiveSpeciesPage';
+import InvasiveSpeciesPage from "../Pages/InvasiveSpeciesPage";
 import AlternativeSpeciesPage from '../Pages/AlternativeSpeciesPage';
 import RegionsPage from '../Pages/RegionsPage';
 

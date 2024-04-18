@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { Box, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 import SnackbarOnSuccess from '../SnackbarComponent';
 import CustomAlert from '../AlertComponent';
 import DeleteDialog from './ConfirmDeleteDialog';
 import axios from "axios";
-import { retrieveUser } from '../../functions/authenticationUtils';
+import { AuthContext } from '../../Views/PageContainer/PageContainer';
 
 
 // Dialog for editing an alternative species
@@ -13,16 +13,12 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
     const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
     const [showSaveConfirmation, setShowSaveConfirmation] = useState(false); // save confirmation message
-    const [user, setUser] = useState("");  // current user
     const [deleteImg, setDeleteImg] = useState(null); // sets image the delete
     const [showWarning, setShowWarning] = useState(false); // warning alert for duplicates
     const [showAlert, setShowAlert] = useState(false); // alert when a field is missing
+    const { user } = useContext(AuthContext);
 
-    // Retrieves user on load
-    useEffect(() => {
-        retrieveUser(setUser)
-    }, [])
-
+   
     // Closes save confirmation on clickaway
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -88,7 +84,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
         setShowWarning(false)
 
         if (deleteImg) {
-            retrieveUser();
             const jwtToken = user.signInUserSession.accessToken.jwtToken;
 
             axios

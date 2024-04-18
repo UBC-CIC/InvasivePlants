@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, Typography, ThemeProvider } from "@mui/material";
+import { Table, TableBody, TableRow, Button, ThemeProvider } from "@mui/material";
 import { Autocomplete, Box, TextField } from '@mui/material';
 import axios from "axios";
 import Theme from './Theme';
@@ -9,24 +9,29 @@ import PaginationComponent from '../../components/PaginationComponent';
 import EditAlternativeSpeciesDialog from "../../components/Dialogs/EditAlternativeSpeciesDialog";
 import DeleteDialog from "../../components/Dialogs/ConfirmDeleteDialog";
 import AddAlternativeSpeciesDialog from "../../components/Dialogs/AddAlternativeSpeciesDialog";
+import { ActionButtons } from "../../components/Table/ActionButtons";
+import { ResourceLinksCell } from "../../components/Table/ResourceLinksTableCell";
+import { ImagesTableCell } from "../../components/Table/ImagesTableCell";
+import { NamesTableCell } from "../../components/Table/NamesTableCell";
+import { DescriptionTableCell } from "../../components/Table/DescriptionTableCell";
+import { AlternativePageTableHeader } from "../../components/Table/AlternativePageTableHeader";
+import { RowsPerPageDropdown } from "../../components/RowsPerPageDropdown";
+import { AddDataButton } from "../../components/AddDataButton";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { NoDataBox } from "../../components/Table/NoDataBox";
 
 // icons
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SearchIcon from '@mui/icons-material/Search';
-import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // functions
-import { boldText, capitalizeFirstWord, capitalizeEachWord, formatString } from '../../functions/textFormattingUtils';
+import { capitalizeFirstWord, capitalizeEachWord, formatNames } from '../../functions/textFormattingUtils';
 import { handleKeyPress, resetStates, updateData } from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
 import { getSignedRequest } from "../../functions/getSignedRequest";
 
 function AlternativeSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-  const S3_BASE_URL = process.env.REACT_APP_S3_BASE_URL;
 
   const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
   const [speciesCount, setSpeciesCount] = useState(0); // number of alternative species
@@ -171,7 +176,7 @@ function AlternativeSpeciesPage() {
   };
 
   // Updates editing states when editing a species
-  const startEdit = (rowData) => {
+  const handleEditRow = (rowData) => {
     setTempEditingData(rowData);
     setOpenEditSpeciesDialog(true);
   };
@@ -186,18 +191,6 @@ function AlternativeSpeciesPage() {
     const jwtToken = user.signInUserSession.accessToken.jwtToken;
 
     if (confirmed) {
-      // TODO: refactor Helper function that ensure scientific and common names are of array data type
-      function formatNames(names) {
-        let formattedNames = [];
-        if (typeof names === 'string') {
-          formattedNames = formatString(names)
-            .map(name => name.toLowerCase().replace(/\s+/g, '_'));
-        } else if (Array.isArray(names)) {
-          formattedNames = names.map(name => name.toLowerCase().replace(/\s+/g, '_'));
-        }
-        return formattedNames;
-      }
-
       let scientificNames = formatNames(tempEditingData.scientific_name);
       let commonNames = formatNames(tempEditingData.common_name);
 
@@ -512,191 +505,53 @@ function AlternativeSpeciesPage() {
         </ThemeProvider>
       </div>
 
-
-      {/* button to add species */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <ThemeProvider theme={Theme}>
-          <Button variant="contained" onClick={() => setOpenAddSpeciesDialog(true)} startIcon={<AddCircleOutlineIcon />}>
-            Add Alternative Species
-          </Button>
-        </ThemeProvider>
-      </div>
-
+      <AddDataButton setOpenDialog={setOpenAddSpeciesDialog} text={"Add Alternative Species"} />
 
       {/* dropdown for selecting rows per page */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "67%" }}>
-        <span style={{ marginRight: '10px' }}>Rows per page:</span>
-        <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>
-          {rowsPerPageOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+        <RowsPerPageDropdown
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={rowsPerPageOptions}
+          setRowsPerPage={setRowsPerPage}
+          dataCount={speciesCount}
+        />
 
         <PaginationComponent
           start={start}
           end={end}
           count={speciesCount}
           page={page}
-          handlePreviousPage={handlePreviousPage}
-          handleNextPage={handleNextPage}
+          handlePreviousPage={handlePreviousPage} handleNextPage={handleNextPage}
           disabled={disableNextButton}
         />
       </div>
 
       {/* table */}
       <div style={{ width: "90%", display: "flex", justifyContent: "center", marginTop: "-20px" }}>
-
         {isLoading ? (
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
+          <LoadingSpinner />
         ) : (
           (displayData && displayData.length > 0 ? (
             <Table style={{ width: "100%", tableLayout: "fixed" }}>
-              {/* table header */}
-              <TableHead>
-                <TableRow>
-                  <TableCell style={{ width: "8%" }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Scientific Name(s)
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: "10%" }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Common Name(s)
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: "35%" }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Description
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: "12%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Resource Links
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: "10%", whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Images
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: "5%" }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Actions
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
+              <AlternativePageTableHeader />
 
-              {/* table body: display species */}
               <TableBody>
                 {displayData.map((row) => (
                   <TableRow key={row.species_id}>
                     <>
-                      {/* scientific names */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.scientific_name) ? row.scientific_name.join(", ") : row.scientific_name}
-                      </TableCell>
-
-                      {/* common names */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.common_name) ? row.common_name.join(", ") : row.common_name}
-                      </TableCell>
-
-                      {/* Description */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {boldText(row.species_description)}
-                      </TableCell>
-
-                      {/* resource links */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.resource_links) ? (
-                          row.resource_links.map((link, index) => (
-                            <span key={index}>
-                              <a href={link} target="_blank" rel="noopener noreferrer">
-                                {link}
-                              </a>
-                              <br />
-                              <br />
-                            </span>
-                          ))
-                        ) : (
-                          <span>
-                            <a href={row.resource_links} target="_blank" rel="noopener noreferrer">
-                              {row.resource_links}
-                            </a>
-                            <br />
-                            <br />
-                          </span>
-                        )}
-                      </TableCell>
-
-                      {/* image links */}
-                      <TableCell sx={{ whiteSpace: 'normal', wordWrap: 'break-word', textAlign: 'left', verticalAlign: 'top' }}>
-                        {Array.isArray(row.image_links) ? (
-                          row.image_links.map((link, index) => (
-                            <span key={index}>
-                              <img
-                                src={link}
-                                alt={`${link}`}
-                                style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
-                              />
-                              {row.s3_keys && row.s3_keys[index] && (
-                                <span>
-                                  <img
-                                    src={`${S3_BASE_URL}${row.s3_keys[index]}`}
-                                    alt={`${row.s3_keys[index]}`}
-                                    style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
-                                  />
-                                </span>
-                              )}
-                              <br />
-                            </span>
-                          ))
-                        ) : (
-                          <span>
-                            <a href={row.image_links} target="_blank" rel="noopener noreferrer">
-                              {row.image_links}
-                            </a>
-                            <br />
-                            {row.s3_keys && row.s3_keys.map((key, index) => (
-                              <span key={index}>
-                                <a href={`${S3_BASE_URL}${row.s3_keys[index]}`} target="_blank" rel="noopener noreferrer">
-                                  {row.s3_keys[index]}
-                                </a>
-                                <br />
-                              </span>
-                            ))}
-                            <br />
-                          </span>
-                        )}
-                      </TableCell>
-
-                      {/* edit/delete actions */}
-                      <TableCell>
-                        <Tooltip title="Edit"
-                          onClick={() => startEdit(row)}>
-                          <IconButton><EditIcon /></IconButton>
-                        </Tooltip>
-                        <Tooltip
-                          title="Delete"
-                          onClick={() => {
-                            handleDeleteRow(row.species_id, row)
-                          }}>
-                          <IconButton><DeleteIcon /></IconButton>
-                        </Tooltip>
-                      </TableCell>
+                      <NamesTableCell name={row.scientific_name} />
+                      <NamesTableCell name={row.common_name} />
+                      <DescriptionTableCell row={row} />
+                      <ResourceLinksCell row={row} />
+                      <ImagesTableCell row={row} />
+                      <ActionButtons editRow={handleEditRow} deleteRow={handleDeleteRow} row={row} />
                     </>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           ) : (
-            // no data available
-            <Box style={{ margin: 'auto', textAlign: 'center' }}>No species found</Box>
+            <NoDataBox data={"species"} />
           )))}
       </div >
 

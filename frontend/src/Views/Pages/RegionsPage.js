@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Autocomplete, Box, Tooltip, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Button, TextField, Typography, ThemeProvider } from "@mui/material";
+import { Autocomplete, Box, Table, TableBody, TableCell, TableRow, Button, TextField, ThemeProvider } from "@mui/material";
 import Theme from './Theme';
 import axios from "axios";
 
@@ -8,14 +8,16 @@ import PaginationComponent from '../../components/PaginationComponent';
 import DeleteDialog from "../../components/Dialogs/ConfirmDeleteDialog";
 import AddRegionDialog from "../../components/Dialogs/AddRegionDialog";
 import EditRegionDialog from '../../components/Dialogs/EditRegionsDialog';
+import { ActionButtons } from "../../components/Table/ActionButtons";
+import { RowsPerPageDropdown } from "../../components/RowsPerPageDropdown";
+import { AddDataButton } from "../../components/AddDataButton";
+import { RegionsPageTableHeader } from "../../components/Table/RegionsPageTableHeader";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { NoDataBox } from "../../components/Table/NoDataBox";
 
 // icons
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 //functions
@@ -163,7 +165,7 @@ function RegionsPage() {
     };
 
     // Updates editing states when editing a region
-    const startEdit = (rowData) => {
+    const handleEditRow = (rowData) => {
         setTempData(rowData);
         setOpenEditRegionDialog(true);
     };
@@ -455,24 +457,15 @@ function RegionsPage() {
                 </ThemeProvider>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                <ThemeProvider theme={Theme}>
-                    <Button variant="contained" onClick={() => setOpenAddRegionDialog(true)} startIcon={<AddCircleOutlineIcon />}>
-                        Add Region
-                    </Button>
-                </ThemeProvider>
-            </div >
+            <AddDataButton setOpenDialog={setOpenAddRegionDialog} text={"Add Region"} />
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginLeft: "70%" }}>
-                {/* dropdown for selecting rows per page */}
-                <span style={{ marginRight: '10px' }}>Rows per page:</span>
-                <select value={rowsPerPage} onChange={(e) => setRowsPerPage(Number(e.target.value))}>
-                    {rowsPerPageOptions.map((option) => (
-                        <option key={option} value={option}>
-                            {option}
-                        </option>
-                    ))}
-                </select>
+                <RowsPerPageDropdown
+                    rowsPerPage={rowsPerPage}
+                    rowsPerPageOptions={rowsPerPageOptions}
+                    setRowsPerPage={setRowsPerPage}
+                    dataCount={regionCount}
+                />
 
                 <PaginationComponent
                     start={start}
@@ -484,45 +477,15 @@ function RegionsPage() {
                     disabled={disableNextButton}
                 />
             </div>
-
-
+            
+            {/* Table */}
             <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
                 {isLoading ? (
-                    <Spinner animation="border" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </Spinner>
+                    <LoadingSpinner />
                 ) : (
                     (displayData && displayData.length > 0 ? (
                         <Table style={{ width: "100%", tableLayout: "fixed" }}>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell style={{ width: "10%" }}>
-                                        <Typography variant="subtitle1" fontWeight="bold">
-                                            Region
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell style={{ width: "10%" }}>
-                                        <Typography variant="subtitle1" fontWeight="bold">
-                                            Region Code
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell style={{ width: "10%" }}>
-                                        <Typography variant="subtitle1" fontWeight="bold">
-                                            Country
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell style={{ width: "15%" }}>
-                                        <Typography variant="subtitle1" fontWeight="bold">
-                                            Geographic Coordinates (latitude, longitude)
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell style={{ width: "5%" }}>
-                                        <Typography variant="subtitle1" fontWeight="bold">
-                                            Actions
-                                        </Typography>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
+                            <RegionsPageTableHeader />
 
                             <TableBody>
                                 {(displayData && displayData.length > 0 ? displayData : [])
@@ -533,33 +496,18 @@ function RegionsPage() {
                                                 <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}> {row.region_code_name} </TableCell>
                                                 <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.country_fullname}</TableCell>
                                                 <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.geographic_coordinate}</TableCell>
-                                                <TableCell >
-                                                    <Tooltip title="Edit"
-                                                        onClick={() => startEdit(row)}>
-                                                        <IconButton>
-                                                            <EditIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                    <Tooltip
-                                                        title="Delete"
-                                                        onClick={() => handleDeleteRow(row.region_id, row)}>
-                                                        <IconButton>
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </TableCell>
+                                                <ActionButtons editRow={handleEditRow} deleteRow={handleDeleteRow} row={row} />
                                             </>
                                         </TableRow>
                                     ))}
                             </TableBody>
                         </Table>
                     ) : (
-                        // no display data
-                        <Box style={{ margin: 'auto', textAlign: 'center' }}>No regions found</Box>
+                        <NoDataBox data={"regions"} />
                     )))}
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginLeft: "79%" }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginLeft: "80%" }}>
                 <PaginationComponent
                     start={start}
                     end={end}
