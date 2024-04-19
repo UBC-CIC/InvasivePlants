@@ -19,6 +19,7 @@ export const updateDropdownOptions = async (credentials, path, queryParams = {},
             formattedData = formatSpeciesData(response.responseData);
         }
 
+        // console.log(formattedData);
         setSearchDropdownOptions(formattedData);
     } catch (error) {
         console.error('Unexpected error:', error);
@@ -30,6 +31,10 @@ export const updateDropdown = async (searchInput, credentials, path, setSearchDr
     if (searchInput === "") {
         setSearchDropdown([]);
     } else {
-        await updateDropdownOptions(credentials, path, { search_input: searchInput }, setSearchDropdown)
+        if (path.includes("invasiveSpecies") || path.includes("alternativeSpecies")) {
+            await updateDropdownOptions(credentials, path, { search_input: searchInput }, setSearchDropdown)
+        } else if (path.includes("region")) {
+            await updateDropdownOptions(credentials, path, { region_fullname: searchInput }, setSearchDropdown)
+        }
     }
 };

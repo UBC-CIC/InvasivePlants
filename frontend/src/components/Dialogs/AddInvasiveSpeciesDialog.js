@@ -157,11 +157,6 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, credenti
                             getOptionLabel={(option) =>
                                 `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
                             }
-                            value={
-                                Array.isArray(speciesData.alternative_species)
-                                    ? speciesData.alternative_species
-                                    : []
-                            }
                             onInputChange={(e, input) => {
                                 updateDropdown(input, credentials, "alternativeSpecies", setSearchAlternativeDropdownOptions);
                             }}
@@ -198,17 +193,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, credenti
                             multiple
                             id="regions-autocomplete"
                             options={searchRegionsDropdownOptions}
-                            getOptionLabel={(option) =>
-                                `${option.region_fullname} (${option.region_code_name})`
-                            }
-                            value={
-                                Array.isArray(speciesData.all_regions) ?
-                                    speciesData.all_regions.map(region => ({
-                                        ...region,
-                                        region_fullname: capitalizeEachWord(region.region_fullname),
-                                    }))
-                                    : []
-                            }
+                            getOptionLabel={(option) => `${option.region_fullname} (${option.region_code_name})`}
                             onInputChange={(e, input) => {
                                 updateDropdown(input, credentials, "region", setSearchRegionsDropdownOptions);
                             }}

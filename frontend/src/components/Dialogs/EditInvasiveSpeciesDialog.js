@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Box, Autocomplete, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from '../SnackbarComponent';
@@ -183,35 +183,30 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                             id="regions-autocomplete"
                             options={searchRegionsDropdownOptions}
                             getOptionLabel={(option) =>
-                                `${option.region_fullname} (${option.region_code_name})`
+                                `${capitalizeEachWord(option.region_fullname)} (${option.region_code_name})`
                             }
-                            value={
-                                Array.isArray(tempData.all_regions) ?
-                                    tempData.all_regions.map(region => ({
-                                        ...region,
-                                        region_fullname: capitalizeEachWord(region.region_fullname),
-                                    }))
-                                    : []
-                            }
+                            value={Array.isArray(tempData.all_regions) ? tempData.all_regions : []}
                             onInputChange={(e, input) => {
                                 updateDropdown(input, credentials, "region", setSearchRegionsDropdownOptions);
                             }}
                             onChange={(e, input) => {
                                 handleInputChange("all_regions", input)
                             }}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    variant="standard"
-                                    label={<div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <SearchIcon sx={{ marginRight: '0.5rem' }} />
-                                        Region(s)* (multiselect)
-                                    </div>
-                                    }
-                                    multiline
-                                    sx={{ width: "100%", marginBottom: "1rem" }}
-                                />
-                            )}
+                            renderInput={(params) => {
+                                return (
+                                    < TextField
+                                        {...params}
+                                        variant="standard"
+                                        label={<div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <SearchIcon sx={{ marginRight: '0.5rem' }} />
+                                            Region(s)* (multiselect)
+                                        </div>
+                                        }
+                                        multiline
+                                        sx={{ width: "100%", marginBottom: "1rem" }}
+                                    />
+                                )
+                            }}
                             sx={{ flex: 5, marginRight: '1rem', height: '100%', width: "100%" }}
                         />
                     </Box>
