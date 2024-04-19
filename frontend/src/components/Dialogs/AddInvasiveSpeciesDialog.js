@@ -4,13 +4,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from "../SnackbarComponent";
 import CustomAlert from "../AlertComponent";
 import CustomWarning from '../WarningComponent';
-import { capitalizeFirstWord, capitalizeEachWord } from '../../functions/textFormattingUtils';
-import axios from "axios";
-import { getSignedRequest } from "../../functions/getSignedRequest";
+import { capitalizeEachWord } from '../../functions/textFormattingUtils';
+import { uploadImageFile } from "../../functions/uploadImageFile";
+import { updateDropdown } from "../../functions/searchUtils";
+
 // Dialog for adding an invasive species
 const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, credentials }) => {
-    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
     const initialSpeciesData = {
         scientific_name: [],
         common_name: [],
@@ -104,125 +103,6 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, credenti
         setShowSnackbar(false)
     }
 
-    // Updates search alternative dropdown
-    const handleSearchAlternative = async (searchInput) => {
-        if (searchInput === "") {
-            setSearchAlternativeDropdownOptions([]);
-        } else {
-            try {
-                const response = await getSignedRequest(
-                    "alternativeSpecies",
-                    {
-                        search_input: searchInput
-                    },
-                    credentials
-                )
-
-                if (response.ok) {
-                    const responseData = await response.json();
-                    const formattedData = responseData.species.map(item => {
-                        const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
-                        const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
-
-                        return {
-                            ...item,
-                            scientific_name: capitalizedScientificNames,
-                            common_name: capitalizedCommonNames,
-                        };
-                    });
-
-                    setSearchAlternativeDropdownOptions(formattedData);
-                } else {
-                    console.error('Failed to search alternative species:', response.statusText);
-                }
-            } catch (error) {
-                console.error("Unexpected error while searching alternative species", error);
-            }
-        };
-    };
-
-
-    // Gets regions to update region search dropdown 
-    const handleSearchRegion = async (searchInput) => {
-        if (searchInput === "") {
-            setSearchAlternativeDropdownOptions([]);
-        } else {
-            try {
-                const response = await getSignedRequest(
-                    "region",
-                    {
-                        region_fullname: searchInput
-                    },
-                    credentials
-                )
-
-                if (response.ok) {
-                    const responseData = await response.json();
-                    const regionData = responseData.regions.map(item => {
-                        return {
-                            ...item,
-                            region_fullname: capitalizeEachWord(item.region_fullname),
-                            region_code_name: item.region_code_name.toUpperCase(),
-                            country_fullname: capitalizeEachWord(item.country_fullname)
-                        };
-                    });
-                    setSearchRegionsDropdownOptions(regionData);
-                } else {
-                    console.error('Failed to search region:', response.statusText);
-                }
-            } catch (error) {
-                console.error("Unexpected error while searching region", error);
-            }
-        }
-    };
-
-
-    // Handles uploading image files to s3 bucket
-    const handleImageUpload = async (e) => {
-        const files = e.target.files;
-
-        if (files) {
-            let s3Keys = []
-
-            try {
-                for (let i = 0; i < files.length; i++) {
-                    // modified from https://raz-levy.medium.com/how-to-upload-files-to-aws-s3-from-the-client-side-using-react-js-and-node-js-660252e61e0
-                    const timestamp = new Date().getTime();
-                    const file = e.target.files[i];
-                    const filename = file.name.split('.')[0].replace(/[&/\\#,+()$~%'":*?<>{}]/g, '').toLowerCase() + `_${timestamp}`;
-                    const fileExtension = file.name.split('.').pop();
-
-                    // GET request to getS3SignedURL endpoint
-                    const signedURLResponse = await axios
-                        .get(`${API_BASE_URL}/getS3SignedURL`, {
-                            params: {
-                                contentType: files[i].type,
-                                filename: `${filename}.${fileExtension}`
-                            }
-                        });
-
-
-                    if (!signedURLResponse.data.uploadURL) {
-                        continue;
-                    }
-
-                    const signedURLData = signedURLResponse.data;
-
-                    // Use the obtained signed URL to upload the image to S3 bucket
-                    await axios.put(signedURLData.uploadURL, files[i])
-
-                    // Image uploaded successfully, add its s3 key to the list
-                    if (signedURLData.key) {
-                        s3Keys.push(signedURLData.key);
-                    }
-                }
-                handleInputChange('s3_keys', s3Keys);
-            } catch (error) {
-                console.error('Error uploading images:', error);
-            }
-        }
-    };
-
     return (
         <div>
             <Dialog open={showAlert} onClose={() => setShowAlert(false)}>
@@ -283,7 +163,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, credenti
                                     : []
                             }
                             onInputChange={(e, input) => {
-                                handleSearchAlternative(input);
+                                updateDropdown(input, credentials, "alternativeSpecies", setSearchAlternativeDropdownOptions);
                             }}
                             onChange={(e, input) =>
                                 handleInputChange("alternative_species", input)
@@ -330,7 +210,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, credenti
                                     : []
                             }
                             onInputChange={(e, input) => {
-                                handleSearchRegion(input);
+                                updateDropdown(input, credentials, "region", setSearchRegionsDropdownOptions);
                             }}
                             onChange={(e, input) => {
                                 handleInputChange("all_regions", input)
@@ -366,7 +246,7 @@ const AddInvasiveSpeciesDialog = ({ open, handleClose, handleAdd, data, credenti
                         <input
                             type="file"
                             multiple
-                            onChange={handleImageUpload}
+                            onChange={(e) => uploadImageFile(e, handleInputChange)}
                             sx={{ width: '100%', marginBottom: '1rem' }}
                         />
                     </Box>

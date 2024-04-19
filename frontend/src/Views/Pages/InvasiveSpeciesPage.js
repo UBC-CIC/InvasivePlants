@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Table, TableBody, TableRow, Button, ThemeProvider, Box, Autocomplete, TextField } from "@mui/material";
-import Theme from './Theme';
+import { Table, TableBody, TableRow, Box, Autocomplete, TextField } from "@mui/material";
 import axios from "axios";
 
 // components
@@ -14,27 +13,29 @@ import { ImagesTableCell } from "../../components/Table/ImagesTableCell";
 import { NamesTableCell } from "../../components/Table/NamesTableCell";
 import { DescriptionTableCell } from "../../components/Table/DescriptionTableCell";
 import { InvasivePageTableHeader } from "../../components/Table/InvasivePageTableHeader";
+import { NoDataBox } from "../../components/Table/NoDataBox";
 import { RowsPerPageDropdown } from "../../components/RowsPerPageDropdown";
 import { AddDataButton } from "../../components/AddDataButton";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { NoDataBox } from "../../components/Table/NoDataBox";
+import { SearchButton } from "../../components/SearchButton";
 
 // icons
 import SearchIcon from '@mui/icons-material/Search';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // functions
-import { formatNames, capitalizeFirstWord, capitalizeEachWord, removeTextInParentheses } from '../../functions/textFormattingUtils';
+import { formatNames, removeTextInParentheses } from '../../functions/textFormattingUtils';
 import { handleKeyPress, resetStates, updateData } from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
 import { getSignedRequest } from "../../functions/getSignedRequest";
 import { RegionsTableCell } from "../../components/Table/RegionsTableCell";
 import { AlternativeSpeciesTableCell } from "../../components/Table/AlternativeSpeciesTableCell";
+import { updateDropdownOptions } from "../../functions/searchUtils";
 
 function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-  const [searchDropdownSpeciesOptions, setSearchDropdownSpeciesOptions] = useState([]); // dropdown options for invasive species search bar (scientific names)
+  const [searchDropdownSpeciesOptions, setSearchDropdownOptions] = useState([]); // dropdown options for invasive species search bar (scientific names)
   const [searchDropdownRegionsOptions, setSearchDropdownRegionsOptions] = useState([]); // dropdown options for regions search bar 
   const [speciesCount, setSpeciesCount] = useState(0); // number of invasive species
   const [data, setData] = useState([]); // original data
@@ -88,38 +89,12 @@ function InvasiveSpeciesPage() {
         credentials
       )
 
-      if (response.ok) {
-        const responseData = await response.json();
-
-        // Format data
-        const formattedData = responseData.species.map((item) => {
-          if (item.alternative_species) {
-            item.alternative_species.forEach(species => {
-              species.scientific_name = species.scientific_name.map(name => capitalizeFirstWord(name));
-              species.common_name = species.common_name.map(name => capitalizeEachWord(name));
-            });
-          }
-
-          return {
-            ...item,
-            scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
-            common_name: item.common_name.map(name => capitalizeEachWord(name)),
-            image_links: item.images.map(img => img.image_url),
-            s3_keys: item.images.map(img => img.s3_key)
-          };
-        });
-
-        updateData(setSpeciesCount, setDisplayData, setData, setCurrOffset, responseData, formattedData);
-        setIsLoading(false);
-      } else {
-        console.log('Failed to retrieve invasive species:', response.statusText);
-      }
+      updateData(setSpeciesCount, setDisplayData, setData, setCurrOffset, response.responseData, response.formattedData);
+      setIsLoading(false);
     } catch (error) {
       console.log('Unexpected error retrieving invasive species:', error);
     }
   };
-
-
 
   // Maintains history of last species_id and currLastSpeciesId so that on GET, 
   // the current page is maintained instead of starting from page 1
@@ -142,7 +117,6 @@ function InvasiveSpeciesPage() {
     formattedSearchInput = formattedSearchInput.split(',')[0].trim(); // if multiple scientific names, just search up one
 
     setIsLoading(true);
-
     try {
       const response = await getSignedRequest(
         "invasiveSpecies",
@@ -154,72 +128,13 @@ function InvasiveSpeciesPage() {
         credentials
       )
 
-      if (response.ok) {
-        const responseData = await response.json();
-        const promises = responseData.species.flatMap(async item => {
-          const regionPromises = item.region_id.map(async regionId =>
-            await getSignedRequest(
-              `region/${regionId}`,
-              {},
-              credentials
-            ).url
-          );
-          return Promise.all(regionPromises);
-        });
-
-        await Promise.all(promises);
-
-        const formattedData = responseData.species.map((item) => {
-          if (item.alternative_species) {
-            item.alternative_species.forEach(species => {
-              species.scientific_name = species.scientific_name.map(name =>
-                capitalizeFirstWord(name)
-              );
-              species.common_name = species.common_name.map(name =>
-                capitalizeEachWord(name)
-              );
-            });
-          }
-
-          return {
-            ...item,
-            scientific_name: item.scientific_name.map(name => capitalizeFirstWord(name)),
-            common_name: item.common_name.map(name => capitalizeEachWord(name)),
-            image_links: item.images.map(img => img.image_url),
-            s3_keys: item.images.map(img => img.s3_key)
-          };
-        });
-
-        const uniqueFormattedData = [];
-        const uniqueScientificNames = new Set();
-
-        formattedData.forEach((item) => {
-          const capitalizedScientificNames = item.scientific_name.map(name =>
-            capitalizeFirstWord(name)
-          );
-
-          const scientificNameKey = capitalizedScientificNames.join('_');
-
-          if (!uniqueScientificNames.has(scientificNameKey)) {
-            uniqueFormattedData.push({
-              ...item,
-              scientific_name: capitalizedScientificNames
-            });
-            uniqueScientificNames.add(scientificNameKey);
-          }
-        });
-
-        setShouldCalculate(false);
-        setDisplayData(uniqueFormattedData);
-        uniqueFormattedData.length > 0 ? setStart(1) : setStart(0);
-        setEnd(responseData.species.length);
-      } else {
-        console.error('Failed to search invasive species:', response.statusText);
-      }
+      setShouldCalculate(false);
+      setDisplayData(response.formattedData);
+      response.formattedData.length > 0 ? setStart(1) : setStart(0);
+      setEnd(response.responseData.species.length);
+      setIsLoading(false);
     } catch (error) {
       console.error('Unexpected error searching invasive species:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -365,7 +280,6 @@ function InvasiveSpeciesPage() {
       ),
       region_id: newSpeciesData.all_regions.map(region => region.region_id),
     }
-    console.log("data: ", newSpeciesData);
 
     const jwtToken = user.signInUserSession.accessToken.jwtToken
 
@@ -450,34 +364,7 @@ function InvasiveSpeciesPage() {
         region_code_name: regionCodeNames
       }));
     }
-
-    try {
-      if (field === "region_code_name") {
-        const selectedRegionCodes = await Promise.all(value.map(async (region_id) => {
-          try {
-            const response = await getSignedRequest(
-              `region/${region_id}`,
-              {},
-              credentials
-            )
-
-            if (response.ok) {
-              const responseData = await response.json();
-              return responseData[0].region_code_name;
-            } else {
-              console.error('Failed to get region:', response.statusText);
-            }
-          } catch (error) {
-            console.error("Unexpected error retrieving region:", error);
-          }
-        }));
-        setTempEditingData((prev) => ({ ...prev, region_id: value, region_code_name: selectedRegionCodes }));
-      } else {
-        setTempEditingData((prev) => ({ ...prev, [field]: value }));
-      }
-    } catch (error) {
-      console.error("Error: ", error);
-    }
+    setTempEditingData((prev) => ({ ...prev, [field]: value }));
   };
 
   // Displays original data when search input is empty, otherwise updates dropdown
@@ -485,42 +372,10 @@ function InvasiveSpeciesPage() {
     if (searchInput === "") {
       setDisplayData(data);
       setShouldCalculate(true);
-      setSearchDropdownSpeciesOptions([]);
-    } else if (searchInput.includes('(')) {
-      // no need to search
-    } else {
-      try {
-        const response = await getSignedRequest(
-          "invasiveSpecies",
-          { search_input: searchInput },
-          credentials
-        )
-
-        if (response.ok) {
-          const responseData = await response.json();
-          const formattedData = responseData.species.map(item => {
-            const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
-
-            return {
-              ...item,
-              scientific_name: capitalizedScientificNames,
-              common_name: item.common_name.map(name => capitalizeEachWord(name)),
-              image_links: item.images.map(img => img.image_url),
-              s3_keys: item.images.map(img => img.s3_key)
-            };
-          });
-
-          if (formattedData.length > 0) {
-            const scientificNames = formattedData.flatMap((species) => `${species.scientific_name} (${species.common_name ? species.common_name.join(', ') : ''})`);
-            const uniqueScientificNames = [...new Set(scientificNames)];
-            setSearchDropdownSpeciesOptions(uniqueScientificNames);
-          }
-        } else {
-          console.error('Failed to search invasive species:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Unexpected error searching invasive species:', error);
-      }
+      setSearchDropdownOptions([]);
+    } else if (!searchInput.includes('(')) {
+      // Update drop down only when search input is not both full name and common name
+      await updateDropdownOptions(credentials, "invasiveSpecies", { search_input: searchInput }, setSearchDropdownOptions)
     }
   };
 
@@ -528,39 +383,11 @@ function InvasiveSpeciesPage() {
   const handleLocationSearch = async (locationInput) => {
     locationInput = removeTextInParentheses(locationInput);
 
-    try {
-      if (locationInput === "") {
-        setDisplayData(data);
-        setRegionId("");
-      } else {
-        const response = await getSignedRequest(
-          "region",
-          { region_fullname: locationInput },
-          credentials
-        )
-
-        if (response.ok) {
-          const responseData = await response.json();
-
-          const formattedData = responseData.regions.map(item => {
-            return {
-              ...item,
-              region_fullname: capitalizeEachWord(item.region_fullname),
-              region_code_name: item.region_code_name.toUpperCase(),
-            };
-          });
-
-          if (formattedData.length > 0) {
-            setRegionId(formattedData[0].region_id);
-            const regionNames = formattedData.map((region) => `${region.region_fullname} (${region.region_code_name})`);
-            setSearchDropdownRegionsOptions(regionNames);
-          }
-        } else {
-          console.error('Failed to search region:', response.statusText);
-        }
-      }
-    } catch (error) {
-      console.error('Unexpected error:', error);
+    if (locationInput === "") {
+      setDisplayData(data);
+      setRegionId("");
+    } else if (!locationInput.includes('(')) {
+      await updateDropdownOptions(credentials, "region", { region_fullname: locationInput }, setSearchDropdownRegionsOptions, setRegionId);
     }
   };
 
@@ -619,6 +446,7 @@ function InvasiveSpeciesPage() {
         <Box style={{ flex: 1, marginLeft: "10px" }}>
           <Autocomplete
             options={searchDropdownRegionsOptions}
+            getOptionLabel={(option) => `${option.region_fullname} (${option.region_code_name})`}
             onInputChange={(e, newInputValue) => {
               handleLocationSearch(newInputValue.toLowerCase());
             }}
@@ -642,6 +470,9 @@ function InvasiveSpeciesPage() {
         <Box style={{ flex: 3, marginLeft: "10px" }}>
           <Autocomplete
             options={searchDropdownSpeciesOptions}
+            getOptionLabel={(option) =>
+              `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
+            }
             onInputChange={(e, newInputValue) => {
               setSearchInput(newInputValue);
               handleSearch(newInputValue);
@@ -663,11 +494,7 @@ function InvasiveSpeciesPage() {
           />
         </Box>
 
-        <ThemeProvider theme={Theme}>
-          <Button variant="contained" onClick={() => handleGetInvasiveSpeciesAfterSearch()} style={{ marginLeft: "20px", marginTop: "27px", width: "10%", height: "53px", alignItems: "center" }}>
-            <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
-          </Button>
-        </ThemeProvider>
+        <SearchButton getDataAfterSearch={handleGetInvasiveSpeciesAfterSearch} />
       </div>
 
       <AddDataButton setOpenDialog={setOpenAddSpeciesDialog} text={"Add Invasive Species"} />

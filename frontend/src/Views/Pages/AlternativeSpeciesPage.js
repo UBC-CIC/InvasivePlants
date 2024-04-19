@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Table, TableBody, TableRow, Button, ThemeProvider } from "@mui/material";
+import { Table, TableBody, TableRow } from "@mui/material";
 import { Autocomplete, Box, TextField } from '@mui/material';
 import axios from "axios";
-import Theme from './Theme';
 
 // components
 import PaginationComponent from '../../components/PaginationComponent';
@@ -15,20 +14,22 @@ import { ImagesTableCell } from "../../components/Table/ImagesTableCell";
 import { NamesTableCell } from "../../components/Table/NamesTableCell";
 import { DescriptionTableCell } from "../../components/Table/DescriptionTableCell";
 import { AlternativePageTableHeader } from "../../components/Table/AlternativePageTableHeader";
+import { NoDataBox } from "../../components/Table/NoDataBox";
 import { RowsPerPageDropdown } from "../../components/RowsPerPageDropdown";
 import { AddDataButton } from "../../components/AddDataButton";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { NoDataBox } from "../../components/Table/NoDataBox";
+import { SearchButton } from "../../components/SearchButton";
 
 // icons
 import SearchIcon from '@mui/icons-material/Search';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // functions
-import { capitalizeFirstWord, capitalizeEachWord, formatNames } from '../../functions/textFormattingUtils';
+import { formatNames } from '../../functions/textFormattingUtils';
 import { handleKeyPress, resetStates, updateData } from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
 import { getSignedRequest } from "../../functions/getSignedRequest";
+import { updateDropdownOptions } from "../../functions/searchUtils";
 
 function AlternativeSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -84,28 +85,8 @@ function AlternativeSpeciesPage() {
         credentials
       )
 
-      if (response.ok) {
-        const responseData = await response.json();
-        const formattedData = responseData.species.map(item => {
-          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name));
-          const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
-          const image_links = item.images.map(img => img.image_url);
-          const s3_keys = item.images.map(img => img.s3_key);
-
-          return {
-            ...item,
-            scientific_name: capitalizedScientificNames,
-            common_name: capitalizedCommonNames,
-            image_links: image_links,
-            s3_keys: s3_keys
-          };
-        });
-
-        updateData(setSpeciesCount, setDisplayData, setData, setCurrOffset, responseData, formattedData);
-        setIsLoading(false);
-      } else {
-        console.error('Failed to retrieve alternative species:', response.statusText);
-      }
+      updateData(setSpeciesCount, setDisplayData, setData, setCurrOffset, response.responseData, response.formattedData);
+      setIsLoading(false);
     } catch (error) {
       console.error('Unexpected error retrieving alternative species:', error);
     }
@@ -142,36 +123,14 @@ function AlternativeSpeciesPage() {
         credentials
       )
 
-      if (response.ok) {
-        const responseData = await response.json();
-
-        const formattedData = responseData.species.map(item => {
-          const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
-          const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
-          const image_links = item.images.map(img => img.image_url);
-          const s3_keys = item.images.map(img => img.s3_key);
-
-          return {
-            ...item,
-            scientific_name: capitalizedScientificNames,
-            common_name: capitalizedCommonNames,
-            image_links: image_links,
-            s3_keys: s3_keys
-          };
-        });
-
-        // updates pagination start and end indices
-        setShouldCalculate(false);
-        setDisplayData(formattedData);
-        formattedData.length > 0 ? setStart(1) : setStart(0);
-        setEnd(responseData.species.length);
-      } else {
-        console.error('Failed to search alternative species:', response.statusText);
-      }
+      // updates pagination start and end indices
+      setShouldCalculate(false);
+      setDisplayData(response.formattedData);
+      response.formattedData.length > 0 ? setStart(1) : setStart(0);
+      setEnd(response.responseData.species.length);
+      setIsLoading(false);
     } catch (error) {
       console.error('Unexpected error searching alternative species:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -378,46 +337,9 @@ function AlternativeSpeciesPage() {
       setDisplayData(data);
       setShouldCalculate(true);
       setSearchDropdownOptions([]);
-    } else if (searchInput.includes('(')) {
-      // no need to search when includes scientific and common name
-    } else {
-      try {
-        const response = await getSignedRequest(
-          "alternativeSpecies",
-          {
-            search_input: searchInput
-          },
-          credentials
-        )
-
-        if (response.ok) {
-          const responseData = await response.json();
-
-          const formattedData = responseData.species.map(item => {
-            const capitalizedScientificNames = item.scientific_name.map(name => capitalizeFirstWord(name, "_"));
-            const capitalizedCommonNames = item.common_name.map(name => capitalizeEachWord(name));
-            const image_links = item.images.map(img => img.image_url);
-            const s3_keys = item.images.map(img => img.s3_key);
-
-            return {
-              ...item,
-              scientific_name: capitalizedScientificNames,
-              common_name: capitalizedCommonNames,
-              image_links: image_links,
-              s3_keys: s3_keys
-            };
-          });
-
-          if (formattedData.length > 0) {
-            const scientificNames = formattedData.flatMap((species) => `${species.scientific_name} (${species.common_name ? species.common_name.join(', ') : ''})`);
-            setSearchDropdownOptions(scientificNames);
-          }
-        } else {
-          console.error('Failed to search alternative species:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Unexpected error searching alternative species:', error);
-      }
+    } else if (!searchInput.includes('(')) {
+      // Update drop down only when search input is not both full name and common name
+      await updateDropdownOptions(credentials, "alternativeSpecies", { search_input: searchInput }, setSearchDropdownOptions)
     }
   };
 
@@ -477,6 +399,9 @@ function AlternativeSpeciesPage() {
         <Box style={{ flex: 3, marginLeft: "10px" }}>
           <Autocomplete
             options={searchDropdownOptions}
+            getOptionLabel={(option) =>
+              `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
+            }
             onInputChange={(e, newInputValue) => {
               setSearchInput(newInputValue);
               handleSearch(newInputValue);
@@ -498,11 +423,7 @@ function AlternativeSpeciesPage() {
           />
         </Box>
 
-        <ThemeProvider theme={Theme}>
-          <Button variant="contained" onClick={() => handleGetAlternativeSpeciesAfterSearch()} style={{ marginLeft: "20px", marginTop: "12px", width: "10%", height: "53px", alignItems: "center" }}>
-            <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
-          </Button>
-        </ThemeProvider>
+        <SearchButton getDataAfterSearch={handleGetAlternativeSpeciesAfterSearch} />
       </div>
 
       <AddDataButton setOpenDialog={setOpenAddSpeciesDialog} text={"Add Alternative Species"} />

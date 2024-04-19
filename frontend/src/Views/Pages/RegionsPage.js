@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Autocomplete, Box, Table, TableBody, TableCell, TableRow, Button, TextField, ThemeProvider } from "@mui/material";
-import Theme from './Theme';
+import { Autocomplete, Box, Table, TableBody, TableCell, TableRow, TextField } from "@mui/material";
 import axios from "axios";
 
 // components
@@ -12,8 +11,9 @@ import { ActionButtons } from "../../components/Table/ActionButtons";
 import { RowsPerPageDropdown } from "../../components/RowsPerPageDropdown";
 import { AddDataButton } from "../../components/AddDataButton";
 import { RegionsPageTableHeader } from "../../components/Table/RegionsPageTableHeader";
-import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { NoDataBox } from "../../components/Table/NoDataBox";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { SearchButton } from "../../components/SearchButton";
 
 // icons
 import SearchIcon from '@mui/icons-material/Search';
@@ -25,6 +25,7 @@ import { capitalizeEachWord } from '../../functions/textFormattingUtils';
 import { handleKeyPress, resetStates, updateData } from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
 import { getSignedRequest } from "../../functions/getSignedRequest";
+import { updateDropdownOptions } from "../../functions/searchUtils";
 
 // displays regions
 function RegionsPage() {
@@ -82,22 +83,8 @@ function RegionsPage() {
                 credentials
             )
 
-            if (response.ok) {
-                const responseData = await response.json();
-                const formattedData = responseData.regions.map(item => {
-                    return {
-                        ...item,
-                        region_fullname: capitalizeEachWord(item.region_fullname),
-                        region_code_name: item.region_code_name.toUpperCase(),
-                        country_fullname: capitalizeEachWord(item.country_fullname)
-                    };
-                });
-
-                updateData(setRegionCount, setDisplayData, setData, setCurrOffset, responseData, formattedData);
-                setIsLoading(false);
-            } else {
-                console.error('Failed to retrieve regions:', response.statusText);
-            }
+            updateData(setRegionCount, setDisplayData, setData, setCurrOffset, response.responseData, response.formattedData);
+            setIsLoading(false);
         } catch (error) {
             console.error('Unexpected error retrieving regions:', error);
         }
@@ -137,31 +124,15 @@ function RegionsPage() {
                 credentials
             )
 
-            if (response.ok) {
-                const responseData = await response.json();
-
-                const formattedData = responseData.regions.map(item => {
-                    return {
-                        ...item,
-                        region_fullname: capitalizeEachWord(item.region_fullname),
-                        region_code_name: item.region_code_name.toUpperCase(),
-                        country_fullname: capitalizeEachWord(item.country_fullname)
-                    };
-                });
-
-                // updates pagination start and end indices
-                setShouldCalculate(false);
-                setDisplayData(formattedData);
-                formattedData.length > 0 ? setStart(1) : setStart(0);
-                setEnd(responseData.regions.length);
-            } else {
-                console.error('Failed to search region: ', response.statusText);
-            }
+            // updates pagination start and end indices
+            setShouldCalculate(false);
+            setDisplayData(response.formattedData);
+            response.formattedData.length > 0 ? setStart(1) : setStart(0);
+            setEnd(response.responseData.regions.length);
+            setIsLoading(false);
         } catch (error) {
             console.error('Unexpected error searching region:', error);
-        } finally {
-            setIsLoading(false);
-        }
+        } 
     };
 
     // Updates editing states when editing a region
@@ -300,39 +271,8 @@ function RegionsPage() {
             setDisplayData(data);
             setShouldCalculate(true);
             setSearchDropdownOptions([]);
-        } else if (searchInput.includes('(')) {
-            // no need to search
-        } else {
-            try {
-                const response = await getSignedRequest(
-                    "region",
-                    {
-                        region_fullname: searchInput
-                    },
-                    credentials
-                )
-
-                if (response.ok) {
-                    const responseData = await response.json();
-                    const formattedData = responseData.regions.map(item => {
-                        return {
-                            ...item,
-                            region_fullname: capitalizeEachWord(item.region_fullname),
-                            region_code_name: item.region_code_name.toUpperCase(),
-                            country_fullname: capitalizeEachWord(item.country_fullname)
-                        };
-                    });
-
-                    if (formattedData.length > 0) {
-                        const regionNames = formattedData.map((region) => `${region.region_fullname} (${region.region_code_name})`);
-                        setSearchDropdownOptions(regionNames);
-                    }
-                } else {
-                    console.error('Failed to search region:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Unexpected error searching region:', error);
-            }
+        } else if (!searchInput.includes('(')) {
+            await updateDropdownOptions(credentials, "region", { region_fullname: searchInput }, setSearchDropdownOptions);
         }
     };
 
@@ -404,7 +344,6 @@ function RegionsPage() {
                 <Box style={{ flex: 1, marginRight: "10px" }}>
                     <Autocomplete
                         options={Array.from(new Set(displayData.map((region) => region.country_fullname)))}
-                        getOptionLabel={(option) => option}
                         onInputChange={(e, newInputValue) => handleCountrySearch(newInputValue.toLowerCase())}
                         renderInput={(params) => (
                             <TextField
@@ -429,6 +368,7 @@ function RegionsPage() {
                 <Box style={{ flex: 3, marginLeft: "10px" }}>
                     <Autocomplete
                         options={searchDropdownOptions}
+                        getOptionLabel={(option) => `${option.region_fullname} (${option.region_code_name})`}
                         onInputChange={(e, newInputValue) => {
                             setSearchInput(newInputValue);
                             handleSearch(newInputValue);
@@ -450,11 +390,7 @@ function RegionsPage() {
                     />
                 </Box>
 
-                <ThemeProvider theme={Theme}>
-                    <Button variant="contained" onClick={() => handleGetRegionsAfterSearch()} style={{ marginLeft: "20px", marginTop: "27px", width: "10%", height: "53px", alignItems: "center" }}>
-                        <SearchIcon sx={{ marginRight: '0.8rem' }} />Search
-                    </Button>
-                </ThemeProvider>
+                <SearchButton getDataAfterSearch={handleGetRegionsAfterSearch} />
             </div>
 
             <AddDataButton setOpenDialog={setOpenAddRegionDialog} text={"Add Region"} />
@@ -477,7 +413,7 @@ function RegionsPage() {
                     disabled={disableNextButton}
                 />
             </div>
-            
+
             {/* Table */}
             <div style={{ width: "90%", display: "flex", justifyContent: "center" }}>
                 {isLoading ? (

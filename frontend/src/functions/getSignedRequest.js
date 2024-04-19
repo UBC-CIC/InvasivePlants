@@ -1,7 +1,8 @@
+import { formatSpeciesData, formatRegionData } from "./dataFormattingUtils";
 import sigV4Client from "./sigV4Client";
 
 // Generates a signed request for authenticating GET endpoints
-export async function getSignedRequest(path, queryParams = {}, credentials) { 
+export async function getSignedRequest(path, queryParams = {}, credentials) {
   const signedRequest = sigV4Client
     .newClient({
       accessKey: credentials.accessKeyId,
@@ -22,5 +23,19 @@ export async function getSignedRequest(path, queryParams = {}, credentials) {
     method: 'GET'
   });
 
-  return response;
+  if (response.ok) {
+    const responseData = await response.json();
+    let formattedData;
+
+    if (path === "invasiveSpecies" || path === "alternativeSpecies") {
+      formattedData = formatSpeciesData(responseData);
+    } else if (path === "region") {
+      formattedData = formatRegionData(responseData);
+    }
+
+    return { responseData, formattedData };
+  } else {
+    console.log('Failed to retrieve data:', response.statusText);
+  }
+
 }
