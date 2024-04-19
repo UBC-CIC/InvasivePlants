@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Box, Autocomplete, Dialog, DialogContent, TextField, Button, DialogActions, DialogTitle, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from '../SnackbarComponent';
@@ -105,7 +105,8 @@ const EditInvasiveSpeciesDialog = ({ open, tempData, handleInputChange, handleFi
                             Array.isArray(tempData.scientific_name)
                                 ? tempData.scientific_name.join(", ")
                                 : tempData.scientific_name
-                        } onChange={(e) => handleInputChange("scientific_name", e.target.value)}
+                        } 
+                        onChange={(e) => handleInputChange("scientific_name", e.target.value)}
                         sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
                     />
 

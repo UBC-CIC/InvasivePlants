@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Autocomplete, Box, Table, TableBody, TableCell, TableRow, TextField } from "@mui/material";
-import axios from "axios";
 
 // components
 import PaginationComponent from '../../components/PaginationComponent';
@@ -19,22 +18,26 @@ import { SearchButton } from "../../components/Search/SearchButton";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 //functions
-import { capitalizeEachWord } from '../../functions/textFormattingUtils';
-import { resetStates, updateData } from "../../functions/pageDisplayUtils";
+import { removeTextInParentheses } from '../../functions/textFormattingUtils';
+import { resetStates, updateData, checkNextButtonDisabled, handleNextPage, handlePreviousPage, calculateStartAndEnd } from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
 import { getSignedRequest } from "../../functions/getSignedRequest";
 import { updateDropdownOptions } from "../../functions/searchUtils";
 import { SearchBar } from "../../components/Search/SearchBar";
+import { handleGetData } from "../../functions/handleGetData";
+import { formatRegionFields } from "../../functions/dataFormattingUtils";
+import { updateDataToDatabase, handleEditRow, handleFinishEditingRow } from "../../functions/handleEditData";
+import { deleteDataFromDatabase } from "../../functions/handleDeleteData";
+import { addDataToDatabase } from "../../functions/handleAddData";
+
 // displays regions
 function RegionsPage() {
-    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
     const [searchDropdownOptions, setSearchDropdownOptions] = useState([]); // dropdown options for search bar (scientific names)
     const [regionCount, setRegionCount] = useState(0); // number of regions
     const [country, setCountry] = useState(""); // current country
     const [data, setData] = useState([]); // original data
     const [displayData, setDisplayData] = useState([]); // data displayed in the table
-    const [tempData, setTempData] = useState({}); // temp data of the region being edited
+    const [tempData, setTempEditingData] = useState({}); // temp data of the region being edited
     const [openEditRegionDialog, setOpenEditRegionDialog] = useState(false); // state of the editing an region dialog
     const [openAddRegionDialog, setOpenAddRegionDialog] = useState(false); // state of the adding a new region dialog
     const [searchInput, setSearchInput] = useState(""); // input of the region search bar
@@ -56,7 +59,6 @@ function RegionsPage() {
     const [isLoading, setIsLoading] = useState(false); // loading data or not
     const { user, credentials } = useContext(AuthContext);
 
-
     useEffect(() => {
         if (credentials) {
             handleGetRegions();
@@ -64,30 +66,12 @@ function RegionsPage() {
     }, [credentials]);
 
 
-    // Fetches rowsPerPage number of regions (pagination)
     const handleGetRegions = async () => {
-        if (!credentials) {
-            return;
-        }
-
-        setIsLoading(true);
-        try {
-            const response = await getSignedRequest(
-                "region",
-                {
-                    curr_offset: shouldReset ? 0 : Math.max(0, currOffset),
-                    rows_per_page: rowsPerPage
-                },
-                credentials
-            )
-
-            updateData(setRegionCount, setDisplayData, setData, setCurrOffset, response.responseData, response.formattedData);
-            setIsLoading(false);
-        } catch (error) {
-            console.error('Unexpected error retrieving regions:', error);
-        }
+        handleGetData({
+            credentials, setIsLoading, path: "region", shouldReset, currOffset, rowsPerPage,
+            updateData, setCount: setRegionCount, setDisplayData, setData, setCurrOffset
+        });
     };
-
 
     // Maintains history of last region_id and currLastRegionId so that on GET, 
     // the current page is maintained instead of starting from page 1
@@ -106,14 +90,8 @@ function RegionsPage() {
 
     // Fetches the regions that matches user search
     const handleGetRegionsAfterSearch = async () => {
-        // TODO: refactor
-        console.log(searchInput);
-        const formattedSearchInput = searchInput.replace(/\s*\([^)]*\)\s*/, '') // Remove the region code within parentheses
-            .trim() // Trim trailing spaces
-            .toLowerCase() // Convert to lowercase
-            .replace(/\s+/g, '_'); // Replace spaces with underscores 
+        const formattedSearchInput = removeTextInParentheses(searchInput);
 
-        console.log(formattedSearchInput);
         setIsLoading(true);
 
         try {
@@ -136,46 +114,23 @@ function RegionsPage() {
         }
     };
 
-    // Updates editing states when editing a region
-    const handleEditRow = (rowData) => {
-        setTempData(rowData);
-        setOpenEditRegionDialog(true);
-    };
-
-    // Updates states after editing a region and saving 
-    const handleFinishEditingRow = () => {
-        setOpenEditRegionDialog(false);
-    };
-
     // Updates changes to the database on save
     const handleSave = (confirmed) => {
         const jwtToken = user.signInUserSession.accessToken.jwtToken
 
-        const formattedData = {
-            ...tempData,
-            region_fullname: capitalizeEachWord(tempData.region_fullname),
-            region_code_name: tempData.region_code_name.toUpperCase(),
-            country_fullname: capitalizeEachWord(tempData.country_fullname)
-        }
-
         if (confirmed) {
-            axios
-                .put(`${API_BASE_URL}region/${formattedData.region_id}`,
-                    formattedData,
-                    {
-                        headers: {
-                            'Authorization': `${jwtToken}`
-                        }
-                    })
-                .then(() => {
-                    handleGetRegionsAfterSave();
-                    handleFinishEditingRow();
-                })
-                .catch((error) => {
-                    console.error("Error updating region", error);
-                });
-        };
+            const formattedData = formatRegionFields(tempData);
+            updateDataToDatabase({
+                path: "region",
+                id: formattedData.region_id,
+                formattedData: formattedData,
+                jwtToken: jwtToken,
+                handleGetData: handleGetRegionsAfterSave,
+                handleFinishEditingRow: () => handleFinishEditingRow({ setOpenEditDialog: setOpenEditRegionDialog })
+            });
+        }
     };
+
 
     // Opens confirmation dialog before deletion
     const handleDeleteRow = (region_id) => {
@@ -183,58 +138,13 @@ function RegionsPage() {
         setOpenDeleteConfirmation(true);
     };
 
-    // Deletes region from the table
-    const handleConfirmDelete = () => {
-        const jwtToken = user.signInUserSession.accessToken.jwtToken
-
-        if (deleteId) {
-            axios
-                .delete(`${API_BASE_URL}region/${deleteId}`, {
-                    headers: {
-                        'Authorization': `${jwtToken}`
-                    }
-                })
-                .then(() => {
-                    setRegionCount(prevCount => prevCount - 1)
-                    setShouldReset(true);
-                    setOpenDeleteConfirmation(false);
-                })
-                .catch((error) => {
-                    console.error("Error deleting region", error);
-                })
-        } else {
-            setOpenDeleteConfirmation(false);
-        }
-    };
-
     // Adds a new region
     const handleAddRegion = (newRegionData) => {
         setIsLoading(true);
         const jwtToken = user.signInUserSession.accessToken.jwtToken
+        const formattedData = formatRegionFields(newRegionData);
 
-        const formattedData = {
-            ...newRegionData,
-            region_fullname: capitalizeEachWord(newRegionData.region_fullname),
-            region_code_name: newRegionData.region_code_name.toUpperCase(),
-            country_fullname: capitalizeEachWord(newRegionData.country_fullname)
-        }
-
-        // Request to POST new regions to the database
-        axios
-            .post(API_BASE_URL + "region",
-                formattedData,
-                {
-                    headers: {
-                        'Authorization': `${jwtToken}`
-                    }
-                })
-            .then(() => {
-                setShouldReset(true);
-                setOpenAddRegionDialog(false);
-            })
-            .catch((error) => {
-                console.error("error adding region", error);
-            })
+        addDataToDatabase("region", formattedData, jwtToken, setCurrOffset, setShouldReset, setOpenAddRegionDialog);
     };
 
     // Call to handleGetRegions if shouldReset state is True
@@ -256,11 +166,11 @@ function RegionsPage() {
         if ((field === 'geographic_latitude' && !isValidInput) || (field === 'geographic_longitude' && !isValidInput)) {
             alert('Invalid input. Please enter a numerical value.');
         } else if (field === 'geographic_latitude') {
-            setTempData((prev) => ({ ...prev, geographic_coordinate: `${value},${prev.geographic_coordinate.split(',')[1]}` }));
+            setTempEditingData((prev) => ({ ...prev, geographic_coordinate: `${value},${prev.geographic_coordinate.split(',')[1]}` }));
         } else if (field === 'geographic_longitude') {
-            setTempData((prev) => ({ ...prev, geographic_coordinate: `${prev.geographic_coordinate.split(',')[0]},${value}` }));
+            setTempEditingData((prev) => ({ ...prev, geographic_coordinate: `${prev.geographic_coordinate.split(',')[0]},${value}` }));
         } else {
-            setTempData((prev) => ({ ...prev, [field]: value }));
+            setTempEditingData((prev) => ({ ...prev, [field]: value }));
         }
 
     };
@@ -288,18 +198,10 @@ function RegionsPage() {
         }
     };
 
-    // Calculates start and end regions indices of the current page of displayed data
-    const calculateStartAndEnd = () => {
-        const newStart = page * rowsPerPage + 1;
-        const newEnd = Math.min((page + 1) * rowsPerPage, (page * rowsPerPage) + displayData.length);
-        setStart(newStart);
-        setEnd(newEnd);
-    };
-
     // Call to calculate indices
     useEffect(() => {
         if (shouldCalculate) {
-            calculateStartAndEnd();
+            calculateStartAndEnd(page, rowsPerPage, displayData, setStart, setEnd);
         }
     }, [rowsPerPage, page, displayData]);
 
@@ -314,24 +216,8 @@ function RegionsPage() {
         handleGetRegions();
     }, [page]);
 
-    // Increments the page count by 1 
-    const handleNextPage = () => {
-        setPage(page + 1);
-    };
-
-    // Decrements page count by 1 and removes last id in seen regions history 
-    const handlePreviousPage = () => {
-        setCurrOffset(curr => curr - rowsPerPage * 2);
-        setPage(page - 1);
-    };
-
-    // TODO: Disables the next button if there are no regions left to query
     useEffect(() => {
-        if (displayData.length === 0 || displayData.length < rowsPerPage) {
-            setDisableNextButton(true);
-        } else {
-            setDisableNextButton(false);
-        }
+        setDisableNextButton(checkNextButtonDisabled(displayData, rowsPerPage));
     }, [displayData, rowsPerPage]);
 
     return (
@@ -389,8 +275,8 @@ function RegionsPage() {
                     end={end}
                     count={regionCount}
                     page={page}
-                    handlePreviousPage={handlePreviousPage}
-                    handleNextPage={handleNextPage}
+                    handlePreviousPage={() => handlePreviousPage(displayData, rowsPerPage, setCurrOffset, null, searchInput, page, setPage)}
+                    handleNextPage={() => handleNextPage(setPage, page)}
                     disabled={disableNextButton}
                 />
             </div>
@@ -413,7 +299,10 @@ function RegionsPage() {
                                                 <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}> {row.region_code_name} </TableCell>
                                                 <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.country_fullname}</TableCell>
                                                 <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.geographic_coordinate}</TableCell>
-                                                <ActionButtons editRow={handleEditRow} deleteRow={handleDeleteRow} row={row} />
+                                                <ActionButtons
+                                                    editRow={() => handleEditRow({ setTempEditingData, setOpenEditDialog: setOpenEditRegionDialog, rowData: row })}
+                                                    deleteRow={handleDeleteRow}
+                                                    row={row} />
                                             </>
                                         </TableRow>
                                     ))}
@@ -430,8 +319,8 @@ function RegionsPage() {
                     end={end}
                     count={regionCount}
                     page={page}
-                    handlePreviousPage={handlePreviousPage}
-                    handleNextPage={handleNextPage}
+                    handlePreviousPage={() => handlePreviousPage(displayData, rowsPerPage, setCurrOffset, null, searchInput, page, setPage)}
+                    handleNextPage={() => handleNextPage(setPage, page)}
                     disabled={disableNextButton}
                 />
             </div>
@@ -447,14 +336,14 @@ function RegionsPage() {
                 open={openEditRegionDialog}
                 tempData={tempData}
                 handleInputChange={handleInputChange}
-                handleFinishEditingRow={handleFinishEditingRow}
+                handleFinishEditingRow={() => handleFinishEditingRow({ setOpenEditDialog: setOpenEditRegionDialog })}
                 handleSave={handleSave}
             />
 
             <DeleteDialog
                 open={openDeleteConfirmation}
                 handleClose={() => setOpenDeleteConfirmation(false)}
-                handleDelete={handleConfirmDelete}
+                handleDelete={() => deleteDataFromDatabase("region", deleteId, user, setRegionCount, setShouldReset, setOpenDeleteConfirmation)}
             />
         </div >
     );

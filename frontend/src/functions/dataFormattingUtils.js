@@ -2,13 +2,17 @@ import { capitalizeFirstWord, capitalizeEachWord } from "./textFormattingUtils";
 
 // Formats region data
 export const formatRegionData = (data) => {
-    return data.regions.map(item => ({
-        ...item,
-        region_fullname: capitalizeEachWord(item.region_fullname),
-        region_code_name: item.region_code_name.toUpperCase(),
-        country_fullname: capitalizeEachWord(item.country_fullname)
-    }));
+    return data.regions.map(item => (formatRegionFields(item)));
+}
 
+// Formats region fields
+export const formatRegionFields = (data) => {
+    return {
+        ...data,
+        region_fullname: capitalizeEachWord(data.region_fullname),
+        region_code_name: data.region_code_name.toUpperCase(),
+        country_fullname: capitalizeEachWord(data.country_fullname)
+    }
 }
 
 // Formats invasive and alternative species data

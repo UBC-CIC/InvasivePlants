@@ -33,7 +33,6 @@ const EditAlternativeSpeciesDialog = ({ open, tempData, handleInputChange, handl
         setDeleteImg(img);
     };
 
-
     // Deletes image from database
     const handleConfirmDeleteImage = () => {
         setShowWarning(false)

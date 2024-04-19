@@ -4,7 +4,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import SnackbarOnSuccess from "../SnackbarComponent";
 import CustomAlert from "../AlertComponent";
 import CustomWarning from '../WarningComponent';
-import { capitalizeEachWord } from '../../functions/textFormattingUtils';
 import { uploadImageFile } from "../../functions/uploadImageFile";
 import { updateDropdown } from "../../functions/searchUtils";
 
