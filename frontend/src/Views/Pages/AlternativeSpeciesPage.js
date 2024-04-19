@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Table, TableBody, TableRow } from "@mui/material";
-import { Autocomplete, Box, TextField } from '@mui/material';
 import axios from "axios";
 
 // components
@@ -18,18 +17,15 @@ import { NoDataBox } from "../../components/Table/NoDataBox";
 import { RowsPerPageDropdown } from "../../components/RowsPerPageDropdown";
 import { AddDataButton } from "../../components/AddDataButton";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { SearchButton } from "../../components/SearchButton";
-
-// icons
-import SearchIcon from '@mui/icons-material/Search';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { SearchButton } from "../../components/Search/SearchButton";
 
 // functions
 import { formatNames } from '../../functions/textFormattingUtils';
-import { handleKeyPress, resetStates, updateData } from "../../functions/pageDisplayUtils";
+import { resetStates, updateData } from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
 import { getSignedRequest } from "../../functions/getSignedRequest";
 import { updateDropdownOptions } from "../../functions/searchUtils";
+import { SearchBar } from "../../components/Search/SearchBar";
 
 function AlternativeSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -109,7 +105,7 @@ function AlternativeSpeciesPage() {
 
   // Fetches the alternative species that matches user search
   const handleGetAlternativeSpeciesAfterSearch = async () => {
-    // formats search
+    // TODO: refactor formats search
     let formattedSearchInput = searchInput.toLowerCase().replace(/\([^)]*\)/g, '').trim().replace(/ /g, '_'); // only keep scientific name, and replace spaces with '_'
     formattedSearchInput = formattedSearchInput.split(',')[0].trim(); // if multiple scientific names, just search up one
     setIsLoading(true);
@@ -266,6 +262,7 @@ function AlternativeSpeciesPage() {
         }
       })
       .then((response) => {
+        //TODO: refactor with invasive -- exact same postImage or smt
         // Maps species id to plant data with image links
         let plantsWithImgLinks = [];
         if (newSpeciesData.image_links && newSpeciesData.image_links.length > 0) {
@@ -381,7 +378,7 @@ function AlternativeSpeciesPage() {
     setPage(page - 1);
   };
 
-  // Disables the next button if there are no species left to query
+  // TODO: could have this Disables the next button if there are no species left to query
   useEffect(() => {
     if (displayData.length === 0 || displayData.length < rowsPerPage) {
       setDisableNextButton(true);
@@ -393,35 +390,16 @@ function AlternativeSpeciesPage() {
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-
-      {/* search bars*/}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "90%" }}>
-        <Box style={{ flex: 3, marginLeft: "10px" }}>
-          <Autocomplete
-            options={searchDropdownOptions}
-            getOptionLabel={(option) =>
-              `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
-            }
-            onInputChange={(e, newInputValue) => {
-              setSearchInput(newInputValue);
-              handleSearch(newInputValue);
-            }}
-            clearOnBlur={false}
-            onKeyDown={(event) => handleKeyPress(event, handleGetAlternativeSpeciesAfterSearch)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <SearchIcon sx={{ marginRight: '0.5rem' }} />
-                    {"Search alternative species"}
-                  </div>
-                }
-                style={{ marginTop: "2rem", marginBottom: "1rem" }}
-              />
-            )}
-          />
-        </Box>
+      <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
+        <SearchBar
+          size={3}
+          type={"species"}
+          options={searchDropdownOptions}
+          setSearchInput={setSearchInput}
+          handleSearch={handleSearch}
+          getDataAfterSearch={handleGetAlternativeSpeciesAfterSearch}
+          text={"Search alternative species"}
+        />
 
         <SearchButton getDataAfterSearch={handleGetAlternativeSpeciesAfterSearch} />
       </div>

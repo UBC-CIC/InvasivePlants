@@ -5,7 +5,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 export const DeleteButton = ({ handleDeleteRow, row }) => (
     <Tooltip
         title="Delete"
-        onClick={() => handleDeleteRow(row.species_id, row)}>
+        onClick={() => {
+            if (row.hasOwnProperty('species_id')) {
+                handleDeleteRow(row.species_id, row);
+            } else if (row.hasOwnProperty('region_id')) {
+                handleDeleteRow(row.region_id, row);
+            }
+        }}
+    >
         <IconButton> <DeleteIcon /></IconButton>
     </Tooltip>
 );

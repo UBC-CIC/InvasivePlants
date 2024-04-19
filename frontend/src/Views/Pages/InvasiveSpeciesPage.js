@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Table, TableBody, TableRow, Box, Autocomplete, TextField } from "@mui/material";
+import { Table, TableBody, TableRow } from "@mui/material";
 import axios from "axios";
 
 // components
@@ -17,20 +17,16 @@ import { NoDataBox } from "../../components/Table/NoDataBox";
 import { RowsPerPageDropdown } from "../../components/RowsPerPageDropdown";
 import { AddDataButton } from "../../components/AddDataButton";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { SearchButton } from "../../components/SearchButton";
-
-// icons
-import SearchIcon from '@mui/icons-material/Search';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 // functions
 import { formatNames, removeTextInParentheses } from '../../functions/textFormattingUtils';
-import { handleKeyPress, resetStates, updateData } from "../../functions/pageDisplayUtils";
+import { resetStates, updateData } from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
 import { getSignedRequest } from "../../functions/getSignedRequest";
 import { RegionsTableCell } from "../../components/Table/RegionsTableCell";
 import { AlternativeSpeciesTableCell } from "../../components/Table/AlternativeSpeciesTableCell";
 import { updateDropdownOptions } from "../../functions/searchUtils";
+import { InvasivePageSearchPanel } from "../../components/Search/InvasivePageSearchPanel";
 
 function InvasiveSpeciesPage() {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -118,20 +114,26 @@ function InvasiveSpeciesPage() {
 
     setIsLoading(true);
     try {
-      const response = await getSignedRequest(
-        "invasiveSpecies",
-        {
-          search_input: formattedSearchInput,
-          region_id: regionId,
-          rows_per_page: speciesCount
-        },
-        credentials
-      )
+      // Invalid region input
+      if (formattedSearchInput === "" && regionId === "") {
+        setDisplayData([]);
+      } else {
+        const response = await getSignedRequest(
+          "invasiveSpecies",
+          {
+            search_input: formattedSearchInput,
+            region_id: regionId,
+            rows_per_page: speciesCount
+          },
+          credentials
+        )
+
+        setDisplayData(response.formattedData);
+        response.formattedData.length > 0 ? setStart(1) : setStart(0);
+        setEnd(response.responseData.species.length);
+      }
 
       setShouldCalculate(false);
-      setDisplayData(response.formattedData);
-      response.formattedData.length > 0 ? setStart(1) : setStart(0);
-      setEnd(response.responseData.species.length);
       setIsLoading(false);
     } catch (error) {
       console.error('Unexpected error searching invasive species:', error);
@@ -257,7 +259,6 @@ function InvasiveSpeciesPage() {
           })
         .then(() => {
           setSpeciesCount(prevCount => prevCount - 1)
-          setCurrOffset(0)
           setShouldReset(true);
           setOpenDeleteConfirmation(false);
         })
@@ -293,6 +294,7 @@ function InvasiveSpeciesPage() {
         })
       .then((response) => {
         // Maps species id to plant data with image links
+        // TODO: refactor these
         let plantsWithImgLinks = [];
         if (newSpeciesData.image_links && newSpeciesData.image_links.length > 0) {
           plantsWithImgLinks = newSpeciesData.image_links.map((image_link) => ({
@@ -322,6 +324,7 @@ function InvasiveSpeciesPage() {
               }
             })
             .then(() => {
+              // TODO refactor this and bottom into a single function
               setCurrOffset(0)
               setShouldReset(true);
               setOpenAddSpeciesDialog(false);
@@ -386,6 +389,8 @@ function InvasiveSpeciesPage() {
     if (locationInput === "") {
       setDisplayData(data);
       setRegionId("");
+      setShouldCalculate(true);
+      setSearchDropdownRegionsOptions([]);
     } else if (!locationInput.includes('(')) {
       await updateDropdownOptions(credentials, "region", { region_fullname: locationInput }, setSearchDropdownRegionsOptions, setRegionId);
     }
@@ -438,69 +443,22 @@ function InvasiveSpeciesPage() {
 
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <InvasivePageSearchPanel
+        props={{
+          searchDropdownRegionsOptions,
+          handleLocationSearch,
+          handleGetInvasiveSpeciesAfterSearch,
+          searchDropdownSpeciesOptions,
+          setSearchInput,
+          handleSearch
+        }}
+      />
 
-      {/* location and search bars*/}
-      <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
-
-        {/* regions search bar */}
-        <Box style={{ flex: 1, marginLeft: "10px" }}>
-          <Autocomplete
-            options={searchDropdownRegionsOptions}
-            getOptionLabel={(option) => `${option.region_fullname} (${option.region_code_name})`}
-            onInputChange={(e, newInputValue) => {
-              handleLocationSearch(newInputValue.toLowerCase());
-            }}
-            clearOnBlur={false}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <SearchIcon sx={{ marginRight: '0.5rem' }} />
-                    {"Search by region"}
-                  </div>
-                }
-                style={{ marginTop: "2rem", marginBottom: "1rem" }}
-              />
-            )}
-          />
-        </Box>
-
-        {/* invasive species search bar */}
-        <Box style={{ flex: 3, marginLeft: "10px" }}>
-          <Autocomplete
-            options={searchDropdownSpeciesOptions}
-            getOptionLabel={(option) =>
-              `${option.scientific_name} (${option.common_name ? option.common_name.join(', ') : ''})`
-            }
-            onInputChange={(e, newInputValue) => {
-              setSearchInput(newInputValue);
-              handleSearch(newInputValue);
-            }}
-            clearOnBlur={false}
-            onKeyDown={(event) => handleKeyPress(event, handleGetInvasiveSpeciesAfterSearch)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <SearchIcon sx={{ marginRight: '0.5rem' }} />
-                    {"Search invasive species"}
-                  </div>
-                }
-                style={{ marginTop: "2rem", marginBottom: "1rem" }}
-              />
-            )}
-          />
-        </Box>
-
-        <SearchButton getDataAfterSearch={handleGetInvasiveSpeciesAfterSearch} />
-      </div>
-
-      <AddDataButton setOpenDialog={setOpenAddSpeciesDialog} text={"Add Invasive Species"} />
+      < AddDataButton setOpenDialog={setOpenAddSpeciesDialog} text={"Add Invasive Species"} />
 
       {/* pagination selections*/}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "67%" }}>
+      < div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "67%" }
+      }>
         <RowsPerPageDropdown
           rowsPerPage={rowsPerPage}
           rowsPerPageOptions={rowsPerPageOptions}
@@ -517,38 +475,39 @@ function InvasiveSpeciesPage() {
           handleNextPage={handleNextPage}
           disabled={disabled}
         />
-      </div>
+      </div >
 
       {/* table */}
-      <div style={{ width: "90%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-        {isLoading ? (
-          <LoadingSpinner />
-        ) : (
-          (displayData && displayData.length > 0 ? (
-            <Table style={{ width: "100%", tableLayout: "fixed" }}>
-              <InvasivePageTableHeader />
-
-              <TableBody>
-                {(displayData && displayData.length > 0 ? displayData : [])
-                  .map((row) => (
-                    <TableRow key={row.species_id}>
-                      <>
-                        <NamesTableCell name={row.scientific_name} />
-                        <NamesTableCell name={row.common_name} />
-                        <DescriptionTableCell row={row} />
-                        <AlternativeSpeciesTableCell row={row} />
-                        <ResourceLinksCell row={row} />
-                        <RegionsTableCell row={row} />
-                        <ImagesTableCell row={row} />
-                        <ActionButtons editRow={handleEditRow} deleteRow={handleDeleteRow} row={row} />
-                      </>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
+      < div style={{ width: "90%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        {
+          isLoading ? (
+            <LoadingSpinner />
           ) : (
-            <NoDataBox data={"species"} />
-          )))}
+            (displayData && displayData.length > 0 ? (
+              <Table style={{ width: "100%", tableLayout: "fixed" }}>
+                <InvasivePageTableHeader />
+
+                <TableBody>
+                  {(displayData && displayData.length > 0 ? displayData : [])
+                    .map((row) => (
+                      <TableRow key={row.species_id}>
+                        <>
+                          <NamesTableCell name={row.scientific_name} />
+                          <NamesTableCell name={row.common_name} />
+                          <DescriptionTableCell row={row} />
+                          <AlternativeSpeciesTableCell row={row} />
+                          <ResourceLinksCell row={row} />
+                          <RegionsTableCell row={row} />
+                          <ImagesTableCell row={row} />
+                          <ActionButtons editRow={handleEditRow} deleteRow={handleDeleteRow} row={row} />
+                        </>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <NoDataBox data={"species"} />
+            )))}
       </div >
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px', marginLeft: "78%" }}>

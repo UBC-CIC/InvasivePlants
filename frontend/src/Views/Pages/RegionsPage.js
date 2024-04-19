@@ -13,20 +13,18 @@ import { AddDataButton } from "../../components/AddDataButton";
 import { RegionsPageTableHeader } from "../../components/Table/RegionsPageTableHeader";
 import { NoDataBox } from "../../components/Table/NoDataBox";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
-import { SearchButton } from "../../components/SearchButton";
+import { SearchButton } from "../../components/Search/SearchButton";
 
 // icons
-import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 //functions
 import { capitalizeEachWord } from '../../functions/textFormattingUtils';
-import { handleKeyPress, resetStates, updateData } from "../../functions/pageDisplayUtils";
+import { resetStates, updateData } from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
 import { getSignedRequest } from "../../functions/getSignedRequest";
 import { updateDropdownOptions } from "../../functions/searchUtils";
-
+import { SearchBar } from "../../components/Search/SearchBar";
 // displays regions
 function RegionsPage() {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -108,11 +106,14 @@ function RegionsPage() {
 
     // Fetches the regions that matches user search
     const handleGetRegionsAfterSearch = async () => {
+        // TODO: refactor
+        console.log(searchInput);
         const formattedSearchInput = searchInput.replace(/\s*\([^)]*\)\s*/, '') // Remove the region code within parentheses
             .trim() // Trim trailing spaces
             .toLowerCase() // Convert to lowercase
             .replace(/\s+/g, '_'); // Replace spaces with underscores 
 
+        console.log(formattedSearchInput);
         setIsLoading(true);
 
         try {
@@ -132,7 +133,7 @@ function RegionsPage() {
             setIsLoading(false);
         } catch (error) {
             console.error('Unexpected error searching region:', error);
-        } 
+        }
     };
 
     // Updates editing states when editing a region
@@ -195,7 +196,6 @@ function RegionsPage() {
                 })
                 .then(() => {
                     setRegionCount(prevCount => prevCount - 1)
-                    setIsLoading(true);
                     setShouldReset(true);
                     setOpenDeleteConfirmation(false);
                 })
@@ -325,7 +325,7 @@ function RegionsPage() {
         setPage(page - 1);
     };
 
-    // Disables the next button if there are no regions left to query
+    // TODO: Disables the next button if there are no regions left to query
     useEffect(() => {
         if (displayData.length === 0 || displayData.length < rowsPerPage) {
             setDisableNextButton(true);
@@ -336,11 +336,8 @@ function RegionsPage() {
 
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-
-            {/* location and search bars*/}
             <div style={{ display: "flex", justifyContent: "center", width: "90%" }}>
-
-                {/* country search and dropdown */}
+                {/* Country dropdown, can use SearchBar in the future if this is Countries is a Table in database */}
                 <Box style={{ flex: 1, marginRight: "10px" }}>
                     <Autocomplete
                         options={Array.from(new Set(displayData.map((region) => region.country_fullname)))}
@@ -364,31 +361,15 @@ function RegionsPage() {
                     />
                 </Box>
 
-                {/* regions search and dropdown */}
-                <Box style={{ flex: 3, marginLeft: "10px" }}>
-                    <Autocomplete
-                        options={searchDropdownOptions}
-                        getOptionLabel={(option) => `${option.region_fullname} (${option.region_code_name})`}
-                        onInputChange={(e, newInputValue) => {
-                            setSearchInput(newInputValue);
-                            handleSearch(newInputValue);
-                        }}
-                        clearOnBlur={false}
-                        onKeyDown={(event) => handleKeyPress(event, handleGetRegionsAfterSearch)}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label={
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <SearchIcon sx={{ marginRight: '0.5rem' }} />
-                                        {"Search region"}
-                                    </div>
-                                }
-                                style={{ marginTop: "2rem", marginBottom: "1rem" }}
-                            />
-                        )}
-                    />
-                </Box>
+                <SearchBar
+                    size={3}
+                    type={"region"}
+                    options={searchDropdownOptions}
+                    setSearchInput={setSearchInput}
+                    handleSearch={handleSearch}
+                    getDataAfterSearch={handleGetRegionsAfterSearch}
+                    text={"Search region"}
+                />
 
                 <SearchButton getDataAfterSearch={handleGetRegionsAfterSearch} />
             </div>

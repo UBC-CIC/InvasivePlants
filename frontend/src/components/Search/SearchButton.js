@@ -1,4 +1,4 @@
-import Theme from "../Views/Pages/Theme";
+import Theme from "../../Views/Pages/Theme";
 import { Button, ThemeProvider } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 

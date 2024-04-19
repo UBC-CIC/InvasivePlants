@@ -9,7 +9,10 @@ export const updateDropdownOptions = async (credentials, path, queryParams = {},
 
         if (response.responseData.regions) {
             formattedData = formatRegionData(response.responseData);
-            if (setRegionId) {
+
+            if (formattedData.length === 0 && setRegionId) {
+                setRegionId("");
+            } else if (setRegionId) {
                 setRegionId(formattedData[0].region_id);
             }
         } else if (response.responseData.species) {
