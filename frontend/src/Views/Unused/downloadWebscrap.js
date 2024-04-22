@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 
 // Import components
-import { webscrapeInvasiveSpecies } from '../../functions/pipeline';
-import { dataPipelineForDB } from '../../functions/pipeline';
-import { getAlternativePlantsForDB } from '../../functions/alternativePlants';
+import { webscrapeInvasiveSpecies } from '../../functions/data/pipeline';
+import { dataPipelineForDB } from '../../functions/data/pipeline';
+import { getAlternativePlantsForDB } from '../../functions/data/alternativePlants';
 
 
 export default function DownloadWebscrap() {

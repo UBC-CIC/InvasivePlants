@@ -1,5 +1,3 @@
-/***************** HELPER FUNCTIONS *****************/
-
 // Bolds text between two asterisks (ex. **BOLDED**)
 export function boldText(text) {
     const regex = /\*\*(.*?)\*\*/g;
@@ -44,8 +42,30 @@ export function capitalizeEachWord(str) {
     }).join(' ');
 }
 
-
-// Formats a string by spliting it based on commas and spacces
-export function formatString(str) {
+// Split a string into an array of substrings based on commas and spaces
+// (ex. "hello, world,good morning" => ["hello", "world", "good morning"]
+export function splitStringByCommas(str) {
     return str.split(/,\s*|\s*,\s*/)
+}
+
+// Formats input to lowercase, replacing spaces with underscores 
+// (ex. "Hello World, morning" or ["Hello World", "morning"] => ["hello_world", "morning"])
+export function formatNames(names) {
+    let formattedNames = [];
+
+    if (typeof names === 'string') {
+        formattedNames = splitStringByCommas(names).map(name => name.toLowerCase().replace(/\s+/g, '_'));
+    } else if (Array.isArray(names)) {
+        formattedNames = names.map(name => name.toLowerCase().replace(/\s+/g, '_'));
+    }
+
+    return formattedNames;
+}
+
+// Remove the text within parentheses and converts to lowercase (ex. "Hello (World)" => "hello")
+export function removeTextInParentheses(input) {
+    return input.replace(/\s*\([^)]*\)\s*/, '')
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, '_');
 }

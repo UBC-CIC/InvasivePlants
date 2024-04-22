@@ -8,6 +8,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { updateLoginState } from "./Actions/loginActions";
 import theme from "./themes";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App(props) {
   const { loginState, updateLoginState } = props;
