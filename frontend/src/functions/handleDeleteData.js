@@ -24,3 +24,9 @@ export const deleteDataFromDatabase = (path, deleteId, user, setCount, setShould
         setOpenDeleteConfirmation(false);
     }
 }
+
+// Opens confirmation dialog before deletion
+export const handleDeleteRow = (id, setDeleteId, setOpenDeleteConfirmation) => {
+    setDeleteId(id);
+    setOpenDeleteConfirmation(true);
+  };

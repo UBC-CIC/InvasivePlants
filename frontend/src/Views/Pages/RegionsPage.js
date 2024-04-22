@@ -19,7 +19,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 //functions
 import { removeTextInParentheses } from '../../functions/textFormattingUtils';
-import { resetStates, updateData, checkNextButtonDisabled, handleNextPage, handlePreviousPage, calculateStartAndEnd } from "../../functions/pageDisplayUtils";
+import { resetStates, updateData, checkNextButtonDisabled, handleNextPage, handlePreviousPage, calculateStartAndEnd, updatePaginationAfterSearch} from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
 import { getSignedRequest } from "../../functions/getSignedRequest";
 import { updateDropdownOptions } from "../../functions/searchUtils";
@@ -27,7 +27,7 @@ import { SearchBar } from "../../components/Search/SearchBar";
 import { handleGetData } from "../../functions/handleGetData";
 import { formatRegionFields } from "../../functions/dataFormattingUtils";
 import { updateDataToDatabase, handleEditRow, handleFinishEditingRow } from "../../functions/handleEditData";
-import { deleteDataFromDatabase } from "../../functions/handleDeleteData";
+import { deleteDataFromDatabase, handleDeleteRow } from "../../functions/handleDeleteData";
 import { addDataToDatabase } from "../../functions/handleAddData";
 
 // displays regions
@@ -67,10 +67,14 @@ function RegionsPage() {
 
 
     const handleGetRegions = async () => {
-        handleGetData({
-            credentials, setIsLoading, path: "region", shouldReset, currOffset, rowsPerPage,
-            updateData, setCount: setRegionCount, setDisplayData, setData, setCurrOffset
-        });
+        // handleGetData({
+        //     credentials, setIsLoading, path: "region", shouldReset, currOffset, rowsPerPage,
+        //     updateData, setCount: setRegionCount, setDisplayData, setData, setCurrOffset
+        // });
+        handleGetData(
+            credentials, setIsLoading, "region", shouldReset, currOffset, rowsPerPage,
+            updateData, setRegionCount, setDisplayData, setData, setCurrOffset
+        );
     };
 
     // Maintains history of last region_id and currLastRegionId so that on GET, 
@@ -91,7 +95,6 @@ function RegionsPage() {
     // Fetches the regions that matches user search
     const handleGetRegionsAfterSearch = async () => {
         const formattedSearchInput = removeTextInParentheses(searchInput);
-
         setIsLoading(true);
 
         try {
@@ -103,12 +106,8 @@ function RegionsPage() {
                 credentials
             )
 
-            // updates pagination start and end indices
-            setShouldCalculate(false);
-            setDisplayData(response.formattedData);
-            response.formattedData.length > 0 ? setStart(1) : setStart(0);
-            setEnd(response.responseData.regions.length);
-            setIsLoading(false);
+            updatePaginationAfterSearch("region", setShouldCalculate, setDisplayData,response,setStart, setEnd, setIsLoading);
+            
         } catch (error) {
             console.error('Unexpected error searching region:', error);
         }
@@ -120,22 +119,10 @@ function RegionsPage() {
 
         if (confirmed) {
             const formattedData = formatRegionFields(tempData);
-            updateDataToDatabase({
-                path: "region",
-                id: formattedData.region_id,
-                formattedData: formattedData,
-                jwtToken: jwtToken,
-                handleGetData: handleGetRegionsAfterSave,
-                handleFinishEditingRow: () => handleFinishEditingRow({ setOpenEditDialog: setOpenEditRegionDialog })
-            });
+            updateDataToDatabase("region", formattedData.region_id, formattedData, jwtToken,
+                handleGetRegionsAfterSave, handleFinishEditingRow, setOpenEditRegionDialog
+            );
         }
-    };
-
-
-    // Opens confirmation dialog before deletion
-    const handleDeleteRow = (region_id) => {
-        setDeleteId(region_id);
-        setOpenDeleteConfirmation(true);
     };
 
     // Adds a new region
@@ -300,8 +287,8 @@ function RegionsPage() {
                                                 <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.country_fullname}</TableCell>
                                                 <TableCell sx={{ textAlign: 'left', verticalAlign: 'top' }}>{row.geographic_coordinate}</TableCell>
                                                 <ActionButtons
-                                                    editRow={() => handleEditRow({ setTempEditingData, setOpenEditDialog: setOpenEditRegionDialog, rowData: row })}
-                                                    deleteRow={handleDeleteRow}
+                                                    editRow={() => handleEditRow(setTempEditingData, setOpenEditRegionDialog, row)}
+                                                    deleteRow={() => handleDeleteRow(row.region_id, setDeleteId, setOpenDeleteConfirmation)}
                                                     row={row} />
                                             </>
                                         </TableRow>
@@ -336,7 +323,7 @@ function RegionsPage() {
                 open={openEditRegionDialog}
                 tempData={tempData}
                 handleInputChange={handleInputChange}
-                handleFinishEditingRow={() => handleFinishEditingRow({ setOpenEditDialog: setOpenEditRegionDialog })}
+                handleFinishEditingRow={() => handleFinishEditingRow(setOpenEditRegionDialog)}
                 handleSave={handleSave}
             />
 

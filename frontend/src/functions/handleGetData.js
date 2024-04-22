@@ -1,22 +1,22 @@
 import { getSignedRequest } from "./getSignedRequest";
 
 // Fetches rowsPerPage number of data
-export const handleGetData = async (props) => {
-  if (props.credentials) {
-    props.setIsLoading(true);
+export const handleGetData = async (credentials, setIsLoading, path, shouldReset, currOffset, rowsPerPage, updateData, setCount, setDisplayData, setData, setCurrOffset) => {
+  if (credentials) {
+    setIsLoading(true);
 
     try {
       const response = await getSignedRequest(
-        props.path,
+        path,
         {
-          curr_offset: props.shouldReset ? 0 : Math.max(0, props.currOffset),
-          rows_per_page: props.rowsPerPage
+          curr_offset: shouldReset ? 0 : Math.max(0, currOffset),
+          rows_per_page: rowsPerPage
         },
-        props.credentials
-      )
+        credentials
+      );
 
-      props.updateData(props.setCount, props.setDisplayData, props.setData, props.setCurrOffset, response.responseData, response.formattedData);
-      props.setIsLoading(false);
+      updateData(setCount, setDisplayData, setData, setCurrOffset, response.responseData, response.formattedData);
+      setIsLoading(false);
     } catch (error) {
       console.error('Unexpected error retrieving data:', error);
     }

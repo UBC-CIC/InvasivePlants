@@ -21,7 +21,7 @@ import { SearchButton } from "../../components/Search/SearchButton";
 
 // functions
 import { formatNames, removeTextInParentheses } from '../../functions/textFormattingUtils';
-import { resetStates, updateData, checkNextButtonDisabled, handleNextPage, handlePreviousPage, calculateStartAndEnd } from "../../functions/pageDisplayUtils";
+import { resetStates, updateData, checkNextButtonDisabled, handleNextPage, handlePreviousPage, calculateStartAndEnd, updatePaginationAfterSearch } from "../../functions/pageDisplayUtils";
 import { AuthContext } from "../PageContainer/PageContainer";
 import { getSignedRequest } from "../../functions/getSignedRequest";
 import { updateDropdownOptions } from "../../functions/searchUtils";
@@ -29,7 +29,7 @@ import { SearchBar } from "../../components/Search/SearchBar";
 import { getPlantsWithImageFiles, getPlantsWithImageLinks, formatImages, postImages } from "../../functions/plantImageUtils";
 import { handleGetData } from "../../functions/handleGetData";
 import { updateDataToDatabase, handleEditRow, handleFinishEditingRow } from "../../functions/handleEditData";
-import { deleteDataFromDatabase } from "../../functions/handleDeleteData";
+import { deleteDataFromDatabase, handleDeleteRow } from "../../functions/handleDeleteData";
 import { addDataToDatabase } from "../../functions/handleAddData";
 
 function AlternativeSpeciesPage() {
@@ -69,10 +69,10 @@ function AlternativeSpeciesPage() {
 
 
   const handleGetAlternativeSpecies = async () => {
-    handleGetData({
-      credentials, setIsLoading, path: "alternativeSpecies", shouldReset, currOffset, rowsPerPage,
-      updateData, setCount: setSpeciesCount, setDisplayData, setData, setCurrOffset
-    });
+    handleGetData(
+      credentials, setIsLoading, "alternativeSpecies", shouldReset, currOffset, rowsPerPage,
+      updateData, setSpeciesCount, setDisplayData, setData, setCurrOffset
+    );
   };
 
   // Maintains history of last species_id and currLastSpeciesId so that on GET, 
@@ -94,7 +94,6 @@ function AlternativeSpeciesPage() {
   const handleGetAlternativeSpeciesAfterSearch = async () => {
     let formattedSearchInput = removeTextInParentheses(searchInput)
     formattedSearchInput = formattedSearchInput.split(',')[0].trim(); // if multiple scientific names, just search up first one
-
     setIsLoading(true);
 
     try {
@@ -106,12 +105,7 @@ function AlternativeSpeciesPage() {
         credentials
       )
 
-      // updates pagination start and end indices
-      setShouldCalculate(false);
-      setDisplayData(response.formattedData);
-      response.formattedData.length > 0 ? setStart(1) : setStart(0);
-      setEnd(response.responseData.species.length);
-      setIsLoading(false);
+      updatePaginationAfterSearch("species", setShouldCalculate, setDisplayData, response, setStart, setEnd, setIsLoading);
     } catch (error) {
       console.error('Unexpected error searching alternative species:', error);
     }
@@ -131,21 +125,10 @@ function AlternativeSpeciesPage() {
       const images = formatImages(formattedData);
       postImages(images, jwtToken);
 
-      updateDataToDatabase({
-        path: "alternativeSpecies",
-        id: tempEditingData.species_id,
-        formattedData: formattedData,
-        jwtToken: jwtToken,
-        handleGetData: handleGetAlternativeSpeciesAfterSave,
-        handleFinishEditingRow: () => handleFinishEditingRow({ setOpenEditDialog: setOpenEditSpeciesDialog })
-      });
+      updateDataToDatabase("alternativeSpecies", tempEditingData.species_id, formattedData, jwtToken,
+        handleGetAlternativeSpeciesAfterSave, handleFinishEditingRow, setOpenEditSpeciesDialog
+      );
     };
-  };
-
-  // Opens confirmation dialog before deletion
-  const handleDeleteRow = (species_id) => {
-    setDeleteId(species_id);
-    setOpenDeleteConfirmation(true);
   };
 
   // Adds a new alternative species
@@ -167,8 +150,8 @@ function AlternativeSpeciesPage() {
         }
       })
       .then((response) => {
-        const plantsWithImgLinks = getPlantsWithImageLinks({ response, newSpeciesData });
-        const plantsWithImgFiles = getPlantsWithImageFiles({ response, newSpeciesData });
+        const plantsWithImgLinks = getPlantsWithImageLinks(response, newSpeciesData);
+        const plantsWithImgFiles = getPlantsWithImageFiles(response, newSpeciesData);
         const allPlantImages = plantsWithImgLinks.concat(plantsWithImgFiles);
 
         // Uploads all plant images to database
@@ -293,8 +276,8 @@ function AlternativeSpeciesPage() {
                       <ResourceLinksCell row={row} />
                       <ImagesTableCell row={row} />
                       <ActionButtons
-                        editRow={() => handleEditRow({ setTempEditingData, setOpenEditDialog: setOpenEditSpeciesDialog, rowData: row })}
-                        deleteRow={handleDeleteRow}
+                        editRow={() => handleEditRow(setTempEditingData, setOpenEditSpeciesDialog, row)}
+                        deleteRow={() => handleDeleteRow(row.species_id, setDeleteId, setOpenDeleteConfirmation)}
                         row={row}
                       />
                     </>
@@ -330,7 +313,7 @@ function AlternativeSpeciesPage() {
         open={openEditSpeciesDialog}
         tempData={tempEditingData}
         handleInputChange={handleInputChange}
-        handleFinishEditingRow={() => handleFinishEditingRow({ setOpenEditDialog: setOpenEditSpeciesDialog })}
+        handleFinishEditingRow={() => handleFinishEditingRow(setOpenEditSpeciesDialog)}
         handleSave={handleSave}
       />
 

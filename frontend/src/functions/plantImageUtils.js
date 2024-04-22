@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Maps species id to plant image type
-export const mapSpeciesToImage = ({ speciesId, data, keyName }) => {
+export const mapSpeciesToImage = (speciesId, data, keyName) => {
     if (data && data.length > 0) {
         return data.map(item => ({
             species_id: speciesId,
@@ -12,21 +12,13 @@ export const mapSpeciesToImage = ({ speciesId, data, keyName }) => {
 };
 
 // Maps species id to plant data with image links
-export const getPlantsWithImageLinks = ({ response, newSpeciesData }) => {
-    return mapSpeciesToImage({
-        speciesId: response.data[0].species_id,
-        data: newSpeciesData.image_links,
-        keyName: 'image_url'
-    });
+export const getPlantsWithImageLinks = (response, newSpeciesData) => {
+    return mapSpeciesToImage(response.data[0].species_id, newSpeciesData.image_links, 'image_url');
 };
 
 // Maps species id to plant data with image files
-export const getPlantsWithImageFiles = ({ response, newSpeciesData }) => {
-    return mapSpeciesToImage({
-        speciesId: response.data[0].species_id,
-        data: newSpeciesData.s3_keys,
-        keyName: 's3_key'
-    });
+export const getPlantsWithImageFiles = (response, newSpeciesData) => {
+    return mapSpeciesToImage(response.data[0].species_id, newSpeciesData.s3_keys, 's3_key');
 };
 
 export function formatImages(formattedData) {

@@ -50,3 +50,16 @@ export const calculateStartAndEnd = (page, rowsPerPage, displayData, setStart, s
     setStart(newStart);
     setEnd(newEnd);
 };
+
+// updates pagination start and end indices after search
+export const updatePaginationAfterSearch = (type, setShouldCalculate, setDisplayData, response, setStart, setEnd, setIsLoading) => {
+    setShouldCalculate(false);
+    setDisplayData(response.formattedData);
+    response.formattedData.length > 0 ? setStart(1) : setStart(0);
+    if (type === "species") {
+        setEnd(response.responseData.species.length);
+    } else if (type === "region") {
+        setEnd(response.responseData.regions.length);
+    }
+    setIsLoading(false);
+}
