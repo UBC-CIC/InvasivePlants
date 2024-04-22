@@ -55,40 +55,7 @@ To open the repo in VS Code, run:
 code .
 ```
 
-## Step 2: Local Deployment
-
-For local deployment, we only need to add an `.env` file in `InvasivePlants/frontend/`. Assuming you are in `InvasivePlants`, you can navigate into this directory by running
-
-```bash
-cd frontend
-```
-
-Note that even though this is a local deployment, one still need to deploy all other CDK stacks except `hostStack`. The `.env` file should have the following values:
-
-```bash
-REACT_APP_USERPOOL_ID
-REACT_APP_USERPOOL_WEB_CLIENT_ID
-REACT_APP_REGION
-REACT_APP_API_BASE_URL
-REACT_APP_S3_BASE_URL
-REACT_APP_IDENTITY_POOL_ID
-```
-
-Note: make sure to put forward slash, `/`, at the end of the link.
-
-Then, one can install all packages at `InvasivePlants/frontend/` using:
-
-```bash
-npm install
-```
-
-Afterward, one can run the application by running:
-
-```bash
-npm start
-```
-
-## Step 3: Cloud Deployment
+## Step 2: Cloud Deployment
 
 ![Network Diagram](./images/networkDiagram/architecture_diagram.svg)
 
