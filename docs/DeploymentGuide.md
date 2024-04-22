@@ -187,12 +187,6 @@ The deployment command for the `hostStack` requires a parameter calls `prefixLis
 Then, use the following command below and pass in the `prefixListID` value.
 
 ```bash
-cdk deploy FunctionalityStack \
-  --parameters hostStack:prefixListID=<your-region-preFixListId> \
-  --profile <aws-profile-name>
-```
-
-```bash
 cdk deploy --all \
   --parameters hostStack:prefixListID=<your-region-preFixListId> \
   --profile <aws-profile-name>
